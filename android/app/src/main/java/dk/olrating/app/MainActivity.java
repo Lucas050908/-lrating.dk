@@ -23,7 +23,7 @@ import android.webkit.WebViewClient;
  */
 public class MainActivity extends Activity {
 
-    private static final String SITE = "https://lucas050908.github.io/-lrating.dk/";
+    private static final String SITE = "https://xn--lrating-p1a.dk/";
     private static final String SITE_HOST = "lucas050908.github.io";
     private static final String SITE_PATH = "/-lrating.dk";
     private static final int FILE_REQUEST = 1;
@@ -55,7 +55,9 @@ public class MainActivity extends Activity {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest req) {
                 Uri u = req.getUrl();
-                boolean own = SITE_HOST.equals(u.getHost()) && u.getPath() != null && u.getPath().startsWith(SITE_PATH);
+                String h = u.getHost();
+                boolean own = "xn--lrating-p1a.dk".equals(h) || "www.xn--lrating-p1a.dk".equals(h) || "ølrating.dk".equals(h)
+                        || (SITE_HOST.equals(h) && u.getPath() != null && u.getPath().startsWith(SITE_PATH));
                 if (own) return false;
                 // Andre links (fx GitHub, mail) åbnes i telefonens browser
                 try { startActivity(new Intent(Intent.ACTION_VIEW, u)); } catch (Exception ignored) { }

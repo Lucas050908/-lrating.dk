@@ -3,7 +3,7 @@ const { app, BrowserWindow, ipcMain, shell, Menu, Tray, nativeImage, screen } = 
 const path = require('path');
 const fs = require('fs');
 
-const SITE = 'https://lucas050908.github.io/-lrating.dk/';
+const SITE = 'https://xn--lrating-p1a.dk/';
 const HOSTS = ['lucas050908.github.io', 'xn--lrating-p1a.dk', 'www.xn--lrating-p1a.dk'];
 const ICON = path.join(__dirname, 'build', 'icon.png');
 let win, widget, tray, lastData = null;

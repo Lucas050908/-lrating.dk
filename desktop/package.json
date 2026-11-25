@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "ølrating.dk som program til Windows og Linux",
   "author": "Lucas Valentin Ottesen og Magnus Birkgaard Froberg <andersenlucas84@gmail.com>",
-  "homepage": "https://lucas050908.github.io/-lrating.dk/",
+  "homepage": "https://xn--lrating-p1a.dk/",
   "main": "main.js",
   "scripts": {
     "start": "electron .",

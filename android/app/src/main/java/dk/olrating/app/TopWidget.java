@@ -16,7 +16,7 @@ import org.json.JSONObject;
 public class TopWidget extends AppWidgetProvider {
     static final String PREFS = "olrating_widget";
     static final String KEY = "data";
-    static final String SITE = "https://lucas050908.github.io/-lrating.dk/";
+    static final String SITE = "https://xn--lrating-p1a.dk/";
 
     @Override
     public void onUpdate(Context ctx, AppWidgetManager mgr, int[] ids) {

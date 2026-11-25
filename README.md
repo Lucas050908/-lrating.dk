@@ -6,7 +6,7 @@ Danske øl, bedømt af dem der drikker dem.
 
 **Fejl og forslag:** andersenlucas84@gmail.com
 
-En statisk hjemmeside uden server og uden byggetrin: `index.html` plus billeder, skrifttyper og et par små filer. Den kører på GitHub Pages: https://lucas050908.github.io/-lrating.dk/ – indtil domænet **ølrating.dk** er klar hos Simply.
+En statisk hjemmeside uden server og uden byggetrin: `index.html` plus billeder, skrifttyper og et par små filer. Den kører på GitHub Pages: https://ølrating.dk (xn--lrating-p1a.dk). Domænet ligger hos one.com; før det virkede, kørte den på lucas050908.github.io/-lrating.dk – **ølrating.dk** er klar hos Simply.
 
 ## Hvad siden kan
 

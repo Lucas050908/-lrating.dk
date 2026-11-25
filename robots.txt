@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://lucas050908.github.io/-lrating.dk/sitemap.xml
+Sitemap: https://xn--lrating-p1a.dk/sitemap.xml
