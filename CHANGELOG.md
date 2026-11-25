@@ -4,6 +4,19 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-25
 
+### Sen aften (23:10–23:45): stor test og rettelser
+- **Automatiske test** ligger nu i `tests/` og kører på GitHub ved hver ændring af siden:
+  - Hele siden klikket igennem på pc og mobil (72 tjek).
+  - To enheder, der deler data mod en efterligning af databasen (34 tjek).
+  - En test mod den rigtige database, som opretter og sletter sine egne testdata.
+- **Fejl fundet i testen og rettet:**
+  - Slettede øl efterlod deres billede i lageret. Nu slettes billedet også. Det kræver den lille tilføjelse `supabase/002-slet-billeder.sql`.
+  - Backup tog ikke billeder med, når de først var delt. Nu ligger billederne i backup-filen, og en gendannelse lægger dem op igen.
+  - Indlæste øl fra en backup bliver nu dine egne, hvis de ikke findes i databasen i forvejen.
+  - Karakteren på en øl-side talte op forfra, hver gang der kom nyt fra databasen. Nu opdateres siden roligt uden animation.
+  - Billeder caches 1 time i stedet for 1 år, så et slettet billede forsvinder hurtigt for alle.
+- **Byttur:** Værten kan slette turen for alle. Deltagere kan fjerne turen fra deres liste og bliver så meldt fra. En tur, værten har slettet, forsvinder hos deltagerne.
+
 ### Aften (22:00–23:30)
 - **Fælles database koblet på:**
   - Øl, bedømmelser og billeder deles nu mellem alle enheder via Supabase. Siden henter nyt hvert 30. sekund og når den åbnes.

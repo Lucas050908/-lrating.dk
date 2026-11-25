@@ -25,7 +25,8 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 ### Fælles database
 - Alle ser de samme øl, bedømmelser og billeder. Nyt hentes, når siden åbnes, og derefter hvert 30. sekund.
 - Kun den enhed, der har lavet en øl eller bedømmelse, kan rette og slette den. Knapperne vises ikke hos andre.
-- Sletning har stadig fortryd. Øllen fjernes først fra databasen efter ca. 10 sekunder.
+- Sletning har stadig fortryd. Øllen og dens billede fjernes først fra databasen efter ca. 10 sekunder.
+- Backup-filen indeholder også billederne. Indlæses den igen, bliver øl, bedømmelser og billeder lagt op på ny.
 - Uden net virker alt som før. Ændringer sendes, når forbindelsen er tilbage. Status ses under Min profil ("Forbundet" eller "Ikke forbundet").
 - Genstand-tæller, ønskeliste og indstillinger deles **ikke**. De bliver på enheden.
 
@@ -52,6 +53,7 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 - **Tilmelding:**
   - Vennen åbner linket eller skriver koden og trykker "Jeg er med". Så står vennen på listen hos alle.
   - Kan databasen ikke nås, sendes i stedet et svarlink til værten, som åbner det for at få vennen på listen.
+- **Slet og meld fra:** Værten kan slette turen for alle. En deltager kan fjerne turen fra sin liste og bliver så meldt fra.
 - **Under turen:** "Vi er her nu" og næste stop beregnes ud fra tidspunkterne.
 - **Kom sikkert hjem:** genvej til genstand-tælleren, Rejseplanen og taxa, plus 112 ved fare.
 

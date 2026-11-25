@@ -91,6 +91,10 @@ drop policy if exists "egne billeder kan slettes" on storage.objects;
 create policy "egne billeder kan slettes" on storage.objects for delete to authenticated
   using (bucket_id = 'billeder' and (storage.foldername(name))[1] = auth.uid()::text);
 
+drop policy if exists "egne billeder kan ses" on storage.objects;
+create policy "egne billeder kan ses" on storage.objects for select to authenticated
+  using (bucket_id = 'billeder' and (storage.foldername(name))[1] = auth.uid()::text);
+
 -- Live-opdateringer (fx når nogen melder sig til en byttur)
 do $$ begin
   begin alter publication supabase_realtime add table public.beers, public.reviews, public.tour_members, public.tasting_votes;

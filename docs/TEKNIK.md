@@ -12,7 +12,7 @@
 ### Data på enheden
 | Hvor | Nøgle | Indhold |
 |---|---|---|
-| localStorage | `olrating-v1` | `S = {beers, reviews, me, season, wish, mode, units, tours, sh, gone, joins}` |
+| localStorage | `olrating-v1` | `S = {beers, reviews, me, season, wish, mode, units, tours, sh, si, gone, joins, dq}` |
 | localStorage | `olrating-sb` | Den anonyme Supabase-session |
 | IndexedDB | db `olrating`, store `img` | Billeder som Blob. I `S` står de som `idb:<nøgle>`, og `src()` laver dem om til object-URL'er |
 
@@ -90,8 +90,21 @@ Widget-data, som `syncApp()` sender:
 - `sbSync()` kører ved start, 1,5 sekund efter hver `save()`, hvert 30. sekund og når siden bliver synlig igen. Rækkefølgen er `sbAuth` → `sbPush` → `sbPull` → `sbTours`.
 - **Push:** Egne objekter, der er ændret siden sidst, sendes som upsert. `S.sh[id]` gemmer en hash af det, der sidst blev synkroniseret. Billeder uploades først, og `img` skifter fra `idb:…` til den offentlige adresse, når rækken er gemt.
 - **Pull:** Alle øl og bedømmelser hentes og flettes. Egne ændringer, der ikke er sendt endnu, vinder. Alt andet erstattes af databasens udgave. Objekter, der er slettet i databasen, fjernes lokalt.
-- **Sletning:** Et id, der findes i `S.sh`, men ikke længere lokalt, lægges i `S.gone` og slettes i databasen efter 9 sekunder. Det giver plads til fortryd.
+- **Sletning:** Et id, der findes i `S.sh`, men ikke længere lokalt, lægges i `S.gone` og slettes i databasen efter 9 sekunder. Det giver plads til fortryd. `S.si[id]` husker stien til eget billede, så det kan slettes fra lageret sammen med rækken, eller når billedet skiftes ud.
+- **Kø til sletning af ture:** `dq(sti)` lægger en DELETE i `S.dq`, som `sbTours()` udfører med op til 10 forsøg. Bruges, når værten sletter en tur, og når en deltager melder fra.
 - **Ejerskab:** `mineObj(o)` er sand, når `o.owner` er enhedens bruger-id. Afviser databasen en skrivning (403/409), markeres objektet som en andens og erstattes ved næste pull.
 - **Visning:** Ændrer et pull data, tegnes siden om med `softRoute()`, som beholder scroll og fokus. Det sker ikke, mens brugeren skriver i et felt eller har rørt en formular.
 - **Byttur:** Værten gemmer turen i `tours`. Tilmeldinger lægges i køen `S.joins` og indsættes i `tour_members`. `sbFindTour(kode)` henter en tur ud fra dens id.
-- **Test:** Synkroniseringen er afprøvet med to browsere mod en efterligning af Supabase (deling, billeder, afvist redigering af andres øl, offline-kø, sletning med fortryd, byttur). Byggemiljøet kan ikke nå den rigtige database, så den første prøve mod den sker i en rigtig browser.
+
+## Test (`tests/`)
+Alle test bruger Playwright og en lokal server: `python3 -m http.server 8811 &`.
+
+| Fil | Hvad | Rører den rigtige database? |
+|---|---|---|
+| `test_site.py` | Hele siden klikket igennem på pc (1280 px) og mobil (390 px): tilføj øl med foto, bedøm, ret, søg, del, delekort, genstande, temaer, backup, slet med fortryd, ryd alt, gendan, offline, filer og links | Nej |
+| `test_sync.py` | To enheder deler data: øl, billeder, afvist redigering af andres øl, offline-kø, ingen gentegning mens man skriver, sletning med fortryd, byttur | Nej |
+| `mock_supabase.py` | Efterligning af Supabase i hukommelsen, som de to test ovenfor bruger | Nej |
+| `e2e_supabase.py` | Det samme forløb mod den rigtige database, inkl. forsøg på at rette andres data direkte gennem API'et. Opretter data med TEST i navnet og sletter dem igen | **Ja** |
+
+- **GitHub Actions (`test.yml`):** `test_site.py` og `test_sync.py` kører ved hver ændring af siden. `e2e_supabase.py` kører kun ved manuel start eller når commit-beskeden indeholder `[database-test]`.
+- Byggemiljøet, hvor koden skrives, kan ikke selv nå Supabase. Derfor køres testen mod den rigtige database på GitHub.

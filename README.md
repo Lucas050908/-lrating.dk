@@ -40,7 +40,8 @@ Danske øl, bedømt af dem der drikker dem.
 | `404.html`, `CNAME`, `robots.txt`, `sitemap.xml` | Fejlside, domæne og søgemaskiner |
 | `android/` | Android-app og widgets |
 | `desktop/` | Windows/Linux-program (Electron) og desktop-widget |
-| `supabase/schema.sql` | Database-tabeller og sikkerhedsregler |
+| `supabase/` | Database-tabeller og sikkerhedsregler |
+| `tests/` | Automatiske test af siden og databasen |
 | `.github/workflows/` | Automatisk bygning af Android- og desktop-app |
 | `docs/` | Dokumentation |
 

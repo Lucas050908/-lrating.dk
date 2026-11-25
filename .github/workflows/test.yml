@@ -1,0 +1,45 @@
+name: Test
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['index.html', 'sw.js', 'js/**', 'tests/**', '.github/workflows/test.yml']
+jobs:
+  side:
+    name: Siden (pc og mobil, efterlignet database)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install playwright && python -m playwright install --with-deps chromium
+      - name: Start siden
+        run: python3 -m http.server 8811 >/dev/null 2>&1 &
+      - name: Hele siden klikket igennem
+        run: python3 tests/test_site.py
+      - name: To enheder deler data
+        if: always()
+        run: python3 tests/test_sync.py
+  database:
+    name: Den rigtige database
+    runs-on: ubuntu-latest
+    # Kun når testene selv ændres eller ved manuel start, så der ikke skrives testdata ved hver lille rettelse
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[database-test]')
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install playwright && python -m playwright install --with-deps chromium
+      - name: Start siden
+        run: python3 -m http.server 8811 >/dev/null 2>&1 &
+      - name: Test mod Supabase
+        run: python3 tests/e2e_supabase.py
+      - name: Virker https på ølrating.dk?
+        if: always()
+        run: |
+          echo "https: $(curl -sS -o /dev/null -m 20 -w '%{http_code}' https://xn--lrating-p1a.dk/ || echo FEJL)"
+          echo "http -> $(curl -sSI -m 20 http://xn--lrating-p1a.dk/ | grep -i '^location' || echo 'ingen viderestilling til https endnu')"
+          echo "version på nettet: $(curl -sS -m 20 https://xn--lrating-p1a.dk/sw.js | grep -o 'olrating-v[0-9]*' | head -1)  ·  i koden: $(grep -o 'olrating-v[0-9]*' sw.js | head -1)"
+          curl -sS -o /dev/null -m 20 https://xn--lrating-p1a.dk/
