@@ -327,6 +327,23 @@ footer .wrap{position:relative;z-index:2}
 .ex-t svg{width:40px;height:40px}
 .month{margin-top:28px}
 .month h3{font-size:20px;margin-bottom:6px;text-transform:capitalize}
+.fh{font-size:19px;margin:6px 0 -4px;color:var(--gl)}
+.swatches{display:flex;flex-wrap:wrap;gap:8px}
+.sw{min-height:40px;padding:6px 14px 6px 8px;font-weight:600;font-size:14px;background:transparent;color:var(--tx);border:1px solid var(--ln);gap:8px}
+.sw i{width:22px;height:22px;border-radius:50%;border:2px solid rgba(255,255,255,.5)}
+.sw[aria-pressed=true]{border-color:var(--gl);box-shadow:0 0 0 2px var(--gl) inset}
+.sw:hover{transform:none}
+.info{display:grid;gap:0;margin:18px 0;background:var(--nv2);border:1px solid var(--ln);border-radius:20px;overflow:hidden}
+.info .r{display:grid;grid-template-columns:34px 110px minmax(0,1fr);gap:10px;align-items:center;padding:11px 16px;border-bottom:1px solid var(--ln)}
+.info .r:last-child{border-bottom:0}
+.info .r svg{width:22px;height:22px}
+.info .r span{opacity:.7;font-size:14px}
+.info .r b{font-weight:600}
+.info .r small{opacity:.7;font-weight:400}
+.meter{display:inline-block;vertical-align:middle;width:90px;height:6px;border-radius:3px;background:rgba(143,182,227,.2);overflow:hidden;margin-left:8px}
+.meter i{display:block;height:100%;background:var(--grad)}
+.cdot{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:6px;border:1px solid rgba(255,255,255,.4)}
+@media(max-width:520px){.info .r{grid-template-columns:28px 88px minmax(0,1fr);padding:10px 12px;font-size:15px}}
 /* misc */
 .view{animation:enter .45s cubic-bezier(.2,.8,.2,1) both}
 @keyframes enter{from{opacity:0;transform:translateY(14px)}}
@@ -588,22 +605,34 @@ function revFields(withImg){return `
  ${withImg?drop('rImg','Dit foto af øllen (valgfrit)'):''}`}
 function drop(id,label){return `<label class="drop" id="${id}Drop"><div class="prev" id="${id}Prev" aria-hidden="true">${CAM('var(--gl)')}</div><div><b>${label}</b><br><span class="hint">Klik for at vælge eller tage et billede, eller træk et billede herind. Det bliver gjort mindre automatisk.</span><input id="${id}" type="file" accept="image/*"></div></label>`}
 
-function addView(){return `<section class="band" style="padding-top:120px"><div class="wrap" style="max-width:860px"><h1 style="font-size:clamp(34px,5vw,56px)">Tilføj en øl</h1><p class="meta" style="margin:10px 0 24px">Felter med * skal udfyldes.</p>
- <form class="f panel" id="addForm" novalidate>
-  ${drop('bImg','Billede af øllen *')}
-  <div class="two"><label for="bName">Øllens navn *<input id="bName" required maxlength="60" placeholder="Fx Limfjordsporter"></label>
-  <label for="bBrew">Bryggeri *<input id="bBrew" required maxlength="60" placeholder="Fx Thisted Bryghus"></label>
-  <label for="bCity">By eller land<input id="bCity" maxlength="40"></label>
-  <label for="bStyle">Stil *<select id="bStyle">${Object.keys(STYLES).map(s=>`<option>${s}</option>`).join('')}</select></label>
-  <label for="bAbv">Alkohol %<input id="bAbv" inputmode="decimal" maxlength="5" placeholder="5,0"></label>
-  <label for="bPrice">Pris (kr)<input id="bPrice" type="number" inputmode="decimal" min="0" step="1" placeholder="25"></label>
-  <label for="bPlace">Købt eller smagt hvor?<input id="bPlace" maxlength="60" placeholder="Fx Føtex, Ølbaren"></label>
-  <label for="bCode">Stregkode <span class="hint">valgfri</span><span style="display:flex;gap:8px"><input id="bCode" inputmode="numeric" maxlength="20" value="${esc(F.code||'')}" placeholder="Fx 5740600001234">${HAS_BD?'<button type="button" class="ghost" id="scanAdd" style="flex:none">Scan</button>':''}</span></label>
-  <label for="bSize">Størrelse<select id="bSize"><option value="">Vælg</option><option>33 cl flaske</option><option>50 cl flaske</option><option>33 cl dåse</option><option>44 cl dåse</option><option>Fadøl</option></select></label></div>
-  <label for="bDesc">Beskrivelse af øllen<textarea id="bDesc" rows="3" maxlength="500" placeholder="Farve, skum, hvad bryggeriet skriver…"></textarea></label>
-  <div class="grad" style="height:2px;opacity:.6"></div>
-  ${revFields(false)}
-  <button type="submit" id="addBtn" style="font-size:18px;min-height:56px">Gem øl og bedømmelse</button>
+const COUNTRIES=['Danmark','Tyskland','Belgien','Tjekkiet','England','Irland','Holland','Sverige','Norge','USA','Mexico','Japan','Andet land'];
+const COLORS=[['Lys','#f6d66b'],['Gylden','#e8b21c'],['Rav','#c97a16'],['Rød','#9a3412'],['Brun','#5a2a0e'],['Sort','#1a0d05']];
+const SIZES=['33 cl flaske','50 cl flaske','75 cl flaske','33 cl dåse','44 cl dåse','50 cl dåse','Fadøl','Andet'];
+const abvLabel=a=>!a?'':a<3.5?'Let':a<6?'Normal styrke':a<8?'Stærk':'Meget stærk';
+const ibuLabel=i=>!i?'':i<20?'Mild':i<40?'Middel bitter':i<60?'Bitter':'Meget bitter';
+const clOf=s=>{const m=/(\d+)\s*cl/.exec(s||'');return m?+m[1]:0};
+function addView(){const E=F.editBeer?beers().find(b=>b.id===F.editBeer):null,v=k=>esc(E?.[k]??''),sel=(a,b)=>a===b?' selected':'';
+ return `<section class="band" style="padding-top:120px"><div class="wrap" style="max-width:880px"><h1 style="font-size:clamp(34px,5vw,56px)">${E?'Ret oplysninger':'Tilføj en øl'}</h1><p class="meta" style="margin:10px 0 24px">${E?`Du retter ${esc(E.name)}. Bedømmelserne bliver ikke ændret.`:'Felter med * skal udfyldes. Jo flere oplysninger, jo bedre kan andre finde og sammenligne øllen.'}</p>
+ <form class="f panel" id="addForm" novalidate${E?` data-edit="${esc(E.id)}"`:''}>
+  ${drop('bImg',E?'Nyt billede af øllen (valgfrit)':'Billede af øllen *')}
+  <h3 class="fh">Øllen</h3>
+  <div class="two"><label for="bName">Øllens navn *<input id="bName" required maxlength="60" placeholder="Fx Limfjordsporter" value="${v('name')}"></label>
+  <label for="bBrew">Bryggeri *<input id="bBrew" required maxlength="60" placeholder="Fx Thisted Bryghus" value="${v('brewery')}" list="brewList"><datalist id="brewList">${[...new Set(beers().map(b=>b.brewery))].map(x=>`<option value="${esc(x)}">`).join('')}</datalist></label>
+  <label for="bStyle">Stil *<select id="bStyle">${Object.keys(STYLES).map(x=>`<option${sel(x,E?.style)}>${x}</option>`).join('')}</select></label>
+  <label for="bCity">By<input id="bCity" maxlength="40" placeholder="Fx Thisted" value="${v('city')}"></label>
+  <label for="bCountry">Land<select id="bCountry">${COUNTRIES.map(x=>`<option${sel(x,E?.country||'Danmark')}>${x}</option>`).join('')}</select></label>
+  <label for="bCode">Stregkode <span class="hint">valgfri</span><span style="display:flex;gap:8px"><input id="bCode" inputmode="numeric" maxlength="20" value="${esc(E?.code||F.code||'')}" placeholder="Fx 5740600001234">${HAS_BD?'<button type="button" class="ghost" id="scanAdd" style="flex:none">Scan</button>':''}</span></label></div>
+  <h3 class="fh">Smag og styrke</h3>
+  <div class="two"><label for="bAbv">Alkohol % <span class="hint" id="abvHint">${E?.abv?abvLabel(E.abv):''}</span><input id="bAbv" inputmode="decimal" maxlength="5" placeholder="5,0" value="${E?.abv?fmt(E.abv):''}"></label>
+  <label for="bIbu">Bitterhed (IBU) <span class="hint" id="ibuHint">${E?.ibu?ibuLabel(E.ibu):'står tit på etiketten'}</span><input id="bIbu" type="number" inputmode="numeric" min="0" max="150" placeholder="Fx 35" value="${v('ibu')}"></label></div>
+  <div><div style="font-weight:600;margin-bottom:8px">Farve</div><div class="swatches">${COLORS.map(([n,c])=>`<button type="button" class="sw" data-color="${n}" aria-pressed="${E?.color===n}" aria-label="${n}"><i style="background:${c}"></i>${n}</button>`).join('')}</div></div>
+  <h3 class="fh">Køb og servering</h3>
+  <div class="two"><label for="bSize">Størrelse<select id="bSize"><option value="">Vælg</option>${SIZES.map(x=>`<option${sel(x,E?.size)}>${x}</option>`).join('')}</select></label>
+  <label for="bPrice">Pris (kr)<input id="bPrice" type="number" inputmode="decimal" min="0" step="0.5" placeholder="25" value="${v('price')}"></label>
+  <label for="bPlace">Købt eller smagt hvor?<input id="bPlace" maxlength="60" placeholder="Fx Føtex, Ølbaren" value="${v('place')}"></label></div>
+  <label for="bDesc">Beskrivelse af øllen<textarea id="bDesc" rows="3" maxlength="500" placeholder="Skum, duft, hvad bryggeriet skriver på etiketten…">${v('desc')}</textarea></label>
+  ${E?'':`<div class="grad" style="height:2px;opacity:.6"></div><h3 class="fh">Din bedømmelse</h3>${revFields(false)}`}
+  <div style="display:flex;flex-wrap:wrap;gap:10px"><button type="submit" id="addBtn" style="font-size:18px;min-height:56px;flex:1">${E?'Gem ændringer':'Gem øl og bedømmelse'}</button>${E?`<a class="btn ghost" href="#beer-${esc(E.id)}" style="min-height:56px">Annuller</a>`:''}</div>
  </form></div></section>`}
 
 function beerView(id){const b=enrich().find(x=>x.id===id);if(!b)return `<section class="band" style="padding-top:120px"><div class="wrap"><div class="empty"><h3>Øllen findes ikke</h3><a class="btn" href="#">Til forsiden</a></div></div></section>`;
@@ -612,11 +641,20 @@ function beerView(id){const b=enrich().find(x=>x.id===id);if(!b)return `<section
   const sim=enrich().filter(x=>x.id!==b.id).sort((a,c)=>(c.style===b.style)-(a.style===b.style)||Math.abs(a.avg-b.avg)-Math.abs(c.avg-b.avg)).slice(0,3);
   return `<div class="wrap"><div class="detail"><div class="ph">${photo(b)}</div>
   <div><a href="#" class="meta">← Alle øl</a><div style="margin-top:12px"><span class="tag" style="font-size:13px">${esc(b.style)}</span></div><h1 style="font-size:clamp(34px,5vw,60px);margin-top:10px;overflow-wrap:anywhere">${esc(b.name)}</h1><div class="meta" style="font-size:18px;margin-top:6px">${esc(b.brewery)}${b.city?', '+esc(b.city):''}</div>
-   <div class="facts"><div><small>Alkohol</small><b>${b.abv?fmt(b.abv)+' %':'–'}</b></div><div><small>Pris</small><b>${b.price?esc(b.price)+' kr':'–'}</b></div>${b.size?`<div><small>Størrelse</small><b>${esc(b.size)}</b></div>`:''}<div><small>Købt</small><b>${esc(b.place||'–')}</b></div></div>
+   <div class="info">
+    <div class="r"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gl)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V9l8-5 8 5v12M9 21v-6h6v6"/></svg><span>Bryggeri</span><b><button type="button" data-brew="${esc(b.brewery)}" style="all:unset;cursor:pointer;text-decoration:underline">${esc(b.brewery)}</button>${b.city||b.country?` <small>· ${esc([b.city,b.country].filter(Boolean).join(', '))}</small>`:''}</b></div>
+    <div class="r"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gl)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3h8l-1 18H9zM8.5 8h7"/></svg><span>Stil</span><b>${esc(b.style)} <small>· ${(GUIDE[b.style]||GUIDE.Andet)[0]}</small></b></div>
+    ${b.abv?`<div class="r"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gl)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19L19 5M7.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM16.5 18a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/></svg><span>Alkohol</span><b>${fmt(b.abv)} % <small>· ${abvLabel(b.abv)}</small><span class="meter"><i style="width:${Math.min(100,b.abv/12*100)}%"></i></span></b></div>`:''}
+    ${b.ibu?`<div class="r"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gl)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c3 4 6 7 6 11a6 6 0 0 1-12 0c0-4 3-7 6-11z"/></svg><span>Bitterhed</span><b>${esc(b.ibu)} IBU <small>· ${ibuLabel(b.ibu)}</small><span class="meter"><i style="width:${Math.min(100,b.ibu)}%"></i></span></b></div>`:''}
+    ${b.color?`<div class="r"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gl)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1 0 2-1 2-2s-1-1-1-2 1-2 2-2h2a4 4 0 0 0 4-4c0-4-4-8-9-8z"/></svg><span>Farve</span><b><i class="cdot" style="background:${(COLORS.find(c=>c[0]===b.color)||['','#ccc'])[1]}"></i>${esc(b.color)}</b></div>`:''}
+    ${b.size||b.price?`<div class="r"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gl)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h18v13H3zM3 7l2-4h14l2 4M9 11h6"/></svg><span>Køb</span><b>${[b.size?esc(b.size):'',b.price?esc(String(b.price).replace('.',','))+' kr':'',b.place?'hos '+esc(b.place):''].filter(Boolean).join(' · ')}${b.price&&clOf(b.size)?` <small>· ${fmt(b.price/clOf(b.size)*100)} kr pr. liter</small>`:''}</b></div>`:b.place?`<div class="r"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gl)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h18v13H3zM3 7l2-4h14l2 4"/></svg><span>Købt</span><b>${esc(b.place)}</b></div>`:''}
+    <div class="r"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gl)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3v8a2 2 0 0 0 4 0V3M9 11v10M17 3c-2 2-2 6 0 8v10"/></svg><span>Servering</span><b>${GNAME[(GUIDE[b.style]||GUIDE.Andet)[1]]}, ${(GUIDE[b.style]||GUIDE.Andet)[2]} <small>· passer til ${(GUIDE[b.style]||GUIDE.Andet)[3].toLowerCase()}</small></b></div>
+    ${b.code?`<div class="r"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gl)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V4h3M18 4h3v3M21 17v3h-3M6 20H3v-3M7 8v8M10 8v8M13 8v8M17 8v8"/></svg><span>Stregkode</span><b>${esc(b.code)}</b></div>`:''}
+   </div>
    ${b.desc?`<p style="margin:0 0 20px;font-size:17px">${esc(b.desc)}</p>`:''}
    <div class="scorebox"><div class="ring" style="--to:${(b.avg/5*100).toFixed(1)}"><div><b id="bigScore">0,0</b><small style="opacity:.7">af 5</small></div></div><div><div style="font-weight:700;margin-bottom:6px">${Rr.length} ${Rr.length===1?'bedømmelse':'bedømmelser'}${Rr.length?' · '+againPct(b)+'% vil købe igen':''}</div>${minibars(b)}</div></div>
    <p class="meta" style="margin-top:14px;display:flex;align-items:center;gap:8px">${avatar(b.addedBy)} Tilføjet af <b>${esc(b.addedBy)}</b> den ${dk(b.date)}</p>
-   <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:6px"><button type="button" class="wish" id="wishBtn" data-id="${esc(b.id)}" aria-pressed="${S.wish.includes(b.id)}">${S.wish.includes(b.id)?'På din ønskeliste':'Vil smage'}</button><button type="button" class="ghost" id="shareBtn" data-id="${esc(b.id)}">Del</button><button type="button" class="ghost" id="cmpBtn" data-id="${esc(b.id)}">Sammenlign</button><a class="btn ghost" href="#rate">Bedøm den</a>${`<button type="button" class="ghost" id="delBeer" data-id="${esc(b.id)}">Slet øl</button>`}</div></div></div></div>
+   <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:6px"><button type="button" class="wish" id="wishBtn" data-id="${esc(b.id)}" aria-pressed="${S.wish.includes(b.id)}">${S.wish.includes(b.id)?'På din ønskeliste':'Vil smage'}</button><button type="button" class="ghost" id="shareBtn" data-id="${esc(b.id)}">Del</button><button type="button" class="ghost" id="cmpBtn" data-id="${esc(b.id)}">Sammenlign</button><a class="btn ghost" href="#rate">Bedøm den</a>${S.me&&b.addedBy.toLowerCase()===S.me.toLowerCase()?`<button type="button" class="ghost" id="editBeer" data-id="${esc(b.id)}">Ret oplysninger</button>`:''}${`<button type="button" class="ghost" id="delBeer" data-id="${esc(b.id)}">Slet øl</button>`}</div></div></div></div>
   <section class="band"><div class="wrap cols">
    <div class="box"><h3>Smagsprofil</h3>${(p=>p?radar(p,PROF.map(x=>x[1])):'<p class="meta">Ingen har givet en smagsprofil endnu. Gør det i din bedømmelse.</p>')(profAvg(b))}</div>
    <div class="box"><h3 style="margin-bottom:12px">Smagsnoter</h3>${tg.length?`<div class="tags">${tg.map(([t,n])=>`<span class="tag" style="font-size:${13+n*2}px">${esc(t)} · ${n}</span>`).join('')}</div>`:'<p class="meta">Ingen endnu.</p>'}
@@ -788,7 +826,7 @@ function route(){const h=location.hash.slice(1);let v;
   wireDrops();
   if(h==='alle')$('alle')?.scrollIntoView();else scrollTo({top:0,behavior:'instant'});
   document.title=h.startsWith('beer-')?`${enrich().find(x=>x.id===h.slice(5))?.name||'Øl'} – ølrating.dk`:'ølrating.dk – danske øl, bedømt af dig'}
-addEventListener('hashchange',()=>{if(!$('scan').hidden)stopScan();route()});
+addEventListener('hashchange',()=>{if(location.hash!=='#tilfoej')F.editBeer='';if(!$('scan').hidden)stopScan();route()});
 addEventListener('scroll',()=>$('top').classList.toggle('scrolled',scrollY>40),{passive:true});
 
 /* ---------- images ---------- */
@@ -823,6 +861,8 @@ document.addEventListener('click',e=>{const t=e.target.closest('button,a');if(!t
   else if(t.dataset.go==='reviews'){e.preventDefault();if(location.hash){location.hash='';setTimeout(()=>$('reviews')?.scrollIntoView(),50)}else $('reviews')?.scrollIntoView({behavior:'smooth'})}
   else if(t.id==='delBeer'){if(t.dataset.sure){S.beers=S.beers.filter(b=>b.id!==t.dataset.id);S.reviews=S.reviews.filter(r=>r.beer!==t.dataset.id);save();toast('Øllen er slettet');location.hash=''}else{t.dataset.sure=1;t.textContent='Klik igen for at slette'}}
   else if(t.id==='surpriseBtn'){surprise()}
+  else if(t.id==='editBeer'){F.editBeer=t.dataset.id;if(location.hash==='#tilfoej')route();else location.hash='tilfoej'}
+  else if(t.dataset.color){const on=t.getAttribute('aria-pressed')!=='true';t.parentElement.querySelectorAll('[data-color]').forEach(b=>b.setAttribute('aria-pressed',b===t&&on))}
   else if(t.dataset.dish){foodView.d=t.dataset.dish;route()}
   else if(t.dataset.year){diaryView.y=t.dataset.year;route()}
   else if(t.id==='cmpBtn'){const L=enrich(),a=L.find(x=>x.id===t.dataset.id),o=L.filter(x=>x.id!==a.id).sort((x,y)=>(y.style===a.style)-(x.style===a.style)||y.avg-x.avg)[0];CMP=[a.id,o?o.id:a.id];location.hash='sammenlign'}
@@ -846,7 +886,7 @@ document.addEventListener('click',e=>{const t=e.target.closest('button,a');if(!t
   else if(t.id==='installBtn'&&installEvt){installEvt.prompt();installEvt.userChoice.then(c=>{if(c.outcome==='accepted')toast('ølrating er installeret');installEvt=null})}
   else if(t.id==='exportBtn'){const blob=new Blob([JSON.stringify({app:'olrating',v:1,exported:new Date().toISOString(),beers:S.beers,reviews:S.reviews,wish:S.wish,me:S.me},null,1)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='olrating-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);toast('Backup downloadet')}
   else if(t.id==='wipeBtn'){if(t.dataset.sure){S={...S,beers:[],reviews:[],wish:[]};save();toast('Dine data er slettet');route()}else{t.dataset.sure=1;t.textContent='Klik igen: alt slettes'}}});
-document.addEventListener('input',e=>{if(e.target.id==='fPrice'){F.maxPrice=+e.target.value;$('fPriceO').textContent=F.maxPrice?`op til ${F.maxPrice} kr`:'alle priser';renderGrid();return}if(e.target.id==='fAbv'){F.maxAbv=+e.target.value;$('fAbvO').textContent=F.maxAbv?`op til ${F.maxAbv} %`:'alle';renderGrid();return}if(e.target.id==='fMinAbv'){F.minAbv=+e.target.value;$('fMinAbvO').textContent=F.minAbv?`mindst ${F.minAbv} %`:'alle';renderGrid();return}if(e.target.dataset.p){const k=e.target.dataset.p;$('o_'+k).textContent=e.target.value;e.target.closest('#profBox').dataset.touched='1';return}if(e.target.id==='q'){F.q=e.target.value.trim();renderGrid()}});
+document.addEventListener('input',e=>{if(e.target.id==='bAbv'){$('abvHint').textContent=abvLabel(parseFloat(e.target.value.replace(',','.'))||0);return}if(e.target.id==='bIbu'){$('ibuHint').textContent=ibuLabel(+e.target.value)||'står tit på etiketten';return}if(e.target.id==='fPrice'){F.maxPrice=+e.target.value;$('fPriceO').textContent=F.maxPrice?`op til ${F.maxPrice} kr`:'alle priser';renderGrid();return}if(e.target.id==='fAbv'){F.maxAbv=+e.target.value;$('fAbvO').textContent=F.maxAbv?`op til ${F.maxAbv} %`:'alle';renderGrid();return}if(e.target.id==='fMinAbv'){F.minAbv=+e.target.value;$('fMinAbvO').textContent=F.minAbv?`mindst ${F.minAbv} %`:'alle';renderGrid();return}if(e.target.dataset.p){const k=e.target.dataset.p;$('o_'+k).textContent=e.target.value;e.target.closest('#profBox').dataset.touched='1';return}if(e.target.id==='q'){F.q=e.target.value.trim();renderGrid()}});
 document.addEventListener('change',e=>{if(e.target.dataset.cmp){CMP[+e.target.dataset.cmp]=e.target.value;route();return}if(e.target.id==='fUntried'){F.untried=e.target.checked;renderGrid();return}if(e.target.id==='fImg'){F.withImg=e.target.checked;renderGrid();return}if(e.target.id==='importFile'){const f=e.target.files[0];if(!f)return;f.text().then(txt=>{const x=JSON.parse(txt);if(x.app!=='olrating'||!Array.isArray(x.beers)||!Array.isArray(x.reviews))throw 0;const ib=new Set(S.beers.map(b=>b.id)),ir=new Set(S.reviews.map(r=>r.id));S.beers=S.beers.concat(x.beers.filter(b=>b&&b.id&&!ib.has(b.id)));S.reviews=S.reviews.concat(x.reviews.filter(r=>r&&r.id&&!ir.has(r.id)));S.wish=[...new Set([...S.wish,...(x.wish||[])])];if(!S.me&&x.me)S.me=x.me;if(save()){toast('Backup indlæst');route()}}).catch(()=>toast('Filen er ikke en ølrating-backup'));return}
   if(e.target.id==='sort'){F.sort=e.target.value;renderGrid()}else if(e.target.id==='modeSel'){S.mode=e.target.value;save();applyMode()}else if(e.target.id==='seasonSel'){S.season=e.target.value;save();applySeason();route()}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('scan').hidden){stopScan();return}if($('lb').hidden)return;if(e.key==='Escape')closeLb();else if(e.key==='ArrowRight')lbGo(1);else if(e.key==='ArrowLeft')lbGo(-1)});
@@ -854,11 +894,14 @@ $('lbs').addEventListener('scroll',lbCount,{passive:true});
 document.addEventListener('submit',e=>{const f=e.target;e.preventDefault();
   if(f.id==='meForm'){S.me=$('meName').value.trim().slice(0,30);save();toast(S.me?`Hej ${S.me}`:'Navn fjernet');route();return}
   if(f.id==='sForm'){F.q=$('q').value.trim();renderGrid();const h=$('alle');if(h){h.textContent=F.q?`Resultater for “${F.q}”`:'Højest bedømt lige nu';h.scrollIntoView({behavior:RM?'auto':'smooth'})}return}
-  if(f.id==='addForm'){const name=$('bName').value.trim(),brew=$('bBrew').value.trim();
-    if(!pending.bImg){toast('Tilføj et billede af øllen');$('bImgDrop').scrollIntoView({block:'center'});return}
+  if(f.id==='addForm'){const name=$('bName').value.trim(),brew=$('bBrew').value.trim(),edit=f.dataset.edit;
+    if(!edit&&!pending.bImg){toast('Tilføj et billede af øllen');$('bImgDrop').scrollIntoView({block:'center'});return}
     if(!name||!brew){toast('Skriv øllens navn og bryggeri');(name?$('bBrew'):$('bName')).focus();return}
-    const r=readReview(f);if(!r)return;const id='u'+Date.now().toString(36);
-    F.code='';const b={id,code:$('bCode').value.replace(/\D/g,'').slice(0,20),name,brewery:brew,city:$('bCity').value.trim(),style:$('bStyle').value,abv:parseFloat(String($('bAbv').value).replace(',','.'))||0,price:+$('bPrice').value||0,place:$('bPlace').value.trim(),size:$('bSize').value,desc:$('bDesc').value.trim(),img:pending.bImg,addedBy:r.who,date:r.date};
+    const info={name,brewery:brew,city:$('bCity').value.trim(),country:$('bCountry').value,style:$('bStyle').value,abv:parseFloat(String($('bAbv').value).replace(',','.'))||0,ibu:Math.max(0,Math.min(150,parseInt($('bIbu').value)||0)),color:f.querySelector('[data-color][aria-pressed=true]')?.dataset.color||'',price:+String($('bPrice').value).replace(',','.')||0,place:$('bPlace').value.trim(),size:$('bSize').value,desc:$('bDesc').value.trim(),code:$('bCode').value.replace(/\D/g,'').slice(0,20)};
+    if(edit){const k=S.beers.findIndex(x=>x.id===edit);if(k<0)return;const old=S.beers[k];S.beers[k]={...old,...info,img:pending.bImg||old.img};if(!save()){S.beers[k]=old;return}
+      delete pending.bImg;F.editBeer='';toast('Oplysningerne er gemt');location.hash='beer-'+edit;return}
+    const r=readReview(f);if(!r)return;const id='u'+Date.now().toString(36);F.code='';
+    const b={id,...info,img:pending.bImg,addedBy:r.who,date:r.date};
     r.beer=id;S.me=r.who;S.beers.push(b);S.reviews.push(r);
     if(!save()){S.beers.pop();S.reviews.pop();return}
     checkBadges();burstAt($('addBtn'));delete pending.bImg;toast(`Skål, ${r.who}! ${name} er tilføjet`);setTimeout(()=>location.hash='beer-'+id,RM?0:600);return}
