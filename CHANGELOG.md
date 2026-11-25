@@ -9,6 +9,7 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
   - Hele siden klikket igennem på pc og mobil (72 tjek).
   - To enheder, der deler data mod en efterligning af databasen (34 tjek).
   - En test mod den rigtige database, som opretter og sletter sine egne testdata.
+- **Resultat mod den rigtige database (kl. 23:40):** 18 af 19 tjek bestået: login, deling af øl, bedømmelser og billeder mellem to enheder, afvisning af forsøg på at rette andres data, byttur med tilmelding og sletning. Det sidste tjek, sletning af billedfilen, venter på `supabase/002-slet-billeder.sql`. https virker på ølrating.dk, men "Enforce HTTPS" er ikke slået til endnu.
 - **Fejl fundet i testen og rettet:**
   - Slettede øl efterlod deres billede i lageret. Nu slettes billedet også. Det kræver den lille tilføjelse `supabase/002-slet-billeder.sql`.
   - Backup tog ikke billeder med, når de først var delt. Nu ligger billederne i backup-filen, og en gendannelse lægger dem op igen.

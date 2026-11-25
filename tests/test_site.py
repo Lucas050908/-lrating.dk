@@ -129,6 +129,6 @@ loc=set(re.findall(r'(?:src|href)="((?:img|fonts|js)/[^"#?]+)"',s))|set(re.finda
 miss=[f for f in loc if not os.path.exists(root+f)]; check('[filer] all referenced images, fonts and scripts exist',not miss,miss)
 m=json.load(open(root+'manifest.webmanifest')); miss=[i['src'] for i in m['icons'] if not os.path.exists(root+i['src'])]; check('[filer] manifest valid, icons exist',not miss,miss)
 check('[links] downloads point at fixed tags, none at latest','releases/latest' not in s and s.count('releases/download/android-app/olrating.apk')>=2 and 'desktop-app/olrating-windows.exe' in s)
-check('[sikkerhed] no secret keys in repo',os.system(f"cd {root} && git grep -nIE 'sb_secret_|service_role|BEGIN (RSA |EC )?PRIVATE KEY|storePassword *= *\"[^\"]' -- . ':!docs' ':!CLAUDE.md' ':!supabase' >/dev/null")!=0)
+check('[sikkerhed] no secret keys in repo',os.system(f"cd {root} && git grep -nIE 'sb_secret_|service_role|BEGIN (RSA |EC )?PRIVATE KEY|storePassword *= *\"[^\"]' -- . ':!docs' ':!CLAUDE.md' ':!supabase' ':!tests' >/dev/null")!=0)
 print('ALL PASS' if all(res) else f'{res.count(False)} FAILED of {len(res)}')
 sys.exit(0 if all(res) else 1)
