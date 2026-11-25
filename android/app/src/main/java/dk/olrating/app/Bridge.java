@@ -25,6 +25,8 @@ public class Bridge {
         ctx.getSharedPreferences(TopWidget.PREFS, Context.MODE_PRIVATE)
            .edit().putString(TopWidget.KEY, json).apply();
         TopWidget.refreshAll(ctx);
+        LatestWidget.refreshAll(ctx);
+        StatsWidget.refreshAll(ctx);
     }
 
     /** Gemmer et delekort (data-URL med JPEG) i telefonens Billeder. */

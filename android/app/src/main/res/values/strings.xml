@@ -4,4 +4,8 @@
     <string name="widget_quick_desc">Bedøm en øl med ét tryk</string>
     <string name="widget_top_label">ølrating: Ugens øl</string>
     <string name="widget_quick_label">ølrating: Bedøm øl</string>
+    <string name="widget_latest_desc">De seneste bedømmelser på ølrating</string>
+    <string name="widget_stats_desc">Hvor mange øl du har smagt og din gennemsnitskarakter</string>
+    <string name="widget_latest_label">ølrating: Seneste bedømmelser</string>
+    <string name="widget_stats_label">ølrating: Min statistik</string>
 </resources>

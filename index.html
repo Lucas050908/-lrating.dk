@@ -423,7 +423,8 @@ const KEY='olrating-v1';
 let S={beers:[],reviews:[],me:'',season:'auto',wish:[],mode:'auto'};
 try{const x=JSON.parse(localStorage.getItem(KEY)||'null');if(x)S={...S,...x}}catch(e){}
 if(!Array.isArray(S.wish))S.wish=[];
-function syncApp(){try{const A=window.OlratingApp;if(!A)return;const L=enrich(),wb=weekBeer(L),top=L.filter(b=>b.rs.length).sort((a,c)=>c.avg-a.avg||c.rs.length-a.rs.length).slice(0,3);A.updateWidget(JSON.stringify({week:wb?{name:wb.name,brewery:wb.brewery||'',score:fmt(wb.avg)}:null,top:top.map(b=>({name:b.name,score:fmt(b.avg)})),beers:L.length,reviews:reviews().length}))}catch(e){}}
+function syncApp(){try{const A=window.OlratingApp;if(!A)return;const L=enrich(),wb=weekBeer(L),top=L.filter(b=>b.rs.length).sort((a,c)=>c.avg-a.avg||c.rs.length-a.rs.length).slice(0,3);const R=reviews().slice().sort((a,b)=>b.date.localeCompare(a.date)),bn=id=>(L.find(b=>b.id===id)||{}).name||'',me=(S.me||'').trim().toLowerCase(),mine=me?R.filter(r=>r.who.toLowerCase()===me):[],sc={};mine.forEach(r=>{const st=(L.find(b=>b.id===r.beer)||{}).style;if(st)sc[st]=(sc[st]||0)+1});
+  A.updateWidget(JSON.stringify({week:wb?{name:wb.name,brewery:wb.brewery||'',score:fmt(wb.avg)}:null,top:top.map(b=>({name:b.name,score:fmt(b.avg)})),latest:R.slice(0,4).map(r=>({name:bn(r.beer),who:r.who,score:fmt(tot(r))})),me:{name:S.me||'',count:mine.length,beers:new Set(mine.map(r=>r.beer)).size,avg:mine.length?fmt(mine.reduce((a,r)=>a+tot(r),0)/mine.length):'',style:Object.entries(sc).sort((a,b)=>b[1]-a[1])[0]?.[0]||''},beers:L.length,reviews:R.length}))}catch(e){}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));setTimeout(syncApp,0);return true}catch(e){toast('Lageret er fuldt. Prøv et mindre billede.');return false}}
 const beers=()=>S.beers;
 const reviews=()=>S.reviews;
