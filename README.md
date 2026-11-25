@@ -47,7 +47,7 @@ Slet andre A-records på @ (fx Simplys standard-parkeringsside). Det kan tage op
 
 Mappen `android/` er en lille Android-app, der viser siden i fuld skærm med billed-upload og kamera.
 GitHub Actions (`.github/workflows/android.yml`) bygger den og lægger `olrating.apk` på udgivelsen **android-app**.
-Hjemmesiden linker til `releases/latest/download/olrating.apk`.
+Hjemmesiden linker til `releases/download/android-app/olrating.apk`.
 
 For at nye versioner kan installeres oven i de gamle, skal appen signeres med samme nøgle hver gang. Læg nøglen som secrets under Settings → Secrets and variables → Actions:
 

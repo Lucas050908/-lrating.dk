@@ -1,0 +1,26 @@
+{
+  "name": "olrating",
+  "productName": "ølrating",
+  "version": "1.0.0",
+  "description": "ølrating.dk som program til Windows og Linux",
+  "author": "Lucas Valentin Ottesen og Magnus Birkgaard Froberg <andersenlucas84@gmail.com>",
+  "homepage": "https://lucas050908.github.io/-lrating.dk/",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist:win": "electron-builder --win portable --publish never",
+    "dist:linux": "electron-builder --linux AppImage --publish never"
+  },
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "dk.olrating.desktop",
+    "productName": "ølrating",
+    "files": ["main.js", "preload.js", "widget.html", "widget-preload.js", "build/icon.png"],
+    "directories": { "output": "dist", "buildResources": "build" },
+    "win": { "target": "portable", "icon": "build/icon.png", "artifactName": "olrating-windows.exe" },
+    "linux": { "target": "AppImage", "icon": "build/icon.png", "category": "Utility", "artifactName": "olrating-linux.AppImage" }
+  }
+}

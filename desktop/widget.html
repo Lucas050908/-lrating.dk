@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="da"><head><meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:">
+<title>ølrating widget</title>
+<style>
+html,body{margin:0;background:transparent;font-family:"Segoe UI",Inter,system-ui,sans-serif;user-select:none}
+.w{margin:8px;border-radius:22px;padding:16px 18px;color:#EAF1FB;background:linear-gradient(160deg,rgba(26,46,82,.97),rgba(15,29,54,.97) 60%,rgba(60,38,48,.97));box-shadow:0 10px 30px rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.12);-webkit-app-region:drag;height:252px;box-sizing:border-box;display:flex;flex-direction:column}
+.top{display:flex;align-items:center;gap:8px}
+.k{font-size:11px;font-weight:700;letter-spacing:.08em;color:#FF7A3D;flex:1}
+button{-webkit-app-region:no-drag;border:0;cursor:pointer;font:inherit}
+.ic{background:rgba(255,255,255,.08);color:#B8C7DE;width:26px;height:26px;border-radius:50%;font-size:13px;line-height:26px;padding:0}
+.ic:hover{background:rgba(255,255,255,.18);color:#fff}
+.ic.on{color:#FFC85A}
+.wk{display:flex;align-items:center;gap:10px;margin-top:10px;-webkit-app-region:no-drag;cursor:pointer;border-radius:12px;padding:4px;margin-left:-4px}
+.wk:hover{background:rgba(255,255,255,.06)}
+.n{font-weight:700;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.m{font-size:12px;color:#B8C7DE;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s{font-size:30px;font-weight:800;color:#FFC85A;margin-left:auto}
+ol{margin:10px 0 0;padding:0;list-style:none;flex:1}
+li{font-size:13px;display:flex;gap:8px;padding:3px 0;border-top:1px solid rgba(255,255,255,.07)}
+li b{color:#FFC85A;margin-left:auto}
+.f{display:flex;align-items:center;gap:8px}
+.f span{font-size:11px;color:#8FB6E3;flex:1}
+.add{background:#FF7A3D;color:#0F1D36;font-weight:700;font-size:12px;border-radius:999px;padding:6px 12px}
+.add:hover{filter:brightness(1.08)}
+</style></head>
+<body><div class="w">
+  <div class="top"><span class="k">🍺 UGENS ØL</span>
+    <button class="ic on" id="pin" title="Altid øverst">📌</button>
+    <button class="ic" id="x" title="Skjul widget">✕</button></div>
+  <div class="wk" id="wk"><div style="min-width:0"><div class="n" id="name">ølrating.dk</div><div class="m" id="meta">Åbn programmet for at hente data</div></div><div class="s" id="score"></div></div>
+  <ol id="top"></ol>
+  <div class="f"><span id="foot"></span><button class="add" id="add">+ Bedøm øl</button></div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+function render(d){
+  const w=d&&d.week;
+  $('name').textContent=w?w.name:'Ingen øl endnu';
+  $('meta').textContent=w?(w.brewery||''):'Bliv den første til at bedømme en øl';
+  $('score').textContent=w?w.score:'';
+  $('top').replaceChildren(...((d&&d.top)||[]).slice(0,3).map((t,i)=>{const li=document.createElement('li'),s=document.createElement('span'),b=document.createElement('b');s.textContent=(i+1)+'. '+t.name;b.textContent=t.score;li.append(s,b);return li}));
+  $('foot').textContent=d?`${d.beers} øl · ${d.reviews} bedømmelser`:'';
+}
+W.onData(render);render(null);
+$('wk').onclick=()=>W.open('');
+$('add').onclick=()=>W.open('#tilfoej');
+$('x').onclick=()=>W.close();
+let pinned=true;$('pin').onclick=()=>{pinned=!pinned;$('pin').classList.toggle('on',pinned);W.pin(pinned)};
+</script></body></html>

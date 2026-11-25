@@ -1,0 +1,51 @@
+name: Desktop-app
+on:
+  push:
+    branches: [main]
+    paths: ['desktop/**', '.github/workflows/desktop.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            cmd: dist:win
+            file: olrating-windows.exe
+          - os: ubuntu-latest
+            cmd: dist:linux
+            file: olrating-linux.AppImage
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Byg
+        working-directory: desktop
+        run: |
+          npm install --no-audit --no-fund
+          npm run ${{ matrix.cmd }}
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.file }}
+          path: desktop/dist/${{ matrix.file }}
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: out
+          merge-multiple: true
+      - name: Udgiv
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ls -la out
+          gh release view desktop-app -R "$GITHUB_REPOSITORY" >/dev/null 2>&1 || gh release create desktop-app -R "$GITHUB_REPOSITORY" --title "ølrating til Windows og Linux" --notes "Download ølrating til din computer. Windows: olrating-windows.exe. Linux: olrating-linux.AppImage (gør filen kørbar og dobbeltklik)."
+          gh release upload desktop-app out/olrating-windows.exe out/olrating-linux.AppImage -R "$GITHUB_REPOSITORY" --clobber
