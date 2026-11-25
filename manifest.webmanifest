@@ -15,6 +15,7 @@
   ],
   "shortcuts": [
     {"name": "Tilføj øl", "url": "./#tilfoej", "icons": [{"src": "img/icon-192.png", "sizes": "192x192"}]},
-    {"name": "Toplisten", "url": "./#toplisten", "icons": [{"src": "img/icon-192.png", "sizes": "192x192"}]}
+    {"name": "Toplisten", "url": "./#toplisten", "icons": [{"src": "img/icon-192.png", "sizes": "192x192"}]},
+    {"name": "Genstand-tæller", "url": "./#genstande", "icons": [{"src": "img/icon-192.png", "sizes": "192x192"}]}
   ]
 }

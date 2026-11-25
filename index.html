@@ -2,7 +2,9 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
 <title>ølrating.dk – danske øl, bedømt af dig</title>
 <meta name="author" content="Lucas Valentin Ottesen, Magnus Birkgaard Froberg">
 <meta name="description" content="Tag et billede af din øl, giv den karakter fra 1 til 5 og se hvad resten af Danmark drikker.">
@@ -63,7 +65,8 @@ img{max-width:100%;display:block}
 .banner a{color:inherit}
 [data-season] .banner{display:block}
 /* header */
-.top{position:sticky;top:0;z-index:30;padding:12px clamp(12px,3vw,40px) 0;pointer-events:none}
+.top{position:sticky;top:0;z-index:30;padding:max(12px,env(safe-area-inset-top)) max(clamp(12px,3vw,40px),env(safe-area-inset-right)) 0 max(clamp(12px,3vw,40px),env(safe-area-inset-left));pointer-events:none}
+footer .fbot{padding-bottom:max(18px,env(safe-area-inset-bottom))}
 .bar{pointer-events:auto;max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:10px 20px;padding:8px 8px 8px 20px;border-radius:99px;background:rgba(15,29,54,.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.16);transition:background .3s}
 .scrolled .bar{background:rgba(15,29,54,.92)}
 .logo{font-family:Sora,sans-serif;font-weight:700;font-size:22px;letter-spacing:-.03em;text-decoration:none;color:#fff}
