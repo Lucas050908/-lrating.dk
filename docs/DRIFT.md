@@ -28,9 +28,11 @@ DNSSEC er slået fra under flytningen og kan slås til hos one.com, når alt kø
 
 ## Fælles database (Supabase)
 - **Konto:** Lucas, logger ind med GitHub. Organisation "olrating", gratis plan, projekt i EU.
-- **Opsætning, som kun skal gøres én gang:**
+- **Opsætning (gjort 25-11-2026 kl. 22:49–22:50):**
   1. SQL Editor → New query → indsæt `supabase/schema.sql` → Run.
   2. Authentication → Sign In / Providers → slå **Allow anonymous sign-ins** til.
+- **Tjek at det virker:** Åbn ølrating.dk → Min profil. Nederst skal der stå "● Forbundet". Tilføj en øl på én enhed, og se den dukke op på en anden inden for et halvt minut.
+- **Moderation:** Alle kan tilføje øl. Upassende indhold slettes i Supabase → Table Editor (`beers`, `reviews`) eller Storage (`billeder`).
 - Gratis-planen holder til 500 MB database og 1 GB billeder. Et projekt uden aktivitet i 7 dage bliver sat på pause og skal vækkes i dashboardet.
 
 ## Android-signering

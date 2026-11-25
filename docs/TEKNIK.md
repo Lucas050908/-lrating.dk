@@ -5,14 +5,15 @@
 - **Én fil:** `index.html` indeholder CSS, HTML-skabeloner og JavaScript. Der er intet byggetrin, så GitHub Pages serverer filerne direkte.
 - **Sider:** routes med hash (`location.hash`). `route()` vælger en visning (`home`, `beerView`, `addView`, `tourView`, `genView` …) og skriver den i `<main id="app">`.
 - **Sikkerhed:**
-  - Content-Security-Policy i `<meta>`: `script-src 'self' 'unsafe-inline'`, `connect-src 'self'`, `img-src 'self' data: blob:`. Når Supabase kobles på, skal `https://bbcegrufmzgfgzxazldr.supabase.co` tilføjes i `connect-src` og `img-src`.
+  - Content-Security-Policy i `<meta>`: `script-src 'self' 'unsafe-inline'`. `connect-src` og `img-src` tillader kun siden selv og `https://bbcegrufmzgfgzxazldr.supabase.co`.
   - Al brugertekst sendes gennem `esc()`.
 - **Skrifttyper:** Inter og Sora ligger lokalt i `fonts/`, så der ikke sendes noget til Google.
 
 ### Data på enheden
 | Hvor | Nøgle | Indhold |
 |---|---|---|
-| localStorage | `olrating-v1` | `S = {beers, reviews, me, season, wish, mode, units, tours}` |
+| localStorage | `olrating-v1` | `S = {beers, reviews, me, season, wish, mode, units, tours, sh, gone, joins}` |
+| localStorage | `olrating-sb` | Den anonyme Supabase-session |
 | IndexedDB | db `olrating`, store `img` | Billeder som Blob. I `S` står de som `idb:<nøgle>`, og `src()` laver dem om til object-URL'er |
 
 - **Øl:** `{id, name, brewery, style, country, city, abv, ibu, color, size, price, place, serve, code, img, addedBy, date}`
@@ -82,4 +83,15 @@ Widget-data, som `syncApp()` sender:
   - Kun indloggede kan oprette, og kun med `owner = auth.uid()`.
   - Man kan kun rette og slette sine egne ting.
   - Billeder uploades til `billeder/<uid>/…`.
-- **Login:** Anonymt. Hver enhed får sin egen usynlige bruger, så ingen skal oprette konto.
+- **Login:** Anonymt. Hver enhed får sin egen usynlige bruger, så ingen skal oprette konto. Sessionen ligger i localStorage under `olrating-sb`.
+
+### Synkronisering (`sb*`-funktionerne i `index.html`)
+- Der bruges ikke noget bibliotek. `sbFetch()` kalder Supabase direkte: `/auth/v1/signup` og `/auth/v1/token`, `/rest/v1/<tabel>` og `/storage/v1/object/billeder/…`.
+- `sbSync()` kører ved start, 1,5 sekund efter hver `save()`, hvert 30. sekund og når siden bliver synlig igen. Rækkefølgen er `sbAuth` → `sbPush` → `sbPull` → `sbTours`.
+- **Push:** Egne objekter, der er ændret siden sidst, sendes som upsert. `S.sh[id]` gemmer en hash af det, der sidst blev synkroniseret. Billeder uploades først, og `img` skifter fra `idb:…` til den offentlige adresse, når rækken er gemt.
+- **Pull:** Alle øl og bedømmelser hentes og flettes. Egne ændringer, der ikke er sendt endnu, vinder. Alt andet erstattes af databasens udgave. Objekter, der er slettet i databasen, fjernes lokalt.
+- **Sletning:** Et id, der findes i `S.sh`, men ikke længere lokalt, lægges i `S.gone` og slettes i databasen efter 9 sekunder. Det giver plads til fortryd.
+- **Ejerskab:** `mineObj(o)` er sand, når `o.owner` er enhedens bruger-id. Afviser databasen en skrivning (403/409), markeres objektet som en andens og erstattes ved næste pull.
+- **Visning:** Ændrer et pull data, tegnes siden om med `softRoute()`, som beholder scroll og fokus. Det sker ikke, mens brugeren skriver i et felt eller har rørt en formular.
+- **Byttur:** Værten gemmer turen i `tours`. Tilmeldinger lægges i køen `S.joins` og indsættes i `tour_members`. `sbFindTour(kode)` henter en tur ud fra dens id.
+- **Test:** Synkroniseringen er afprøvet med to browsere mod en efterligning af Supabase (deling, billeder, afvist redigering af andres øl, offline-kø, sletning med fortryd, byttur). Byggemiljøet kan ikke nå den rigtige database, så den første prøve mod den sker i en rigtig browser.

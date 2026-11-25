@@ -22,6 +22,13 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 | Genstand-tæller | `#genstande` | Se [Genstand-tæller](#genstand-tæller) |
 | Privatliv / Om | `#privatliv`, `#om` | Privatlivspolitik, ejere og fejlrapport |
 
+### Fælles database
+- Alle ser de samme øl, bedømmelser og billeder. Nyt hentes, når siden åbnes, og derefter hvert 30. sekund.
+- Kun den enhed, der har lavet en øl eller bedømmelse, kan rette og slette den. Knapperne vises ikke hos andre.
+- Sletning har stadig fortryd. Øllen fjernes først fra databasen efter ca. 10 sekunder.
+- Uden net virker alt som før. Ændringer sendes, når forbindelsen er tilbage. Status ses under Min profil ("Forbundet" eller "Ikke forbundet").
+- Genstand-tæller, ønskeliste og indstillinger deles **ikke**. De bliver på enheden.
+
 ### Søgning
 - Søgningen tåler æ/ø/å skrevet som ae/oe/aa, så "fano" finder Fanø.
 - Den tåler også en stavefejl i ord på mindst 4 bogstaver, fx ét bogstav for meget eller for lidt, et forkert bogstav eller to bogstaver byttet om.
@@ -41,10 +48,10 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 ### Byttur
 - **Opret en tur:** navn, dato og tid, mødested og en besked. Værten tilføjer stop med bar, tidspunkt og adresse, med link til Google Maps. Stop efter midnat sorteres rigtigt.
 - **Del:** som link (Web Share) eller QR-kode. Linket indeholder hele turen.
+- **Find med kode:** Hver tur har en kode. Den kan skrives under "Har du fået en kode til en tur?".
 - **Tilmelding:**
-  - Vennen åbner linket og trykker "Jeg er med". Så sendes et svarlink tilbage til værten.
-  - Når værten åbner svarlinket, kommer vennen på listen.
-  - Når den fælles database er koblet på, sker tilmeldingen automatisk.
+  - Vennen åbner linket eller skriver koden og trykker "Jeg er med". Så står vennen på listen hos alle.
+  - Kan databasen ikke nås, sendes i stedet et svarlink til værten, som åbner det for at få vennen på listen.
 - **Under turen:** "Vi er her nu" og næste stop beregnes ud fra tidspunkterne.
 - **Kom sikkert hjem:** genvej til genstand-tælleren, Rejseplanen og taxa, plus 112 ved fare.
 

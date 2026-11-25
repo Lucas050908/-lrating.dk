@@ -4,7 +4,13 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-25
 
-### Aften (22:00–23:00)
+### Aften (22:00–23:30)
+- **Fælles database koblet på:**
+  - Øl, bedømmelser og billeder deles nu mellem alle enheder via Supabase. Siden henter nyt hvert 30. sekund og når den åbnes.
+  - Hver enhed får en anonym bruger, så kun den, der har lavet noget, kan rette og slette det.
+  - Virker også uden net: ændringer gemmes på enheden og sendes, når forbindelsen er tilbage.
+  - Byttur: tilmelding sker automatisk hos alle, og en tur kan findes med en kode. Svar-linket bruges kun, hvis databasen ikke kan nås.
+  - Privatlivssiden er skrevet om, så det står klart, hvad der er offentligt.
 - **App-ikon:** Android-appen har fået et adaptivt ikon, hvor fjord-motivet fylder hele fladen. Den store hvide kant er væk. Der er også et ensfarvet ikon til Androids tema-ikoner, og web-appens maskable-ikon bruger samme motiv.
 - **Dokumentation:** README, `docs/FUNKTIONER.md`, `docs/TEKNIK.md`, `docs/DRIFT.md` og denne ændringslog.
 - **Fælles database:** Supabase-projekt oprettet. `supabase/schema.sql` med tabeller, Row Level Security og billed-bucket.

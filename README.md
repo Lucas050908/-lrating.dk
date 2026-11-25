@@ -24,7 +24,7 @@ Danske øl, bedømt af dem der drikker dem.
   - Android-app (`android/`), med 6 widgets.
   - Program til Windows og Linux (`desktop/`), med en widget der ligger øverst på skærmen.
   - På iPhone kan siden lægges på hjemmeskærmen.
-- **Data:** gemmes i dag på hver enkelt enhed. En fælles database (Supabase) er ved at blive koblet på, så alle kan se hinandens øl. Se [docs/DRIFT.md](docs/DRIFT.md#fælles-database-supabase).
+- **Data:** øl, bedømmelser, billeder og byture ligger i en fælles database (Supabase, EU), så alle ser det samme. Genstand-tæller og indstillinger bliver på enheden. Se [docs/DRIFT.md](docs/DRIFT.md#fælles-database-supabase).
 - **Downloads:**
   - Android: https://github.com/Lucas050908/-lrating.dk/releases/download/android-app/olrating.apk
   - Windows: https://github.com/Lucas050908/-lrating.dk/releases/download/desktop-app/olrating-windows.exe
