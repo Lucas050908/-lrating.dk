@@ -7,7 +7,7 @@ JPG=base64.b64decode('/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP////////////////////////
 CORS={'access-control-allow-origin':'*','access-control-allow-headers':'*','access-control-allow-methods':'*'}
 class Mock:
     def __init__(s):
-        s.n=0; s.tok={}; s.ref={}; s.t={'beers':{},'reviews':{},'tours':{},'tastings':{}}; s.members={}; s.store={}; s.log=[]; s.down=False
+        s.n=0; s.tok={}; s.ref={}; s.t={'beers':{},'reviews':{},'tours':{},'tastings':{}}; s.members={}; s.votes={}; s.store={}; s.log=[]; s.down=False
     def sess(s,uid,n):
         return {'access_token':f'tok{n}','refresh_token':f'ref{n}','expires_in':3600,'token_type':'bearer','user':{'id':uid,'is_anonymous':True}}
     def handle(s,route,req):
@@ -50,6 +50,19 @@ class Mock:
                     if not uid: return out(401,{'code':'42501'})
                     if body['tour'] not in s.t['tours']: return out(409,{'code':'23503'})
                     s.members.setdefault((body['tour'],body['name']),uid); return out(201)
+            if tb=='tasting_votes':
+                rows=[{'tasting':t,'who':w,**v} for (t,w),v in s.votes.items()]
+                if m=='GET': return out(200,flt(rows))
+                if m=='POST':
+                    if not uid: return out(401,{'code':'42501'})
+                    if body['tasting'] not in s.t['tastings']: return out(409,{'code':'23503'})
+                    k=(body['tasting'],body['who']); ex=s.votes.get(k)
+                    if ex and ex['owner']!=uid: return out(403,{'code':'42501'})
+                    s.votes[k]={'owner':uid,'data':body.get('data',{})}; return out(201)
+                if m=='DELETE':
+                    for r in flt(rows):
+                        if r['owner']==uid: del s.votes[(r['tasting'],r['who'])]
+                    return out(204)
             if tb not in s.t: return out(404,{'message':'no table'})
             T=s.t[tb]
             if m=='GET': return out(200,flt(list(T.values())))
@@ -63,6 +76,8 @@ class Mock:
                 for r in flt(list(T.values())):
                     if r['owner']==uid:
                         del T[r['id']]
+                        if tb=='tastings':
+                            for k in [k for k in s.votes if k[0]==r['id']]: del s.votes[k]
                         if tb=='tours':
                             for k in [k for k in s.members if k[0]==r['id']]: del s.members[k]
                         if tb=='beers':

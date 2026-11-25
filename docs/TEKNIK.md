@@ -20,6 +20,7 @@
 - **Bedømmelse:** `{id, beer, who, date, s:{look,aroma,taste,feel,overall}, p:{sweet,bitter,sour,body,roast}, tags, text, img}`
 - **Genstand:** `{t: tidsstempel, g: genstande, n: navn}`
 - **Byttur:** `{id, name, date, meet, note, host, stops:[{name,time,addr}], members:[{name}]}`
+- **Smagning:** `{id, name, host, blind, revealed, beers:[navne], votes:{navn:[karakterer]}}`
 - **Delelinks:**
   - Invitation: `#byttur-join-<base64url JSON>`
   - Svar: `#byttur-svar-<base64url {id,name}>`
@@ -101,6 +102,8 @@ Widget-data, som `syncApp()` sender:
 - **Kø til sletning af ture:** `dq(sti)` lægger en DELETE i `S.dq`, som `sbTours()` udfører med op til 10 forsøg. Bruges, når værten sletter en tur, og når en deltager melder fra.
 - **Ejerskab:** `mineObj(o)` er sand, når `o.owner` er enhedens bruger-id. Afviser databasen en skrivning (403/409), markeres objektet som en andens og erstattes ved næste pull.
 - **Visning:** Ændrer et pull data, tegnes siden om med `softRoute()`, som beholder scroll og fokus. Det sker ikke, mens brugeren skriver i et felt eller har rørt en formular.
+- **Smagning:** `S.tast` holder smagningerne, og `S.vq` er køen af stemmer, der skal sendes. `sbTast()` gemmer værtens smagning i `tastings`, sender stemmer til `tasting_votes` (én række pr. smagning og navn) og henter alles stemmer. Er et navn allerede brugt fra en anden enhed, afvises stemmen, og brugeren får besked. Når `revealed` skifter til sand, tegnes siden om med animation hos alle.
+- **Hurtig opdatering:** På `#byttur-…` og `#smagning-…` kører `sbSync()` hvert 6. sekund.
 - **Byttur:** Værten gemmer turen i `tours`. Tilmeldinger lægges i køen `S.joins` og indsættes i `tour_members`. `sbFindTour(kode)` henter en tur ud fra dens id.
 
 ## Test (`tests/`)

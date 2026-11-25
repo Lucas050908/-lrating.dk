@@ -35,7 +35,7 @@ ls=lambda pg: json.loads(pg.evaluate("localStorage.getItem('olrating-v1')"))
 C={"look":4,"aroma":4,"taste":5,"feel":4,"overall":5}
 stA={"beers":[{"id":BID,"name":NAME,"brewery":"TEST","style":"Pilsner","abv":5,"size":"33 cl flaske","date":time.strftime('%Y-%m-%d'),"addedBy":"TestA","img":DATA}],
      "reviews":[{"id":R1,"beer":BID,"who":"TestA","date":time.strftime('%Y-%m-%d'),"s":C,"text":"Automatisk test"}],"me":"TestA"}
-tokA=tokB=None; tid=None; img=None; errs=[]
+tokA=tokB=None; tid=None; sid=None; img=None; errs=[]
 with sync_playwright() as p:
     b=p.chromium.launch()
     def ctx(name,state=None):
@@ -72,6 +72,15 @@ with sync_playwright() as p:
         Bp.goto(URL+'#byttur'); Bp.wait_for_selector('#tCode'); Bp.fill('#tCode',tid); Bp.click('#codeForm button'); Bp.wait_for_selector('#tourJoin',timeout=20000); Bp.click('#tourJoin')
         ok('13 tilmelding til byttur gemmes',wait(lambda: row('tour_members','tour=eq.'+tid+'&name=eq.TestB')))
         A.reload(); ok('14 værten ser den tilmeldte',wait(lambda: any(m['name']=='TestB' for t in ls(A)['tours'] for m in t['members']),45))
+        # smagning med venner
+        A.goto(URL+'#smagning'); A.wait_for_selector('#sgName'); A.fill('#sgName','TEST smagning '+RID); A.fill('#sgBeers','TEST A\nTEST B'); A.click('#tastForm button')
+        A.wait_for_selector('#voteForm'); sid=A.evaluate('location.hash')[10:]
+        ok('14b smagning gemmes',wait(lambda: row('tastings','id=eq.'+sid)))
+        Bp.goto(URL+'#smagning-'+sid); Bp.wait_for_selector('#voteForm',timeout=30000)
+        for i,v in enumerate([5,2]): Bp.click(f'#voteForm .rate[data-k="t{i}"] [data-star="{v}"]')
+        Bp.click('#voteForm button.btn')
+        v=wait(lambda: row('tasting_votes','tasting=eq.'+sid+'&who=eq.TestB')); ok('14c stemme fra den anden enhed gemmes',v and v[0]['data'].get('v')==[5,2],v)
+        A.click('#tastDel'); ok('14d slettet smagning forsvinder med stemmer',wait(lambda: not row('tastings','id=eq.'+sid),30) and not row('tasting_votes','tasting=eq.'+sid))
         # sletning
         A.goto(URL+'#beer-'+BID); A.wait_for_selector('#delBeer',timeout=20000); A.click('#delBeer')
         ok('15 slettet øl forsvinder fra databasen',wait(lambda: not row('beers','id=eq.'+BID),45) and not row('reviews','beer=eq.'+BID))
@@ -91,8 +100,9 @@ with sync_playwright() as p:
         if tokA:
             api('/rest/v1/reviews?id=eq.'+R1,method='DELETE',token=tokA); api('/rest/v1/beers?id=eq.'+BID,method='DELETE',token=tokA)
             if tid: api('/rest/v1/tours?id=eq.'+tid,method='DELETE',token=tokA)
+            if sid: api('/rest/v1/tastings?id=eq.'+sid,method='DELETE',token=tokA)
             if img: api('/storage/v1/object/billeder/'+img.split('/billeder/',1)[1],method='DELETE',token=tokA)
-        left=row('beers','id=eq.'+BID)+row('reviews','id=in.(%s,%s)'%(R1,R2))+(row('tours','id=eq.'+tid) if tid else [])
+        left=row('beers','id=eq.'+BID)+row('reviews','id=in.(%s,%s)'%(R1,R2))+(row('tours','id=eq.'+tid) if tid else [])+(row('tastings','id=eq.'+sid) if sid else [])
         ok('19 testdata er ryddet væk',not left,left)
         if errs: print('browser-beskeder:',errs[:6])
         b.close()

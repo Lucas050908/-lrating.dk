@@ -4,6 +4,15 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Nat (01:15–02:00)
+- **Smagning med venner:** Ny side, hvor værten skriver 2 til 12 øl, og alle giver karakter på deres egen telefon.
+  - Med blindsmagning hedder øllene "Øl A, B, C", indtil værten afslører resultatet.
+  - Gæster er med via link, QR-kode eller kode. Flere kan også stemme på samme telefon.
+  - Når værten trykker "Afslør resultatet", vises ranglisten hos alle, nedefra og op, med vinderen til sidst.
+  - Værten kan åbne for flere stemmer igen og slette smagningen for alle.
+- **Hurtigere opdatering:** På en byttur- eller smagningsside hentes nyt hvert 6. sekund i stedet for hvert 30.
+- **Forsiden:** "Mere at udforske" har fået genveje til Smagning med venner, Byttur og Genstand-tæller.
+
 ### Nat (00:30–01:15)
 - **Noget for dig:** Forsiden og Min profil foreslår øl, du ikke har bedømt, ud fra de stilarter og smagsord, du selv har givet høje karakterer. Hvert forslag har en kort begrundelse.
 - **Du er mest enig med:** Min profil viser, hvem du er mest enig med, i procent, ud fra de øl I begge har bedømt.

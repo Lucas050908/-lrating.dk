@@ -13,6 +13,7 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 | Galleri | `#galleri` | Alle billeder med lysboks |
 | Sammenlign | `#sammenlign` | To øl side om side |
 | Byttur | `#byttur` | Se [Byttur](#byttur) |
+| Smagning | `#smagning` | Se [Smagning med venner](#smagning-med-venner) |
 | Stilguide | `#stilguide` | Ølstile og alle bryggerier |
 | Bryggeri | `#bryggeri-<navn>` | Alle øl fra et bryggeri, gennemsnit og antal bedømmelser |
 | Min profil | `#profil` | Navn, statistik, mærker, ønskeliste, backup og gendannelse |
@@ -70,6 +71,14 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 - **Slet og meld fra:** Værten kan slette turen for alle. En deltager kan fjerne turen fra sin liste og bliver så meldt fra.
 - **Under turen:** "Vi er her nu" og næste stop beregnes ud fra tidspunkterne.
 - **Kom sikkert hjem:** genvej til genstand-tælleren, Rejseplanen og taxa, plus 112 ved fare.
+
+### Smagning med venner
+- **Opret:** Værten giver smagningen et navn og skriver 2 til 12 øl, én pr. linje. Blindsmagning er slået til som standard.
+- **Vær med:** Gæster åbner linket, scanner QR-koden eller skriver koden. De giver hver øl 1 til 5 stjerner. Flere kan stemme på samme telefon ved at skrive et nyt navn.
+- **Blindsmagning:** Øllene vises som "Øl A, B, C", indtil resultatet er afsløret.
+- **Afsløring:** Kun værten kan afsløre. Ranglisten vises hos alle inden for få sekunder, nedefra og op, med vinderen til sidst. Hver øl viser gennemsnit, antal stemmer og din egen karakter.
+- **Bagefter:** Værten kan åbne for flere stemmer eller slette smagningen for alle.
+- Siden minder om, at små smagsprøver er nok, og at man ikke kører bil bagefter.
 
 ### Andet
 - Sæsontemaer med partikler: jul, J-dag, nytår, fastelavn, påske, sankthans og halloween.
