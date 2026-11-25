@@ -1,0 +1,20 @@
+{
+  "name": "ølrating.dk",
+  "short_name": "ølrating",
+  "description": "Danske øl, bedømt af dem der drikker dem.",
+  "lang": "da",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0f1d36",
+  "theme_color": "#0f1d36",
+  "icons": [
+    {"src": "img/icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "img/icon-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "img/icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ],
+  "shortcuts": [
+    {"name": "Tilføj øl", "url": "./#tilfoej", "icons": [{"src": "img/icon-192.png", "sizes": "192x192"}]},
+    {"name": "Toplisten", "url": "./#toplisten", "icons": [{"src": "img/icon-192.png", "sizes": "192x192"}]}
+  ]
+}
