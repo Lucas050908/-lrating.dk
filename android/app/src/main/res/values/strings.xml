@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_top_desc">Ugens øl og top 3 fra ølrating</string>
+    <string name="widget_quick_desc">Bedøm en øl med ét tryk</string>
+    <string name="widget_top_label">ølrating: Ugens øl</string>
+    <string name="widget_quick_label">ølrating: Bedøm øl</string>
+</resources>

@@ -49,6 +49,7 @@ public class MainActivity extends Activity {
         s.setAllowContentAccess(true);
         s.setUserAgentString(s.getUserAgentString() + " olratingApp/1");
         CookieManager.getInstance().setAcceptCookie(true);
+        web.addJavascriptInterface(new Bridge(this), "OlratingApp");
 
         web.setWebViewClient(new WebViewClient() {
             @Override
@@ -98,6 +99,13 @@ public class MainActivity extends Activity {
             web.loadUrl(data != null ? data.toString() : SITE);
         }
         web.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        // Åbnet fra en widget mens appen allerede kører
+        if (intent != null && intent.getData() != null) web.loadUrl(intent.getData().toString());
     }
 
     @Override

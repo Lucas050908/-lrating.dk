@@ -422,7 +422,8 @@ const KEY='olrating-v1';
 let S={beers:[],reviews:[],me:'',season:'auto',wish:[],mode:'auto'};
 try{const x=JSON.parse(localStorage.getItem(KEY)||'null');if(x)S={...S,...x}}catch(e){}
 if(!Array.isArray(S.wish))S.wish=[];
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S));return true}catch(e){toast('Lageret er fuldt. Prøv et mindre billede.');return false}}
+function syncApp(){try{const A=window.OlratingApp;if(!A)return;const L=enrich(),wb=weekBeer(L),top=L.filter(b=>b.rs.length).sort((a,c)=>c.avg-a.avg||c.rs.length-a.rs.length).slice(0,3);A.updateWidget(JSON.stringify({week:wb?{name:wb.name,brewery:wb.brewery||'',score:fmt(wb.avg)}:null,top:top.map(b=>({name:b.name,score:fmt(b.avg)})),beers:L.length,reviews:reviews().length}))}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));setTimeout(syncApp,0);return true}catch(e){toast('Lageret er fuldt. Prøv et mindre billede.');return false}}
 const beers=()=>S.beers;
 const reviews=()=>S.reviews;
 const tot=r=>CATS.reduce((a,[k])=>a+r.s[k],0)/CATS.length;
@@ -943,7 +944,7 @@ document.addEventListener('submit',async e=>{const f=e.target;e.preventDefault()
     burstAt(f.querySelector('button[type=submit]'));delete pending.rImg;toast('Skål! Din bedømmelse er gemt');setTimeout(route,RM?0:650)}});
 
 applyMode();applySeason();
-(async()=>{try{navigator.storage?.persist?.()}catch(e){}await loadImgs();await migrateImgs();route()})();
+(async()=>{try{navigator.storage?.persist?.()}catch(e){}await loadImgs();await migrateImgs();route();syncApp()})();
 if('serviceWorker' in navigator&&/^https:|localhost/.test(location.href)){addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
 }
 </script>
