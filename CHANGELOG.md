@@ -2,6 +2,16 @@
 
 Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
+## 2026-11-26
+
+### Nat (00:30–01:15)
+- **Noget for dig:** Forsiden og Min profil foreslår øl, du ikke har bedømt, ud fra de stilarter og smagsord, du selv har givet høje karakterer. Hvert forslag har en kort begrundelse.
+- **Du er mest enig med:** Min profil viser, hvem du er mest enig med, i procent, ud fra de øl I begge har bedømt.
+- **Alkoholfri øl:** Nyt felt "Alkoholfri" når en øl tilføjes, mærkat på kortene, filteret "Kun alkoholfri" og en egen fane på toplisten. En alkoholfri øl på 0 % giver ingen genstand i tælleren.
+- **Mærker for variation:** Fire nye mærker: Stilkender (10 stilarter), Bryggerirunde (5 bryggerier), Globetrotter (3 lande) og Klart hoved (en alkoholfri øl). Stamgæst og Ølkender tæller nu forskellige øl og ikke antal bedømmelser.
+- **Nedtælling på forsiden** til næste øl-dag (J-dag, påske, sankthans, jul eller nytår) med link til ølkalenderen.
+- Teksten om backup på Min profil er rettet, så den passer til den fælles database.
+
 ## 2026-11-25
 
 ### Sen aften (23:55)

@@ -109,6 +109,29 @@ def run(b,name,vw):
     T('wipe: rows and photo removed from database',not M.t['beers'] and not M.t['reviews'] and not M.store,(list(M.t['beers']),list(M.t['reviews']),list(M.store)))
     pg.goto(URL+'#profil'); pg.wait_for_timeout(400); pg.set_input_files('#importFile',bk); pg.wait_for_timeout(4000)
     T('restore: backup brings beer, reviews and photo back',len(ls(pg)['beers'])==1 and len(ls(pg)['reviews'])==2 and len(M.t['beers'])==1 and len(M.store)==1,(len(ls(pg)['beers']),len(M.t['beers']),len(M.store)))
+    # --- anbefalinger, enighed, alkoholfri, mærker og nedtælling (data lægges direkte ind)
+    pg.evaluate("""(()=>{const S=JSON.parse(localStorage.getItem('olrating-v1'));const d='2026-11-20',s=v=>({look:v,aroma:v,taste:v,feel:v,overall:v});
+      const B=(id,name,style,x={})=>S.beers.push({id,name,brewery:'Testbryg '+id,style,city:'Aalborg',country:x.country||'Danmark',abv:x.abv??5,af:!!x.af,size:'33 cl flaske',date:d,addedBy:'Magnus',img:''});
+      B('ux1','Fjord IPA','IPA');B('ux2','Kaj Pilsner','Pilsner');B('ux3','Nul Komma','Pilsner',{abv:0.4});B('ux4','Havn Stout','Stout',{country:'Belgien'});B('ux5','Fri Hvede','Hvede',{abv:0,af:true,country:'Tyskland'});
+      const R=(id,beer,who,v,tags)=>S.reviews.push({id,beer,who,date:d,s:s(v),tags:tags||[],again:1,text:''});
+      R('rx1','ux1','Lucas',5,['Citrus']);R('rx2','ux4','Lucas',2,['Ristet']);R('rx3','ux1','Magnus',5);R('rx4','ux4','Magnus',2);R('rx5','ux2','Magnus',4,['Citrus']);R('rx6','ux3','Magnus',3);R('rx7','ux5','Magnus',4);R('rx8','ux3','Lucas',4);
+      S.me='Lucas';localStorage.setItem('olrating-v1',JSON.stringify(S))})()""")
+    pg.goto(URL+'#profil'); pg.reload(); pg.wait_for_timeout(1500)
+    T('for dig: bedste forslag er Kaj Pilsner med begrundelse',pg.inner_text('.fy .mini >> nth=0 >> b >> nth=0')=='Kaj Pilsner' and 'pilsner' in pg.inner_text('.fy .mini >> nth=0').lower() and 'Havn Stout' not in pg.inner_text('.fy'),pg.inner_text('.fy')[:200])
+    T('enighed: Magnus 81 % på 4 fælles øl','Magnus' in pg.inner_text('.agr') and '81 %' in pg.inner_text('.agr') and '4 fælles' in pg.inner_text('.agr'),pg.inner_text('.agr'))
+    T('mærke: Klart hoved er optjent, Globetrotter ikke',pg.evaluate("[...document.querySelectorAll('.badge.got b')].map(x=>x.textContent)").count('Klart hoved')==1 and 'Globetrotter' not in pg.evaluate("[...document.querySelectorAll('.badge.got b')].map(x=>x.textContent)"))
+    T('profil: ingen vandret scroll med nye bokse',not over())
+    pg.goto(URL); pg.wait_for_timeout(700)
+    T('forside: nedtælling og Noget for dig',pg.query_selector('.nextev') is not None and ('dage' in pg.inner_text('.nextev') or 'I dag' in pg.inner_text('.nextev') or 'I morgen' in pg.inner_text('.nextev')) and pg.query_selector('.fy.home') is not None and not over(),pg.inner_text('.nextev') if pg.query_selector('.nextev') else None)
+    pg.goto(URL+'#alle'); pg.wait_for_timeout(500); pg.evaluate("document.getElementById('fAf').closest('details').open=true"); pg.check('#fAf'); pg.wait_for_timeout(300)
+    names=pg.evaluate("[...document.querySelectorAll('#grid .card h3')].map(x=>x.textContent).sort()")
+    T('alkoholfri: filter viser kun de to alkoholfri',names==['Fri Hvede','Nul Komma'] and 'Alkoholfri' in pg.inner_text('#grid .card >> nth=0'),names)
+    pg.goto(URL+'#toplisten'); pg.wait_for_timeout(400); pg.click('.chip:has-text("Alkoholfri")'); pg.wait_for_timeout(300)
+    T('alkoholfri: egen topliste',pg.eval_on_selector_all('.toplist li','e=>e.length')==2)
+    pg.goto(URL+'#beer-ux5'); pg.wait_for_timeout(500); a=pg.query_selector('[data-unit]') is None
+    pg.goto(URL+'#beer-ux1'); pg.wait_for_timeout(500)
+    T('alkoholfri: ingen +Genstand på 0 %, men på almindelig øl',a and pg.query_selector('[data-unit]') is not None)
+    pg.goto(URL+'#tilfoej'); pg.wait_for_timeout(400); pg.fill('#bAbv','0,3'); T('tilføj: alkoholfri-felt og hint',pg.query_selector('#bAf') is not None and pg.inner_text('#abvHint')=='Alkoholfri',pg.inner_text('#abvHint'))
     T('no JS or console errors',not errs,errs[:4])
     c.close()
 with sync_playwright() as p:

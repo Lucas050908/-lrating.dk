@@ -30,6 +30,20 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 - Uden net virker alt som før. Ændringer sendes, når forbindelsen er tilbage. Status ses under Min profil ("Forbundet" eller "Ikke forbundet").
 - Genstand-tæller, ønskeliste og indstillinger deles **ikke**. De bliver på enheden.
 
+### Noget for dig og enighed
+- **Noget for dig** vises på forsiden og på Min profil, når du har bedømt mindst to øl. Den foreslår op til fire øl, du ikke har bedømt, med en begrundelse som "Du plejer at kunne lide pilsner".
+- **Du er mest enig med** vises på Min profil. Den sammenligner dine karakterer med andres på de øl, I begge har bedømt (mindst to fælles øl), og viser enigheden i procent.
+
+### Alkoholfri øl
+- Sæt hak i "Alkoholfri (højst 0,5 %)", når øllen tilføjes. Øl med en alkoholprocent på 0,5 eller under regnes også som alkoholfri.
+- Kortene viser "Alkoholfri", der er et filter "Kun alkoholfri", og toplisten har en fane kun for alkoholfri øl.
+
+### Mærker
+- Mærkerne belønner variation: forskellige øl, stilarter, bryggerier og lande, og at prøve en alkoholfri øl. Ingen mærker gives for at drikke meget.
+
+### Nedtælling
+- Forsiden viser, hvor mange dage der er til næste øl-dag: J-dag, påske, sankthans, jul eller nytår.
+
 ### Søgning
 - Søgningen tåler æ/ø/å skrevet som ae/oe/aa, så "fano" finder Fanø.
 - Den tåler også en stavefejl i ord på mindst 4 bogstaver, fx ét bogstav for meget eller for lidt, et forkert bogstav eller to bogstaver byttet om.
