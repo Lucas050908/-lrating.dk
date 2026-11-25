@@ -2,7 +2,7 @@
 
 Danske øl, bedømt af dem der drikker dem.
 
-En statisk hjemmeside uden server og uden byggetrin: `index.html` plus billeder, skrifttyper og et par små filer. Den kører på GitHub Pages med domænet **ølrating.dk** (skrevet som `xn--lrating-p1a.dk` i `CNAME`, fordi domæner med ø skal skrives sådan teknisk).
+En statisk hjemmeside uden server og uden byggetrin: `index.html` plus billeder, skrifttyper og et par små filer. Den kører på GitHub Pages: https://lucas050908.github.io/-lrating.dk/ – indtil domænet **ølrating.dk** er klar hos Simply.
 
 ## Hvad siden kan
 
@@ -26,7 +26,7 @@ En statisk hjemmeside uden server og uden byggetrin: `index.html` plus billeder,
 ## Hosting
 
 1. **GitHub Pages:** Settings → Pages → "Deploy from a branch" → `main` / `(root)`.
-2. **Custom domain:** `ølrating.dk` (står allerede i `CNAME`). Slå "Enforce HTTPS" til, når certifikatet er klar.
+2. **Custom domain (når Simply-kontoen virker):** skriv `xn--lrating-p1a.dk` (= ølrating.dk) under Settings → Pages, og skift adressen `lucas050908.github.io/-lrating.dk` tilbage til `xn--lrating-p1a.dk` i `index.html`, `robots.txt`, `sitemap.xml` og `404.html`. Slå "Enforce HTTPS" til, når certifikatet er klar.
 3. **DNS hos Simply.com** (DNS-indstillinger for ølrating.dk):
 
 | Type | Navn | Værdi |
