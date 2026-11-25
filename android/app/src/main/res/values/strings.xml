@@ -8,4 +8,6 @@
     <string name="widget_stats_desc">Hvor mange øl du har smagt og din gennemsnitskarakter</string>
     <string name="widget_latest_label">ølrating: Seneste bedømmelser</string>
     <string name="widget_stats_label">ølrating: Min statistik</string>
+    <string name="widget_units_desc">Tæl dine genstande med ét tryk</string>
+    <string name="widget_units_label">ølrating: Genstand-tæller</string>
 </resources>

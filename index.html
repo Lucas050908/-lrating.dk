@@ -239,6 +239,12 @@ label{font-weight:600;display:grid;gap:6px}
 .gi img{width:100%;height:auto;transition:transform .6s}
 .gi:hover img{transform:scale(1.05)}
 .gi span{position:absolute;left:0;right:0;bottom:0;padding:28px 12px 10px;background:linear-gradient(transparent,rgba(15,29,54,.85));color:#fff;font-size:14px;font-weight:400;text-align:left}
+.gwrap{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}.gbig{background:var(--nv2);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:4px}.gbig .big{font-size:64px;line-height:1}
+.gbar{height:10px;border-radius:9px;background:rgba(255,255,255,.12);overflow:hidden;margin:8px 0 2px}.gbar i{display:block;height:100%;background:var(--gl);border-radius:9px}.gbar.near i{background:var(--sun)}.gbar.over i{background:var(--pk)}
+.gq{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}.gq button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:12px 14px;border-radius:16px}.gq span{font-size:13px;opacity:.75}
+.gform{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-top:14px}.gform label{display:flex;flex-direction:column;gap:4px;font-size:13px}.gform input{width:110px}
+.glist div{display:grid;grid-template-columns:56px 1fr auto 40px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.08)}.glist button{padding:4px 8px}
+@media(max-width:600px){.gwrap{grid-template-columns:1fr}.gbig .big{font-size:52px}}
 .dlrow{display:flex;flex-wrap:wrap;gap:8px;margin:-6px 0 18px}.dlrow .btn{padding:10px 16px;font-size:15px}
 .lbox{position:fixed;inset:0;z-index:80;background:rgba(8,14,28,.95);display:grid;grid-template-rows:auto minmax(0,1fr) auto}
 .lbox[hidden]{display:none}
@@ -379,7 +385,7 @@ footer .wrap{position:relative;z-index:2}
     <div class="fcols">
       <div><img src="img/logo.svg" width="96" height="96" alt="ølrating.dk logo" style="margin-bottom:12px"><div class="logo" style="font-size:30px"><span>ølrating<b>.dk</b></span></div><p style="opacity:.85;margin:10px 0 0;max-width:24em">Danske øl, bedømt af dem der drikker dem. Lavet ved Limfjorden.</p></div>
       <div><b>Udforsk</b><a href="#">Alle øl</a><a href="#toplisten">Toplisten</a><a href="#galleri">Galleri</a><a href="#stilguide">Stilguide og bryggerier</a><a href="#kalender">Ølkalender</a><a href="#mad">Øl til maden</a><a href="#sammenlign">Sammenlign øl</a><a href="https://github.com/Lucas050908/-lrating.dk/releases/download/android-app/olrating.apk" rel="noopener">Hent Android-appen</a></div>
-      <div><b>Fællesskab</b><a href="#tilfoej">Tilføj øl</a><a href="#profil">Min profil</a><a href="#dagbog">Min øl-dagbog</a><a href="#" data-go="reviews">Seneste anmeldelser</a></div>
+      <div><b>Fællesskab</b><a href="#tilfoej">Tilføj øl</a><a href="#profil">Min profil</a><a href="#dagbog">Min øl-dagbog</a><a href="#genstande">Genstand-tæller</a><a href="#" data-go="reviews">Seneste anmeldelser</a></div>
       <div><b>Om</b><a href="#om">Om ølrating.dk</a><a href="#privatliv">Privatliv</a><a href="mailto:andersenlucas84@gmail.com?subject=Fejl%20p%C3%A5%20%C3%B8lrating.dk&body=Hvad%20skete%20der%3F%0A%0AHvilken%20side%20var%20du%20p%C3%A5%3F%0A%0ATelefon%2Fbrowser%3A%0A">Rapportér en fejl</a><span style="display:block;opacity:.7;font-size:13px;padding:2px 0 4px">andersenlucas84@gmail.com</span><span style="display:block;opacity:.85;padding:4px 0">Lavet ved Limfjorden</span><span style="display:block;opacity:.85;padding:4px 0">Drik med omtanke</span></div>
     </div>
     <div class="fbot"><span>© 2026 ølrating.dk · Ejet af Lucas Valentin Ottesen og Magnus Birkgaard Froberg</span>
@@ -423,8 +429,17 @@ const KEY='olrating-v1';
 let S={beers:[],reviews:[],me:'',season:'auto',wish:[],mode:'auto'};
 try{const x=JSON.parse(localStorage.getItem(KEY)||'null');if(x)S={...S,...x}}catch(e){}
 if(!Array.isArray(S.wish))S.wish=[];
+if(!Array.isArray(S.units))S.units=[];
+/* ---------- genstande ---------- */
+const gOf=(cl,abv)=>Math.round(cl*10*abv/100*0.789/12*10)/10;
+const gFmt=g=>(Math.round(g*10)/10).toString().replace('.',',');
+function dayStart(){const d=new Date();if(d.getHours()<6)d.setDate(d.getDate()-1);d.setHours(6,0,0,0);return d.getTime()}
+const uToday=()=>S.units.filter(u=>u.t>=dayStart()),uWeek=()=>S.units.filter(u=>u.t>=Date.now()-7*DAY);
+const gSum=a=>Math.round(a.reduce((x,u)=>x+u.g,0)*10)/10;
+function addUnit(g,n){if(!(g>0)||g>20)return;S.units.push({t:Date.now(),g,n:String(n||'').slice(0,60)});S.units=S.units.filter(u=>u.t>Date.now()-60*DAY);save()}
+function takePending(){try{const A=window.OlratingApp;if(!A||!A.takeUnits)return false;const a=JSON.parse(A.takeUnits()||'[]');if(!Array.isArray(a)||!a.length)return false;a.forEach(t=>{if(typeof t==='number')S.units.push({t,g:1,n:'Fra widget'})});save();return true}catch(e){return false}}
 function syncApp(){try{const A=window.OlratingApp;if(!A)return;const L=enrich(),wb=weekBeer(L),top=L.filter(b=>b.rs.length).sort((a,c)=>c.avg-a.avg||c.rs.length-a.rs.length).slice(0,3);const R=reviews().slice().sort((a,b)=>b.date.localeCompare(a.date)),bn=id=>(L.find(b=>b.id===id)||{}).name||'',me=(S.me||'').trim().toLowerCase(),mine=me?R.filter(r=>r.who.toLowerCase()===me):[],sc={};mine.forEach(r=>{const st=(L.find(b=>b.id===r.beer)||{}).style;if(st)sc[st]=(sc[st]||0)+1});
-  A.updateWidget(JSON.stringify({week:wb?{name:wb.name,brewery:wb.brewery||'',score:fmt(wb.avg)}:null,top:top.map(b=>({name:b.name,score:fmt(b.avg)})),latest:R.slice(0,4).map(r=>({name:bn(r.beer),who:r.who,score:fmt(tot(r))})),me:{name:S.me||'',count:mine.length,beers:new Set(mine.map(r=>r.beer)).size,avg:mine.length?fmt(mine.reduce((a,r)=>a+tot(r),0)/mine.length):'',style:Object.entries(sc).sort((a,b)=>b[1]-a[1])[0]?.[0]||''},beers:L.length,reviews:R.length}))}catch(e){}}
+  A.updateWidget(JSON.stringify({week:wb?{name:wb.name,brewery:wb.brewery||'',score:fmt(wb.avg)}:null,top:top.map(b=>({name:b.name,score:fmt(b.avg)})),units:{today:gFmt(gSum(uToday())),week:gFmt(gSum(uWeek())),todayN:gSum(uToday()),weekN:gSum(uWeek())},latest:R.slice(0,4).map(r=>({name:bn(r.beer),who:r.who,score:fmt(tot(r))})),me:{name:S.me||'',count:mine.length,beers:new Set(mine.map(r=>r.beer)).size,avg:mine.length?fmt(mine.reduce((a,r)=>a+tot(r),0)/mine.length):'',style:Object.entries(sc).sort((a,b)=>b[1]-a[1])[0]?.[0]||''},beers:L.length,reviews:R.length}))}catch(e){}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));setTimeout(syncApp,0);return true}catch(e){toast('Lageret er fuldt. Prøv et mindre billede.');return false}}
 const beers=()=>S.beers;
 const reviews=()=>S.reviews;
@@ -690,7 +705,7 @@ function beerView(id){const b=enrich().find(x=>x.id===id);if(!b)return `<section
    ${b.desc?`<p style="margin:0 0 20px;font-size:17px">${esc(b.desc)}</p>`:''}
    <div class="scorebox"><div class="ring" style="--to:${(b.avg/5*100).toFixed(1)}"><div><b id="bigScore">0,0</b><small style="opacity:.7">af 5</small></div></div><div><div style="font-weight:700;margin-bottom:6px">${Rr.length} ${Rr.length===1?'bedømmelse':'bedømmelser'}${Rr.length?' · '+againPct(b)+'% vil købe igen':''}</div>${minibars(b)}</div></div>
    <p class="meta" style="margin-top:14px;display:flex;align-items:center;gap:8px">${avatar(b.addedBy)} Tilføjet af <b>${esc(b.addedBy)}</b> den ${dk(b.date)}</p>
-   <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:6px"><button type="button" class="wish" id="wishBtn" data-id="${esc(b.id)}" aria-pressed="${S.wish.includes(b.id)}">${S.wish.includes(b.id)?'På din ønskeliste':'Vil smage'}</button><button type="button" class="ghost" id="shareBtn" data-id="${esc(b.id)}">Del</button><button type="button" class="ghost" id="cardBtn" data-id="${esc(b.id)}">Del som billede</button><button type="button" class="ghost" id="cmpBtn" data-id="${esc(b.id)}">Sammenlign</button><a class="btn ghost" href="#rate">Bedøm den</a>${S.me&&b.addedBy.toLowerCase()===S.me.toLowerCase()?`<button type="button" class="ghost" id="editBeer" data-id="${esc(b.id)}">Ret oplysninger</button>`:''}${`<button type="button" class="ghost" id="delBeer" data-id="${esc(b.id)}">Slet øl</button>`}</div></div></div></div>
+   <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:6px"><button type="button" class="wish" id="wishBtn" data-id="${esc(b.id)}" aria-pressed="${S.wish.includes(b.id)}">${S.wish.includes(b.id)?'På din ønskeliste':'Vil smage'}</button><button type="button" class="ghost" id="shareBtn" data-id="${esc(b.id)}">Del</button><button type="button" class="ghost" id="cardBtn" data-id="${esc(b.id)}">Del som billede</button><button type="button" class="ghost" id="cmpBtn" data-id="${esc(b.id)}">Sammenlign</button><button type="button" class="ghost" data-unit="${gOf(clOf(b.size)||33,b.abv||4.6)}" data-uname="${esc(b.name)}" title="Læg en genstand til tælleren">+ Genstand</button><a class="btn ghost" href="#rate">Bedøm den</a>${S.me&&b.addedBy.toLowerCase()===S.me.toLowerCase()?`<button type="button" class="ghost" id="editBeer" data-id="${esc(b.id)}">Ret oplysninger</button>`:''}${`<button type="button" class="ghost" id="delBeer" data-id="${esc(b.id)}">Slet øl</button>`}</div></div></div></div>
   <section class="band"><div class="wrap cols">
    <div class="box"><h3>Smagsprofil</h3>${(p=>p?radar(p,PROF.map(x=>x[1])):'<p class="meta">Ingen har givet en smagsprofil endnu. Gør det i din bedømmelse.</p>')(profAvg(b))}</div>
    <div class="box"><h3 style="margin-bottom:12px">Smagsnoter</h3>${tg.length?`<div class="tags">${tg.map(([t,n])=>`<span class="tag" style="font-size:${13+n*2}px">${esc(t)} · ${n}</span>`).join('')}</div>`:'<p class="meta">Ingen endnu.</p>'}
@@ -867,6 +882,17 @@ function foodView(){const d=foodView.d||'Pizza',sts=DISHES[d],L=enrich();
    ${top.length?`<div style="margin-top:10px">${top.map(b=>`<a class="rk" href="#beer-${esc(b.id)}" style="grid-template-columns:minmax(0,1fr) auto"><span><b style="font-size:14px">${esc(b.name)}</b><br><span class="meta" style="font-size:12px">${esc(b.brewery)}</span></span><b class="s" style="color:var(--gl)">${fmt(b.avg)}</b></a>`).join('')}</div>`:`<p class="meta" style="font-size:13px;margin:10px 0 0">Ingen ${esc(st.toLowerCase())} bedømt endnu.</p>`}
    <button type="button" class="chip" data-style="${esc(st)}" style="margin-top:10px">Se alle ${esc(st.toLowerCase())}</button></div></div>`}).join('')}</div></div></section>`}
 
+function genView(){const t=gSum(uToday()),w=gSum(uWeek()),T=uToday().slice().sort((a,b)=>b.t-a.t),pct=Math.min(100,w*10),lvl=w>10?'over':w>=8?'near':'ok';
+  const mine=enrich().filter(b=>b.abv).slice(0,6);
+  const q=[['Øl 33 cl · 4,6 %',33,4.6],['Øl 50 cl · 4,6 %',50,4.6],['Fadøl 40 cl · 4,6 %',40,4.6],['Stærk øl 33 cl · 8 %',33,8],['Vin 12 cl · 12 %',12,12],['Snaps 2 cl · 40 %',2,40]];
+  return `<section class="band" style="padding-top:120px"><div class="wrap" style="max-width:880px"><span class="kick">Genstand-tæller</span><h1 style="font-size:clamp(34px,5vw,56px);margin:8px 0 6px">Hvor meget har du fået?</h1><p class="meta" style="max-width:36em">Tryk, hver gang du åbner en øl. Tælleren regner genstande ud fra størrelse og alkohol, og alt bliver kun gemt på din egen enhed.</p>
+  <div class="gwrap"><div class="gbig"><span class="meta">I dag</span><b class="big">${gFmt(t)}</b><span class="meta">${t===1?'genstand':'genstande'}${t>4?' · <b style="color:var(--pk)">over 4 i dag</b>':''}</span></div>
+   <div class="gbig"><span class="meta">Seneste 7 dage</span><b class="big">${gFmt(w)}</b><div class="gbar ${lvl}"><i style="width:${pct}%"></i></div><span class="meta">${w>10?'Over Sundhedsstyrelsens anbefaling på højst 10':`${gFmt(Math.max(0,10-w))} tilbage til anbefalingen på højst 10`}</span></div></div>
+  <h3 style="margin:28px 0 10px">Tilføj en genstand</h3><div class="gq">${q.map(([n,cl,a])=>`<button type="button" class="ghost" data-unit="${gOf(cl,a)}" data-uname="${esc(n)}"><b>${esc(n)}</b><span>${gFmt(gOf(cl,a))} genst.</span></button>`).join('')}${mine.map(b=>{const cl=clOf(b.size)||33,g=gOf(cl,b.abv);return `<button type="button" class="ghost" data-unit="${g}" data-uname="${esc(b.name)}"><b>${esc(b.name)}</b><span>${cl} cl · ${fmt(b.abv)} % · ${gFmt(g)} genst.</span></button>`}).join('')}</div>
+  <form id="unitForm" class="gform"><label>cl<input id="uCl" type="number" min="1" max="200" value="33" inputmode="numeric"></label><label>Alkohol %<input id="uAbv" type="text" value="4,6" inputmode="decimal"></label><button class="btn">+ Tilføj</button></form>
+  ${T.length?`<h3 style="margin:28px 0 10px">I dag</h3><div class="glist">${T.map(u=>`<div><span>${new Date(u.t).toLocaleTimeString('da-DK',{hour:'2-digit',minute:'2-digit'})}</span><b>${esc(u.n||'Genstand')}</b><span>${gFmt(u.g)}</span><button type="button" class="ghost" data-delunit="${u.t}" aria-label="Fjern">✕</button></div>`).join('')}</div>`:''}
+  <div class="box" style="margin-top:28px;line-height:1.6"><b>Sundhedsstyrelsen anbefaler</b> højst 10 genstande om ugen og højst 4 genstande på samme dag. Børn og unge under 18 år frarådes at drikke alkohol. En genstand er 12 gram ren alkohol, fx en almindelig øl på 33 cl. Tælleren er et skøn og kan ikke bruges til at vurdere, om du må køre bil. Kør aldrig, når du har drukket. Vil du tale med nogen om alkohol, kan du ringe gratis og anonymt til Alkolinjen på 80 200 500.</div>
+  ${S.units.length?`<p style="margin-top:18px"><button type="button" class="ghost" id="clearUnits">Nulstil tælleren</button></p>`:''}</div></section>`}
 function privacyView(){return `<section class="band" style="padding-top:120px"><div class="wrap" style="max-width:760px"><h1 style="font-size:clamp(34px,5vw,56px)">Privatliv</h1>
  <div class="box" style="margin-top:22px;line-height:1.65"><h3>Hvem står bag?</h3><p>ølrating.dk ejes og drives af Lucas Valentin Ottesen og Magnus Birkgaard Froberg. Kontakt: andersenlucas84@gmail.com</p><h3 style="margin-top:20px">Kort fortalt</h3><p>ølrating.dk bruger ingen cookies, ingen sporing og ingen annoncer. Vi sender ikke dine data videre til nogen.</p>
  <h3 style="margin-top:20px">Hvor bliver dine data gemt?</h3><p>Lige nu gemmes de øl, billeder, bedømmelser og det navn, du skriver, kun i din egen browser på din egen enhed (i browserens lokale lager). De bliver ikke sendt til en server, og andre kan ikke se dem.</p>
@@ -883,7 +909,7 @@ function aboutView(){return `<section class="band" style="padding-top:120px"><di
 
 /* ---------- router ---------- */
 function route(){const h=location.hash.slice(1);let v;
-  if(h.startsWith('beer-'))v=beerView(h.slice(5));else if(h.startsWith('bryggeri-'))v=brewView(decodeURIComponent(h.slice(9)));else if(h==='tilfoej')v=addView();else if(h==='toplisten')v=topView();else if(h==='galleri')v=galleryView();else if(h==='profil')v=profileView();else if(h==='sammenlign')v=cmpView();else if(h==='kalender')v=calView();else if(h==='dagbog')v=diaryView();else if(h==='mad')v=foodView();else if(h==='privatliv')v=privacyView();else if(h==='om')v=aboutView();else if(h==='stilguide')v=guideView();else v=home();
+  if(h.startsWith('beer-'))v=beerView(h.slice(5));else if(h.startsWith('bryggeri-'))v=brewView(decodeURIComponent(h.slice(9)));else if(h==='tilfoej')v=addView();else if(h==='genstande')v=genView();else if(h==='toplisten')v=topView();else if(h==='galleri')v=galleryView();else if(h==='profil')v=profileView();else if(h==='sammenlign')v=cmpView();else if(h==='kalender')v=calView();else if(h==='dagbog')v=diaryView();else if(h==='mad')v=foodView();else if(h==='privatliv')v=privacyView();else if(h==='om')v=aboutView();else if(h==='stilguide')v=guideView();else v=home();
   $('app').innerHTML=`<div class="view">${v}</div>`;
   document.querySelectorAll('[data-nav]').forEach(a=>{if(a.dataset.nav===(h==='alle'?'':h))a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
   $('nav').classList.remove('open');$('menuBtn').setAttribute('aria-expanded','false');
@@ -949,6 +975,9 @@ document.addEventListener('click',e=>{const t=e.target.closest('button,a');if(!t
     f.querySelector('button[type=submit]').textContent='Gem ændringer';$('rateTitle').textContent='Ret din anmeldelse';$('rate').scrollIntoView({behavior:RM?'auto':'smooth'})}
   else if(t.dataset.delrev){const o=S.reviews.find(x=>x.id===t.dataset.delrev);S.reviews=S.reviews.filter(x=>x.id!==t.dataset.delrev);save();route();undoToast('Anmeldelsen er slettet',()=>{S.reviews.push(o);save();route()},()=>delImg(o?.img))}
   else if(t.id==='wishBtn'){const id=t.dataset.id,on=!S.wish.includes(id);S.wish=on?[...S.wish,id]:S.wish.filter(x=>x!==id);save();t.setAttribute('aria-pressed',on);t.textContent=on?'På din ønskeliste':'Vil smage';if(on)burstAt(t);toast(on?'Gemt på din ønskeliste':'Fjernet fra ønskelisten')}
+  else if(t.dataset.unit){addUnit(+t.dataset.unit,t.dataset.uname);toast(`+${gFmt(+t.dataset.unit)} genstand · ${gFmt(gSum(uToday()))} i dag`);if(location.hash==='#genstande')route()}
+  else if(t.dataset.delunit){S.units=S.units.filter(u=>u.t!==+t.dataset.delunit);save();route()}
+  else if(t.id==='clearUnits'){if(confirm('Nulstil alle genstande?')){S.units=[];save();route()}}
   else if(t.id==='cardBtn'){const b=enrich().find(x=>x.id===t.dataset.id);if(b)shareCard(b)}
   else if(t.id==='shareBtn'){const b=enrich().find(x=>x.id===t.dataset.id);if(b)shareBeer(b)}
   else if(t.getAttribute('href')==='#rate'){e.preventDefault();$('rate')?.scrollIntoView({behavior:RM?'auto':'smooth'})}
@@ -965,6 +994,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('scan').hidden){
 $('lbs').addEventListener('scroll',lbCount,{passive:true});
 document.addEventListener('submit',async e=>{const f=e.target;e.preventDefault();
   if(f.id==='meForm'){S.me=$('meName').value.trim().slice(0,30);save();toast(S.me?`Hej ${S.me}`:'Navn fjernet');route();return}
+  if(f.id==='unitForm'){const cl=+$('uCl').value,a=parseFloat($('uAbv').value.replace(',','.'));if(cl>0&&a>0&&a<80){addUnit(gOf(cl,a),`${cl} cl · ${fmt(a)} %`);route()}else toast('Skriv cl og alkohol %');return}
   if(f.id==='sForm'){F.q=$('q').value.trim();renderGrid();const h=$('alle');if(h){h.textContent=F.q?`Resultater for “${F.q}”`:'Højest bedømt lige nu';h.scrollIntoView({behavior:RM?'auto':'smooth'})}return}
   if(f.id==='addForm'){const name=$('bName').value.trim(),brew=$('bBrew').value.trim(),edit=f.dataset.edit;
     if(!edit&&!pending.bImg){toast('Tilføj et billede af øllen');$('bImgDrop').scrollIntoView({block:'center'});return}
@@ -985,7 +1015,9 @@ document.addEventListener('submit',async e=>{const f=e.target;e.preventDefault()
     burstAt(f.querySelector('button[type=submit]'));delete pending.rImg;toast('Skål! Din bedømmelse er gemt');setTimeout(route,RM?0:650)}});
 
 applyMode();applySeason();
-(async()=>{try{navigator.storage?.persist?.()}catch(e){}await loadImgs();await migrateImgs();route();syncApp()})();
+(async()=>{try{navigator.storage?.persist?.()}catch(e){}await loadImgs();await migrateImgs();takePending();route();syncApp()})();
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&takePending()&&location.hash==='#genstande')route()});
+if(window.OlratingApp?.takeUnits)setInterval(()=>{if(takePending()&&location.hash==='#genstande')route()},5000);
 if('serviceWorker' in navigator&&/^https:|localhost/.test(location.href)){addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
 }
 </script>

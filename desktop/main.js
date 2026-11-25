@@ -64,6 +64,13 @@ ipcMain.on('widget-data', (_e, json) => {
 });
 ipcMain.on('widget-open', (_e, hash) => showMain(typeof hash === 'string' && /^#[\w-]*$/.test(hash) ? hash : ''));
 ipcMain.on('widget-close', closeWidget);
+// Genstande fra widgetten: gemmes, til siden henter dem (den spørger hvert 5. sekund)
+let pendingUnits = (loadState().pending || []);
+ipcMain.on('units-add', () => {
+  pendingUnits.push(Date.now()); saveState({ ...loadState(), pending: pendingUnits });
+  if (lastData && lastData.units) { lastData.units.todayN = (lastData.units.todayN || 0) + 1; lastData.units.weekN = (lastData.units.weekN || 0) + 1; if (widget) widget.webContents.send('data', lastData); }
+});
+ipcMain.on('units-take', (e) => { e.returnValue = JSON.stringify(pendingUnits); pendingUnits = []; saveState({ ...loadState(), pending: [] }); });
 ipcMain.on('widget-pin', (_e, on) => { if (widget) widget.setAlwaysOnTop(!!on); saveState({ ...loadState(), onTop: !!on }); });
 
 function buildTray() {

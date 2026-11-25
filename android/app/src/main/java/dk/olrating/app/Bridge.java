@@ -23,10 +23,11 @@ public class Bridge {
     public void updateWidget(String json) {
         if (json == null || json.length() > 20000) return;
         ctx.getSharedPreferences(TopWidget.PREFS, Context.MODE_PRIVATE)
-           .edit().putString(TopWidget.KEY, json).apply();
+           .edit().putString(TopWidget.KEY, json).putLong(UnitsWidget.SAVED_AT, System.currentTimeMillis()).apply();
         TopWidget.refreshAll(ctx);
         LatestWidget.refreshAll(ctx);
         StatsWidget.refreshAll(ctx);
+        UnitsWidget.refreshAll(ctx);
     }
 
     /** Gemmer et delekort (data-URL med JPEG) i telefonens Billeder. */
@@ -53,6 +54,14 @@ public class Bridge {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    /** Genstande lagt til fra widgetten, mens appen var lukket. */
+    @JavascriptInterface
+    public String takeUnits() {
+        String s = UnitsWidget.take(ctx);
+        UnitsWidget.refreshAll(ctx);
+        return s;
     }
 
     @JavascriptInterface
