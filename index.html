@@ -243,6 +243,23 @@ footer .wrap{position:relative;z-index:2}
 .brew button{white-space:normal;justify-content:space-between;background:var(--nv2);color:var(--tx);border:1px solid var(--ln);border-radius:18px;padding:14px 16px;text-align:left;font-weight:400}
 .wish{background:transparent;color:var(--tx);border:1px solid rgba(143,182,227,.4)}
 .wish[aria-pressed=true]{background:var(--pk);border-color:var(--pk);color:#fff}
+/* badges, scanner */
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:14px}
+.badge{background:var(--nv);border:1px solid var(--ln);border-radius:18px;padding:14px;text-align:center;display:grid;gap:6px;justify-items:center;opacity:.45;filter:grayscale(1)}
+.badge.got{opacity:1;filter:none;border-color:rgba(255,200,90,.5);box-shadow:0 0 24px -8px rgba(255,200,90,.6)}
+.badge svg{width:56px;height:56px}
+.badge b{font-size:15px}.badge small{font-size:12.5px;opacity:.75;line-height:1.35}
+.surprise{background:var(--grad)!important;color:var(--nv)!important;border:0!important}
+.scanbtn{background:transparent;color:var(--nv);min-height:44px;width:44px;padding:0}
+.scan{position:fixed;inset:0;z-index:95;background:#000;display:grid;grid-template-rows:minmax(0,1fr) auto;color:#fff}
+.scan[hidden]{display:none}
+.scan video{width:100%;height:100%;object-fit:cover}
+.scan .frame{position:absolute;left:10%;right:10%;top:35%;height:22%;border:3px solid var(--gl);border-radius:18px;box-shadow:0 0 0 9999px rgba(0,0,0,.45)}
+.scan .frame::after{content:"";position:absolute;left:6%;right:6%;top:50%;height:2px;background:var(--pk);animation:scanline 1.6s ease-in-out infinite alternate}
+@keyframes scanline{from{transform:translateY(-34px)}to{transform:translateY(34px)}}
+.scan .bot{padding:18px 16px 28px;display:grid;gap:12px;justify-items:center;text-align:center;background:var(--nv)}
+.revact{display:flex;gap:8px;margin-top:8px}
+.revact button{min-height:34px;padding:4px 14px;font-size:13px}
 /* misc */
 .view{animation:enter .45s cubic-bezier(.2,.8,.2,1) both}
 @keyframes enter{from{opacity:0;transform:translateY(14px)}}
@@ -280,6 +297,7 @@ footer .wrap{position:relative;z-index:2}
       <span style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><label for="seasonSel" style="display:flex;align-items:center;gap:8px;font-weight:400">Tema<select id="seasonSel"><option value="auto">Efter dato</option><option value="none">Normal</option><option value="nytaar">Nytår</option><option value="fastelavn">Fastelavn</option><option value="paaske">Påske</option><option value="sankthans">Sankthans</option><option value="halloween">Halloween</option><option value="jdag">J-dag</option><option value="jul">Jul</option></select></label><button type="button" class="ghost" id="hideEx" style="min-height:40px;padding:6px 14px">Skjul eksempler</button></span></div>
   </div>
 </footer>
+<div class="scan" id="scan" hidden role="dialog" aria-label="Scan stregkode"><div style="position:relative;overflow:hidden"><video id="scanV" playsinline muted></video><div class="frame"></div></div><div class="bot"><b>Hold stregkoden inden for rammen</b><button type="button" id="scanX" class="ghost">Luk</button></div></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div class="lbox" id="lb" hidden role="dialog" aria-modal="true" aria-label="Billedvisning"><div class="lbtop"><span id="lbN" style="font-weight:700"></span><button type="button" id="lbX" class="ghost">Luk</button></div><div class="lbs" id="lbs"></div><div class="lbnav"><button type="button" id="lbP" class="ghost" aria-label="Forrige billede">← Forrige</button><button type="button" id="lbNx" class="ghost" aria-label="Næste billede">Næste →</button></div></div>
 
@@ -430,7 +448,7 @@ function card(b,i){return `<a class="card" href="#beer-${esc(b.id)}" style="--i:
  <div class="cf"><span style="display:flex;align-items:center;gap:8px">${avatar(b.addedBy)}<span style="opacity:.8">${b.rs.length} ${b.rs.length===1?'bedømmelse':'bedømmelser'}</span></span>${b.rs.length?`<b>${againPct(b)}% igen</b>`:''}</div></div></a>`}
 function topTags(b){const tc={};b.rs.forEach(r=>(r.tags||[]).forEach(t=>tc[t]=(tc[t]||0)+1));const t=Object.entries(tc).sort((a,c)=>c[1]-a[1]).slice(0,3);return t.length?`<div class="tags">${t.map(([x])=>`<span class="tag">${esc(x)}</span>`).join('')}</div>`:''}
 function revRow(r,withBeer){const b=withBeer?enrich().find(x=>x.id===r.beer):null;
-  return `<div class="rv">${avatar(r.who)}<div><div><b>${esc(r.who)}</b>${b?` om <a href="#beer-${esc(b.id)}"><b>${esc(b.name)}</b></a>`:''} <span class="s">${fmt(tot(r))}</span></div>${r.text?`<p>${esc(r.text)}</p>`:''}${!withBeer&&r.tags?.length?`<div class="tags" style="margin-top:6px">${r.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>`:''}${r.img?`<img src="${esc(r.img)}" alt="Foto fra ${esc(r.who)}" loading="lazy">`:''}<div style="font-size:12px;opacity:.6;margin-top:3px">${ago(r.date)}${withBeer?'':' · '+(r.again?'Vil købe den igen':'Køber den ikke igen')}</div></div></div>`}
+  return `<div class="rv">${avatar(r.who)}<div><div><b>${esc(r.who)}</b>${b?` om <a href="#beer-${esc(b.id)}"><b>${esc(b.name)}</b></a>`:''} <span class="s">${fmt(tot(r))}</span></div>${r.text?`<p>${esc(r.text)}</p>`:''}${!withBeer&&r.tags?.length?`<div class="tags" style="margin-top:6px">${r.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>`:''}${r.img?`<img src="${esc(r.img)}" alt="Foto fra ${esc(r.who)}" loading="lazy">`:''}<div style="font-size:12px;opacity:.6;margin-top:3px">${ago(r.date)}${r.edited?' · rettet':''}${withBeer?'':' · '+(r.again?'Vil købe den igen':'Køber den ikke igen')}</div>${!withBeer&&!r.example&&S.me&&r.who.toLowerCase()===S.me.toLowerCase()?`<div class="revact"><button type="button" class="ghost" data-edit="${esc(r.id)}">Ret</button><button type="button" class="ghost" data-delrev="${esc(r.id)}">Slet</button></div>`:''}</div></div>`}
 function weekBeer(L){const wk=Date.now()-7*DAY,rated=L.filter(b=>b.rs.length);if(!rated.length)return null;const rec=rated.filter(b=>b.rs.some(r=>new Date(r.date).getTime()>wk));return[...(rec.length?rec:rated)].sort((a,c)=>c.avg-a.avg||c.rs.length-a.rs.length)[0]}
 
 function home(){const L=enrich(),Rv=reviews().slice().sort((a,b)=>b.date.localeCompare(a.date)),c=SEASON[season],h=c?.h||['Øl smager bedst','med udsigt.'],wb=weekBeer(L);
@@ -443,8 +461,8 @@ function home(){const L=enrich(),Rv=reviews().slice().sort((a,b)=>b.date.localeC
    <p class="live"><i></i>${today?`${today} ${today===1?'ny bedømmelse':'nye bedømmelser'} i dag`:`${Rv.length} bedømmelser indtil nu`}</p>
    <h1>${esc(h[0])}<br><span class="gtext">${esc(h[1])}</span></h1>
    <p class="lead">Tag et billede af din øl, giv den karakter fra 1 til 5 og se hvad resten af landet drikker i aften.</p>
-   <form class="search" id="sForm" role="search">${SEARCH_IC('#0f1d36')}<label for="q" class="sr">Søg</label><input id="q" type="search" placeholder="Søg efter øl, bryggeri eller by" value="${esc(F.q)}"><button>Søg</button></form>
-   <div class="pop"><span style="opacity:.75">Populært:</span>${['Juleøl','Porter','IPA','Stout'].map(s=>`<button type="button" data-style="${s}">${s}</button>`).join('')}</div></div>
+   <form class="search" id="sForm" role="search">${SEARCH_IC('#0f1d36')}<label for="q" class="sr">Søg</label><input id="q" type="search" placeholder="Søg efter øl, bryggeri eller by" value="${esc(F.q)}">${HAS_BD?`<button type="button" class="scanbtn" id="scanSearch" aria-label="Scan stregkode"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#0f1d36" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 7V4h3M18 4h3v3M21 17v3h-3M6 20H3v-3M7 8v8M10 8v8M13 8v8M17 8v8"/></svg></button>`:''}<button>Søg</button></form>
+   <div class="pop"><button type="button" class="surprise" id="surpriseBtn">Overrask mig</button><span style="opacity:.75">Populært:</span>${['Juleøl','Porter','IPA','Stout'].map(s=>`<button type="button" data-style="${s}">${s}</button>`).join('')}</div></div>
    ${wb?`<a class="week" href="#beer-${esc(wb.id)}"><div style="display:flex;justify-content:space-between;align-items:center"><span class="kick">Ugens øl</span><span style="font-size:13px;opacity:.75">${wb.rs.length} ${wb.rs.length===1?'bedømmelse':'bedømmelser'}</span></div>
     <div class="wk"><div class="thumb" style="height:110px">${photo(wb)}</div><div><h3 style="font-size:22px">${esc(wb.name)}</h3><div class="meta">${esc(wb.brewery)} · ${esc(wb.style)}</div>${q?`<div style="font-size:14px;margin-top:6px;font-style:italic;opacity:.9">“${esc(q.text)}”</div>`:''}</div><div class="big" style="font-size:44px">${fmt(wb.avg)}</div></div>${minibars(wb)}</a>`:''}
   </div></section>
@@ -482,7 +500,7 @@ function home(){const L=enrich(),Rv=reviews().slice().sort((a,b)=>b.date.localeC
    ${userImgs.length?`<div class="gal">${userImgs.slice(0,8).map((x,i)=>galBtn(x,i)).join('')}</div>`:galEmpty()}</div></section>`}
 function galEmpty(){return `<div class="empty"><span class="ic">${CAM('var(--gl)')}</span><h3 style="font-size:24px">Galleriet venter på dit billede</h3><span style="opacity:.8;max-width:30em">Når du tilføjer en øl med et foto, kommer det til at stå her, så andre kan se hvad du drak.</span><a class="btn" href="#tilfoej" style="margin-top:6px">Upload det første billede</a></div>`}
 function renderGrid(){const g=$('grid');if(!g)return;const q=F.q.toLowerCase();
-  let L=enrich().filter(b=>(!F.style||b.style===F.style)&&(!q||[b.name,b.brewery,b.style,b.city,b.addedBy,...b.rs.map(r=>r.who)].join(' ').toLowerCase().includes(q)));
+  let L=enrich().filter(b=>(!F.style||b.style===F.style)&&(!q||[b.name,b.brewery,b.style,b.city,b.addedBy,b.code||'',...b.rs.map(r=>r.who)].join(' ').toLowerCase().includes(q)));
   const so={new:(a,b)=>(b.date||'').localeCompare(a.date||''),score:(a,b)=>b.avg-a.avg||b.rs.length-a.rs.length,count:(a,b)=>b.rs.length-a.rs.length,abv:(a,b)=>b.abv-a.abv,name:(a,b)=>a.name.localeCompare(b.name,'da')};
   L.sort(so[F.sort]);$('sort').value=F.sort;
   g.innerHTML=L.length?L.map(card).join(''):`<div class="empty" style="grid-column:1/-1"><h3>Ingen øl fundet</h3><span style="opacity:.8">Prøv en anden søgning, eller tilføj øllen selv.</span><a class="btn" href="#tilfoej">Tilføj øl</a></div>`}
@@ -507,6 +525,7 @@ function addView(){return `<section class="band" style="padding-top:120px"><div 
   <label for="bAbv">Alkohol %<input id="bAbv" inputmode="decimal" maxlength="5" placeholder="5,0"></label>
   <label for="bPrice">Pris (kr)<input id="bPrice" type="number" inputmode="decimal" min="0" step="1" placeholder="25"></label>
   <label for="bPlace">Købt eller smagt hvor?<input id="bPlace" maxlength="60" placeholder="Fx Føtex, Ølbaren"></label>
+  <label for="bCode">Stregkode <span class="hint">valgfri</span><span style="display:flex;gap:8px"><input id="bCode" inputmode="numeric" maxlength="20" value="${esc(F.code||'')}" placeholder="Fx 5740600001234">${HAS_BD?'<button type="button" class="ghost" id="scanAdd" style="flex:none">Scan</button>':''}</span></label>
   <label for="bSize">Størrelse<select id="bSize"><option value="">Vælg</option><option>33 cl flaske</option><option>50 cl flaske</option><option>33 cl dåse</option><option>44 cl dåse</option><option>Fadøl</option></select></label></div>
   <label for="bDesc">Beskrivelse af øllen<textarea id="bDesc" rows="3" maxlength="500" placeholder="Farve, skum, hvad bryggeriet skriver…"></textarea></label>
   <div class="grad" style="height:2px;opacity:.6"></div>
@@ -530,7 +549,7 @@ function beerView(id){const b=enrich().find(x=>x.id===id);if(!b)return `<section
     <h3 style="margin:24px 0 10px">Fordeling</h3>${dist.map(([s,n],i)=>`<div class="mb" style="grid-template-columns:60px minmax(0,1fr) 24px"><span>${s} stjerner</span><span class="t"><i style="width:${Rr.length?n/Rr.length*100:0}%;--d:${i*.08}s"></i></span><b>${n}</b></div>`).join('')}</div>
    <div class="box"><h3>Anmeldelser</h3>${Rr.map(r=>revRow(r,false)).join('')||'<p class="meta">Ingen anmeldelser endnu. Bliv den første!</p>'}</div>
   </div></section>
-  <section class="band" style="padding-top:0" id="rate"><div class="wrap" style="max-width:860px"><h2 style="font-size:clamp(28px,3.4vw,40px);margin-bottom:16px">Bedøm ${esc(b.name)}</h2><form class="f panel" id="revForm" data-beer="${esc(b.id)}" novalidate>${revFields(true)}<button type="submit" style="font-size:18px;min-height:56px">Gem bedømmelse</button></form></div></section>
+  <section class="band" style="padding-top:0" id="rate"><div class="wrap" style="max-width:860px"><h2 id="rateTitle" style="font-size:clamp(28px,3.4vw,40px);margin-bottom:16px">Bedøm ${esc(b.name)}</h2><form class="f panel" id="revForm" data-beer="${esc(b.id)}" novalidate>${revFields(true)}<button type="submit" style="font-size:18px;min-height:56px">Gem bedømmelse</button></form></div></section>
   ${sim.length?`<section class="band" style="border-top:1px solid var(--ln)"><div class="wrap"><h2 style="font-size:clamp(28px,3.4vw,40px);margin-bottom:20px">Lignende øl</h2><div class="grid">${sim.map(card).join('')}</div></div></section>`:''}`}
 
 function topView(){const L=enrich().filter(b=>b.rs.length);const groups=[['Samlet',()=>true],['Lyse øl',b=>['Pilsner','Lager','Hvede','Pale Ale','IPA','Påskebryg','Sour'].includes(b.style)],['Mørke øl',b=>['Stout','Porter','Brown Ale','Bock','Juleøl'].includes(b.style)]];
@@ -565,10 +584,44 @@ function profileView(){const L=enrich(),me=S.me.trim(),mine=reviews().filter(r=>
   <div class="cols" style="margin-top:12px">
    <div class="box"><h3>Vil smage (${wish.length})</h3>${wish.map(row).join('')||'<p class="meta">Tryk på "Vil smage" på en øl for at gemme den her.</p>'}</div>
    <div class="box"><h3>Mine bedømmelser (${mine.length})</h3>${mine.map(r=>revRow(r,true)).join('')||'<p class="meta">Du har ikke bedømt nogen øl endnu.</p>'}</div></div>
+  ${me?`<div class="box" style="margin-top:24px"><h3>Mærker (${BADGES.filter(b=>b[4](myCounts())).length} af ${BADGES.length})</h3><div class="badges">${(c=>BADGES.map(([id,n,dsc,p,t])=>`<div class="badge${t(c)?' got':''}">${medal(p,t(c))}<b>${n}</b><small>${dsc}</small></div>`).join(''))(myCounts())}</div></div>`:''}
   <div class="box" style="margin-top:24px"><h3>Installer ølrating</h3><p class="meta" style="margin:8px 0 14px">Læg ølrating på din telefons hjemmeskærm, så den åbner som en app og virker uden net.</p>${installBtn()}</div>
   <div class="box" style="margin-top:24px"><h3>Dine data</h3><p class="meta" style="margin:8px 0 14px">Indtil den fælles database er klar, gemmes dine øl og bedømmelser kun i denne browser. Tag en backup, så du ikke mister dem.</p>
    <div style="display:flex;flex-wrap:wrap;gap:10px"><button type="button" id="exportBtn">Download backup</button><label class="btn ghost" for="importFile" style="display:inline-flex;font-weight:700;cursor:pointer">Indlæs backup<input id="importFile" type="file" accept="application/json,.json" class="sr"></label><button type="button" class="ghost" id="wipeBtn">Slet alle mine data</button></div></div>
   </div></section>`}
+const BADGES=[
+ ['first','Første skål','Bedøm din første øl','M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z',c=>c.n>=1],
+ ['regular','Stamgæst','Bedøm 10 øl','M8 3h8l-1 18H9zM16 7h3a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-3.5',c=>c.n>=10],
+ ['expert','Ølkender','Bedøm 25 øl','M12 2l3 6 6 1-4.5 4 1 6.5L12 16l-5.5 3.5 1-6.5L3 9l6-1z',c=>c.n>=25],
+ ['travel','Smagsrejse','Bedøm 5 forskellige stilarter','M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11zM12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z',c=>c.styles>=5],
+ ['dark','Mørkets fyrste','Bedøm 3 stouts eller porters','M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z',c=>c.dark>=3],
+ ['xmas','Julenisse','Bedøm en juleøl','M12 2l2 5h5l-4 3.5 1.5 5L12 13l-4.5 2.5 1.5-5L5 7h5zM9 18h6v3H9z',c=>c.xmas>=1],
+ ['pioneer','Pioner','Tilføj en ny øl til siden','M5 21V4h10l-2 4 2 4H5',c=>c.added>=1],
+ ['photo','Fotograf','Del 3 billeder','M4 8h3l2-3h6l2 3h3v11H4zM12 16.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z',c=>c.photos>=3],
+ ['love','Begejstret','Giv en øl topkarakter','M12 21s-8-5.3-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.7-8 11-8 11z',c=>c.top>=1],
+ ['critic','Kritiker','Giv en øl 2 eller derunder','M4 4l16 16M20 4L4 20',c=>c.low>=1]];
+function myCounts(){const me=S.me.trim().toLowerCase(),L=enrich(),mine=reviews().filter(r=>me&&r.who.toLowerCase()===me),bs=r=>L.find(x=>x.id===r.beer);
+  const st=new Set(mine.map(r=>bs(r)?.style).filter(Boolean)),added=L.filter(b=>me&&b.addedBy.toLowerCase()===me);
+  return{n:mine.length,styles:st.size,dark:mine.filter(r=>['Stout','Porter'].includes(bs(r)?.style)).length,xmas:mine.filter(r=>bs(r)?.style==='Juleøl').length,added:added.length,photos:added.filter(b=>b.img).length+mine.filter(r=>r.img).length,top:mine.filter(r=>tot(r)>=5).length,low:mine.filter(r=>tot(r)<=2).length}}
+const medal=(p,got)=>`<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M22 4h8l4 14h-8zM42 4h-8l-4 14h8z" fill="${got?'var(--pk)':'#3a4a6a'}"/><circle cx="32" cy="38" r="22" fill="${got?'var(--gl)':'#3a4a6a'}"/><circle cx="32" cy="38" r="17" fill="none" stroke="#0f1d36" stroke-opacity=".25" stroke-width="2"/><g transform="translate(20 26)"><path d="${p}" fill="none" stroke="#0f1d36" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></g></svg>`;
+function checkBadges(){if(!S.me)return;const c=myCounts(),seen=new Set(S.seenBadges||[]),got=BADGES.filter(b=>b[4](c)).map(b=>b[0]),fresh=got.filter(id=>!seen.has(id));
+  S.seenBadges=[...new Set([...seen,...got])];save();
+  if(fresh.length){const b=BADGES.find(x=>x[0]===fresh[0]);setTimeout(()=>{toast(`Nyt mærke: ${b[1]}!`);burst(innerWidth/2,innerHeight-60)},900)}}
+function surprise(){const me=S.me.trim().toLowerCase(),L=enrich().filter(b=>b.rs.length),tried=new Set(reviews().filter(r=>me&&r.who.toLowerCase()===me).map(r=>r.beer));
+  let pool=L.filter(b=>!tried.has(b.id));if(!pool.length)pool=L;if(!pool.length){toast('Der er ingen øl endnu');return}
+  let w=pool.map(b=>b.avg**2),sum=w.reduce((a,b)=>a+b,0),x=Math.random()*sum,pick=pool[0];for(let i=0;i<pool.length;i++){x-=w[i];if(x<=0){pick=pool[i];break}}
+  toast(`Hvad med ${pick.name}?`);location.hash='beer-'+pick.id}
+/* stregkodescanner (Chrome på Android) */
+const HAS_BD='BarcodeDetector' in window&&!!navigator.mediaDevices?.getUserMedia;
+let scanStream=null,scanDone=null;
+async function scanCode(){if(!HAS_BD)return null;const box=$('scan'),v=$('scanV');
+  try{const det=new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e','code_128']});
+    scanStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});v.srcObject=scanStream;box.hidden=false;await v.play();
+    return await new Promise(res=>{scanDone=res;const loop=async()=>{if(box.hidden)return;try{const c=await det.detect(v);if(c.length){stopScan();res(c[0].rawValue);return}}catch(e){}requestAnimationFrame(loop)};loop()})}
+  catch(e){stopScan();toast('Kameraet kunne ikke åbnes');return null}}
+function stopScan(){$('scan').hidden=true;scanStream?.getTracks().forEach(t=>t.stop());scanStream=null;if(scanDone){const d=scanDone;scanDone=null;d(null)}}
+async function scanSearch(){const code=await scanCode();if(!code)return;const b=beers().find(x=>x.code===code);
+  if(b){toast(`Fundet: ${b.name}`);location.hash='beer-'+b.id}else{F.code=code;toast('Ukendt øl. Tilføj den!');location.hash='tilfoej'}}
 let installEvt=null;
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=e;document.querySelectorAll('[data-install]').forEach(x=>x.outerHTML=installBtn())});
 function installBtn(){if(matchMedia('(display-mode: standalone)').matches)return '<p style="color:var(--gl);font-weight:700;margin:0">ølrating er installeret på denne enhed.</p>';
@@ -592,7 +645,7 @@ function route(){const h=location.hash.slice(1);let v;
   wireDrops();
   if(h==='alle')$('alle')?.scrollIntoView();else scrollTo({top:0,behavior:'instant'});
   document.title=h.startsWith('beer-')?`${enrich().find(x=>x.id===h.slice(5))?.name||'Øl'} – ølrating.dk`:'ølrating.dk – danske øl, bedømt af dig'}
-addEventListener('hashchange',route);
+addEventListener('hashchange',()=>{if(!$('scan').hidden)stopScan();route()});
 addEventListener('scroll',()=>$('top').classList.toggle('scrolled',scrollY>40),{passive:true});
 
 /* ---------- images ---------- */
@@ -625,6 +678,17 @@ document.addEventListener('click',e=>{const t=e.target.closest('button,a');if(!t
   else if(t.id==='lbP'){lbGo(-1)}else if(t.id==='lbNx'){lbGo(1)}
   else if(t.dataset.go==='reviews'){e.preventDefault();if(location.hash){location.hash='';setTimeout(()=>$('reviews')?.scrollIntoView(),50)}else $('reviews')?.scrollIntoView({behavior:'smooth'})}
   else if(t.id==='delBeer'){if(t.dataset.sure){S.beers=S.beers.filter(b=>b.id!==t.dataset.id);S.reviews=S.reviews.filter(r=>r.beer!==t.dataset.id);save();toast('Øllen er slettet');location.hash=''}else{t.dataset.sure=1;t.textContent='Klik igen for at slette'}}
+  else if(t.id==='surpriseBtn'){surprise()}
+  else if(t.id==='scanSearch'){scanSearch()}
+  else if(t.id==='scanAdd'){scanCode().then(c=>{if(c){$('bCode').value=c;toast('Stregkode scannet')}})}
+  else if(t.id==='scanX'){stopScan()}
+  else if(t.dataset.edit){const r=S.reviews.find(x=>x.id===t.dataset.edit),f=$('revForm');if(!r||!f)return;f.dataset.edit=r.id;
+    f.querySelector('#rWho').value=r.who;f.querySelector('#rText').value=r.text||'';
+    f.querySelectorAll('.rate').forEach(el=>{const v=r.s[el.dataset.k];el.dataset.v=v;el.querySelectorAll('[data-star]').forEach(b=>{b.classList.toggle('on',+b.dataset.star<=v);b.setAttribute('aria-checked',+b.dataset.star===v)})});
+    f.querySelectorAll('[data-tag]').forEach(b=>b.setAttribute('aria-pressed',(r.tags||[]).includes(b.dataset.tag)));
+    f.querySelectorAll('[data-again]').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.again===(r.again?1:0)));
+    f.querySelector('button[type=submit]').textContent='Gem ændringer';$('rateTitle').textContent='Ret din anmeldelse';$('rate').scrollIntoView({behavior:RM?'auto':'smooth'})}
+  else if(t.dataset.delrev){if(t.dataset.sure){S.reviews=S.reviews.filter(x=>x.id!==t.dataset.delrev);save();toast('Anmeldelsen er slettet');route()}else{t.dataset.sure=1;t.textContent='Klik igen'}}
   else if(t.id==='wishBtn'){const id=t.dataset.id,on=!S.wish.includes(id);S.wish=on?[...S.wish,id]:S.wish.filter(x=>x!==id);save();t.setAttribute('aria-pressed',on);t.textContent=on?'På din ønskeliste':'Vil smage';if(on)burstAt(t);toast(on?'Gemt på din ønskeliste':'Fjernet fra ønskelisten')}
   else if(t.id==='shareBtn'){const b=enrich().find(x=>x.id===t.dataset.id);if(b)shareBeer(b)}
   else if(t.getAttribute('href')==='#rate'){e.preventDefault();$('rate')?.scrollIntoView({behavior:RM?'auto':'smooth'})}
@@ -636,7 +700,7 @@ document.addEventListener('click',e=>{const t=e.target.closest('button,a');if(!t
 document.addEventListener('input',e=>{if(e.target.id==='q'){F.q=e.target.value.trim();renderGrid()}});
 document.addEventListener('change',e=>{if(e.target.id==='importFile'){const f=e.target.files[0];if(!f)return;f.text().then(txt=>{const x=JSON.parse(txt);if(x.app!=='olrating'||!Array.isArray(x.beers)||!Array.isArray(x.reviews))throw 0;const ib=new Set(S.beers.map(b=>b.id)),ir=new Set(S.reviews.map(r=>r.id));S.beers=S.beers.concat(x.beers.filter(b=>b&&b.id&&!ib.has(b.id)));S.reviews=S.reviews.concat(x.reviews.filter(r=>r&&r.id&&!ir.has(r.id)));S.wish=[...new Set([...S.wish,...(x.wish||[])])];if(!S.me&&x.me)S.me=x.me;if(save()){toast('Backup indlæst');route()}}).catch(()=>toast('Filen er ikke en ølrating-backup'));return}
   if(e.target.id==='sort'){F.sort=e.target.value;renderGrid()}else if(e.target.id==='seasonSel'){S.season=e.target.value;save();applySeason();route()}});
-document.addEventListener('keydown',e=>{if($('lb').hidden)return;if(e.key==='Escape')closeLb();else if(e.key==='ArrowRight')lbGo(1);else if(e.key==='ArrowLeft')lbGo(-1)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('scan').hidden){stopScan();return}if($('lb').hidden)return;if(e.key==='Escape')closeLb();else if(e.key==='ArrowRight')lbGo(1);else if(e.key==='ArrowLeft')lbGo(-1)});
 $('lbs').addEventListener('scroll',lbCount,{passive:true});
 document.addEventListener('submit',e=>{const f=e.target;e.preventDefault();
   if(f.id==='meForm'){S.me=$('meName').value.trim().slice(0,30);save();toast(S.me?`Hej ${S.me}`:'Navn fjernet');route();return}
@@ -645,12 +709,15 @@ document.addEventListener('submit',e=>{const f=e.target;e.preventDefault();
     if(!pending.bImg){toast('Tilføj et billede af øllen');$('bImgDrop').scrollIntoView({block:'center'});return}
     if(!name||!brew){toast('Skriv øllens navn og bryggeri');(name?$('bBrew'):$('bName')).focus();return}
     const r=readReview(f);if(!r)return;const id='u'+Date.now().toString(36);
-    const b={id,name,brewery:brew,city:$('bCity').value.trim(),style:$('bStyle').value,abv:parseFloat(String($('bAbv').value).replace(',','.'))||0,price:+$('bPrice').value||0,place:$('bPlace').value.trim(),size:$('bSize').value,desc:$('bDesc').value.trim(),img:pending.bImg,addedBy:r.who,date:r.date};
+    F.code='';const b={id,code:$('bCode').value.replace(/\D/g,'').slice(0,20),name,brewery:brew,city:$('bCity').value.trim(),style:$('bStyle').value,abv:parseFloat(String($('bAbv').value).replace(',','.'))||0,price:+$('bPrice').value||0,place:$('bPlace').value.trim(),size:$('bSize').value,desc:$('bDesc').value.trim(),img:pending.bImg,addedBy:r.who,date:r.date};
     r.beer=id;S.me=r.who;S.beers.push(b);S.reviews.push(r);
     if(!save()){S.beers.pop();S.reviews.pop();return}
-    burstAt($('addBtn'));delete pending.bImg;toast(`Skål, ${r.who}! ${name} er tilføjet`);setTimeout(()=>location.hash='beer-'+id,RM?0:600);return}
+    checkBadges();burstAt($('addBtn'));delete pending.bImg;toast(`Skål, ${r.who}! ${name} er tilføjet`);setTimeout(()=>location.hash='beer-'+id,RM?0:600);return}
+  if(f.id==='revForm'&&f.dataset.edit){const r=readReview(f);if(!r)return;const i=S.reviews.findIndex(x=>x.id===f.dataset.edit);if(i<0)return;const old=S.reviews[i];
+    S.reviews[i]={...old,...r,id:old.id,date:old.date,beer:old.beer,edited:1,img:pending.rImg||old.img};delete pending.rImg;S.me=r.who;if(!save()){S.reviews[i]=old;return}
+    burstAt(f.querySelector('button[type=submit]'));toast('Din anmeldelse er rettet');checkBadges();setTimeout(route,RM?0:600);return}
   if(f.id==='revForm'){const r=readReview(f);if(!r)return;r.beer=f.dataset.beer;if(pending.rImg)r.img=pending.rImg;S.me=r.who;S.reviews.push(r);
-    if(!save()){S.reviews.pop();return}
+    if(!save()){S.reviews.pop();return}checkBadges();
     burstAt(f.querySelector('button[type=submit]'));delete pending.rImg;toast('Skål! Din bedømmelse er gemt');setTimeout(route,RM?0:650)}});
 
 $('hideEx').textContent=S.hideEx?'Vis eksempler':'Skjul eksempler';
