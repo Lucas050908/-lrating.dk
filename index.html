@@ -541,7 +541,16 @@ function radar(vals,labels,col2){const cx=150,cy=140,r=86,n=vals.length,pt=(i,v)
 const profAvg=b=>{const rs=b.rs.filter(r=>r.prof);return rs.length?PROF.map(([k])=>rs.reduce((a,r)=>a+r.prof[k],0)/rs.length):null};
 
 /* ---------- views ---------- */
-let F={q:'',style:'',sort:'score',maxPrice:0,minAbv:0,maxAbv:0,ftags:[],untried:false,withImg:false,code:''};
+let F={lim:24,q:'',style:'',sort:'score',maxPrice:0,minAbv:0,maxAbv:0,ftags:[],untried:false,withImg:false,code:''};
+const norm=t=>String(t||'').toLowerCase().replace(/æ/g,'ae').replace(/ø/g,'oe').replace(/å/g,'aa').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9%.,]+/g,' ').trim();
+function near(a,b){if(Math.abs(a.length-b.length)>1)return false;if(a.length===b.length){const d=[];for(let i=0;i<a.length;i++)if(a[i]!==b[i])d.push(i);return d.length<=1||(d.length===2&&d[1]===d[0]+1&&a[d[0]]===b[d[1]]&&a[d[1]]===b[d[0]])}const[l,sh]=a.length>b.length?[a,b]:[b,a];for(let i=0;i<l.length;i++)if(l.slice(0,i)+l.slice(i+1)===sh)return true;return false}
+function matches(hay,q){const H=norm(hay),T=H.split(' ');return norm(q).split(' ').filter(Boolean).every(w=>H.includes(w)||(w.length>=4&&T.some(t=>near(w,t)||(t.length>w.length&&near(w,t.slice(0,w.length))))))}
+const brewSlug=n=>encodeURIComponent(n);
+function brewView(name){const L=enrich().filter(b=>b.brewery===name);if(!L.length)return `<section class="band" style="padding-top:120px"><div class="wrap"><div class="empty"><h3>Bryggeriet findes ikke</h3><a class="btn" href="#alle">Se alle øl</a></div></div></section>`;
+  const rated=L.filter(b=>b.rs.length),nR=rated.reduce((a,b)=>a+b.rs.length,0),avg=nR?rated.reduce((a,b)=>a+b.avg*b.rs.length,0)/nR:0,city=L.find(b=>b.city)?.city||'',styles=[...new Set(L.map(b=>b.style))];
+  L.sort((a,b)=>b.avg-a.avg||b.rs.length-a.rs.length);
+  return `<section class="band" style="padding-top:120px"><div class="wrap"><a href="#alle" class="meta">← Alle øl</a><div class="head" style="margin-top:12px"><div><span class="kick">Bryggeri</span><h2 style="margin:6px 0">${esc(name)}</h2><div class="meta">${city?esc(city)+' · ':''}${L.length} øl · ${nR} bedømmelser · ${styles.map(esc).join(', ')}</div></div>${nR?`<div class="big" style="font-size:48px">${fmt(avg)}</div>`:''}</div>
+  <div class="grid" style="margin-top:24px">${L.map(card).join('')}</div></div></section>`}
 function card(b,i){return `<a class="card" href="#beer-${esc(b.id)}" style="--i:${i}"><div class="ph">${photo(b)}<span class="pill">${esc(b.style)}${b.abv?' · '+fmt(b.abv)+' %':''}</span><span class="sc">${b.rs.length?fmt(b.avg):'–'}</span></div><div class="grad" style="height:3px"></div>
  <div class="cb"><div><h3>${esc(b.name)}</h3><div class="meta">${esc(b.brewery)}${b.city?', '+esc(b.city):''}</div></div>${topTags(b)}
  <div class="cf"><span style="display:flex;align-items:center;gap:8px">${avatar(b.addedBy)}<span style="opacity:.8">${b.rs.length} ${b.rs.length===1?'bedømmelse':'bedømmelser'}</span></span>${b.rs.length?`<b>${againPct(b)}% igen</b>`:''}</div></div></a>`}
@@ -611,10 +620,10 @@ function home(){const L=enrich(),Rv=reviews().slice().sort((a,b)=>b.date.localeC
 function galEmpty(){return `<div class="empty"><span class="ic">${CAM('var(--gl)')}</span><h3 style="font-size:24px">Galleriet venter på dit billede</h3><span style="opacity:.8;max-width:30em">Når du tilføjer en øl med et foto, kommer det til at stå her, så andre kan se hvad du drak.</span><a class="btn" href="#tilfoej" style="margin-top:6px">Upload det første billede</a></div>`}
 function renderGrid(){const g=$('grid');if(!g)return;const q=F.q.toLowerCase();
   const me=S.me.trim().toLowerCase(),tried=new Set(reviews().filter(r=>me&&r.who.toLowerCase()===me).map(r=>r.beer));
-  let L=enrich().filter(b=>(!F.maxPrice||(b.price&&b.price<=F.maxPrice))&&(!F.minAbv||b.abv>=F.minAbv)&&(!F.maxAbv||(b.abv&&b.abv<=F.maxAbv))&&(!F.untried||!tried.has(b.id))&&(!F.withImg||b.img)&&(!F.ftags.length||F.ftags.every(t=>b.rs.some(r=>(r.tags||[]).includes(t))))&&(!F.style||b.style===F.style)&&(!q||[b.name,b.brewery,b.style,b.city,b.addedBy,b.code||'',...b.rs.map(r=>r.who)].join(' ').toLowerCase().includes(q)));
+  let L=enrich().filter(b=>(!F.maxPrice||(b.price&&b.price<=F.maxPrice))&&(!F.minAbv||b.abv>=F.minAbv)&&(!F.maxAbv||(b.abv&&b.abv<=F.maxAbv))&&(!F.untried||!tried.has(b.id))&&(!F.withImg||b.img)&&(!F.ftags.length||F.ftags.every(t=>b.rs.some(r=>(r.tags||[]).includes(t))))&&(!F.style||b.style===F.style)&&(!q||matches([b.name,b.brewery,b.style,b.city,b.addedBy,b.code||'',b.country||'',...b.rs.map(r=>r.who)].join(' '),q)));
   const so={new:(a,b)=>(b.date||'').localeCompare(a.date||''),score:(a,b)=>b.avg-a.avg||b.rs.length-a.rs.length,count:(a,b)=>b.rs.length-a.rs.length,abv:(a,b)=>b.abv-a.abv,name:(a,b)=>a.name.localeCompare(b.name,'da')};
-  L.sort(so[F.sort]);$('sort').value=F.sort;
-  g.innerHTML=L.length?L.map(card).join(''):!beers().length?`<div class="empty" style="grid-column:1/-1"><span class="ic">${CAM('var(--gl)')}</span><h3>Ingen øl endnu</h3><span style="opacity:.8;max-width:30em">ølrating.dk er helt ny. Tag et billede af den øl, du drikker, giv den karakter, og bliv den første på listen.</span><a class="btn" href="#tilfoej">+ Tilføj den første øl</a></div>`:`<div class="empty" style="grid-column:1/-1"><h3>Ingen øl fundet</h3><span style="opacity:.8">Prøv en anden søgning, eller tilføj øllen selv.</span><a class="btn" href="#tilfoej">Tilføj øl</a></div>`}
+  L.sort(so[F.sort]);$('sort').value=F.sort;const sig=JSON.stringify({...F,lim:0});if(sig!==renderGrid.sig){renderGrid.sig=sig;F.lim=24}const more=L.length-F.lim;
+  g.innerHTML=L.length?L.slice(0,F.lim).map(card).join('')+(more>0?`<div style="grid-column:1/-1;text-align:center"><button type="button" class="btn" id="moreBtn">Vis flere (${more} mere)</button></div>`:''):!beers().length?`<div class="empty" style="grid-column:1/-1"><span class="ic">${CAM('var(--gl)')}</span><h3>Ingen øl endnu</h3><span style="opacity:.8;max-width:30em">ølrating.dk er helt ny. Tag et billede af den øl, du drikker, giv den karakter, og bliv den første på listen.</span><a class="btn" href="#tilfoej">+ Tilføj den første øl</a></div>`:`<div class="empty" style="grid-column:1/-1"><h3>Ingen øl fundet</h3><span style="opacity:.8">Prøv en anden søgning, eller tilføj øllen selv.</span><a class="btn" href="#tilfoej">Tilføj øl</a></div>`}
 
 const starBtns=l=>[1,2,3,4,5].map(i=>`<button type="button" data-star="${i}" role="radio" aria-checked="false" aria-label="${l}: ${i} af 5">${STAR}</button>`).join('');
 function revFields(withImg){return `
@@ -845,7 +854,7 @@ function aboutView(){return `<section class="band" style="padding-top:120px"><di
 
 /* ---------- router ---------- */
 function route(){const h=location.hash.slice(1);let v;
-  if(h.startsWith('beer-'))v=beerView(h.slice(5));else if(h==='tilfoej')v=addView();else if(h==='toplisten')v=topView();else if(h==='galleri')v=galleryView();else if(h==='profil')v=profileView();else if(h==='sammenlign')v=cmpView();else if(h==='kalender')v=calView();else if(h==='dagbog')v=diaryView();else if(h==='mad')v=foodView();else if(h==='privatliv')v=privacyView();else if(h==='om')v=aboutView();else if(h==='stilguide')v=guideView();else v=home();
+  if(h.startsWith('beer-'))v=beerView(h.slice(5));else if(h.startsWith('bryggeri-'))v=brewView(decodeURIComponent(h.slice(9)));else if(h==='tilfoej')v=addView();else if(h==='toplisten')v=topView();else if(h==='galleri')v=galleryView();else if(h==='profil')v=profileView();else if(h==='sammenlign')v=cmpView();else if(h==='kalender')v=calView();else if(h==='dagbog')v=diaryView();else if(h==='mad')v=foodView();else if(h==='privatliv')v=privacyView();else if(h==='om')v=aboutView();else if(h==='stilguide')v=guideView();else v=home();
   $('app').innerHTML=`<div class="view">${v}</div>`;
   document.querySelectorAll('[data-nav]').forEach(a=>{if(a.dataset.nav===(h==='alle'?'':h))a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
   $('nav').classList.remove('open');$('menuBtn').setAttribute('aria-expanded','false');
@@ -853,7 +862,7 @@ function route(){const h=location.hash.slice(1);let v;
   const bs=$('bigScore');if(bs){const b=enrich().find(x=>x.id===h.slice(5));countUp(bs,b.avg)}
   wireDrops();
   if(h==='alle')$('alle')?.scrollIntoView();else scrollTo({top:0,behavior:'instant'});
-  document.title=h.startsWith('beer-')?`${enrich().find(x=>x.id===h.slice(5))?.name||'Øl'} – ølrating.dk`:'ølrating.dk – danske øl, bedømt af dig'}
+  document.title=h.startsWith('bryggeri-')?`${decodeURIComponent(h.slice(9))} – ølrating.dk`:h.startsWith('beer-')?`${enrich().find(x=>x.id===h.slice(5))?.name||'Øl'} – ølrating.dk`:'ølrating.dk – danske øl, bedømt af dig'}
 addEventListener('hashchange',()=>{if(location.hash!=='#tilfoej')F.editBeer='';if(!$('scan').hidden)stopScan();route()});
 addEventListener('scroll',()=>$('top').classList.toggle('scrolled',scrollY>40),{passive:true});
 
@@ -912,7 +921,8 @@ document.addEventListener('click',e=>{const t=e.target.closest('button,a');if(!t
   else if(t.id==='wishBtn'){const id=t.dataset.id,on=!S.wish.includes(id);S.wish=on?[...S.wish,id]:S.wish.filter(x=>x!==id);save();t.setAttribute('aria-pressed',on);t.textContent=on?'På din ønskeliste':'Vil smage';if(on)burstAt(t);toast(on?'Gemt på din ønskeliste':'Fjernet fra ønskelisten')}
   else if(t.id==='shareBtn'){const b=enrich().find(x=>x.id===t.dataset.id);if(b)shareBeer(b)}
   else if(t.getAttribute('href')==='#rate'){e.preventDefault();$('rate')?.scrollIntoView({behavior:RM?'auto':'smooth'})}
-  else if(t.dataset.brew){F.q=t.dataset.brew;F.style='';if(location.hash==='#alle')route();else location.hash='alle'}
+  else if(t.dataset.brew){location.hash='bryggeri-'+brewSlug(t.dataset.brew)}
+  else if(t.id==='moreBtn'){F.lim+=24;renderGrid.sig=JSON.stringify({...F,lim:0});renderGrid()}
   else if(t.id==='installBtn'&&installEvt){installEvt.prompt();installEvt.userChoice.then(c=>{if(c.outcome==='accepted')toast('ølrating er installeret');installEvt=null})}
   else if(t.id==='exportBtn'){(async()=>{toast('Pakker backup…');const beersX=await Promise.all(S.beers.map(async b=>({...b,img:await imgAsData(b.img)}))),revX=await Promise.all(S.reviews.map(async r=>({...r,img:await imgAsData(r.img)})));
     const blob=new Blob([JSON.stringify({app:'olrating',v:2,exported:new Date().toISOString(),beers:beersX,reviews:revX,wish:S.wish,me:S.me})],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='olrating-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);toast('Backup downloadet')})()}
