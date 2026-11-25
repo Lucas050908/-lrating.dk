@@ -350,6 +350,9 @@ footer .wrap{position:relative;z-index:2}
 @keyframes enter{from{opacity:0;transform:translateY(14px)}}
 .toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,30px);background:var(--gl);color:var(--ink);padding:12px 22px;border-radius:99px;font-weight:700;opacity:0;transition:.35s cubic-bezier(.2,.8,.3,1.4);pointer-events:none;z-index:90}
 .toast.show{opacity:1;transform:translate(-50%,0)}
+.undo{position:fixed;left:50%;bottom:24px;transform:translate(-50%,30px);display:flex;align-items:center;gap:14px;background:var(--ink);color:#fff;border:1px solid rgba(143,182,227,.3);padding:8px 8px 8px 20px;border-radius:99px;font-weight:600;opacity:0;transition:.35s cubic-bezier(.2,.8,.3,1.4);z-index:91;box-shadow:0 14px 30px rgba(0,0,0,.4)}
+.undo.show{opacity:1;transform:translate(-50%,0)}
+.undo button{min-height:40px;padding:6px 16px}
 .dot{position:fixed;border-radius:50%;pointer-events:none;z-index:85}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 @media(max-width:860px){.hero .wrap{grid-template-columns:minmax(0,1fr);gap:22px}.hero{min-height:0}.hero .wrap{padding-top:150px}}
@@ -402,6 +405,19 @@ const CAM=c=>`<svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke
 const STAR='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2 6.4 20.2l1.1-6.3L2.9 9.5l6.3-.9z" fill="currentColor"/></svg>';
 
 /* ---------- data ---------- */
+/* ---------- billeder i IndexedDB (meget mere plads end localStorage) ---------- */
+const IMG=new Map();let idb=null;
+function idbOpen(){return new Promise(res=>{try{const r=indexedDB.open('olrating',1);r.onupgradeneeded=()=>r.result.createObjectStore('img');r.onsuccess=()=>res(r.result);r.onerror=()=>res(null);r.onblocked=()=>res(null)}catch(e){res(null)}})}
+function idbDo(mode,fn){return new Promise((ok,no)=>{try{const t=idb.transaction('img',mode),q=fn(t.objectStore('img'));t.oncomplete=()=>ok(q&&q.result);t.onerror=()=>no(t.error);t.onabort=()=>no(t.error)}catch(e){no(e)}})}
+async function loadImgs(){idb=await idbOpen();if(!idb)return;await new Promise(ok=>{try{const c=idb.transaction('img','readonly').objectStore('img').openCursor();c.onsuccess=()=>{const k=c.result;if(k){IMG.set(k.key,URL.createObjectURL(k.value));k.continue()}else ok()};c.onerror=()=>ok()}catch(e){ok()}})}
+function dataToBlob(d){const i=d.indexOf(','),mime=(/data:([^;,]+)/.exec(d)||[,'image/jpeg'])[1],bin=atob(d.slice(i+1)),u=new Uint8Array(bin.length);for(let j=0;j<bin.length;j++)u[j]=bin.charCodeAt(j);return new Blob([u],{type:mime})}
+const blobToData=b=>new Promise(ok=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=()=>ok('');r.readAsDataURL(b)});
+async function putImg(d){if(!idb||!d||!d.startsWith('data:'))return d;try{const key='i'+Date.now().toString(36)+Math.random().toString(36).slice(2,7),blob=dataToBlob(d);await idbDo('readwrite',st=>st.put(blob,key));IMG.set(key,URL.createObjectURL(blob));return 'idb:'+key}catch(e){return d}}
+function delImg(v){if(idb&&v&&v.startsWith('idb:')){const k=v.slice(4);idbDo('readwrite',st=>st.delete(k)).catch(()=>{});const u=IMG.get(k);if(u)URL.revokeObjectURL(u);IMG.delete(k)}}
+async function imgAsData(v){if(!v||!v.startsWith('idb:')||!idb)return v;try{const b=await idbDo('readonly',st=>st.get(v.slice(4)));return b?await blobToData(b):''}catch(e){return ''}}
+const src=v=>v&&v.startsWith('idb:')?(IMG.get(v.slice(4))||''):(v||'');
+async function migrateImgs(){if(!idb)return;let ch=0;for(const b of S.beers)if(b.img&&b.img.startsWith('data:')){b.img=await putImg(b.img);ch++}for(const r of S.reviews)if(r.img&&r.img.startsWith('data:')){r.img=await putImg(r.img);ch++}if(ch)save()}
+
 const KEY='olrating-v1';
 let S={beers:[],reviews:[],me:'',season:'auto',wish:[],mode:'auto'};
 try{const x=JSON.parse(localStorage.getItem(KEY)||'null');if(x)S={...S,...x}}catch(e){}
@@ -423,7 +439,7 @@ const ago=s=>{const n=Math.round((Date.now()-new Date(s+'T12:00'))/DAY);return n
 function placeholder(b){const c=col(b.style);
   return `<svg viewBox="0 0 200 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="s${esc(b.id)}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6f9bd1"/><stop offset=".6" stop-color="#f3a27a"/><stop offset=".62" stop-color="#0f1d36"/><stop offset="1" stop-color="#1d3557"/></linearGradient></defs><rect width="200" height="150" fill="url(#s${esc(b.id)})"/>
   <g transform="translate(78 26)"><path d="M18 0h8v24c0 5 10 9 10 20v62H8V44c0-11 10-15 10-20z" fill="${c}" stroke="#0f1d36" stroke-width="1.5"/><rect x="8" y="62" width="28" height="22" fill="#ffc85a"/><rect x="12" y="36" width="3" height="64" rx="1.5" fill="#fff" opacity=".3"/></g></svg>`}
-const photo=b=>b.img?`<img src="${esc(b.img)}" alt="${esc(b.name)}" loading="lazy">`:placeholder(b);
+const photo=b=>b.img?`<img src="${esc(src(b.img))}" alt="${esc(b.name)}" loading="lazy">`:placeholder(b);
 const minibars=b=>subs(b).map(([l,v],i)=>`<div class="mb"><span>${l}</span><span class="t"><i style="width:${v*20}%;--d:${i*.08}s"></i></span><b>${b.rs.length?fmt(v):'–'}</b></div>`).join('');
 
 /* ---------- style guide (typiske anbefalinger) ---------- */
@@ -511,6 +527,8 @@ function burst(x,y){if(RM)return;const cs=getComputedStyle(document.documentElem
   for(let i=0;i<36;i++){const el=document.createElement('div'),s=R(6,16),a=R(0,Math.PI*2),dist=R(60,220);el.className='dot';el.style.cssText=`left:${x-s/2}px;top:${y-s/2}px;width:${s}px;height:${s}px;background:${pal[i%4]}`;document.body.appendChild(el);
     el.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:`translate(${Math.cos(a)*dist}px,${Math.sin(a)*dist-70}px) scale(.2)`,opacity:0}],{duration:R(700,1300),easing:'cubic-bezier(.2,.7,.3,1)'}).onfinish=()=>el.remove()}}
 const burstAt=el=>{const r=el.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2)};
+function undoToast(msg,undo,finalize){const el=document.createElement('div');el.className='undo';el.setAttribute('role','status');el.innerHTML=`<span>${esc(msg)}</span><button type="button">Fortryd</button>`;document.body.appendChild(el);requestAnimationFrame(()=>el.classList.add('show'));
+  let done=false;const close=u=>{if(done)return;done=true;el.classList.remove('show');setTimeout(()=>el.remove(),400);if(u)undo();else finalize&&finalize()};el.querySelector('button').onclick=()=>close(true);setTimeout(()=>close(false),7000)}
 function toast(t){const e=$('toast');e.textContent=t;e.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('show'),2600)}
 function countUp(el,to){if(RM){el.textContent=fmt(to);return}const t0=performance.now();const f=t=>{const k=Math.min(1,(t-t0)/1400),e=1-(1-k)**3;el.textContent=fmt(to*e);if(k<1)requestAnimationFrame(f)};requestAnimationFrame(f)}
 
@@ -528,7 +546,7 @@ function card(b,i){return `<a class="card" href="#beer-${esc(b.id)}" style="--i:
  <div class="cf"><span style="display:flex;align-items:center;gap:8px">${avatar(b.addedBy)}<span style="opacity:.8">${b.rs.length} ${b.rs.length===1?'bedømmelse':'bedømmelser'}</span></span>${b.rs.length?`<b>${againPct(b)}% igen</b>`:''}</div></div></a>`}
 function topTags(b){const tc={};b.rs.forEach(r=>(r.tags||[]).forEach(t=>tc[t]=(tc[t]||0)+1));const t=Object.entries(tc).sort((a,c)=>c[1]-a[1]).slice(0,3);return t.length?`<div class="tags">${t.map(([x])=>`<span class="tag">${esc(x)}</span>`).join('')}</div>`:''}
 function revRow(r,withBeer){const b=withBeer?enrich().find(x=>x.id===r.beer):null;
-  return `<div class="rv">${avatar(r.who)}<div><div><b>${esc(r.who)}</b>${b?` om <a href="#beer-${esc(b.id)}"><b>${esc(b.name)}</b></a>`:''} <span class="s">${fmt(tot(r))}</span></div>${r.text?`<p>${esc(r.text)}</p>`:''}${!withBeer&&r.tags?.length?`<div class="tags" style="margin-top:6px">${r.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>`:''}${r.img?`<img src="${esc(r.img)}" alt="Foto fra ${esc(r.who)}" loading="lazy">`:''}<div style="font-size:12px;opacity:.6;margin-top:3px">${ago(r.date)}${r.edited?' · rettet':''}${withBeer?'':' · '+(r.again?'Vil købe den igen':'Køber den ikke igen')}</div>${!withBeer&&S.me&&r.who.toLowerCase()===S.me.toLowerCase()?`<div class="revact"><button type="button" class="ghost" data-edit="${esc(r.id)}">Ret</button><button type="button" class="ghost" data-delrev="${esc(r.id)}">Slet</button></div>`:''}</div></div>`}
+  return `<div class="rv">${avatar(r.who)}<div><div><b>${esc(r.who)}</b>${b?` om <a href="#beer-${esc(b.id)}"><b>${esc(b.name)}</b></a>`:''} <span class="s">${fmt(tot(r))}</span></div>${r.text?`<p>${esc(r.text)}</p>`:''}${!withBeer&&r.tags?.length?`<div class="tags" style="margin-top:6px">${r.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>`:''}${r.img?`<img src="${esc(src(r.img))}" alt="Foto fra ${esc(r.who)}" loading="lazy">`:''}<div style="font-size:12px;opacity:.6;margin-top:3px">${ago(r.date)}${r.edited?' · rettet':''}${withBeer?'':' · '+(r.again?'Vil købe den igen':'Køber den ikke igen')}</div>${!withBeer&&S.me&&r.who.toLowerCase()===S.me.toLowerCase()?`<div class="revact"><button type="button" class="ghost" data-edit="${esc(r.id)}">Ret</button><button type="button" class="ghost" data-delrev="${esc(r.id)}">Slet</button></div>`:''}</div></div>`}
 function weekBeer(L){const wk=Date.now()-7*DAY,rated=L.filter(b=>b.rs.length);if(!rated.length)return null;const rec=rated.filter(b=>b.rs.some(r=>new Date(r.date).getTime()>wk));return[...(rec.length?rec:rated)].sort((a,c)=>c.avg-a.avg||c.rs.length-a.rs.length)[0]}
 
 function home(){const L=enrich(),Rv=reviews().slice().sort((a,b)=>b.date.localeCompare(a.date)),c=SEASON[season],h=c?.h||['Øl smager bedst','med udsigt.'],wb=weekBeer(L);
@@ -675,10 +693,10 @@ function topView(){const L=enrich().filter(b=>b.rs.length);const groups=[['Samle
 
 function galItems(){const L=enrich(),out=[];for(const b of L){if(b.img)out.push({b,img:b.img,who:b.addedBy,date:b.date,kind:'beer'});for(const r of b.rs)if(r.img)out.push({b,img:r.img,who:r.who,date:r.date,kind:'rev'})}return out.sort((a,c)=>(c.date||'').localeCompare(a.date||''))}
 let GI=[];
-const galBtn=(x,i)=>`<button type="button" class="gi" data-gi="${i}" style="--i:${i}" aria-label="Vis billede af ${esc(x.b.name)}"><img src="${esc(x.img)}" alt="${esc(x.b.name)}" loading="lazy"><span><b>${esc(x.b.name)}</b><br>${x.kind==='rev'?'Foto':'Tilføjet'} af ${esc(x.who)}</span></button>`;
+const galBtn=(x,i)=>`<button type="button" class="gi" data-gi="${i}" style="--i:${i}" aria-label="Vis billede af ${esc(x.b.name)}"><img src="${esc(src(x.img))}" alt="${esc(x.b.name)}" loading="lazy"><span><b>${esc(x.b.name)}</b><br>${x.kind==='rev'?'Foto':'Tilføjet'} af ${esc(x.who)}</span></button>`;
 function galleryView(){GI=galItems();return `<section class="band" style="padding-top:120px"><div class="wrap"><h1 style="font-size:clamp(34px,5vw,60px)">Galleri</h1><p class="meta" style="margin:10px 0 24px">Alle brugernes billeder af øl. Klik for at se dem i fuld størrelse.</p>
   ${GI.length?`<div class="gal">${GI.map(galBtn).join('')}</div>`:galEmpty()}</div></section>`}
-function openLb(i){$('lbs').innerHTML=GI.map(x=>`<figure><img src="${esc(x.img)}" alt="${esc(x.b.name)}"><figcaption><b>${esc(x.b.name)}</b> · ${esc(x.b.brewery)}<br>${x.kind==='rev'?'Foto':'Tilføjet'} af ${esc(x.who)} · ${dk(x.date)} · <a href="#beer-${esc(x.b.id)}" data-lbclose>Se øllen</a></figcaption></figure>`).join('');
+function openLb(i){$('lbs').innerHTML=GI.map(x=>`<figure><img src="${esc(src(x.img))}" alt="${esc(x.b.name)}"><figcaption><b>${esc(x.b.name)}</b> · ${esc(x.b.brewery)}<br>${x.kind==='rev'?'Foto':'Tilføjet'} af ${esc(x.who)} · ${dk(x.date)} · <a href="#beer-${esc(x.b.id)}" data-lbclose>Se øllen</a></figcaption></figure>`).join('');
   $('lb').hidden=false;document.body.style.overflow='hidden';requestAnimationFrame(()=>{$('lbs').children[i]?.scrollIntoView({behavior:'instant',inline:'center',block:'nearest'});lbCount()});$('lbX').focus()}
 function closeLb(){$('lb').hidden=true;document.body.style.overflow=''}
 const lbIdx=()=>{const s=$('lbs');return Math.round(s.scrollLeft/Math.max(1,s.clientWidth))};
@@ -799,7 +817,7 @@ function diaryView(){const me=S.me.trim().toLowerCase(),L=enrich(),bs=r=>L.find(
    <div class="pstats" style="margin:14px 0 0"><div><b>${yr.length}</b><small>øl smagt</small></div><div><b>${brews}</b><small>bryggerier</small></div><div><b>${fmt(yr.reduce((a,r)=>a+tot(r),0)/yr.length)}</b><small>gennemsnit</small></div><div><b style="font-size:19px">${favSt?esc(favSt[0]):'–'}</b><small>mest drukne stil</small></div><div><b style="font-size:19px;text-transform:capitalize">${topM?mname(topM[0]).split(' ')[0]:'–'}</b><small>travleste måned</small></div></div>
    ${best?`<p style="margin:16px 0 0">Årets bedste: <a href="#beer-${esc(best.beer)}"><b>${esc(bs(best).name)}</b></a> fra ${esc(bs(best).brewery)} med <b style="color:var(--gl)">${fmt(tot(best))}</b>.${Object.keys(tg).length?` Du smagte oftest ${Object.entries(tg).sort((a,b)=>b[1]-a[1]).slice(0,3).map(x=>esc(x[0].toLowerCase())).join(', ')}.`:''}</p>`:''}</div>`
    :`<div class="empty" style="margin-top:22px"><h3>Ingen øl i ${y} endnu</h3><a class="btn" href="#tilfoej">Tilføj en øl</a></div>`}
-  ${Object.entries(groups).map(([k,rs])=>`<div class="month"><h3>${mname(k)}</h3>${rs.map(r=>{const b=bs(r);return `<a class="mini" href="#beer-${esc(b.id)}"><div class="thumb">${r.img?`<img src="${esc(r.img)}" alt="">`:photo(b)}</div><span><b>${esc(b.name)}</b><br><span class="meta" style="font-size:13px">${esc(b.brewery)} · ${new Date(r.date+'T12:00').toLocaleDateString('da-DK',{day:'numeric',month:'short'})}${r.text?' · “'+esc(r.text.slice(0,60))+(r.text.length>60?'…':'')+'”':''}</span></span><b class="big" style="font-size:20px">${fmt(tot(r))}</b></a>`}).join('')}</div>`).join('')}
+  ${Object.entries(groups).map(([k,rs])=>`<div class="month"><h3>${mname(k)}</h3>${rs.map(r=>{const b=bs(r);return `<a class="mini" href="#beer-${esc(b.id)}"><div class="thumb">${r.img?`<img src="${esc(src(r.img))}" alt="">`:photo(b)}</div><span><b>${esc(b.name)}</b><br><span class="meta" style="font-size:13px">${esc(b.brewery)} · ${new Date(r.date+'T12:00').toLocaleDateString('da-DK',{day:'numeric',month:'short'})}${r.text?' · “'+esc(r.text.slice(0,60))+(r.text.length>60?'…':'')+'”':''}</span></span><b class="big" style="font-size:20px">${fmt(tot(r))}</b></a>`}).join('')}</div>`).join('')}
   </div></section>`}
 /* ---------- madforslag (klassiske kombinationer) ---------- */
 const DISHES={'Pizza':['Lager','Pale Ale','IPA'],'Burger':['Lager','IPA','Brown Ale'],'Flæskesteg':['Brown Ale','Juleøl','Bock'],'Fisk og skaldyr':['Pilsner','Hvede','Sour'],'Smørrebrød':['Pilsner','Lager','Porter'],'Julefrokost':['Juleøl','Porter','Pilsner'],'Karry og krydret':['IPA','Hvede','Pale Ale'],'Grill':['Porter','Brown Ale','Lager'],'Ost':['Pale Ale','Bock','Stout'],'Chokoladekage':['Stout','Porter'],'Salat':['Hvede','Pilsner','Sour'],'Østers':['Stout','Pilsner'],'Vildt':['Bock','Porter','Juleøl'],'Lam':['Påskebryg','Brown Ale','Bock']};
@@ -868,7 +886,8 @@ document.addEventListener('click',e=>{const t=e.target.closest('button,a');if(!t
   else if('lbclose' in t.dataset||t.id==='lbX'){closeLb()}
   else if(t.id==='lbP'){lbGo(-1)}else if(t.id==='lbNx'){lbGo(1)}
   else if(t.dataset.go==='reviews'){e.preventDefault();if(location.hash){location.hash='';setTimeout(()=>$('reviews')?.scrollIntoView(),50)}else $('reviews')?.scrollIntoView({behavior:'smooth'})}
-  else if(t.id==='delBeer'){if(t.dataset.sure){S.beers=S.beers.filter(b=>b.id!==t.dataset.id);S.reviews=S.reviews.filter(r=>r.beer!==t.dataset.id);save();toast('Øllen er slettet');location.hash=''}else{t.dataset.sure=1;t.textContent='Klik igen for at slette'}}
+  else if(t.id==='delBeer'){const id=t.dataset.id,ob=S.beers.find(b=>b.id===id),ors=S.reviews.filter(r=>r.beer===id);S.beers=S.beers.filter(b=>b.id!==id);S.reviews=S.reviews.filter(r=>r.beer!==id);save();location.hash='';
+    undoToast(`${ob?.name||'Øllen'} er slettet`,()=>{S.beers.push(ob);S.reviews.push(...ors);save();location.hash='beer-'+id},()=>{delImg(ob?.img);ors.forEach(r=>delImg(r.img))})}
   else if(t.dataset.go==='apphelp'){e.preventDefault();const d=$('app-hjaelp');if(d){d.open=true;d.scrollIntoView({behavior:RM?'auto':'smooth',block:'center'})}}
   else if(t.id==='surpriseBtn'){surprise()}
   else if(t.id==='editBeer'){F.editBeer=t.dataset.id;if(location.hash==='#tilfoej')route();else location.hash='tilfoej'}
@@ -888,41 +907,43 @@ document.addEventListener('click',e=>{const t=e.target.closest('button,a');if(!t
     f.querySelectorAll('[data-tag]').forEach(b=>b.setAttribute('aria-pressed',(r.tags||[]).includes(b.dataset.tag)));
     f.querySelectorAll('[data-again]').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.again===(r.again?1:0)));
     f.querySelector('button[type=submit]').textContent='Gem ændringer';$('rateTitle').textContent='Ret din anmeldelse';$('rate').scrollIntoView({behavior:RM?'auto':'smooth'})}
-  else if(t.dataset.delrev){if(t.dataset.sure){S.reviews=S.reviews.filter(x=>x.id!==t.dataset.delrev);save();toast('Anmeldelsen er slettet');route()}else{t.dataset.sure=1;t.textContent='Klik igen'}}
+  else if(t.dataset.delrev){const o=S.reviews.find(x=>x.id===t.dataset.delrev);S.reviews=S.reviews.filter(x=>x.id!==t.dataset.delrev);save();route();undoToast('Anmeldelsen er slettet',()=>{S.reviews.push(o);save();route()},()=>delImg(o?.img))}
   else if(t.id==='wishBtn'){const id=t.dataset.id,on=!S.wish.includes(id);S.wish=on?[...S.wish,id]:S.wish.filter(x=>x!==id);save();t.setAttribute('aria-pressed',on);t.textContent=on?'På din ønskeliste':'Vil smage';if(on)burstAt(t);toast(on?'Gemt på din ønskeliste':'Fjernet fra ønskelisten')}
   else if(t.id==='shareBtn'){const b=enrich().find(x=>x.id===t.dataset.id);if(b)shareBeer(b)}
   else if(t.getAttribute('href')==='#rate'){e.preventDefault();$('rate')?.scrollIntoView({behavior:RM?'auto':'smooth'})}
   else if(t.dataset.brew){F.q=t.dataset.brew;F.style='';if(location.hash==='#alle')route();else location.hash='alle'}
   else if(t.id==='installBtn'&&installEvt){installEvt.prompt();installEvt.userChoice.then(c=>{if(c.outcome==='accepted')toast('ølrating er installeret');installEvt=null})}
-  else if(t.id==='exportBtn'){const blob=new Blob([JSON.stringify({app:'olrating',v:1,exported:new Date().toISOString(),beers:S.beers,reviews:S.reviews,wish:S.wish,me:S.me},null,1)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='olrating-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);toast('Backup downloadet')}
-  else if(t.id==='wipeBtn'){if(t.dataset.sure){S={...S,beers:[],reviews:[],wish:[]};save();toast('Dine data er slettet');route()}else{t.dataset.sure=1;t.textContent='Klik igen: alt slettes'}}});
+  else if(t.id==='exportBtn'){(async()=>{toast('Pakker backup…');const beersX=await Promise.all(S.beers.map(async b=>({...b,img:await imgAsData(b.img)}))),revX=await Promise.all(S.reviews.map(async r=>({...r,img:await imgAsData(r.img)})));
+    const blob=new Blob([JSON.stringify({app:'olrating',v:2,exported:new Date().toISOString(),beers:beersX,reviews:revX,wish:S.wish,me:S.me})],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='olrating-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);toast('Backup downloadet')})()}
+  else if(t.id==='wipeBtn'){if(t.dataset.sure){S.beers.forEach(b=>delImg(b.img));S.reviews.forEach(r=>delImg(r.img));S={...S,beers:[],reviews:[],wish:[]};save();toast('Dine data er slettet');route()}else{t.dataset.sure=1;t.textContent='Klik igen: alt slettes'}}});
 document.addEventListener('input',e=>{if(e.target.id==='bAbv'){$('abvHint').textContent=abvLabel(parseFloat(e.target.value.replace(',','.'))||0);return}if(e.target.id==='bIbu'){$('ibuHint').textContent=ibuLabel(+e.target.value)||'står tit på etiketten';return}if(e.target.id==='fPrice'){F.maxPrice=+e.target.value;$('fPriceO').textContent=F.maxPrice?`op til ${F.maxPrice} kr`:'alle priser';renderGrid();return}if(e.target.id==='fAbv'){F.maxAbv=+e.target.value;$('fAbvO').textContent=F.maxAbv?`op til ${F.maxAbv} %`:'alle';renderGrid();return}if(e.target.id==='fMinAbv'){F.minAbv=+e.target.value;$('fMinAbvO').textContent=F.minAbv?`mindst ${F.minAbv} %`:'alle';renderGrid();return}if(e.target.dataset.p){const k=e.target.dataset.p;$('o_'+k).textContent=e.target.value;e.target.closest('#profBox').dataset.touched='1';return}if(e.target.id==='q'){F.q=e.target.value.trim();renderGrid()}});
-document.addEventListener('change',e=>{if(e.target.dataset.cmp){CMP[+e.target.dataset.cmp]=e.target.value;route();return}if(e.target.id==='fUntried'){F.untried=e.target.checked;renderGrid();return}if(e.target.id==='fImg'){F.withImg=e.target.checked;renderGrid();return}if(e.target.id==='importFile'){const f=e.target.files[0];if(!f)return;f.text().then(txt=>{const x=JSON.parse(txt);if(x.app!=='olrating'||!Array.isArray(x.beers)||!Array.isArray(x.reviews))throw 0;const ib=new Set(S.beers.map(b=>b.id)),ir=new Set(S.reviews.map(r=>r.id));S.beers=S.beers.concat(x.beers.filter(b=>b&&b.id&&!ib.has(b.id)));S.reviews=S.reviews.concat(x.reviews.filter(r=>r&&r.id&&!ir.has(r.id)));S.wish=[...new Set([...S.wish,...(x.wish||[])])];if(!S.me&&x.me)S.me=x.me;if(save()){toast('Backup indlæst');route()}}).catch(()=>toast('Filen er ikke en ølrating-backup'));return}
+document.addEventListener('change',e=>{if(e.target.dataset.cmp){CMP[+e.target.dataset.cmp]=e.target.value;route();return}if(e.target.id==='fUntried'){F.untried=e.target.checked;renderGrid();return}if(e.target.id==='fImg'){F.withImg=e.target.checked;renderGrid();return}if(e.target.id==='importFile'){const f=e.target.files[0];if(!f)return;f.text().then(txt=>{const x=JSON.parse(txt);if(x.app!=='olrating'||!Array.isArray(x.beers)||!Array.isArray(x.reviews))throw 0;const ib=new Set(S.beers.map(b=>b.id)),ir=new Set(S.reviews.map(r=>r.id));S.beers=S.beers.concat(x.beers.filter(b=>b&&b.id&&!ib.has(b.id)));S.reviews=S.reviews.concat(x.reviews.filter(r=>r&&r.id&&!ir.has(r.id)));S.wish=[...new Set([...S.wish,...(x.wish||[])])];if(!S.me&&x.me)S.me=x.me;if(save()){migrateImgs().then(()=>{toast('Backup indlæst');route()})}}).catch(()=>toast('Filen er ikke en ølrating-backup'));return}
   if(e.target.id==='sort'){F.sort=e.target.value;renderGrid()}else if(e.target.id==='modeSel'){S.mode=e.target.value;save();applyMode()}else if(e.target.id==='seasonSel'){S.season=e.target.value;save();applySeason();route()}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('scan').hidden){stopScan();return}if($('lb').hidden)return;if(e.key==='Escape')closeLb();else if(e.key==='ArrowRight')lbGo(1);else if(e.key==='ArrowLeft')lbGo(-1)});
 $('lbs').addEventListener('scroll',lbCount,{passive:true});
-document.addEventListener('submit',e=>{const f=e.target;e.preventDefault();
+document.addEventListener('submit',async e=>{const f=e.target;e.preventDefault();
   if(f.id==='meForm'){S.me=$('meName').value.trim().slice(0,30);save();toast(S.me?`Hej ${S.me}`:'Navn fjernet');route();return}
   if(f.id==='sForm'){F.q=$('q').value.trim();renderGrid();const h=$('alle');if(h){h.textContent=F.q?`Resultater for “${F.q}”`:'Højest bedømt lige nu';h.scrollIntoView({behavior:RM?'auto':'smooth'})}return}
   if(f.id==='addForm'){const name=$('bName').value.trim(),brew=$('bBrew').value.trim(),edit=f.dataset.edit;
     if(!edit&&!pending.bImg){toast('Tilføj et billede af øllen');$('bImgDrop').scrollIntoView({block:'center'});return}
     if(!name||!brew){toast('Skriv øllens navn og bryggeri');(name?$('bBrew'):$('bName')).focus();return}
     const info={name,brewery:brew,city:$('bCity').value.trim(),country:$('bCountry').value,style:$('bStyle').value,abv:parseFloat(String($('bAbv').value).replace(',','.'))||0,ibu:Math.max(0,Math.min(150,parseInt($('bIbu').value)||0)),color:f.querySelector('[data-color][aria-pressed=true]')?.dataset.color||'',price:+String($('bPrice').value).replace(',','.')||0,place:$('bPlace').value.trim(),size:$('bSize').value,desc:$('bDesc').value.trim(),code:$('bCode').value.replace(/\D/g,'').slice(0,20)};
-    if(edit){const k=S.beers.findIndex(x=>x.id===edit);if(k<0)return;const old=S.beers[k];S.beers[k]={...old,...info,img:pending.bImg||old.img};if(!save()){S.beers[k]=old;return}
+    if(edit){const k=S.beers.findIndex(x=>x.id===edit);if(k<0)return;const old=S.beers[k];const ni=pending.bImg?await putImg(pending.bImg):old.img;if(pending.bImg)delImg(old.img);S.beers[k]={...old,...info,img:ni};if(!save()){S.beers[k]=old;return}
       delete pending.bImg;F.editBeer='';toast('Oplysningerne er gemt');location.hash='beer-'+edit;return}
     const r=readReview(f);if(!r)return;const id='u'+Date.now().toString(36);F.code='';
-    const b={id,...info,img:pending.bImg,addedBy:r.who,date:r.date};
+    const b={id,...info,img:await putImg(pending.bImg),addedBy:r.who,date:r.date};
     r.beer=id;S.me=r.who;S.beers.push(b);S.reviews.push(r);
     if(!save()){S.beers.pop();S.reviews.pop();return}
     checkBadges();burstAt($('addBtn'));delete pending.bImg;toast(`Skål, ${r.who}! ${name} er tilføjet`);setTimeout(()=>location.hash='beer-'+id,RM?0:600);return}
   if(f.id==='revForm'&&f.dataset.edit){const r=readReview(f);if(!r)return;const i=S.reviews.findIndex(x=>x.id===f.dataset.edit);if(i<0)return;const old=S.reviews[i];
-    S.reviews[i]={...old,...r,prof:r.prof||old.prof,id:old.id,date:old.date,beer:old.beer,edited:1,img:pending.rImg||old.img};delete pending.rImg;S.me=r.who;if(!save()){S.reviews[i]=old;return}
+    S.reviews[i]={...old,...r,prof:r.prof||old.prof,id:old.id,date:old.date,beer:old.beer,edited:1,img:pending.rImg?await putImg(pending.rImg):old.img};delete pending.rImg;S.me=r.who;if(!save()){S.reviews[i]=old;return}
     burstAt(f.querySelector('button[type=submit]'));toast('Din anmeldelse er rettet');checkBadges();setTimeout(route,RM?0:600);return}
-  if(f.id==='revForm'){const r=readReview(f);if(!r)return;r.beer=f.dataset.beer;if(pending.rImg)r.img=pending.rImg;S.me=r.who;S.reviews.push(r);
+  if(f.id==='revForm'){const r=readReview(f);if(!r)return;r.beer=f.dataset.beer;if(pending.rImg)r.img=await putImg(pending.rImg);S.me=r.who;S.reviews.push(r);
     if(!save()){S.reviews.pop();return}checkBadges();
     burstAt(f.querySelector('button[type=submit]'));delete pending.rImg;toast('Skål! Din bedømmelse er gemt');setTimeout(route,RM?0:650)}});
 
-applyMode();applySeason();route();
+applyMode();applySeason();
+(async()=>{try{navigator.storage?.persist?.()}catch(e){}await loadImgs();await migrateImgs();route()})();
 if('serviceWorker' in navigator&&/^https:|localhost/.test(location.href)){addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
 }
 </script>
