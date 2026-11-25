@@ -2,6 +2,10 @@
 
 Danske øl, bedømt af dem der drikker dem.
 
+**Ejere:** Lucas Valentin Ottesen og Magnus Birkgaard Froberg
+
+**Fejl og forslag:** andersenlucas84@gmail.com
+
 En statisk hjemmeside uden server og uden byggetrin: `index.html` plus billeder, skrifttyper og et par små filer. Den kører på GitHub Pages: https://lucas050908.github.io/-lrating.dk/ – indtil domænet **ølrating.dk** er klar hos Simply.
 
 ## Hvad siden kan
@@ -38,6 +42,19 @@ En statisk hjemmeside uden server og uden byggetrin: `index.html` plus billeder,
 | CNAME | www | lucas050908.github.io |
 
 Slet andre A-records på @ (fx Simplys standard-parkeringsside). Det kan tage op til et par timer, før domænet og HTTPS virker.
+
+## Android-app
+
+Mappen `android/` er en lille Android-app, der viser siden i fuld skærm med billed-upload og kamera.
+GitHub Actions (`.github/workflows/android.yml`) bygger den og lægger `olrating.apk` på udgivelsen **android-app**.
+Hjemmesiden linker til `releases/latest/download/olrating.apk`.
+
+For at nye versioner kan installeres oven i de gamle, skal appen signeres med samme nøgle hver gang. Læg nøglen som secrets under Settings → Secrets and variables → Actions:
+
+- `ANDROID_KEYSTORE_BASE64`: keystore-filen, base64-kodet
+- `ANDROID_KEYSTORE_PASSWORD`: adgangskoden til den
+
+Uden dem laver bygningen en midlertidig nøgle, og så skal appen afinstalleres før en opdatering.
 
 ## Data
 

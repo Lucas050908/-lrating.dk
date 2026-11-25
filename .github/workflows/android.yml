@@ -1,0 +1,63 @@
+# Bygger Android-appen (APK) og lægger den som download på GitHub,
+# så hjemmesiden kan linke til den nyeste version.
+name: Android-app
+
+on:
+  push:
+    branches: [main]
+    paths: ["android/**", ".github/workflows/android.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.7"
+
+      - name: Signeringsnøgle
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PW: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          KS="$RUNNER_TEMP/olrating.keystore"
+          if [ -n "$KEYSTORE_B64" ] && [ -n "$KEYSTORE_PW" ]; then
+            echo "$KEYSTORE_B64" | base64 -d > "$KS"
+            PW="$KEYSTORE_PW"
+          else
+            # Ingen fast nøgle sat op endnu: lav en midlertidig.
+            # Så skal appen afinstalleres før en ny version kan installeres.
+            PW="$(openssl rand -hex 16)"
+            keytool -genkeypair -keystore "$KS" -storepass "$PW" -keypass "$PW" -alias olrating \
+              -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=olrating.dk, O=olrating, C=DK"
+            echo "::warning::Ingen fast signeringsnøgle. Tilføj ANDROID_KEYSTORE_BASE64 og ANDROID_KEYSTORE_PASSWORD som secrets for at kunne opdatere appen uden at afinstallere."
+          fi
+          echo "::add-mask::$PW"
+          echo "OLRATING_KEYSTORE=$KS" >> "$GITHUB_ENV"
+          echo "OLRATING_KEYSTORE_PASSWORD=$PW" >> "$GITHUB_ENV"
+
+      - name: Byg APK
+        run: gradle -p android assembleRelease --no-daemon
+
+      - name: Læg APK på GitHub
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp android/app/build/outputs/apk/release/app-release.apk olrating.apk
+          if ! gh release view android-app >/dev/null 2>&1; then
+            gh release create android-app --title "ølrating til Android" \
+              --notes "Den nyeste version af ølrating-appen til Android. Hent olrating.apk og åbn den på telefonen." --latest
+          fi
+          gh release upload android-app olrating.apk --clobber
+          gh release edit android-app --notes "Den nyeste version af ølrating-appen til Android (bygning ${{ github.run_number }}). Hent olrating.apk og åbn den på telefonen."
