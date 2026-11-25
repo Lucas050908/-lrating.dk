@@ -10,14 +10,28 @@
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ølrating">
+<link rel="canonical" href="https://xn--lrating-p1a.dk/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://xn--lrating-p1a.dk/">
+<meta property="og:locale" content="da_DK">
+<meta property="og:site_name" content="ølrating.dk">
 <meta property="og:title" content="ølrating.dk">
 <meta property="og:description" content="Danske øl, bedømt af dem der drikker dem.">
-<meta property="og:image" content="img/fjord2.jpg">
+<meta property="og:image" content="https://xn--lrating-p1a.dk/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"ølrating.dk","url":"https://xn--lrating-p1a.dk/","inLanguage":"da","description":"Danske øl, bedømt af dem der drikker dem."}</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f1d36'/%3E%3Cpath d='M10 9h12l-2 17h-8z' fill='%23ffc85a'/%3E%3Cpath d='M9 10q2-4 6-2 3-3 7 0 2 0 1 2z' fill='%23fff'/%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; media-src 'self' blob:; manifest-src 'self'; worker-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<link rel="preload" href="fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/sora-700.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+@font-face{font-family:Inter;font-style:normal;font-weight:400;font-display:swap;src:url(fonts/inter-400.woff2) format("woff2")}
+@font-face{font-family:Inter;font-style:normal;font-weight:600;font-display:swap;src:url(fonts/inter-600.woff2) format("woff2")}
+@font-face{font-family:Inter;font-style:normal;font-weight:700;font-display:swap;src:url(fonts/inter-700.woff2) format("woff2")}
+@font-face{font-family:Sora;font-style:normal;font-weight:700;font-display:swap;src:url(fonts/sora-700.woff2) format("woff2")}
 :root{--ink:#0f1d36;--nv:#0f1d36;--nv2:#16294a;--nv3:#1d3557;--sky:#8fb6e3;--sun:#ff7a3d;--pk:#f0566b;--gl:#ffc85a;--tx:#eaf1fb;--ln:rgba(143,182,227,.18);--grad:linear-gradient(90deg,var(--pk),var(--sun),var(--gl));color-scheme:dark}
 [data-mode=light]{--nv:#f3f6fb;--nv2:#ffffff;--nv3:#e3ebf6;--tx:#13203a;--ln:rgba(15,29,54,.13);--sky:#3767a8;color-scheme:light}
 [data-mode=light] body{background:#f3f6fb}
@@ -340,7 +354,7 @@ footer .wrap{position:relative;z-index:2}
       <div><div class="logo" style="font-size:30px">ølrating<b>.dk</b></div><p style="opacity:.85;margin:10px 0 0;max-width:24em">Danske øl, bedømt af dem der drikker dem. Lavet ved Limfjorden.</p></div>
       <div><b>Udforsk</b><a href="#">Alle øl</a><a href="#toplisten">Toplisten</a><a href="#galleri">Galleri</a><a href="#stilguide">Stilguide og bryggerier</a><a href="#kalender">Ølkalender</a><a href="#mad">Øl til maden</a><a href="#sammenlign">Sammenlign øl</a></div>
       <div><b>Fællesskab</b><a href="#tilfoej">Tilføj øl</a><a href="#profil">Min profil</a><a href="#dagbog">Min øl-dagbog</a><a href="#" data-go="reviews">Seneste anmeldelser</a></div>
-      <div><b>Om</b><span style="display:block;opacity:.85;padding:4px 0">Lavet ved Limfjorden</span><span style="display:block;opacity:.85;padding:4px 0">Drik med omtanke</span></div>
+      <div><b>Om</b><a href="#privatliv">Privatliv</a><span style="display:block;opacity:.85;padding:4px 0">Lavet ved Limfjorden</span><span style="display:block;opacity:.85;padding:4px 0">Drik med omtanke</span></div>
     </div>
     <div class="fbot"><span>© 2026 ølrating.dk</span>
       <span style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><label for="modeSel" style="display:flex;align-items:center;gap:8px;font-weight:400">Udseende<select id="modeSel"><option value="auto">Lyst om dagen, mørkt om aftenen</option><option value="dark">Altid mørkt</option><option value="light">Altid lyst</option></select></label><label for="seasonSel" style="display:flex;align-items:center;gap:8px;font-weight:400">Tema<select id="seasonSel"><option value="auto">Efter dato</option><option value="none">Normal</option><option value="nytaar">Nytår</option><option value="fastelavn">Fastelavn</option><option value="paaske">Påske</option><option value="sankthans">Sankthans</option><option value="halloween">Halloween</option><option value="jdag">J-dag</option><option value="jul">Jul</option></select></label><button type="button" class="ghost" id="hideEx" style="min-height:40px;padding:6px 14px">Skjul eksempler</button></span></div>
@@ -771,9 +785,17 @@ function foodView(){const d=foodView.d||'Pizza',sts=DISHES[d],L=enrich();
    ${top.length?`<div style="margin-top:10px">${top.map(b=>`<a class="rk" href="#beer-${esc(b.id)}" style="grid-template-columns:minmax(0,1fr) auto"><span><b style="font-size:14px">${esc(b.name)}</b><br><span class="meta" style="font-size:12px">${esc(b.brewery)}</span></span><b class="s" style="color:var(--gl)">${fmt(b.avg)}</b></a>`).join('')}</div>`:`<p class="meta" style="font-size:13px;margin:10px 0 0">Ingen ${esc(st.toLowerCase())} bedømt endnu.</p>`}
    <button type="button" class="chip" data-style="${esc(st)}" style="margin-top:10px">Se alle ${esc(st.toLowerCase())}</button></div></div>`}).join('')}</div></div></section>`}
 
+function privacyView(){return `<section class="band" style="padding-top:120px"><div class="wrap" style="max-width:760px"><h1 style="font-size:clamp(34px,5vw,56px)">Privatliv</h1>
+ <div class="box" style="margin-top:22px;line-height:1.65"><h3>Kort fortalt</h3><p>ølrating.dk bruger ingen cookies, ingen sporing og ingen annoncer. Vi sender ikke dine data videre til nogen.</p>
+ <h3 style="margin-top:20px">Hvor bliver dine data gemt?</h3><p>Lige nu gemmes de øl, billeder, bedømmelser og det navn, du skriver, kun i din egen browser på din egen enhed (i browserens lokale lager). De bliver ikke sendt til en server, og andre kan ikke se dem.</p>
+ <p>Du kan til enhver tid tage en backup eller slette alt under <a href="#profil" style="color:var(--gl)">Min profil</a>. Rydder du browserens data, forsvinder de også.</p>
+ <h3 style="margin-top:20px">Kamera</h3><p>Stregkodescanneren bruger kun kameraet, mens den er åben, og billedet forlader aldrig din telefon.</p>
+ <h3 style="margin-top:20px">Skrifttyper og billeder</h3><p>Alle skrifttyper og billeder ligger på siden selv, så dit besøg ikke bliver sendt til tredjeparter som fx Google.</p>
+ <h3 style="margin-top:20px">Når fællesdatabasen kommer</h3><p>Når siden får en fælles database, så alle kan se hinandens øl, bliver de øl og bedømmelser, du deler, offentlige. Denne side bliver opdateret, før det sker.</p></div></div></section>`}
+
 /* ---------- router ---------- */
 function route(){const h=location.hash.slice(1);let v;
-  if(h.startsWith('beer-'))v=beerView(h.slice(5));else if(h==='tilfoej')v=addView();else if(h==='toplisten')v=topView();else if(h==='galleri')v=galleryView();else if(h==='profil')v=profileView();else if(h==='sammenlign')v=cmpView();else if(h==='kalender')v=calView();else if(h==='dagbog')v=diaryView();else if(h==='mad')v=foodView();else if(h==='stilguide')v=guideView();else v=home();
+  if(h.startsWith('beer-'))v=beerView(h.slice(5));else if(h==='tilfoej')v=addView();else if(h==='toplisten')v=topView();else if(h==='galleri')v=galleryView();else if(h==='profil')v=profileView();else if(h==='sammenlign')v=cmpView();else if(h==='kalender')v=calView();else if(h==='dagbog')v=diaryView();else if(h==='mad')v=foodView();else if(h==='privatliv')v=privacyView();else if(h==='stilguide')v=guideView();else v=home();
   $('app').innerHTML=`<div class="view">${v}</div>`;
   document.querySelectorAll('[data-nav]').forEach(a=>{if(a.dataset.nav===(h==='alle'?'':h))a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
   $('nav').classList.remove('open');$('menuBtn').setAttribute('aria-expanded','false');

@@ -1,6 +1,6 @@
 // ølrating.dk service worker: virker offline og indlæser hurtigt
-const V='olrating-v4';
-const SHELL=['./','./index.html','./manifest.webmanifest','./img/fjord1.jpg','./img/fjord2.jpg','./img/fjord3.jpg','./img/fjord1-m.jpg','./img/fjord2-m.jpg','./img/fjord3-m.jpg','./img/icon-192.png'];
+const V='olrating-v5';
+const SHELL=['./','./index.html','./manifest.webmanifest','./fonts/inter-400.woff2','./fonts/inter-600.woff2','./fonts/inter-700.woff2','./fonts/sora-700.woff2','./img/fjord1.jpg','./img/fjord2.jpg','./img/fjord3.jpg','./img/fjord1-m.jpg','./img/fjord2-m.jpg','./img/fjord3-m.jpg','./img/icon-192.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==V).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',e=>{
