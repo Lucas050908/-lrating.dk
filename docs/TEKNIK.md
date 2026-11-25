@@ -54,6 +54,7 @@ Widget-data, som `syncApp()` sender:
   - Links til andre sider åbnes i browseren. Egne værter er `xn--lrating-p1a.dk`, `www.` og den gamle github.io-sti.
   - `onNewIntent` håndterer tryk fra widgets, når appen allerede kører.
 - **`Bridge`:** JavaScript-broen. Den gemmer data i SharedPreferences `olrating_widget` og opdaterer alle widgets.
+- **Ikon:** Adaptivt ikon i `res/mipmap-anydpi-v26/` med `ic_launcher_foreground.png` (motivet i fuld flade, 108 dp) og `ic_launcher_mono.png` til tema-ikoner. `ic_launcher.png` og `ic_launcher_round.png` er til Android 7.
 - **Widgets:** `TopWidget`, `QuickWidget`, `LatestWidget`, `StatsWidget` og `UnitsWidget`. +1 er en broadcast `dk.olrating.app.ADD_UNIT`, der lægger et tidsstempel i `pending_units`.
 - **Byg:** `.github/workflows/android.yml` kører ved push til `android/**`.
   - Den bygger `assembleRelease` og lægger `olrating.apk` på udgivelsen `android-app`.
