@@ -242,6 +242,14 @@ label{font-weight:600;display:grid;gap:6px}
 .gi img{width:100%;height:auto;transition:transform .6s}
 .gi:hover img{transform:scale(1.05)}
 .gi span{position:absolute;left:0;right:0;bottom:0;padding:28px 12px 10px;background:linear-gradient(transparent,rgba(15,29,54,.85));color:#fff;font-size:14px;font-weight:400;text-align:left}
+.tl{display:grid;gap:10px;margin-top:22px}.tcard{display:flex;flex-direction:column;gap:4px;background:var(--nv2);border:1px solid var(--ln);border-radius:18px;padding:16px 18px;text-decoration:none;color:inherit}.tcard b{font-size:20px}.tcard.old{opacity:.6}.tcard:hover{border-color:var(--gl)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}#tourForm label{display:flex;flex-direction:column;gap:6px;font-weight:600}
+.thead{display:flex;gap:20px;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;margin-top:12px}.tbtns{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.pill.ok{position:static;background:rgba(80,200,120,.18);color:#7be3a0;padding:10px 16px;border-radius:99px;font-weight:700}
+.now{margin-top:22px;background:linear-gradient(135deg,var(--sun),var(--pk));color:var(--ink);border-radius:22px;padding:18px 22px;display:flex;flex-direction:column;gap:2px}.now .kick{color:var(--ink);opacity:.8}.now b{font-size:28px;font-family:Sora,sans-serif}
+.tgrid{display:grid;grid-template-columns:1.4fr 1fr;gap:28px;margin-top:28px}.route{list-style:none;margin:0;padding:0;position:relative}.route li{display:grid;grid-template-columns:56px 1fr auto;gap:12px;align-items:center;padding:12px 0 12px;border-left:3px solid var(--ln);padding-left:16px;margin-left:8px;position:relative}.route li::before{content:"";position:absolute;left:-9px;top:20px;width:15px;height:15px;border-radius:50%;background:var(--nv);border:3px solid var(--gl)}.route li.done{opacity:.55}.route li.done::before{background:var(--gl)}.route li.cur::before{background:var(--sun);border-color:var(--sun);box-shadow:0 0 0 6px rgba(255,122,61,.25)}.route li.cur b{color:var(--sun)}.route .tm{font-weight:700;font-variant-numeric:tabular-nums}.route a{display:block;font-size:13px}.route button{padding:4px 8px}
+.stopf{display:grid;grid-template-columns:1.3fr 110px 1.3fr auto;gap:8px;margin-top:14px}.mem{display:grid;grid-template-columns:36px 1fr;gap:8px 10px;align-items:center}.av{width:36px;height:36px;border-radius:50%;background:var(--gl);color:var(--ink);display:grid;place-items:center;font-weight:800}
+.qrbox{background:#fff;border-radius:18px;padding:10px;width:200px;max-width:100%;margin:20px 0 8px}.qrbox svg{display:block;width:100%;height:auto}.safe{margin-top:28px}.sbtns{display:flex;gap:10px;flex-wrap:wrap}
+@media(max-width:760px){.tgrid,.g2{grid-template-columns:1fr}.stopf{grid-template-columns:1fr 110px}.stopf input:nth-child(3){grid-column:1/-1}.stopf .btn{grid-column:1/-1}}
 .gwrap{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}.gbig{background:var(--nv2);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:4px}.gbig .big{font-size:64px;line-height:1}
 .gbar{height:10px;border-radius:9px;background:rgba(255,255,255,.12);overflow:hidden;margin:8px 0 2px}.gbar i{display:block;height:100%;background:var(--gl);border-radius:9px}.gbar.near i{background:var(--sun)}.gbar.over i{background:var(--pk)}
 .gq{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}.gq button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:12px 14px;border-radius:16px}.gq span{font-size:13px;opacity:.75}
@@ -378,7 +386,7 @@ footer .wrap{position:relative;z-index:2}
 <div class="top" id="top"><div class="bar">
   <a class="logo" href="#" aria-label="ølrating.dk forside"><img src="img/favicon.svg" width="36" height="36" alt="" class="badge-ic"><span>ølrating<b>.dk</b></span></a>
   <button class="menu" id="menuBtn" aria-label="Åbn menu" aria-expanded="false"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-  <nav class="nav" id="nav"><a href="#" data-nav="">Alle øl</a><a href="#toplisten" data-nav="toplisten">Toplisten</a><a href="#galleri" data-nav="galleri">Galleri</a><a href="#sammenlign" data-nav="sammenlign">Sammenlign</a><a href="#stilguide" data-nav="stilguide">Stilguide</a><a href="#profil" data-nav="profil">Min profil</a><a href="#tilfoej" data-nav="tilfoej" class="cta">+ Tilføj øl</a></nav>
+  <nav class="nav" id="nav"><a href="#" data-nav="">Alle øl</a><a href="#toplisten" data-nav="toplisten">Toplisten</a><a href="#galleri" data-nav="galleri">Galleri</a><a href="#sammenlign" data-nav="sammenlign">Sammenlign</a><a href="#byttur" data-nav="byttur">Byttur</a><a href="#stilguide" data-nav="stilguide">Stilguide</a><a href="#profil" data-nav="profil">Min profil</a><a href="#tilfoej" data-nav="tilfoej" class="cta">+ Tilføj øl</a></nav>
 </div></div>
 <main id="app"></main>
 <footer>
@@ -388,7 +396,7 @@ footer .wrap{position:relative;z-index:2}
     <div class="fcols">
       <div><img src="img/logo.svg" width="96" height="96" alt="ølrating.dk logo" style="margin-bottom:12px"><div class="logo" style="font-size:30px"><span>ølrating<b>.dk</b></span></div><p style="opacity:.85;margin:10px 0 0;max-width:24em">Danske øl, bedømt af dem der drikker dem. Lavet ved Limfjorden.</p></div>
       <div><b>Udforsk</b><a href="#">Alle øl</a><a href="#toplisten">Toplisten</a><a href="#galleri">Galleri</a><a href="#stilguide">Stilguide og bryggerier</a><a href="#kalender">Ølkalender</a><a href="#mad">Øl til maden</a><a href="#sammenlign">Sammenlign øl</a><a href="https://github.com/Lucas050908/-lrating.dk/releases/download/android-app/olrating.apk" rel="noopener">Hent Android-appen</a></div>
-      <div><b>Fællesskab</b><a href="#tilfoej">Tilføj øl</a><a href="#profil">Min profil</a><a href="#dagbog">Min øl-dagbog</a><a href="#genstande">Genstand-tæller</a><a href="#" data-go="reviews">Seneste anmeldelser</a></div>
+      <div><b>Fællesskab</b><a href="#tilfoej">Tilføj øl</a><a href="#profil">Min profil</a><a href="#byttur">Byttur</a><a href="#dagbog">Min øl-dagbog</a><a href="#genstande">Genstand-tæller</a><a href="#" data-go="reviews">Seneste anmeldelser</a></div>
       <div><b>Om</b><a href="#om">Om ølrating.dk</a><a href="#privatliv">Privatliv</a><a href="mailto:andersenlucas84@gmail.com?subject=Fejl%20p%C3%A5%20%C3%B8lrating.dk&body=Hvad%20skete%20der%3F%0A%0AHvilken%20side%20var%20du%20p%C3%A5%3F%0A%0ATelefon%2Fbrowser%3A%0A">Rapportér en fejl</a><span style="display:block;opacity:.7;font-size:13px;padding:2px 0 4px">andersenlucas84@gmail.com</span><span style="display:block;opacity:.85;padding:4px 0">Lavet ved Limfjorden</span><span style="display:block;opacity:.85;padding:4px 0">Drik med omtanke</span></div>
     </div>
     <div class="fbot"><span>© 2026 ølrating.dk · Ejet af Lucas Valentin Ottesen og Magnus Birkgaard Froberg</span>
@@ -433,6 +441,25 @@ let S={beers:[],reviews:[],me:'',season:'auto',wish:[],mode:'auto'};
 try{const x=JSON.parse(localStorage.getItem(KEY)||'null');if(x)S={...S,...x}}catch(e){}
 if(!Array.isArray(S.wish))S.wish=[];
 if(!Array.isArray(S.units))S.units=[];
+if(!Array.isArray(S.tours))S.tours=[];
+/* ---------- byttur ---------- */
+const b64e=o=>btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+const b64d=t=>{try{return JSON.parse(decodeURIComponent(escape(atob(t.replace(/-/g,'+').replace(/_/g,'/')))))}catch(e){return null}};
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const tourById=id=>S.tours.find(t=>t.id===id);
+const siteUrl=()=>location.href.split('#')[0];
+const tourLink=t=>siteUrl()+'#byttur-join-'+b64e({v:1,id:t.id,name:t.name,date:t.date,meet:t.meet,note:t.note||'',host:t.host,stops:t.stops,members:t.members.map(m=>m.name)});
+const mapUrl=q=>'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q);
+function cleanTour(o){if(!o||typeof o!=='object'||typeof o.id!=='string'||o.id.length>40)return null;const str=(x,n)=>String(x||'').slice(0,n);
+  return{id:o.id,name:str(o.name,80)||'Byttur',date:str(o.date,20),meet:str(o.meet,120),note:str(o.note,300),host:str(o.host,40),
+   stops:(Array.isArray(o.stops)?o.stops:[]).slice(0,20).map(x=>({name:str(x.name,80),time:str(x.time,5),addr:str(x.addr,120)})).filter(x=>x.name),
+   members:(Array.isArray(o.members)?o.members:[]).slice(0,100).map(m=>typeof m==='string'?{name:str(m,40)}:{name:str(m.name,40)}).filter(m=>m.name)}}
+function mergeTour(n){const o=tourById(n.id);if(!o){S.tours.push(n);return n}const names=new Set(o.members.map(m=>m.name.toLowerCase()));n.members.forEach(m=>{if(!names.has(m.name.toLowerCase()))o.members.push(m)});if(o.host!==S.me){Object.assign(o,{name:n.name,date:n.date,meet:n.meet,note:n.note,stops:n.stops})}return o}
+function curStop(t){if(!t.date||!t.stops.length)return -1;const d=t.date.slice(0,10),now=Date.now();let c=-1;
+  t.stops.forEach((x,i)=>{if(!x.time)return;let ts=new Date(d+'T'+x.time).getTime();if(i>0&&x.time<(t.stops[0].time||'00:00'))ts+=DAY;if(ts<=now)c=i});
+  const first=new Date(d+'T'+(t.stops[0].time||'00:00')).getTime();if(now<first||now>first+14*3600e3)return -1;return c}
+function loadQR(){return window.qrcode?Promise.resolve():new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='js/qr.js';sc.onload=ok;sc.onerror=no;document.head.appendChild(sc)})}
+async function showQR(el,text){try{await loadQR();const q=qrcode(0,'L');q.addData(text);q.make();el.innerHTML=q.createSvgTag({cellSize:4,margin:2,scalable:true});el.querySelector('svg').setAttribute('aria-label','QR-kode til turen')}catch(e){el.textContent='QR-koden kunne ikke laves'}}
 /* ---------- genstande ---------- */
 const gOf=(cl,abv)=>Math.round(cl*10*abv/100*0.789/12*10)/10;
 const gFmt=g=>(Math.round(g*10)/10).toString().replace('.',',');
@@ -821,6 +848,8 @@ async function shareCard(b){toast('Laver billedet…');const blob=await makeCard
   try{if(navigator.canShare?.({files:[file]})){await navigator.share({files:[file],title:b.name,text:`${b.name} på ølrating.dk`});return}}catch(e){if(e.name==='AbortError')return}
   if(window.OlratingApp?.saveImage){const d=await blobToData(blob);toast(window.OlratingApp.saveImage(d,name)?'Billedet er gemt i Billeder':'Billedet kunne ikke gemmes');return}
   const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);toast('Billedet er hentet')}
+async function sendAnswer(tr){const nm=(S.me||'').trim();if(!tr||!nm)return;if(nm.toLowerCase()===tr.host.toLowerCase())return;const url=siteUrl()+'#byttur-svar-'+b64e({id:tr.id,name:nm}),text=`Jeg er med på ${tr.name}! Tryk på linket, så kommer jeg på listen:`;
+  try{if(navigator.share){await navigator.share({title:'Jeg er med',text,url});return}await navigator.clipboard.writeText(text+' '+url);toast(`Svaret er kopieret. Send det til ${tr.host}`)}catch(e){if(e.name!=='AbortError')toast('Kunne ikke dele svaret')}}
 async function shareBeer(b){const url=location.href.split('#')[0]+'#beer-'+b.id,text=`${b.name} fra ${b.brewery} har ${b.rs.length?fmt(b.avg):'ingen'} på ølrating.dk`;
   try{if(navigator.share){await navigator.share({title:b.name,text,url});return}await navigator.clipboard.writeText(url);toast('Linket er kopieret')}catch(e){if(e.name!=='AbortError')toast('Kunne ikke dele. Kopiér adressen fra browseren.')}}
 
@@ -896,6 +925,30 @@ function genView(){const t=gSum(uToday()),w=gSum(uWeek()),T=uToday().slice().sor
   ${T.length?`<h3 style="margin:28px 0 10px">I dag</h3><div class="glist">${T.map(u=>`<div><span>${new Date(u.t).toLocaleTimeString('da-DK',{hour:'2-digit',minute:'2-digit'})}</span><b>${esc(u.n||'Genstand')}</b><span>${gFmt(u.g)}</span><button type="button" class="ghost" data-delunit="${u.t}" aria-label="Fjern">✕</button></div>`).join('')}</div>`:''}
   <div class="box" style="margin-top:28px;line-height:1.6"><b>Sundhedsstyrelsen anbefaler</b> højst 10 genstande om ugen og højst 4 genstande på samme dag. Børn og unge under 18 år frarådes at drikke alkohol. En genstand er 12 gram ren alkohol, fx en almindelig øl på 33 cl. Tælleren er et skøn og kan ikke bruges til at vurdere, om du må køre bil. Kør aldrig, når du har drukket. Vil du tale med nogen om alkohol, kan du ringe gratis og anonymt til Alkolinjen på 80 200 500.</div>
   ${S.units.length?`<p style="margin-top:18px"><button type="button" class="ghost" id="clearUnits">Nulstil tælleren</button></p>`:''}</div></section>`}
+function tourList(){const L=S.tours.slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''));const today=new Date().toISOString().slice(0,10);
+  return `<section class="band" style="padding-top:120px"><div class="wrap" style="max-width:880px"><span class="kick">Byttur</span><h1 style="font-size:clamp(34px,5vw,56px);margin:8px 0 6px">Saml holdet og tag i byen</h1><p class="meta" style="max-width:36em">Lav en rute med barer og tidspunkter, del den med vennerne, og se hvem der er med. Under turen kan I se, hvor I er nu, og hvor I skal hen bagefter.</p>
+  ${L.length?`<div class="tl">${L.map(t=>`<a class="tcard${t.date&&t.date.slice(0,10)<today?' old':''}" href="#byttur-${esc(t.id)}"><b>${esc(t.name)}</b><span class="meta">${t.date?new Date(t.date).toLocaleString('da-DK',{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}):'Ingen dato'} · ${t.stops.length} stop · ${t.members.length} med</span></a>`).join('')}</div>`:''}
+  <form id="tourForm" class="box" style="margin-top:26px;display:grid;gap:14px"><h3 style="margin:0">Opret en ny tur</h3>
+   <label>Navn på turen<input id="tName" required maxlength="80" placeholder="Fx J-dag i Aalborg"></label>
+   <div class="g2"><label>Dato og tid<input id="tDate" type="datetime-local" required></label><label>Mødested<input id="tMeet" maxlength="120" placeholder="Fx Jomfru Ane Gade 1"></label></div>
+   <label>Din besked til holdet <span class="meta">(valgfrit)</span><input id="tNote" maxlength="300" placeholder="Fx Husk julesweater!"></label>
+   ${S.me?'':`<label>Dit navn<input id="tHost" required maxlength="40"></label>`}
+   <button class="btn" style="justify-self:start">Opret tur</button></form></div></section>`}
+function tourView(id){const t=tourById(id);if(!t)return `<section class="band" style="padding-top:120px"><div class="wrap"><div class="empty"><h3>Turen findes ikke på denne enhed</h3><p class="meta">Bed værten sende dig linket igen.</p><a class="btn" href="#byttur">Til byttur</a></div></div></section>`;
+  const me=(S.me||'').trim(),isHost=me&&me.toLowerCase()===t.host.toLowerCase(),joined=me&&t.members.some(m=>m.name.toLowerCase()===me.toLowerCase()),c=curStop(t),when=t.date?new Date(t.date):null,ms=when?when-Date.now():0;
+  const cd=when&&ms>0?(ms>DAY?`om ${Math.ceil(ms/DAY)} dage`:`om ${Math.floor(ms/3600e3)} t ${Math.floor(ms%3600e3/60e3)} min`):'';
+  return `<section class="band" style="padding-top:120px"><div class="wrap" style="max-width:880px"><a href="#byttur" class="meta">← Alle ture</a>
+  <div class="thead"><div><span class="kick">Byttur${isHost?' · du er vært':''}</span><h1 style="font-size:clamp(32px,5vw,52px);margin:6px 0">${esc(t.name)}</h1>
+   <div class="meta">${when?when.toLocaleString('da-DK',{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}):''}${cd?` · <b style="color:var(--gl)">${cd}</b>`:''}</div>
+   ${t.meet?`<div style="margin-top:6px">Mødested: <a href="${mapUrl(t.meet)}" target="_blank" rel="noopener">${esc(t.meet)}</a></div>`:''}${t.note?`<p style="margin:10px 0 0;font-style:italic">“${esc(t.note)}”</p>`:''}</div>
+   <div class="tbtns">${joined?`<span class="pill ok">✓ Du er med</span><button type="button" class="ghost" id="tourAnswer" data-id="${esc(t.id)}">Send svar til ${esc(t.host)}</button>`:`<button type="button" class="btn" id="tourJoin" data-id="${esc(t.id)}">🍻 Jeg er med</button>`}<button type="button" class="ghost" id="tourShare" data-id="${esc(t.id)}">Del turen</button></div></div>
+  ${c>=0?`<div class="now"><span class="kick">Vi er her nu</span><b>${esc(t.stops[c].name)}</b>${t.stops[c+1]?`<span>Næste: ${esc(t.stops[c+1].name)} kl. ${esc(t.stops[c+1].time)}</span>`:'<span>Sidste stop. Kom godt hjem!</span>'}</div>`:''}
+  <div class="tgrid"><div><h3>Ruten</h3>${t.stops.length?`<ol class="route">${t.stops.map((x,i)=>`<li class="${i===c?'cur':i<c?'done':''}"><span class="tm">${esc(x.time||'')}</span><div><b>${esc(x.name)}</b>${x.addr?`<a class="meta" href="${mapUrl(x.addr+' '+x.name)}" target="_blank" rel="noopener">${esc(x.addr)} ↗</a>`:`<a class="meta" href="${mapUrl(x.name)}" target="_blank" rel="noopener">Vis på kort ↗</a>`}</div>${isHost?`<button type="button" class="ghost" data-delstop="${i}" data-id="${esc(t.id)}" aria-label="Fjern stop">✕</button>`:''}</li>`).join('')}</ol>`:'<p class="meta">Ingen stop endnu.</p>'}
+    ${isHost?`<form id="stopForm" data-id="${esc(t.id)}" class="stopf"><input id="sName" required maxlength="80" placeholder="Bar eller sted"><input id="sTime" type="time" required aria-label="Tidspunkt"><input id="sAddr" maxlength="120" placeholder="Adresse (valgfri)"><button class="btn">+ Stop</button></form>`:''}</div>
+   <div><h3>Hvem er med (${t.members.length})</h3><div class="mem">${t.members.map(m=>`<span class="av" title="${esc(m.name)}">${esc(m.name.slice(0,1).toUpperCase())}</span><span>${esc(m.name)}${m.name.toLowerCase()===t.host.toLowerCase()?' <small class="meta">vært</small>':''}</span>`).join('')||'<span class="meta">Ingen endnu</span>'}</div>
+    <div class="qrbox" id="tourQR" data-link="${esc(tourLink(t))}"></div><p class="meta" style="font-size:13px">Scan koden eller del linket. Når vennerne trykker "Jeg er med", sender de et svar tilbage til ${isHost?'dig':esc(t.host)}, så de kommer på listen.</p></div></div>
+  <div class="box safe"><h3>Kom sikkert hjem</h3><div class="sbtns"><a class="ghost btn" href="#genstande">🍺 Genstand-tæller: ${gFmt(gSum(uToday()))} i dag</a><a class="ghost btn" href="https://www.rejseplanen.dk/" target="_blank" rel="noopener">🚌 Rejseplanen</a><a class="ghost btn" href="${mapUrl('taxa')}" target="_blank" rel="noopener">🚕 Find taxa</a></div><p class="meta" style="margin:12px 0 0">Hold sammen, drik vand ind imellem, og kør aldrig bil efter at have drukket. Er nogen i fare, så ring 112.</p></div>
+  ${isHost?`<p style="margin-top:18px"><button type="button" class="ghost" id="tourDel" data-id="${esc(t.id)}">Slet turen</button></p>`:''}</div></section>`}
 function privacyView(){return `<section class="band" style="padding-top:120px"><div class="wrap" style="max-width:760px"><h1 style="font-size:clamp(34px,5vw,56px)">Privatliv</h1>
  <div class="box" style="margin-top:22px;line-height:1.65"><h3>Hvem står bag?</h3><p>ølrating.dk ejes og drives af Lucas Valentin Ottesen og Magnus Birkgaard Froberg. Kontakt: andersenlucas84@gmail.com</p><h3 style="margin-top:20px">Kort fortalt</h3><p>ølrating.dk bruger ingen cookies, ingen sporing og ingen annoncer. Vi sender ikke dine data videre til nogen.</p>
  <h3 style="margin-top:20px">Hvor bliver dine data gemt?</h3><p>Lige nu gemmes de øl, billeder, bedømmelser og det navn, du skriver, kun i din egen browser på din egen enhed (i browserens lokale lager). De bliver ikke sendt til en server, og andre kan ikke se dem.</p>
@@ -912,13 +965,17 @@ function aboutView(){return `<section class="band" style="padding-top:120px"><di
 
 /* ---------- router ---------- */
 function route(){const h=location.hash.slice(1);let v;
-  if(h.startsWith('beer-'))v=beerView(h.slice(5));else if(h.startsWith('bryggeri-'))v=brewView(decodeURIComponent(h.slice(9)));else if(h==='tilfoej')v=addView();else if(h==='genstande')v=genView();else if(h==='toplisten')v=topView();else if(h==='galleri')v=galleryView();else if(h==='profil')v=profileView();else if(h==='sammenlign')v=cmpView();else if(h==='kalender')v=calView();else if(h==='dagbog')v=diaryView();else if(h==='mad')v=foodView();else if(h==='privatliv')v=privacyView();else if(h==='om')v=aboutView();else if(h==='stilguide')v=guideView();else v=home();
+  if(h.startsWith('beer-'))v=beerView(h.slice(5));else if(h.startsWith('bryggeri-'))v=brewView(decodeURIComponent(h.slice(9)));else if(h==='tilfoej')v=addView();else if(h==='genstande')v=genView();else if(h==='byttur')v=tourList();
+  else if(h.startsWith('byttur-join-')){const n=cleanTour(b64d(h.slice(12)));if(n){const t=mergeTour(n);save();history.replaceState(null,'','#byttur-'+t.id);v=tourView(t.id);toast('Turen er tilføjet. Tryk "Jeg er med"!')}else v=tourList()}
+  else if(h.startsWith('byttur-svar-')){const a=b64d(h.slice(12)),t=a&&tourById(String(a.id||''));if(t&&a.name){const nm=String(a.name).slice(0,40);if(!t.members.some(m=>m.name.toLowerCase()===nm.toLowerCase())){t.members.push({name:nm});save()}toast(nm+' er med på turen!');history.replaceState(null,'','#byttur-'+t.id);v=tourView(t.id)}else{toast('Turen findes ikke på denne enhed');v=tourList()}}
+  else if(h.startsWith('byttur-'))v=tourView(h.slice(7));else if(h==='toplisten')v=topView();else if(h==='galleri')v=galleryView();else if(h==='profil')v=profileView();else if(h==='sammenlign')v=cmpView();else if(h==='kalender')v=calView();else if(h==='dagbog')v=diaryView();else if(h==='mad')v=foodView();else if(h==='privatliv')v=privacyView();else if(h==='om')v=aboutView();else if(h==='stilguide')v=guideView();else v=home();
   $('app').innerHTML=`<div class="view">${v}</div>`;
   document.querySelectorAll('[data-nav]').forEach(a=>{if(a.dataset.nav===(h==='alle'?'':h))a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
   $('nav').classList.remove('open');$('menuBtn').setAttribute('aria-expanded','false');
   if(!h||h==='alle'){GI=galItems();renderGrid()}
   const bs=$('bigScore');if(bs){const b=enrich().find(x=>x.id===h.slice(5));countUp(bs,b.avg)}
   wireDrops();
+  const qb=$('tourQR');if(qb)showQR(qb,qb.dataset.link);
   if(h==='alle')$('alle')?.scrollIntoView();else scrollTo({top:0,behavior:'instant'});
   document.title=h.startsWith('bryggeri-')?`${decodeURIComponent(h.slice(9))} – ølrating.dk`:h.startsWith('beer-')?`${enrich().find(x=>x.id===h.slice(5))?.name||'Øl'} – ølrating.dk`:'ølrating.dk – danske øl, bedømt af dig'}
 addEventListener('hashchange',()=>{if(location.hash!=='#tilfoej')F.editBeer='';if(!$('scan').hidden)stopScan();route()});
@@ -978,6 +1035,11 @@ document.addEventListener('click',e=>{const t=e.target.closest('button,a');if(!t
     f.querySelector('button[type=submit]').textContent='Gem ændringer';$('rateTitle').textContent='Ret din anmeldelse';$('rate').scrollIntoView({behavior:RM?'auto':'smooth'})}
   else if(t.dataset.delrev){const o=S.reviews.find(x=>x.id===t.dataset.delrev);S.reviews=S.reviews.filter(x=>x.id!==t.dataset.delrev);save();route();undoToast('Anmeldelsen er slettet',()=>{S.reviews.push(o);save();route()},()=>delImg(o?.img))}
   else if(t.id==='wishBtn'){const id=t.dataset.id,on=!S.wish.includes(id);S.wish=on?[...S.wish,id]:S.wish.filter(x=>x!==id);save();t.setAttribute('aria-pressed',on);t.textContent=on?'På din ønskeliste':'Vil smage';if(on)burstAt(t);toast(on?'Gemt på din ønskeliste':'Fjernet fra ønskelisten')}
+  else if(t.id==='tourJoin'){const tr=tourById(t.dataset.id);let nm=(S.me||'').trim();if(!nm){nm=(prompt('Hvad hedder du?')||'').trim().slice(0,40);if(!nm)return;S.me=nm}if(!tr.members.some(m=>m.name.toLowerCase()===nm.toLowerCase()))tr.members.push({name:nm});save();route();burstAt(document.querySelector('.pill.ok')||t);sendAnswer(tr)}
+  else if(t.id==='tourAnswer'){sendAnswer(tourById(t.dataset.id))}
+  else if(t.id==='tourShare'){const tr=tourById(t.dataset.id),url=tourLink(tr),text=`Tag med på ${tr.name}${tr.date?' '+new Date(tr.date).toLocaleString('da-DK',{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}):''}! Se ruten og meld dig til her:`;(async()=>{try{if(navigator.share){await navigator.share({title:tr.name,text,url});return}await navigator.clipboard.writeText(text+' '+url);toast('Linket er kopieret')}catch(e){if(e.name!=='AbortError')toast('Kunne ikke dele')}})()}
+  else if(t.dataset.delstop){const tr=tourById(t.dataset.id);tr.stops.splice(+t.dataset.delstop,1);save();route()}
+  else if(t.id==='tourDel'){if(confirm('Slet turen fra denne enhed?')){S.tours=S.tours.filter(x=>x.id!==t.dataset.id);save();location.hash='byttur'}}
   else if(t.dataset.unit){addUnit(+t.dataset.unit,t.dataset.uname);toast(`+${gFmt(+t.dataset.unit)} genstand · ${gFmt(gSum(uToday()))} i dag`);if(location.hash==='#genstande')route()}
   else if(t.dataset.delunit){S.units=S.units.filter(u=>u.t!==+t.dataset.delunit);save();route()}
   else if(t.id==='clearUnits'){if(confirm('Nulstil alle genstande?')){S.units=[];save();route()}}
@@ -997,6 +1059,8 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('scan').hidden){
 $('lbs').addEventListener('scroll',lbCount,{passive:true});
 document.addEventListener('submit',async e=>{const f=e.target;e.preventDefault();
   if(f.id==='meForm'){S.me=$('meName').value.trim().slice(0,30);save();toast(S.me?`Hej ${S.me}`:'Navn fjernet');route();return}
+  if(f.id==='tourForm'){const nm=(S.me||$('tHost')?.value||'').trim().slice(0,40);if(!nm)return toast('Skriv dit navn');S.me=nm;const t={id:uid(),name:$('tName').value.trim().slice(0,80),date:$('tDate').value,meet:$('tMeet').value.trim().slice(0,120),note:$('tNote').value.trim().slice(0,300),host:nm,stops:[],members:[{name:nm}]};S.tours.push(t);save();location.hash='byttur-'+t.id;toast('Turen er oprettet. Tilføj stop og del den!');return}
+  if(f.id==='stopForm'){const tr=tourById(f.dataset.id);tr.stops.push({name:$('sName').value.trim().slice(0,80),time:$('sTime').value,addr:$('sAddr').value.trim().slice(0,120)});tr.stops.sort((a,b)=>{const k=x=>x.time<'06:00'?'2'+x.time:'1'+x.time;return k(a).localeCompare(k(b))});save();route();setTimeout(()=>$('sName')?.focus(),50);return}
   if(f.id==='unitForm'){const cl=+$('uCl').value,a=parseFloat($('uAbv').value.replace(',','.'));if(cl>0&&a>0&&a<80){addUnit(gOf(cl,a),`${cl} cl · ${fmt(a)} %`);route()}else toast('Skriv cl og alkohol %');return}
   if(f.id==='sForm'){F.q=$('q').value.trim();renderGrid();const h=$('alle');if(h){h.textContent=F.q?`Resultater for “${F.q}”`:'Højest bedømt lige nu';h.scrollIntoView({behavior:RM?'auto':'smooth'})}return}
   if(f.id==='addForm'){const name=$('bName').value.trim(),brew=$('bBrew').value.trim(),edit=f.dataset.edit;
