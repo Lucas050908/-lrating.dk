@@ -1,0 +1,42 @@
+name: Tjek domæne
+# Viser hvor ølrating.dk peger hen: navneservere hos .dk, zonen hos forhandleren, offentlige DNS-tjenester og https.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/domaene.yml']
+jobs:
+  dns:
+    runs-on: ubuntu-latest
+    steps:
+      - name: DNS og https
+        run: |
+          D=xn--lrating-p1a.dk
+          command -v dig >/dev/null || sudo apt-get install -y dnsutils >/dev/null 2>&1
+          P=$(dig +short NS dk. | head -1)
+          echo "== 1. Navneservere registreret hos .dk (spurgt hos $P)"
+          DELEG=$(dig +norecurse NS $D @$P | awk '$4=="NS"{print $5}' | sort -u)
+          echo "${DELEG:-INGEN SVAR}"
+          echo "== 2. DNSSEC-nøgle (DS) hos .dk"
+          dig +norecurse DS $D @$P | awk '$4=="DS"{print "DS:",$5,$6,$7}' ; dig +norecurse DS $D @$P | grep -o 'status: [A-Z]*'
+          echo "== 3. Hvad svarer de registrerede navneservere selv?"
+          for n in $DELEG; do
+            echo "-- $n"
+            echo "   NS i zonen: $(dig +norecurse +short NS $D @$n | sort | tr '\n' ' ')"
+            echo "   SOA:        $(dig +norecurse +short SOA $D @$n)"
+            echo "   A:          $(dig +norecurse +short A $D @$n | sort | tr '\n' ' ')"
+            echo "   www:        $(dig +norecurse +short www.$D @$n | tr '\n' ' ')"
+          done
+          echo "== 4. Hvad svarer Simply (den gamle forhandler)?"
+          for n in ns1.simply.com ns2.simply.com; do
+            echo "-- $n: $(dig +norecurse A $D @$n | grep -o 'status: [A-Z]*')  A: $(dig +norecurse +short A $D @$n | tr '\n' ' ')  NS: $(dig +norecurse +short NS $D @$n | tr '\n' ' ')"
+          done
+          echo "== 5. Offentlige DNS-tjenester"
+          for r in 8.8.8.8 1.1.1.1 9.9.9.9 208.67.222.222; do
+            echo "-- $r: A: $(dig +short A $D @$r | sort | tr '\n' ' ') | www: $(dig +short www.$D @$r | tr '\n' ' ') | NS: $(dig +short NS $D @$r | sort | tr '\n' ' ') | $(dig A $D @$r | grep -o 'status: [A-Z]*')"
+          done
+          echo "== 6. https"
+          echo "https://$D -> $(curl -sS -o /dev/null -m 20 -w '%{http_code}' https://$D/ || echo FEJL)"
+          echo "https://www.$D -> $(curl -sS -o /dev/null -m 20 -w '%{http_code} %{redirect_url}' https://www.$D/ || echo FEJL)"
+          echo "http://$D -> $(curl -sS -o /dev/null -m 20 -w '%{http_code} %{redirect_url}' http://$D/ || echo FEJL)"
+          echo "certifikat: $(echo | openssl s_client -servername $D -connect $D:443 2>/dev/null | openssl x509 -noout -subject -enddate 2>/dev/null | tr '\n' ' ')"

@@ -4,6 +4,9 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-25
 
+### Sen aften (23:55)
+- **Tjek domæne:** Nyt workflow på GitHub, der viser, hvor ølrating.dk peger hen (navneservere, DNS-svar og https).
+
 ### Sen aften (23:10–23:45): stor test og rettelser
 - **Automatiske test** ligger nu i `tests/` og kører på GitHub ved hver ændring af siden:
   - Hele siden klikket igennem på pc og mobil (72 tjek).

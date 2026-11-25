@@ -20,6 +20,9 @@ DNS → DNS records:
 Under "Standard DNS-indstillinger" er A for domænet og A for www **slået fra**. MX er slået til.
 DNSSEC er slået fra under flytningen og kan slås til hos one.com, når alt kører stabilt.
 
+### Tjek hvor domænet peger hen
+Workflowet **Tjek domæne** (`.github/workflows/domaene.yml`) kan startes under Actions på GitHub. Det viser navneserverne hos .dk, hvad forhandlerens navneservere svarer, hvad de store DNS-tjenester ser, og om https virker.
+
 ## GitHub Pages
 - Settings → Pages → Deploy from a branch → `main` / root.
 - Filen `CNAME` indeholder `xn--lrating-p1a.dk`. Det kobler domænet på.
