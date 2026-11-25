@@ -1,0 +1,84 @@
+# Teknik
+
+## Hjemmesiden
+
+- **Én fil:** `index.html` indeholder CSS, HTML-skabeloner og JavaScript. Der er intet byggetrin, så GitHub Pages serverer filerne direkte.
+- **Sider:** routes med hash (`location.hash`). `route()` vælger en visning (`home`, `beerView`, `addView`, `tourView`, `genView` …) og skriver den i `<main id="app">`.
+- **Sikkerhed:**
+  - Content-Security-Policy i `<meta>`: `script-src 'self' 'unsafe-inline'`, `connect-src 'self'`, `img-src 'self' data: blob:`. Når Supabase kobles på, skal `https://bbcegrufmzgfgzxazldr.supabase.co` tilføjes i `connect-src` og `img-src`.
+  - Al brugertekst sendes gennem `esc()`.
+- **Skrifttyper:** Inter og Sora ligger lokalt i `fonts/`, så der ikke sendes noget til Google.
+
+### Data på enheden
+| Hvor | Nøgle | Indhold |
+|---|---|---|
+| localStorage | `olrating-v1` | `S = {beers, reviews, me, season, wish, mode, units, tours}` |
+| IndexedDB | db `olrating`, store `img` | Billeder som Blob. I `S` står de som `idb:<nøgle>`, og `src()` laver dem om til object-URL'er |
+
+- **Øl:** `{id, name, brewery, style, country, city, abv, ibu, color, size, price, place, serve, code, img, addedBy, date}`
+- **Bedømmelse:** `{id, beer, who, date, s:{look,aroma,taste,feel,overall}, p:{sweet,bitter,sour,body,roast}, tags, text, img}`
+- **Genstand:** `{t: tidsstempel, g: genstande, n: navn}`
+- **Byttur:** `{id, name, date, meet, note, host, stops:[{name,time,addr}], members:[{name}]}`
+- **Delelinks:**
+  - Invitation: `#byttur-join-<base64url JSON>`
+  - Svar: `#byttur-svar-<base64url {id,name}>`
+  - Alt fra links bliver renset i `cleanTour()` med længdegrænser.
+
+### Offline
+- `sw.js` gemmer app-skallen.
+- **Husk at hæve `const V='olrating-vNN'` ved hver udgivelse**, ellers ser brugerne den gamle version.
+
+## Broen mellem side og apps
+
+Siden kalder `window.OlratingApp`, hvis den findes. Det gør den i Android-appen og i desktop-appen.
+
+| Metode | Hvem kalder | Hvad |
+|---|---|---|
+| `updateWidget(json)` | Siden, efter hver `save()` og ved start | Sender data til widgets (se nedenfor) |
+| `takeUnits()` | Siden ved start, når appen kommer i forgrunden, og hvert 5. sekund | Henter genstande lagt til fra widget (JSON-liste med tidsstempler) og tømmer listen |
+| `saveImage(dataUrl, navn)` | Siden (kun Android) | Gemmer delekort i Billeder |
+| `isApp()` | Siden | `true` |
+
+Widget-data, som `syncApp()` sender:
+```json
+{"week":{"name","brewery","score"},"top":[{"name","score"}],
+ "latest":[{"name","who","score"}],
+ "me":{"name","count","beers","avg","style"},
+ "units":{"today","week","todayN","weekN"},"beers":12,"reviews":31}
+```
+
+## Android (`android/`)
+- **Opsætning:** Gradle med plugin 8.5.2, compileSdk 34, minSdk 24, pakke `dk.olrating.app`.
+- **`MainActivity`:**
+  - WebView med DOM storage, filvælger, kamera-tilladelse og tilbage-knap.
+  - Links til andre sider åbnes i browseren. Egne værter er `xn--lrating-p1a.dk`, `www.` og den gamle github.io-sti.
+  - `onNewIntent` håndterer tryk fra widgets, når appen allerede kører.
+- **`Bridge`:** JavaScript-broen. Den gemmer data i SharedPreferences `olrating_widget` og opdaterer alle widgets.
+- **Widgets:** `TopWidget`, `QuickWidget`, `LatestWidget`, `StatsWidget` og `UnitsWidget`. +1 er en broadcast `dk.olrating.app.ADD_UNIT`, der lægger et tidsstempel i `pending_units`.
+- **Byg:** `.github/workflows/android.yml` kører ved push til `android/**`.
+  - Den bygger `assembleRelease` og lægger `olrating.apk` på udgivelsen `android-app`.
+  - Den signerer med secrets, hvis de findes (se DRIFT.md). Ellers bruger den en midlertidig nøgle.
+
+## Windows og Linux (`desktop/`)
+- **Electron 33:**
+  - `main.js` styrer hovedvinduet, widget-vinduet, ikonet ved uret og at der kun kører én instans.
+  - `preload.js` udstiller `OlratingApp` til siden. `widget-preload.js` udstiller `W` til widgetten.
+  - Sikkerhed: `contextIsolation`, `sandbox` og ingen `nodeIntegration`.
+- **Widget:** `widget.html` med egen CSP. Placering, "altid øverst", sidste data og ventende genstande gemmes i `userData/widget.json`.
+- **Byg:** `.github/workflows/desktop.yml` kører ved push til `desktop/**`.
+  - Den bygger `olrating-windows.exe` (portable) på Windows og `olrating-linux.AppImage` på Ubuntu.
+  - Begge lægges på udgivelsen `desktop-app`.
+
+## Udgivelser
+- Links peger altid på et fast tag (`releases/download/android-app/…` og `releases/download/desktop-app/…`), aldrig på `latest`. Ellers ville den ene app overskrive linket til den anden.
+
+## Fælles database (Supabase)
+- **Projekt:** `https://bbcegrufmzgfgzxazldr.supabase.co`, region EU.
+- **Offentlig nøgle:** `sb_publishable_mf5v3jp_xYx7wJj1lgCr-Q_JUFuzXOY`. Den er lavet til at stå i koden. Secret- og service_role-nøglen må **aldrig** i repoet.
+- **Skema:** `supabase/schema.sql` med tabellerne `beers`, `reviews`, `tours`, `tour_members`, `tastings` og `tasting_votes`, plus storage-bucket `billeder`.
+- **Sikkerhed:** Row Level Security.
+  - Alle kan læse.
+  - Kun indloggede kan oprette, og kun med `owner = auth.uid()`.
+  - Man kan kun rette og slette sine egne ting.
+  - Billeder uploades til `billeder/<uid>/…`.
+- **Login:** Anonymt. Hver enhed får sin egen usynlige bruger, så ingen skal oprette konto.
