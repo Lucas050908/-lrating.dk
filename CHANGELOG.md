@@ -6,6 +6,8 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ### Sen aften (23:55)
 - **Tjek domæne:** Nyt workflow på GitHub, der viser, hvor ølrating.dk peger hen (navneservere, DNS-svar og https).
+- **Resultat kl. 00:00:** .dk peger på one.coms navneservere (ns01 og ns02.one.com). Google, Cloudflare, Quad9 og OpenDNS ser alle de fire GitHub-adresser. https svarer med gyldigt certifikat til 23-02-2027, og www sender videre til ølrating.dk. http sender endnu ikke videre til https, fordi "Enforce HTTPS" ikke er slået til.
+- **Commits** bruger fra nu af GitHubs noreply-adresse i stedet for en privat mail.
 
 ### Sen aften (23:10–23:45): stor test og rettelser
 - **Automatiske test** ligger nu i `tests/` og kører på GitHub ved hver ændring af siden:

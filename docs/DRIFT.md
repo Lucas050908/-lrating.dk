@@ -3,7 +3,7 @@
 ## Domæne
 - **ølrating.dk** (`xn--lrating-p1a.dk`) ejes af Lucas (Punktum bruger-id LVO64-DK) og udløber 24-11-2027.
 - **Forhandler: one.com** (flyttet fra Simply.com den 25-11-2026, fordi Simply-kontoen ikke kunne kobles til Lucas' login).
-- Navneservere: one.com.
+- Navneservere: one.com (`ns01.one.com` og `ns02.one.com`), bekræftet hos .dk den 26-11-2026 kl. 00:00.
 - **Huskeliste:** Ret registrantens navn til "Lucas Valentin Ottesen" og by til "Nørresundby" hos one.com/Punktum.
 
 ### DNS hos one.com
