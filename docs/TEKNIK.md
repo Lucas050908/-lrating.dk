@@ -34,6 +34,7 @@
 - `agree()`: enighed med andre i procent: 100 minus den gennemsnitlige forskel i karakter på fælles øl, hvor en forskel på 4 svarer til 0 %.
 - `S.follow`: navnene på dem, brugeren følger. Listen bliver på enheden og sendes ikke til databasen.
 - `brewMap(L)`: tegner kortet over bryggerier som SVG. `DKMAP` er kystlinjen som få punkter i længde- og breddegrad, og `DKC` er en tabel over byer og deres placering. Byens navn gøres til små bogstaver, og tal og et enkelt bogstav til sidst (som i "København K") fjernes, før der slås op.
+- `dupCheck()`: kører 250 ms efter, at brugeren har skrevet i navn, bryggeri eller stregkode på Tilføj øl. Den finder op til tre øl med samme stregkode eller næsten samme navn (`norm()` og `near()`), og viser dem i `#dupHint`.
 - `nextEvent()`: nærmeste af J-dag (første fredag i november), påskedag, sankthans, juleaften og nytårsaften.
 - `myCounts()`: tal til mærkerne, bl.a. forskellige øl, stilarter, bryggerier, lande og alkoholfri.
 

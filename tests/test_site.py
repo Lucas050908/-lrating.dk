@@ -15,7 +15,7 @@ def make_photo(b):
 def check(n,c,x=''):
     res.append(bool(c)); print(('PASS ' if c else 'FAIL ')+n,'' if c else x)
 def ls(pg): return json.loads(pg.evaluate("localStorage.getItem('olrating-v1')"))
-VIEWS=['','#alle','#toplisten','#galleri','#sammenlign','#byttur','#smagning','#venner','#stilguide','#profil','#tilfoej','#kalender','#dagbog','#mad','#genstande','#privatliv','#om']
+VIEWS=['','#alle','#toplisten','#galleri','#sammenlign','#byttur','#smagning','#venner','#nyt','#stilguide','#profil','#tilfoej','#kalender','#dagbog','#mad','#genstande','#privatliv','#om']
 def run(b,name,vw):
     M=Mock(); errs=[]
     c=b.new_context(viewport={'width':vw[0],'height':vw[1]},accept_downloads=True,service_workers='block'); c.route(f'https://{HOST}/**',M.handle)
@@ -69,6 +69,13 @@ def run(b,name,vw):
         pg.fill('#q',q); pg.wait_for_timeout(250); r[q]=cnt()
     T('search: typos and ae/oe/aa',r=={'skaergaard':1,'fano':1,'Skærgard':1,'pilsnre':1,'xyzzy':0},r)
     pg.fill('#q',''); pg.wait_for_timeout(200)
+    # --- findes den allerede? (dubletter)
+    pg.goto(URL+'#tilfoej'); pg.wait_for_timeout(400)
+    pg.fill('#bName','Skærgard Pilsner'); pg.wait_for_timeout(500)
+    vis=pg.is_visible('#dupHint') and 'Skærgaard Pilsner' in pg.inner_text('#dupHint') and pg.get_attribute('#dupHint a','href')=='#beer-'+bid
+    pg.fill('#bBrew','Et helt andet bryggeri'); pg.wait_for_timeout(500); other=not pg.is_visible('#dupHint')
+    pg.fill('#bBrew',''); pg.fill('#bName','Noget helt nyt'); pg.wait_for_timeout(500)
+    T('dublet: forslag ved næsten samme navn, væk ved andet bryggeri eller nyt navn',vis and other and not pg.is_visible('#dupHint') and not over(),(vis,other))
     # --- every view renders without overflow or errors
     bad=[]
     for v in VIEWS+['#beer-'+bid,'#bryggeri-'+'Fan%C3%B8%20Bryghus']:

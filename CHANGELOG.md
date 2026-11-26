@@ -4,6 +4,10 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Nat (04:55–04:57)
+- **Findes den allerede?** Når du skriver navnet på en ny øl, foreslår siden øl, der ligner og allerede findes, så du kan bedømme dem i stedet for at oprette en dublet. Den tåler stavefejl og kender også stregkoden.
+- **Nyt på siden:** Ny side (`#nyt`) med en kort oversigt over de nyeste funktioner og links til dem. Der er link i sidefoden under "Om".
+
 ### Nat (04:53): idéliste
 - **`docs/IDEER.md`:** En samlet liste over det, der venter på Lucas, større idéer der kræver en beslutning (engelsk version, scan af etiket, smartwatch, iPhone-app, login), og mindre idéer til senere.
 - **Test mod den rigtige database kl. 05:00:** 21 af 22 tjek bestået. Det sidste venter stadig på `supabase/002-slet-billeder.sql`.

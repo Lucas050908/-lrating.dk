@@ -23,7 +23,6 @@ En liste over det, der ikke er lavet endnu, og hvorfor. Flyt et punkt til `CHANG
 
 ## Mindre idéer
 - **Besked når en ven bedømmer en øl** (notifikationer). Kræver en lille server-funktion i Supabase.
-- **Stregkode-opslag:** Foreslå navn og bryggeri ud fra stregkoden, når nogen allerede har tilføjet øllen.
 - **Fælles ønskeliste til en smagning:** Lav en smagning ud fra de øl, gruppen har på ønskelisten.
 - **Statistik for byture:** Gem ruten bagefter som et minde med de øl, der blev bedømt undervejs.
 - **Moderator-side:** En skjult side, hvor ejerne kan se anmeldt indhold og slette det uden at åbne Supabase.

@@ -8,7 +8,7 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 |---|---|---|
 | Forside | `#` | Ugens øl, søgning (også med stregkodescanner), filtre, sortering, "Vis flere" (24 ad gangen), seneste bedømmelser, app-sektion |
 | Øl | `#beer-<id>` | Billede, oplysninger, karakterer i 5 kategorier, smagsprofil og anmeldelser. Store knapper: Bedøm den, Vil smage og + Genstand. Små knapper: Del, Del som billede, Sammenlign, Ret oplysninger og Slet øl med fortryd |
-| Tilføj øl | `#tilfoej` | Navn, bryggeri, stil, land/by, alkohol, IBU, farve, størrelse, pris, købested, servering, stregkode, billede og bedømmelse |
+| Tilføj øl | `#tilfoej` | Navn, bryggeri, stil, land/by, alkohol, IBU, farve, størrelse, pris, købested, servering, stregkode, billede og bedømmelse. Siden foreslår øl, der allerede findes, mens du skriver, så der ikke kommer dubletter |
 | Toplisten | `#toplisten` | Samlet, lyse og mørke øl |
 | Galleri | `#galleri` | Alle billeder med lysboks |
 | Sammenlign | `#sammenlign` | To øl side om side |
@@ -23,6 +23,7 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 | Ølkalender | `#kalender` | Juleøl, J-dag, påskebryg osv. |
 | Øl til maden | `#mad` | Forslag til øl til forskellige retter |
 | Genstand-tæller | `#genstande` | Se [Genstand-tæller](#genstand-tæller) |
+| Nyt på siden | `#nyt` | Oversigt over de nyeste funktioner med links |
 | Privatliv / Om | `#privatliv`, `#om` | Privatlivspolitik, ejere og fejlrapport |
 
 ### Menuen
