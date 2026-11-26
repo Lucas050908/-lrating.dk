@@ -4,6 +4,12 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Aften (21:12–21:32): kontrasten er målt i alle 30 kombinationer
+- **Nyt værktøj, `tests/kontrast.py`:** Det åbner 14 sider i to skærmstørrelser i hver af de 30 kombinationer af baggrund og farver og måler kontrasten mellem al tekst og dens baggrund mod WCAG AA (4,5:1, og 3:1 for stor tekst).
+- **Rettet, fordi målingen fandt det:** Bogstavet i de runde navnemærker stod hvidt på en for lys farve (ned til 2,5:1). Farven er gjort mørkere. Tallet 3 i top 5 på forsiden er gjort fedt. Knappen "På din ønskeliste" har nu mørk tekst på den lyserøde baggrund i stedet for hvid (3,4:1 før).
+- **Resultat:** Ingen tekst er under kravet i nogen af de 30 kombinationer.
+- **Det måler den ikke:** tekst oven på fotos, og tekst, hvor baggrunden er tegnet med `::before`. Karakter-ringen på en øls side er derfor undtaget.
+
 ### Aften (21:05–21:09): loading screen og værktøj til logoskift
 - **Loading screen:** Når siden åbnes, vises navnet og en fadølsbjælke, der fyldes med skum forrest (nr. 7 af de 12 forslag). Den er væk, når første side er tegnet, dog tidligst efter 0,9 sekund, så den ikke bare blinker.
 - Den spærrer ikke for tryk, den fjerner sig selv efter 6 sekunder, hvis noget går galt, og den vises ikke for dem, der har bedt om mindre bevægelse.

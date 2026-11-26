@@ -208,7 +208,7 @@ html.trw body{visibility:hidden}
 .box{background:var(--nv2);border:1px solid var(--ln);border-radius:22px;padding:20px}
 .box h3{font-size:22px}
 .rk{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--ln);text-decoration:none}
-.rk .n{font-family:Sora,sans-serif;font-size:20px}
+.rk .n{font-family:Sora,sans-serif;font-size:20px;font-weight:700}
 .rk b.s{font-family:Sora,sans-serif;font-size:18px}
 .rv{display:grid;grid-template-columns:34px minmax(0,1fr);gap:10px;padding:12px 0;border-bottom:1px solid var(--ln);font-size:14px}
 .rv:last-child,.rk:last-of-type{border-bottom:0}
@@ -370,7 +370,7 @@ footer .wrap{position:relative;z-index:2}
 .brew{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));gap:12px}
 .brew button{white-space:normal;justify-content:space-between;background:var(--nv2);color:var(--tx);border:1px solid var(--ln);border-radius:18px;padding:14px 16px;text-align:left;font-weight:400}
 .wish{background:transparent;color:var(--tx);border:1px solid rgba(143,182,227,.4)}
-.wish[aria-pressed=true]{background:var(--pk);border-color:var(--pk);color:#fff}
+.wish[aria-pressed=true]{background:var(--pk);border-color:var(--pk);color:var(--ink)}
 /* badges, scanner */
 .badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:14px}
 .badge{background:var(--nv);border:1px solid var(--ln);border-radius:18px;padding:14px;text-align:center;display:grid;gap:6px;justify-items:center;opacity:.8;filter:grayscale(1)}
@@ -835,7 +835,7 @@ const subs=b=>CATS.map(([k,l])=>[l,b.rs.length?b.rs.reduce((a,r)=>a+r.s[k],0)/b.
 const againPct=b=>b.rs.length?Math.round(b.rs.filter(r=>r.again).length/b.rs.length*100):0;
 const col=s=>STYLES[s]||STYLES.Andet;
 const hue=n=>{let h=0;for(const c of String(n))h=(h*31+c.charCodeAt(0))%360;return h};
-const avatar=n=>`<span class="av" style="background:hsl(${hue(n)} 55% 42%)">${esc(String(n).trim().charAt(0).toUpperCase())}</span>`;
+const avatar=n=>`<span class="av" style="background:hsl(${hue(n)} 55% 26%)">${esc(String(n).trim().charAt(0).toUpperCase())}</span>`;
 const dk=s=>new Date(s+'T12:00').toLocaleDateString(LOC(),{day:'numeric',month:'short',year:'numeric'});
 const ago=s=>{const n=Math.round((Date.now()-new Date(s+'T12:00'))/DAY);return n<=0?'i dag':n===1?'i går':`for ${n} dage siden`};
 
@@ -1156,7 +1156,7 @@ function profileView(){const L=enrich(),me=S.me.trim(),mine=reviews().filter(r=>
   const wish=L.filter(b=>S.wish.includes(b.id));
   const row=b=>`<a class="mini" href="#beer-${esc(b.id)}"><div class="thumb">${photo(b)}</div><span><b>${esc(b.name)}</b><br><span class="meta" style="font-size:13px">${esc(b.brewery)} · ${esc(b.style)}</span></span><b class="big" style="font-size:20px">${b.rs.length?fmt(b.avg):'–'}</b></a>`;
   return `<section class="band" style="padding-top:120px"><div class="wrap" style="max-width:1000px">
-  <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center">${me?`<span class="av" style="width:72px;height:72px;font-size:30px;background:hsl(${hue(me)} 55% 42%)">${esc(me[0].toUpperCase())}</span>`:''}<div><h1 style="font-size:clamp(34px,5vw,56px)">${me?esc(me):'Min profil'}</h1><p class="meta" style="margin:6px 0 0">Dine bedømmelser og din ønskeliste · <a href="#dagbog" style="color:var(--glt)">Se din øl-dagbog</a> · <a href="#venner" style="color:var(--glt)">Venner</a></p></div></div>
+  <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center">${me?`<span class="av" style="width:72px;height:72px;font-size:30px;background:hsl(${hue(me)} 55% 26%)">${esc(me[0].toUpperCase())}</span>`:''}<div><h1 style="font-size:clamp(34px,5vw,56px)">${me?esc(me):'Min profil'}</h1><p class="meta" style="margin:6px 0 0">Dine bedømmelser og din ønskeliste · <a href="#dagbog" style="color:var(--glt)">Se din øl-dagbog</a> · <a href="#venner" style="color:var(--glt)">Venner</a></p></div></div>
   <form id="meForm" style="display:flex;gap:10px;max-width:480px;margin-top:20px"><label for="meName" class="sr">Dit navn</label><input id="meName" value="${esc(me)}" maxlength="30" placeholder="Skriv dit navn"><button>Gem navn</button></form>
   ${me?`<div class="pstats"><div><b>${mine.length}</b><small>bedømmelser</small></div><div><b>${added.length}</b><small>øl tilføjet</small></div><div><b>${mine.length?fmt(avg):'–'}</b><small>din gennemsnitlige karakter</small></div><div><b style="font-size:20px">${fav?esc(fav[0]):'–'}</b><small>yndlingsstil</small></div><div><b style="font-size:20px">${ft?esc(ft[0]):'–'}</b><small>smager du oftest</small></div></div>`:'<p class="meta" style="margin-top:16px">Skriv dit navn for at se dine bedømmelser. Det er det samme navn, du bruger, når du bedømmer en øl.</p>'}
   <div class="cols" style="margin-top:12px">
@@ -1499,7 +1499,7 @@ function tasterView(name){const key=name.trim().toLowerCase(),L=enrich(),R=revie
   if(!R.length)return `<section class="band" style="padding-top:120px"><div class="wrap"><div class="empty"><h3>Ingen bedømmelser fra ${esc(name)}</h3><a class="btn" href="#venner">Til venner</a></div></div></section>`;
   const nm=R[0].who.trim(),avg=R.reduce((a,r)=>a+tot(r),0)/R.length,sc={};R.forEach(r=>{const b=L.find(x=>x.id===r.beer);if(b)sc[b.style]=(sc[b.style]||0)+1});const fav=Object.entries(sc).sort((a,c)=>c[1]-a[1])[0],isMe=(S.me||'').trim().toLowerCase()===key,ag=agree().find(x=>x.name.toLowerCase()===key);
   return `<section class="band" style="padding-top:120px"><div class="wrap" style="max-width:880px"><a href="#venner" class="meta">← Venner</a>
-  <div class="thead"><div style="display:flex;gap:16px;align-items:center"><span class="av" style="width:64px;height:64px;font-size:26px;background:hsl(${hue(nm)} 55% 42%)">${esc(nm[0].toUpperCase())}</span><div><h1 style="font-size:clamp(30px,5vw,48px);margin:0">${esc(nm)}</h1><div class="meta">${new Set(R.map(r=>r.beer)).size} øl bedømt · gennemsnit ${fmt(avg)}${fav?' · mest '+esc(fav[0].toLowerCase()):''}${ag?` · I er ${ag.pct} % enige`:''}</div></div></div>
+  <div class="thead"><div style="display:flex;gap:16px;align-items:center"><span class="av" style="width:64px;height:64px;font-size:26px;background:hsl(${hue(nm)} 55% 26%)">${esc(nm[0].toUpperCase())}</span><div><h1 style="font-size:clamp(30px,5vw,48px);margin:0">${esc(nm)}</h1><div class="meta">${new Set(R.map(r=>r.beer)).size} øl bedømt · gennemsnit ${fmt(avg)}${fav?' · mest '+esc(fav[0].toLowerCase()):''}${ag?` · I er ${ag.pct} % enige`:''}</div></div></div>
    <div class="tbtns">${isMe?'<a class="btn ghost" href="#profil">Min profil</a>':`<button type="button" class="${isF(nm)?'ghost':'btn'}" data-follow="${esc(nm)}" aria-pressed="${isF(nm)}">${isF(nm)?'Følger ✓':'Følg'}</button>`}</div></div>
   <div class="box" style="margin-top:24px"><h3>Bedømmelser (${R.length})</h3>${R.map(r=>revRow(r,true)).join('')}</div></div></section>`}
 /* ---------- Beer buddies: hvem smager som dig? ---------- */
@@ -1580,7 +1580,7 @@ function privacyView(){return `<section class="band" style="padding-top:120px"><
 function aboutView(){return `<section class="band" style="padding-top:120px"><div class="wrap" style="max-width:860px"><img src="img/logo.svg" width="120" height="120" alt="ølrating.dk logo" style="margin-bottom:18px"><h1 style="font-size:clamp(34px,5vw,56px)">Om ølrating.dk</h1>
  <p style="font-size:19px;line-height:1.6;margin:16px 0 26px;max-width:34em">ølrating.dk er et sted, hvor danske ølelskere kan tage et billede af den øl, de drikker, give den karakter og se hvad andre synes. Siden er lavet ved Limfjorden.</p>
  <h2 style="font-size:clamp(26px,3vw,36px);margin-bottom:16px">Ejere</h2>
- <div class="explore" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))">${[['Lucas Valentin Ottesen','Medejer'],['Magnus Birkgaard Froberg','Medejer']].map(([n,r])=>`<div class="ex-t" style="cursor:default"><span class="av" style="width:56px;height:56px;font-size:22px;background:hsl(${hue(n)} 55% 42%)">${esc(n[0])}</span><b style="font-size:19px">${esc(n)}</b><span class="meta">${r}</span></div>`).join('')}</div>
+ <div class="explore" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))">${[['Lucas Valentin Ottesen','Medejer'],['Magnus Birkgaard Froberg','Medejer']].map(([n,r])=>`<div class="ex-t" style="cursor:default"><span class="av" style="width:56px;height:56px;font-size:22px;background:hsl(${hue(n)} 55% 26%)">${esc(n[0])}</span><b style="font-size:19px">${esc(n)}</b><span class="meta">${r}</span></div>`).join('')}</div>
  <h2 style="font-size:clamp(26px,3vw,36px);margin:30px 0 16px">Siden i tal</h2>
  <div class="explore" id="omTal" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr))">${(R=>[...(VIS?[[VIS.total,'besøg i alt'],[VIS.today,'besøg i dag']]:[]),[beers().length,'øl'],[R.length,'bedømmelser'],[new Set(R.map(r=>r.who.trim().toLowerCase()).filter(Boolean)).size,'smagere']])(reviews()).map(([n,l])=>`<div class="ex-t" style="cursor:default"><b style="font-size:30px;color:var(--glt)" data-notr data-cu="${+n||0}">${(+n||0).toLocaleString(LOC())}</b><span class="meta">${l}</span></div>`).join('')}</div>
  ${VIS&&/^\d{4}-\d\d-\d\d$/.test(VIS.since)?`<p class="meta" style="margin:10px 0 0;font-size:14px">Besøg er talt siden ${new Date(VIS.since+'T12:00:00').toLocaleDateString(LOC(),{day:'numeric',month:'long',year:'numeric'})}. Tallet er, hvor mange gange siden er åbnet.</p>`:''}
