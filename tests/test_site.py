@@ -150,6 +150,18 @@ def run(b,name,vw):
     pg.evaluate("navigator.canShare=undefined")
     with pg.expect_download(timeout=10000) as dl: pg.click('#yearCard')
     T('årets øl: del som billede (jpg > 40 kB)',dl.value.suggested_filename=='aarets-oel-2026-olrating.jpg' and os.path.getsize(dl.value.path())>40000,dl.value.suggested_filename)
+    # --- byttur som minde: en gammel tur og en kommende
+    pg.evaluate("""(()=>{const S=JSON.parse(localStorage.getItem('olrating-v1'));const st=[{name:'Søgaards Bryghus',time:'19:00',addr:''},{name:'John Bull Pub',time:'21:00',addr:'Østerågade 20'},{name:'Den Tatoverede Enke',time:'00:30',addr:''}];
+      S.tours.push({id:'mem1test',name:'J-dag i Aalborg',date:'2026-11-20T19:00',meet:'Nytorv',note:'',host:'Lucas',stops:st,members:[{name:'Lucas'},{name:'Magnus'}]},{id:'fut1test',name:'Nytårstur',date:'2099-12-31T20:00',meet:'',note:'',host:'Lucas',stops:st.slice(0,1),members:[{name:'Lucas'}]});localStorage.setItem('olrating-v1',JSON.stringify(S))})()""")
+    pg.goto(URL+'#byttur'); pg.reload(); pg.wait_for_timeout(1500)
+    T('minde: gammel tur står under Minder, kommende tur gør ikke',pg.eval_on_selector_all('#tourOld .tcard','e=>e.length')==1 and 'J-dag i Aalborg' in pg.inner_text('#tourOld') and '5 øl bedømt' in pg.inner_text('#tourOld') and 'Nytårstur' not in pg.inner_text('#tourOld') and 'Nytårstur' in pg.inner_text('#app'),pg.inner_text('#app')[:300])
+    pg.goto(URL+'#byttur-mem1test'); pg.wait_for_timeout(500); mm=pg.inner_text('#tourMemo')
+    T('minde: rute, hold og turens bedste øl',"3 stop · 2 var med · 5 øl bedømt" in mm and pg.inner_text('#tourMemo .rk >> nth=0 >> b >> nth=0')=='Fjord IPA' and 'Turens bedste øl' in mm and 'bedømt af Lucas og Magnus' in mm and pg.query_selector('.safe') is None and 'Hvem var med (2)' in pg.inner_text('#app') and not over(),mm[:300])
+    pg.evaluate("navigator.canShare=undefined")
+    with pg.expect_download(timeout=10000) as dl: pg.click('#tourCard')
+    T('minde: del som billede (jpg > 40 kB)',dl.value.suggested_filename=='J-dag-i-Aalborg-byttur-olrating.jpg' and os.path.getsize(dl.value.path())>40000,dl.value.suggested_filename)
+    pg.goto(URL+'#byttur-fut1test'); pg.wait_for_timeout(500)
+    T('minde: kommende tur har intet minde, men Kom sikkert hjem',pg.query_selector('#tourMemo') is None and pg.query_selector('.safe') is not None and 'Hvem er med (1)' in pg.inner_text('#app'))
     pg.goto(URL+'#beer-ux5'); pg.wait_for_timeout(500); a=pg.query_selector('[data-unit]') is None
     pg.goto(URL+'#beer-ux1'); pg.wait_for_timeout(500)
     T('alkoholfri: ingen +Genstand på 0 %, men på almindelig øl',a and pg.query_selector('[data-unit]') is not None)

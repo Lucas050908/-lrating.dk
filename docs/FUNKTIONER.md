@@ -95,6 +95,11 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 - **Slet og meld fra:** Værten kan slette turen for alle. En deltager kan fjerne turen fra sin liste og bliver så meldt fra.
 - **Under turen:** "Vi er her nu" og næste stop beregnes ud fra tidspunkterne.
 - **Kom sikkert hjem:** genvej til genstand-tælleren, Rejseplanen og taxa, plus 112 ved fare.
+- **Minde:** 14 timer efter første stop er turen slut. Så flytter den ned under "Minder" på oversigten, og siden for turen viser "Sådan gik turen":
+  - antal stop, hvem der var med, og de øl, holdet bedømte den dag, med turens bedste øl øverst.
+  - En bedømmelse tæller med, når navnet på bedømmelsen står på turens liste. Starter turen kl. 16 eller senere, tæller dagen efter også med.
+  - "Del mindet som billede" laver et billede med dato, rute, hold og turens bedste øl.
+  - Mindet viser kun, hvad der blev smagt og bedømt. Der er ingen opgørelse over, hvor meget nogen drak.
 
 ### Smagning med venner
 - **Opret:** Værten giver smagningen et navn og skriver 2 til 12 øl, én pr. linje. Blindsmagning er slået til som standard.

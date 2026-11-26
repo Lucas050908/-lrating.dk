@@ -4,6 +4,13 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Formiddag (08:26–08:30): byttur som minde
+- **Minder:** Når en byttur er slut, bliver den til et minde. Siden for turen viser "Sådan gik turen" med ruten, hvem der var med, og de øl, holdet bedømte den dag, med turens bedste øl øverst.
+- **Del mindet som billede:** Et billede med dato, rute, hold og turens bedste øl.
+- **Oversigten** over byture er delt i kommende ture og minder. Gamle ture er ikke længere grå.
+- Mindet tæller kun øl, der er smagt og bedømt, og ikke hvor meget nogen har drukket.
+- **Test:** 4 nye tjek af minder.
+
 ### Formiddag (08:11–08:18): Årets øl og topliste som billede
 - **Årets øl:** Ny side (`#aarets`) med årets vinder, de næste på listen, årets bryggeri, årets stil, årets alkoholfri og årets nykommer. Kun bedømmelser fra året tæller, og en øl skal have mindst 2 bedømmelser for at være med, når der er øl, der har det. Siden ligger under Mere, i sidefoden og som link på Toplisten.
 - **Del toplisten som billede:** Ny knap på Toplisten og på Årets øl, der laver et billede med de 5 bedste øl. Det deles på samme måde som delekortet for en enkelt øl.

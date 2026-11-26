@@ -38,6 +38,7 @@
 - `dupCheck()`: kører 250 ms efter, at brugeren har skrevet i navn, bryggeri eller stregkode på Tilføj øl. Den finder op til tre øl med samme stregkode eller næsten samme navn (`norm()` og `near()`), og viser dem i `#dupHint`.
 - `yearData(y)`: tallene bag Årets øl. Bedømmelser med dato i året `y` grupperes pr. øl, bryggeri og stil. `min` er 2, hvis mindst én øl har 2 bedømmelser i året, ellers 1.
 - `makeListCard(kick,title,list)`: tegner et billede med op til 5 øl på et canvas. `cardBg()` tegner baggrund og logo, og `shareBlob()` deler billedet, gemmer det i appen eller henter det som fil. `shareTop(t)` og `shareYear(y)` bruger dem til Toplisten og Årets øl.
+- `tourOver(t)`: sand, når der er gået 14 timer fra turens første stop. `tourMem(t)` finder de bedømmelser, holdet har givet på turens dato (og dagen efter, hvis turen starter kl. 16 eller senere), og `makeTourCard(t)` tegner mindet som billede.
 - `nextEvent()`: nærmeste af J-dag (første fredag i november), påskedag, sankthans, juleaften og nytårsaften.
 - `myCounts()`: tal til mærkerne, bl.a. forskellige øl, stilarter, bryggerier, lande og alkoholfri.
 
