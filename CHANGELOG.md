@@ -4,6 +4,10 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Aften (17:34–17:42): Resend er forbundet, og domænet er oprettet
+- **Resend:** Lucas har forbundet Resend, og domænet `xn--lrating-p1a.dk` er oprettet dér i region EU. Resend tog imod domænet med ø, så det usikre punkt i guiden er væk.
+- **Guiden (`docs/KONTO.md`)**, punkt 1.2, er rettet: Der er 4 DNS-linjer, som skal ind hos one.com, før domænet bliver godkendt.
+
 ### Eftermiddag (15:00–15:13): status ved dagens afslutning
 - **Den rigtige database kl. 15:00:** 22 af 22 tjek bestod. Der ligger 1 øl og 1 bedømmelse. Siden svarer på https, og versionen på nettet er den samme som i koden (v51). `003`, `004` og funktionen `mails` er ikke sat op endnu.
 - **Browsere kl. 15:25:** Chrome, Safaris motor (WebKit) og Firefox består alle tre test på GitHub. Ét tjek fejlede først i Firefox (flere stemmer på samme telefon i en smagning). Stemmen nåede ikke frem inden for testens ventetid. Efter at testen venter længere, består det. I Firefox springes tjekket uden net over.

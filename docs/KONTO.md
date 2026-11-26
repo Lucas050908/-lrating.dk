@@ -28,16 +28,15 @@ Der er to trin. **Trin 1** giver login med kode på mail. **Trin 2** giver mails
 
 Filen er sidst ændret den 26-11-2026 kl. 13:01. Har du kørt den før det, så kør den igen. Den kan køres flere gange uden at gøre skade.
 
-### 1.2 Opret Resend, og tilføj domænet
-1. Opret en konto på <https://resend.com>.
-2. **Domains → Add Domain**. Skriv `xn--lrating-p1a.dk` (det er ølrating.dk skrevet uden ø). Vælg region **EU (Ireland)**.
-3. Resend viser nu nogle DNS-linjer (typisk 3: en MX og to TXT).
-4. one.com → **DNS → DNS records**. Opret hver linje præcis, som Resend viser den (type, navn og værdi).
-   De nye linjer hedder noget med `send` og `resend._domainkey`. De rører ikke ved selve siden.
-5. Tilbage i Resend: tryk **Verify**. Det kan tage fra et par minutter til nogle timer, før den bliver grøn.
+### 1.2 Domænet hos Resend og DNS-linjerne
+Kontoen hos Resend er oprettet, og domænet `xn--lrating-p1a.dk` blev oprettet dér den 26-11-2026 i region EU (Irland).
+Resend tog imod domænet med ø uden problemer.
 
-**Usikkert punkt:** Det er ikke tjekket, om Resend tager imod et domæne med ø (`xn--…`). Siger Resend nej, så stop her
-og skriv det til Claude. Så finder vi en anden mailtjeneste. Resten af opsætningen er den samme.
+Tilbage er DNS:
+1. Resend → **Domains** → klik på domænet. Der står 4 DNS-linjer (1 MX, 2 TXT og 1 CNAME).
+2. one.com → **DNS → DNS records**. Opret hver linje præcis, som Resend viser den (type, navn og værdi).
+   Navnene er `resend._domainkey`, `send` (to linjer) og `rsend`. De rører ikke ved selve siden.
+3. Tilbage i Resend: tryk **Verify**. Det kan tage fra et par minutter til nogle timer, før den bliver grøn.
 
 ### 1.3 Kobl Resend til Supabase
 1. Resend → **Settings → Integrations → Supabase → Connect**.
