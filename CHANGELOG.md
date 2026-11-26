@@ -4,6 +4,11 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Middag (12:36–12:52): se når nogen har stemt på dine bedømmelser
+- **Gul prik ved nye stemmer:** Har nogen swipet på dine bedømmelser, siden du sidst kiggede, får Min profil en lille prik. På mobil sidder den også på menu-knappen.
+- **Boksen "Er andre enige med dig?"** viser nu "+3 nye stemmer siden sidst" og hvilken af dine bedømmelser flest er enige i, og hvilken flest er uenige i, med link til øllen.
+- **Test:** 2 nye tjek i `test_sync.py`.
+
 ### Middag (12:26–12:33): knapperne på Enig eller uenig?
 - **Knapperne Uenig, Spring over og Enig** står nu på én linje også på små skærme. Før knækkede "👎 Uenig" over to linjer på en telefon. Tjekket på 390 og 320 px på dansk og engelsk.
 

@@ -64,6 +64,7 @@
 - `sbVotes()` kører sidst i hver synkronisering. Den sender køen til tabellen `review_votes` og henter tallene fra viewet `review_vote_counts` og ens egne stemmer. Svarer databasen 404, sættes `rvOk=false`, og der prøves først igen ved næste indlæsning.
 - `swipeDeck()` vælger kortene, `swAct(id, v)` gemmer en stemme (eller et spring over) og lader kortet flyve ud, og `swipeWire()` står for trækket med fingeren eller musen.
 - `rvC(id)` giver tallene til visning. En stemme, der ikke er sendt endnu, tælles med.
+- `rvMine()` lægger stemmerne på ens egne bedømmelser sammen. `S.rvSeen` er tallet, sidst Min profil blev vist, og `rvNew()` er forskellen. `rvDot()` sætter klassen `nyt` på Min profil og menu-knappen efter hver sidevisning og synkronisering. `profileView` viser forskellen og nulstiller den.
 
 ### Konto
 - `KONTO` (konstant i `index.html`) slår kontoen til for alle. `kontoOn()` er også sand, når `localStorage['olrating-konto']` er `1`, og det sætter adressen `#konto-test`.

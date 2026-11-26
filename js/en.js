@@ -194,6 +194,8 @@ const R=[
 [/^(\d+) med$/,'$1 going'],
 [/^(\d+) har stemt$/,'$1 voted'],
 [/^(\d+) stemmer?$/,(m,n)=>n1(n,'vote','votes')],
+[/^\+(\d+) ny(?:e)? stemmer? siden sidst$/,(m,n)=>'+'+n+(n==1?' new vote':' new votes')+' since last time'],
+[/^Flest enige: <1>(.*)<\/1> \(👍 (\d+)\)$/,'Most agreed with: <1>$1</1> (👍 $2)'],[/^Flest uenige: <1>(.*)<\/1> \(👎 (\d+)\)$/,'Most disagreed with: <1>$1</1> (👎 $2)'],
 [/^👍 (\d+) enige?$/,(m,n)=>'👍 '+n+(n==1?' agrees':' agree')],
 [/^👎 (\d+) uenige?$/,(m,n)=>'👎 '+n+(n==1?' disagrees':' disagree')],
 [/^👎 (\d+) uenige?\. Tallene står også ved hver af dine bedømmelser\.$/,(m,n)=>'👎 '+n+(n==1?' disagrees':' disagree')+'. The numbers are also shown next to each of your ratings.'],

@@ -116,6 +116,7 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 - **Swipe til højre** for enig og **til venstre** for uenig. Mens du trækker, kommer stemplet ENIG eller UENIG frem. Knapperne under kortet og piletasterne gør det samme. "Spring over" gemmer kortet til senere, og "Fortryd" tager det seneste tilbage.
 - Bedømmelser af øl, du selv har bedømt, kommer først. Dine egne bedømmelser er ikke med, og du kan ikke stemme på dem.
 - **Den, der har bedømt, kan se tallene:** Ved hver bedømmelse står der, hvor mange der er enige og uenige, og Min profil har boksen "Er andre enige med dig?" med den samlede procent.
+- **Nye stemmer:** Har nogen stemt på dine bedømmelser, siden du sidst åbnede Min profil, får Min profil (og menu-knappen på mobil) en lille gul prik. Boksen viser, hvor mange nye stemmer der er, og hvilken af dine bedømmelser flest er enige og uenige i.
 - Stemmerne ligger i den fælles database. Hvem der har stemt hvad, kan ingen andre se. Kun tallene er offentlige.
 - Mangler databasen tilføjelsen `supabase/003-konto-mails-enig.sql`, gemmes stemmerne på enheden og sendes, når den er kørt.
 
