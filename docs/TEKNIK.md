@@ -83,6 +83,12 @@
 - **Afmelding:** Linket i mailen går til `#afmeld-<nøgle>` på siden (`unsubView`, svaret huskes i `UNS`, så det overlever en gentegning). Først når man trykker på knappen, kaldes `mail_afmeld(nøgle)`, som alle må kalde, fordi nøglen (`mail_prefs.unsub`) er tilfældig og kun står i brugerens egne mails. Mailprogrammers egen afmeld-knap (`List-Unsubscribe`) rammer funktionen med `POST ?unsub=`. En Edge Function kan ikke vise HTML, så `GET ?unsub=` sender bare videre til siden.
 - Opsætningen trin for trin står i `docs/KONTO.md`.
 
+### Karakterer med kommatal
+- `rateRow(k, navn, værdi)` bygger én række: fem stjerneknapper (`data-star`, hele tal) og en gruppe med − og + (`data-step`, trin på 0,1) omkring et `<output class="rnv">`. Rækken bruges både i bedømmelsen af en øl og i smagninger.
+- `rateSet(række, værdi)` er det eneste sted, værdien ændres: den afrunder til én decimal, holder den mellem 1 og 5, sætter `data-v`, og markerer stjernerne. Hele stjerner får klassen `on`. Den stjerne, der kun er delvist fyldt, får `part` og `--f` (fx `70%`), og en CSS-maske tegner den fyldte del.
+- `cleanRev()` gemmer nu én decimal i stedet for at afrunde til hele tal. Databasen gemmer karaktererne som JSON, så den skulle ikke ændres.
+- Tallet vises med komma på dansk og punktum på engelsk (`fmt`). `setLang` kalder `rateSet` igen, så tal, der allerede er valgt, følger sproget.
+
 ### Lange ord
 - `#app{overflow-wrap:anywhere}` lader lange ord uden mellemrum knække, så brugerindhold ikke kan gøre siden bredere end skærmen. Knapper, mærkater og formularfelter er undtaget.
 - Overskrifter har `hyphens:auto`, så lange sammensatte ord får bindestreg, hvor browseren har en ordbog til sproget.

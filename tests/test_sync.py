@@ -116,11 +116,13 @@ with sync_playwright() as p:
     A.click('#voteForm button.btn'); A.wait_for_timeout(2500)
     A.fill('#vWho','Sofie')
     for i,v in enumerate([3,5,5]): A.click(f'#voteForm .rate[data-k="t{i}"] [data-star="{v}"]')
+    A.click('#voteForm .rate[data-k="t2"] [data-step="-1"]')   # kommatal: 4,9 (ændrer ikke på, hvem der vinder)
     A.click('#voteForm button.btn'); A.wait_for_timeout(2500)
     for _ in range(12):   # langsomme browsere (Firefox på GitHub) kan være længere om at sende stemmen
         if sorted(n for (t,n) in M.votes if t==sid)==['Lucas','Magnus','Sofie']: break
         A.wait_for_timeout(500)
     check('smagning: flere kan stemme på samme telefon',sorted(n for (t,n) in M.votes if t==sid)==['Lucas','Magnus','Sofie'],list(M.votes))
+    check('smagning: en stemme kan være et kommatal',M.votes.get((sid,'Sofie'),{}).get('data',{}).get('v')==[3,5,4.9],M.votes.get((sid,'Sofie')))
     A.click('#tastReveal'); A.wait_for_timeout(2500)
     check('smagning: afsløring gemt',M.t['tastings'][sid]['data']['revealed']==True)
     Bp.wait_for_timeout(7500)

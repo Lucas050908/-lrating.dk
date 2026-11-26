@@ -37,6 +37,8 @@ def run(b,name,vw):
     pg.select_option('#bSize',index=1); pg.fill('#bPrice','25')
     T('add: abv hint updates',pg.inner_text('#abvHint')=='Normal styrke',pg.inner_text('#abvHint'))
     for k in ['look','aroma','taste','feel','overall']: pg.click(f'#addForm .rate[data-k="{k}"] [data-star="4"]')
+    # kommatal: minus og plus retter med 0,1. 3,9 og 4,1 giver stadig 4,0 i snit
+    pg.click('#addForm .rate[data-k="look"] [data-step="-1"]'); pg.click('#addForm .rate[data-k="aroma"] [data-step="1"]')
     pg.fill('#addForm #rWho','Lucas'); pg.click('#addBtn'); pg.wait_for_timeout(4500)
     h=pg.evaluate('location.hash'); bid=h[6:] if h.startswith('#beer-') else ''
     T('add: lands on beer page',bool(bid) and 'Skærgaard Pilsner' in pg.title(),h)
@@ -44,6 +46,16 @@ def run(b,name,vw):
     T('beer page: score 4,0 and info',pg.inner_text('#bigScore').strip()=='4,0' and 'Fanø Bryghus' in pg.inner_text('.info') and '5,2' in pg.inner_text('.info'),pg.inner_text('#bigScore'))
     T('beer page: image visible',pg.evaluate("[...document.querySelectorAll('img')].some(i=>/^(blob:|https:\\/\\/bbc)/.test(i.src)&&i.naturalWidth>0)"))
     T('sync: beer + image reached database',len(M.t['beers'])==1 and len(M.store)==1,(list(M.t['beers']),list(M.store)))
+    sc=s['reviews'][0]['s'] if s['reviews'] else {}; db=[r['data'].get('s',{}) for r in M.t['reviews'].values()]
+    T('kommatal: 3,9 og 4,1 er gemt på enheden og i databasen',sc.get('look')==3.9 and sc.get('aroma')==4.1 and sc.get('taste')==4 and db and db[0].get('look')==3.9 and db[0].get('aroma')==4.1,(sc,db))
+    R='#revForm .rate[data-k="look"]'; rd=lambda: pg.evaluate("(q)=>{const r=document.querySelector(q),p=r.querySelector('.part');return [r.dataset.v,r.querySelector('.rnv').textContent,[...r.querySelectorAll('[data-star]')].map(b=>b.className).join('|'),p?p.style.getPropertyValue('--f'):'',r.querySelectorAll('[aria-checked=true]').length]}",R)
+    pg.click(R+' [data-step="1"]'); v0=rd()
+    pg.click(R+' [data-star="4"]'); v4=rd()
+    for _ in range(3): pg.click(R+' [data-step="-1"]')
+    v1=rd(); T('kommatal: 4 stjerner og tre gange minus giver 3,7 med en delvist fyldt stjerne',v4[:2]==['4','4,0'] and v4[4]==1 and v1==['3.7','3,7','on|on|on|part|','70%',0],(v4,v1))
+    T('kommatal: plus uden en karakter starter på 3,0',v0[:2]==['3','3,0'],v0)
+    pg.click(R+' [data-star="5"]'); pg.click(R+' [data-step="1"]'); hi=rd(); pg.click(R+' [data-star="1"]'); pg.click(R+' [data-step="-1"]'); lo=rd()
+    T('kommatal: kan ikke komme over 5 eller under 1',hi[:2]==['5','5,0'] and lo[:2]==['1','1,0'],(hi,lo))
     # --- second review
     for k in ['look','aroma','taste','feel','overall']: pg.click(f'#revForm .rate[data-k="{k}"] [data-star="2"]')
     pg.fill('#revForm #rWho','Magnus'); pg.click('#revForm button[type=submit]'); pg.wait_for_timeout(1500)

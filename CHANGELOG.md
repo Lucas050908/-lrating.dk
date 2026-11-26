@@ -4,6 +4,12 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Aften (19:26–19:44): karakterer med kommatal
+- **Kommatal:** Man kan nu give fx 3,7 i en kategori. Et tryk på en stjerne giver et helt tal, og med − og + retter man i trin på 0,1. Den sidste stjerne bliver delvist fyldt, og tallet står ved siden af.
+- Det virker i bedømmelsen af en øl, når man retter en bedømmelse, og når man stemmer i en smagning.
+- På mobil står tallet og knapperne på linjen med navnet, og stjernerne på linjen under.
+- **Test:** 4 nye tjek i `test_site.py` og 1 i `test_sync.py`.
+
 ### Aften (17:34–17:42): Resend er forbundet, og domænet er oprettet
 - **Resend:** Lucas har forbundet Resend, og domænet `xn--lrating-p1a.dk` er oprettet dér i region EU. Resend tog imod domænet med ø, så det usikre punkt i guiden er væk.
 - **Guiden (`docs/KONTO.md`)**, punkt 1.2, er rettet: Der er 4 DNS-linjer, som skal ind hos one.com, før domænet bliver godkendt.

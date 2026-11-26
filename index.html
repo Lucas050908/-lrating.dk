@@ -246,12 +246,19 @@ html.trw body{visibility:hidden}
 .panel{background:var(--nv2);border:1px solid var(--ln);border-radius:26px;padding:clamp(18px,3vw,32px)}
 .f{display:grid;gap:18px}
 .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:14px}
-.rate{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px 10px;border-bottom:1px solid var(--ln);padding:4px 0}
+.rate{display:grid;grid-template-columns:minmax(0,1fr) auto auto;grid-template-areas:"l s n";align-items:center;gap:2px 12px;border-bottom:1px solid var(--ln);padding:4px 0}
+.rate>span{grid-area:l}.rate .st{grid-area:s}.rate .rn{grid-area:n}
+.rn{display:flex;align-items:center;gap:2px}
+.rnb{width:40px;min-height:40px;padding:0;border-radius:50%;background:var(--nv2);border:1px solid var(--ln);color:var(--tx);font-size:22px;font-weight:700;line-height:1;box-shadow:none}
+.rnv{min-width:42px;text-align:center;font:700 18px Sora,sans-serif;font-variant-numeric:tabular-nums}
+@media(max-width:620px){.rate{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"l n" "s s";padding:6px 0}.rate .st{justify-content:space-between}}
 .rate>span{font-weight:600}
 .st{display:flex;gap:2px}
 .st button{width:44px;min-height:44px;padding:0;background:transparent;border-radius:50%;color:rgba(143,182,227,.35)}
 .st button svg{width:30px;height:30px}
 .st button.on{color:var(--glt);animation:pop .4s cubic-bezier(.2,.8,.3,1.6)}
+.st button{position:relative}
+.st button.part::after{content:"";position:absolute;inset:0;margin:auto;width:30px;height:30px;background:var(--glt);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2 6.4 20.2l1.1-6.3L2.9 9.5l6.3-.9z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2 6.4 20.2l1.1-6.3L2.9 9.5l6.3-.9z'/%3E%3C/svg%3E") center/contain no-repeat;clip-path:inset(0 calc(100% - var(--f,50%)) 0 0)}
 @keyframes pop{40%{transform:scale(1.35)}}
 .prof{display:grid;gap:10px}
 .sl{display:grid;grid-template-columns:90px minmax(0,1fr) 24px;gap:12px;align-items:center}
@@ -552,6 +559,7 @@ async function setLang(l){l=l==='en'?'en':'da';langClose();S.langSet=1;if(l===S.
   const y=scrollY,typing=dirty;S.lang=l;save();
   const go=()=>{if(l==='en'){EN=window.EN_DATA;document.documentElement.lang='en';if(!typing)softRoute();trEl(document.body);trObs.observe(document.body,TROPT)}
    else{trObs.disconnect();trBack(document.body);EN=null;trC.clear();document.documentElement.lang='da';if(!typing)softRoute()}
+   document.querySelectorAll('.rate').forEach(r=>rateSet(r,r.dataset.v));   // karakterer, der allerede er valgt, får komma eller punktum efter sproget
    langUI();scrollTo({top:y,behavior:'instant'})};acctTouch();
   /* Blød overgang, hvor browseren kan det. Ellers skiftes der bare med det samme. */
   if(document.startViewTransition&&!RM){try{await document.startViewTransition(go).updateCallbackDone}catch(e){if(S.lang!==(EN?'en':'da'))go()}}else go();
@@ -573,7 +581,14 @@ const tastById=id=>S.tast.find(t=>t.id===id),letter=i=>String.fromCharCode(65+i)
 function cleanTast(o){if(!o||typeof o.id!=='string'||!/^[a-z0-9]{6,40}$/i.test(o.id))return null;const str=(x,n)=>String(x||'').slice(0,n),beers=(Array.isArray(o.beers)?o.beers:[]).slice(0,12).map(x=>str(x,60)).filter(Boolean);
   return beers.length<2?null:{id:o.id,name:str(o.name,80)||'Smagning',host:str(o.host,40),blind:!!o.blind,revealed:!!o.revealed,beers,votes:{}}}
 function tastRes(t){return t.beers.map((n,i)=>{const v=Object.values(t.votes).map(a=>+a[i]).filter(x=>x>=1&&x<=5);return{i,n,k:v.length,avg:v.length?v.reduce((a,b)=>a+b,0)/v.length:0}}).sort((a,b)=>b.avg-a.avg||b.k-a.k||a.i-b.i)}
-const starsRow=(k,l,v=0)=>`<div class="rate" data-k="${k}" data-v="${v}"><span>${esc(l)}</span><div class="st" role="radiogroup" aria-label="${esc(l)}">${[1,2,3,4,5].map(i=>`<button type="button" data-star="${i}" role="radio" aria-checked="${i===v}" aria-label="${esc(l)}: ${i} af 5"${i<=v?' class="on"':''}>${STAR}</button>`).join('')}</div></div>`;
+/* Én række til en karakter: stjerner giver et helt tal, og minus og plus retter i trin på 0,1 (1,0 til 5,0).
+   En stjerne, der kun er delvist fyldt, får klassen part og --f (hvor meget af den, der er fyldt). */
+const r1=v=>Math.round(v*10)/10,rateFix=v=>v?Math.min(5,Math.max(1,r1(+v)||0)):0;
+const starCls=(i,v)=>{const fl=Math.floor(v+1e-9),fr=r1(v-fl);return i<=fl?' class="on"':i===fl+1&&fr>0?` class="part" style="--f:${fr*100}%"`:''};
+const rateRow=(k,l,v=0)=>{v=rateFix(v);return `<div class="rate" data-k="${k}" data-v="${v}"><span>${esc(l)}</span><div class="st" role="radiogroup" aria-label="${esc(l)}">${[1,2,3,4,5].map(i=>`<button type="button" data-star="${i}" role="radio" aria-checked="${i===v}" aria-label="${esc(l)}: ${i} af 5"${starCls(i,v)}>${STAR}</button>`).join('')}</div><div class="rn"><button type="button" class="rnb" data-step="-1" aria-label="${esc(l)}: 0,1 lavere">−</button><output class="rnv" aria-live="polite" data-notr>${v?fmt(v):'–'}</output><button type="button" class="rnb" data-step="1" aria-label="${esc(l)}: 0,1 højere">+</button></div></div>`};
+function rateSet(r,v,pop){v=rateFix(v);r.dataset.v=v;const fl=Math.floor(v+1e-9),fr=r1(v-fl);
+  r.querySelectorAll('[data-star]').forEach(b=>{const i=+b.dataset.star,on=i<=fl,part=!on&&i===fl+1&&fr>0;b.classList.remove('on');if(on){if(pop)void b.offsetWidth;b.classList.add('on')}b.classList.toggle('part',part);if(part)b.style.setProperty('--f',fr*100+'%');else b.style.removeProperty('--f');b.setAttribute('aria-checked',i===v)});
+  const o=r.querySelector('.rnv');if(o)o.textContent=v?fmt(v):'–'}
 if(!S.sh||typeof S.sh!=='object')S.sh={};if(!S.si||typeof S.si!=='object')S.si={};if(!Array.isArray(S.dq))S.dq=[];if(!Array.isArray(S.joins))S.joins=[];
 /* ---------- fælles database (Supabase) ---------- */
 const SB={url:'https://bbcegrufmzgfgzxazldr.supabase.co',key:'sb_publishable_mf5v3jp_xYx7wJj1lgCr-Q_JUFuzXOY'};
@@ -674,7 +689,7 @@ function dq(path){S.dq=[...S.dq,{p:path,n:0}].slice(-40)}
 const cs=(x,n)=>typeof x==='string'||typeof x==='number'?String(x).slice(0,n):'',cn=(x,a,b)=>{x=typeof x==='number'||typeof x==='string'?+x:NaN;return isFinite(x)?Math.max(a,Math.min(b,x)):0},cid=x=>typeof x==='string'&&/^[\w-]{1,40}$/.test(x)?x:'',cdate=x=>typeof x==='string'&&/^\d{4}-\d\d-\d\d$/.test(x)&&!isNaN(new Date(x+'T12:00'))?x:new Date().toISOString().slice(0,10);
 const cimg=x=>typeof x!=='string'?'':x.startsWith(SB.url+'/storage/v1/object/public/billeder/')?x.slice(0,400):x.startsWith('idb:')?x.slice(0,80):x.startsWith('data:image/')?x.slice(0,4e6):'';
 function cleanBeer(o){const id=cid(o?.id);if(!id)return null;return{id,name:cs(o.name,120)||'Øl',brewery:cs(o.brewery,120),city:cs(o.city,60),country:cs(o.country,40),style:typeof o.style==='string'&&Object.prototype.hasOwnProperty.call(STYLES,o.style)?o.style:'Andet',abv:cn(o.abv,0,80),ibu:Math.round(cn(o.ibu,0,200)),color:cs(o.color,20),price:cn(o.price,0,100000),place:cs(o.place,80),size:cs(o.size,40),desc:cs(o.desc,600),code:cs(o.code,20).replace(/\D/g,''),af:o.af===true,img:cimg(o.img),addedBy:cs(o.addedBy,40)||'Ukendt',date:cdate(o.date),...(o.edited?{edited:1}:{}),...(typeof o.owner==='string'?{owner:o.owner.slice(0,40)}:{})}}
-function cleanRev(o){const id=cid(o?.id),beer=cid(o?.beer);if(!id||!beer)return null;const s={},ps=o.s&&typeof o.s==='object'?o.s:{};CATS.forEach(([k])=>s[k]=Math.round(cn(ps[k],1,5))||1);
+function cleanRev(o){const id=cid(o?.id),beer=cid(o?.beer);if(!id||!beer)return null;const s={},ps=o.s&&typeof o.s==='object'?o.s:{};CATS.forEach(([k])=>s[k]=r1(cn(ps[k],1,5))||1);
   return{id,beer,who:cs(o.who,40)||'Ukendt',date:cdate(o.date),s,prof:o.prof&&typeof o.prof==='object'?Object.fromEntries(PROF.map(([k])=>[k,Math.round(cn(o.prof[k],1,5))||3])):null,tags:(Array.isArray(o.tags)?o.tags:[]).filter(t=>typeof t==='string'&&t).slice(0,12).map(t=>t.slice(0,30)),again:o.again?1:0,text:cs(o.text,1000),img:cimg(o.img),...(o.edited?{edited:1}:{}),...(typeof o.owner==='string'?{owner:o.owner.slice(0,40)}:{})}}
 function fromRow(r,beer){const d=r.data&&typeof r.data==='object'&&!Array.isArray(r.data)?r.data:{};return beer?cleanBeer({...d,id:r.id,name:r.name,brewery:r.brewery||d.brewery||'',img:r.img||'',owner:r.owner}):cleanRev({...d,id:r.id,beer:r.beer,who:r.who,img:r.img||'',owner:r.owner})}
 async function sbPull(){const [B,R]=await Promise.all([sbFetch('/rest/v1/beers?select=*&order=created_at.desc&limit=2000'),sbFetch('/rest/v1/reviews?select=*&order=created_at.desc&limit=5000')]);
@@ -721,7 +736,7 @@ async function sbTast(){const uid=myUid(),me=(S.me||'').trim().toLowerCase();
   const pend=new Set(S.vq.map(q=>q.t+'|'+q.who));
   S.tast.forEach(t=>{if(!got.has(t.id))return;const nv={};V.forEach(v=>{if(v.tasting===t.id&&Array.isArray(v.data?.v)&&typeof v.who==='string'&&v.who!=='__proto__')nv[v.who.slice(0,40)]=v.data.v.slice(0,12).map(x=>Math.max(0,Math.min(5,+x||0)))});Object.entries(t.votes).forEach(([n,a])=>{if(pend.has(t.id+'|'+n))nv[n]=a});t.votes=nv})}
 async function sbFindTast(id){await sbAuth();const T=await sbFetch(`/rest/v1/tastings?id=eq.${encodeURIComponent(id)}&select=*`);if(!T.length)return null;const n=cleanTast({...T[0].data,id:T[0].id});if(!n)return null;n.owner=T[0].owner;
-  const V=await sbFetch(`/rest/v1/tasting_votes?tasting=eq.${encodeURIComponent(id)}&select=who,data`);V.forEach(v=>{if(Array.isArray(v.data?.v)&&typeof v.who==='string'&&v.who!=='__proto__')n.votes[v.who.slice(0,40)]=v.data.v.slice(0,12).map(x=>+x||0)});return n}
+  const V=await sbFetch(`/rest/v1/tasting_votes?tasting=eq.${encodeURIComponent(id)}&select=who,data`);V.forEach(v=>{if(Array.isArray(v.data?.v)&&typeof v.who==='string'&&v.who!=='__proto__')n.votes[v.who.slice(0,40)]=v.data.v.slice(0,12).map(x=>r1(Math.min(5,Math.max(0,+x||0))))});return n}
 async function sbFindTour(code){await sbAuth();const id=String(code).trim();if(!/^[a-z0-9]{6,40}$/i.test(id))return null;const T=await sbFetch(`/rest/v1/tours?id=eq.${encodeURIComponent(id)}&select=*`);if(!T.length)return null;
   const M=await sbFetch(`/rest/v1/tour_members?tour=eq.${encodeURIComponent(id)}&select=name`);return cleanTour({...T[0].data,id:T[0].id,members:M.map(m=>m.name)})}
 let sbP=null,dirty=false;function sbSync(){if(sbP)return sbP;sbP=sbRun().finally(()=>{sbP=null});return sbP}
@@ -980,10 +995,9 @@ function renderGrid(){EC=null;const g=$('grid');if(!g)return;const q=F.q.toLower
   L.sort(so[F.sort]);$('sort').value=F.sort;const sig=JSON.stringify({...F,lim:0});if(sig!==renderGrid.sig){renderGrid.sig=sig;F.lim=24}const more=L.length-F.lim;
   g.innerHTML=L.length?L.slice(0,F.lim).map(card).join('')+(more>0?`<div style="grid-column:1/-1;text-align:center"><button type="button" class="btn" id="moreBtn">Vis flere (${more} mere)</button></div>`:''):!beers().length?`<div class="empty" style="grid-column:1/-1"><span class="ic">${CAM('var(--gl)')}</span><h3>Ingen øl endnu</h3><span style="opacity:.8;max-width:30em">ølrating.dk er helt ny. Tag et billede af den øl, du drikker, giv den karakter, og bliv den første på listen.</span><a class="btn" href="#tilfoej">+ Tilføj den første øl</a></div>`:`<div class="empty" style="grid-column:1/-1"><h3>Ingen øl fundet</h3><span style="opacity:.8">Prøv en anden søgning, eller tilføj øllen selv.</span><a class="btn" href="#tilfoej">Tilføj øl</a></div>`}
 
-const starBtns=l=>[1,2,3,4,5].map(i=>`<button type="button" data-star="${i}" role="radio" aria-checked="false" aria-label="${l}: ${i} af 5">${STAR}</button>`).join('');
 function revFields(withImg){return `
  <label for="rWho">Dit navn *<input id="rWho" required maxlength="30" value="${esc(S.me)}" autocomplete="name"></label>
- <div><div style="font-weight:600">Din bedømmelse * <span class="hint">1 til 5 i hver kategori</span></div>${CATS.map(([k,l])=>`<div class="rate" data-k="${k}" data-v="0"><span>${l}</span><div class="st" role="radiogroup" aria-label="${l}">${starBtns(l)}</div></div>`).join('')}</div>
+ <div><div style="font-weight:600">Din bedømmelse * <span class="hint">1 til 5 i hver kategori. Tryk på en stjerne, og ret med − og +, hvis du vil give et kommatal.</span></div>${CATS.map(([k,l])=>rateRow(k,l)).join('')}</div>
  <div><div style="font-weight:600;margin-bottom:8px">Smagsprofil <span class="hint">valgfri, træk i skyderne</span></div><div class="prof" id="profBox" data-touched="">${PROF.map(([k,l])=>`<label class="sl" for="p_${k}" style="font-weight:400"><span>${l}</span><input type="range" id="p_${k}" data-p="${k}" min="1" max="5" step="1" value="3"><output id="o_${k}">3</output></label>`).join('')}</div></div>
  <div><div style="font-weight:600;margin-bottom:8px">Hvad smagte du?</div><div class="chips">${TAGS.map(t=>`<button type="button" class="chip" data-tag="${t}" aria-pressed="false">${t}</button>`).join('')}</div></div>
  <div><div style="font-weight:600;margin-bottom:8px">Ville du købe den igen?</div><div class="chips"><button type="button" class="chip" data-again="1" aria-pressed="true">Ja</button><button type="button" class="chip" data-again="0" aria-pressed="false">Nej</button></div></div>
@@ -1413,7 +1427,7 @@ function tastView(id){const t=tastById(id);if(!t)return `<section class="band" s
    ${who}<p style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">${R[0]&&R[0].k?`<button type="button" class="ghost" id="tastCard" data-id="${esc(t.id)}">Del resultatet som billede</button>`:''}${host?`<button type="button" class="ghost" id="tastReopen" data-id="${esc(t.id)}">Åbn for flere stemmer</button>`:''}</p>${foot}</div></section>`}
   return `<section class="band" style="padding-top:120px"><div class="wrap" style="max-width:880px">${head}
    <div class="tgrid"><form id="voteForm" data-id="${esc(t.id)}" class="tform" style="display:grid;gap:12px;align-content:start"><label>Dit navn<input id="vWho" required maxlength="40" value="${esc(me)}" autocomplete="name"></label>
-    <div>${t.beers.map((n,i)=>starsRow('t'+i,lab(i),mine?+mine[i]||0:0)).join('')}</div>
+    <div>${t.beers.map((n,i)=>rateRow('t'+i,lab(i),mine?+mine[i]||0:0)).join('')}</div>
     <button class="btn" style="justify-self:start">${mine?'Ret mine karakterer':'Gem mine karakterer'}</button>${who}
     ${host?`<div class="box" style="margin-top:6px"><b>Du er vært.</b> Når alle har stemt, afslører du resultatet for alle på én gang.<div style="margin-top:12px"><button type="button" class="btn" id="tastReveal" data-id="${esc(t.id)}"${voters.length?'':' disabled'}>Afslør resultatet</button></div></div>`:`<p class="meta">Resultatet vises her, når ${esc(t.host)} afslører det.</p>`}</form>
     <div><h3>Inviter de andre</h3><div class="qrbox" id="tourQR" data-link="${esc(link)}"></div><p class="meta" style="font-size:13px">Scan QR-koden, del linket, eller giv koden <b style="font-family:monospace;color:var(--tx);font-size:15px;user-select:all">${esc(t.id)}</b>. Flere kan også stemme på samme telefon: skriv bare et nyt navn.</p></div></div>
@@ -1490,7 +1504,7 @@ function wireDrops(){document.querySelectorAll('.drop').forEach(dz=>{const inp=d
   ['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add('over')}));
   ['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove('over')}));
   dz.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)take(f)})})}
-function readReview(form){const s={};let ok=true;form.querySelectorAll('.rate').forEach(r=>{const v=+r.dataset.v;if(!v)ok=false;s[r.dataset.k]=v});
+function readReview(form){const s={};let ok=true;form.querySelectorAll('.rate').forEach(r=>{const v=rateFix(r.dataset.v);if(!v)ok=false;s[r.dataset.k]=v});
   const who=form.querySelector('#rWho').value.trim();
   if(!who){toast('Skriv dit navn');form.querySelector('#rWho').focus();return null}
   if(!ok){toast('Giv stjerner i alle fem kategorier');return null}
@@ -1503,7 +1517,8 @@ document.addEventListener('click',e=>{const t=e.target.closest('button,a');if(!t
   if(t.dataset.lang){setLang(t.dataset.lang);return}
   if(t.id==='navMore'){const o=t.parentElement.classList.toggle('open');t.setAttribute('aria-expanded',o);return}
   if(t.id==='menuBtn'){const o=$('nav').classList.toggle('open');t.setAttribute('aria-expanded',o);return}
-  if(t.dataset.star){const r=t.closest('.rate'),v=+t.dataset.star;r.dataset.v=v;r.querySelectorAll('[data-star]').forEach(b=>{b.classList.remove('on');if(+b.dataset.star<=v){void b.offsetWidth;b.classList.add('on')}b.setAttribute('aria-checked',+b.dataset.star===v)})}
+  if(t.dataset.star)rateSet(t.closest('.rate'),+t.dataset.star,true);
+  else if(t.dataset.step&&t.closest('.rate')){const r=t.closest('.rate'),v=+r.dataset.v;rateSet(r,v?v+(+t.dataset.step)*.1:3)}   // uden karakter endnu: start på 3,0
   else if(t.dataset.tag){t.setAttribute('aria-pressed',t.getAttribute('aria-pressed')!=='true')}
   else if('again' in t.dataset){t.parentElement.querySelectorAll('[data-again]').forEach(b=>b.setAttribute('aria-pressed',b===t))}
   else if('style' in t.dataset){e.preventDefault();F.style=t.dataset.style;if(location.hash&&location.hash!=='#alle'){F.q='';location.hash='alle';return}
@@ -1546,7 +1561,7 @@ document.addEventListener('click',e=>{const t=e.target.closest('button,a');if(!t
   else if(t.id==='scanX'){stopScan()}
   else if(t.dataset.edit){const r=S.reviews.find(x=>x.id===t.dataset.edit),f=$('revForm');if(!r||!f)return;f.dataset.edit=r.id;
     f.querySelector('#rWho').value=r.who;f.querySelector('#rText').value=r.text||'';
-    f.querySelectorAll('.rate').forEach(el=>{const v=r.s[el.dataset.k];el.dataset.v=v;el.querySelectorAll('[data-star]').forEach(b=>{b.classList.toggle('on',+b.dataset.star<=v);b.setAttribute('aria-checked',+b.dataset.star===v)})});
+    f.querySelectorAll('.rate').forEach(el=>rateSet(el,r.s[el.dataset.k]));
     if(r.prof){PROF.forEach(([k])=>{f.querySelector('#p_'+k).value=r.prof[k];$('o_'+k).textContent=r.prof[k]});f.querySelector('#profBox').dataset.touched='1'}
     f.querySelectorAll('[data-tag]').forEach(b=>b.setAttribute('aria-pressed',(r.tags||[]).includes(b.dataset.tag)));
     f.querySelectorAll('[data-again]').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.again===(r.again?1:0)));
@@ -1588,7 +1603,7 @@ document.addEventListener('submit',async e=>{const f=e.target;e.preventDefault()
     try{await acctVerify(c);dirty=false;toast('Du er logget ind');route();sbSoon(200)}catch(e){AC.busy=false;toast(e&&e.status===429?'Du har prøvet for mange gange. Vent lidt, og prøv igen.':!e||!e.status||e.status>=500?'Der er ingen forbindelse lige nu. Prøv igen om lidt.':'Koden passer ikke, eller den er udløbet. Prøv igen.');if(f.isConnected)f.querySelector('button').disabled=false}return}
   if(f.id==='tcodeForm'){const c=$('sgCode').value.trim();if(!/^[a-z0-9]{6,40}$/i.test(c))return toast('Koden ser ikke rigtig ud');tastMiss.delete(c);location.hash='smagning-'+c;return}
   if(f.id==='tastForm'){const nm=(S.me||$('sgHost')?.value||'').trim().slice(0,40),beers=$('sgBeers').value.split('\n').map(x=>x.trim().slice(0,60)).filter(Boolean).slice(0,12);if(!nm)return toast('Skriv dit navn');if(beers.length<2)return toast('Skriv mindst to øl, én pr. linje');S.me=nm;const t={id:uid(),name:$('sgName').value.trim().slice(0,80)||'Smagning',host:nm,blind:$('sgBlind').checked,revealed:false,beers,votes:{}};S.tast.push(t);save();location.hash='smagning-'+t.id;toast('Smagningen er oprettet. Inviter de andre!');return}
-  if(f.id==='voteForm'){const tr=tastById(f.dataset.id),nm=$('vWho').value.trim().slice(0,40),v=[...f.querySelectorAll('.rate')].map(r=>+r.dataset.v||0);if(!tr)return;if(!nm)return toast('Skriv dit navn');if(v.some(x=>!x))return toast('Giv alle øllene en karakter');if(!S.me)S.me=nm;const ex=Object.keys(tr.votes).find(n=>n.toLowerCase()===nm.toLowerCase())||nm;tr.votes[ex]=v;S.vq=S.vq.filter(q=>!(q.t===tr.id&&q.who===ex)).concat({t:tr.id,who:ex,v});save();toast(`Tak, ${ex}! Dine karakterer er gemt`);route();return}
+  if(f.id==='voteForm'){const tr=tastById(f.dataset.id),nm=$('vWho').value.trim().slice(0,40),v=[...f.querySelectorAll('.rate')].map(r=>rateFix(r.dataset.v));if(!tr)return;if(!nm)return toast('Skriv dit navn');if(v.some(x=>!x))return toast('Giv alle øllene en karakter');if(!S.me)S.me=nm;const ex=Object.keys(tr.votes).find(n=>n.toLowerCase()===nm.toLowerCase())||nm;tr.votes[ex]=v;S.vq=S.vq.filter(q=>!(q.t===tr.id&&q.who===ex)).concat({t:tr.id,who:ex,v});save();toast(`Tak, ${ex}! Dine karakterer er gemt`);route();return}
   if(f.id==='codeForm'){const c=$('tCode').value.trim();const lt=tourById(c);if(lt){location.hash='byttur-'+lt.id;return}toast('Leder efter turen…');sbFindTour(c).then(n=>{if(!n)return toast('Ingen tur med den kode');const t=mergeTour(n);save();location.hash='byttur-'+t.id}).catch(()=>toast('Kunne ikke hente turen. Tjek forbindelsen.'));return}
   if(f.id==='tourForm'){const nm=(S.me||$('tHost')?.value||'').trim().slice(0,40);if(!nm)return toast('Skriv dit navn');S.me=nm;const t={id:uid(),name:$('tName').value.trim().slice(0,80),date:$('tDate').value,meet:$('tMeet').value.trim().slice(0,120),note:$('tNote').value.trim().slice(0,300),host:nm,stops:[],members:[{name:nm}]};S.tours.push(t);save();location.hash='byttur-'+t.id;toast('Turen er oprettet. Tilføj stop og del den!');return}
   if(f.id==='stopForm'){const tr=tourById(f.dataset.id);tr.stops.push({name:$('sName').value.trim().slice(0,80),time:$('sTime').value,addr:$('sAddr').value.trim().slice(0,120)});tr.stops.sort((a,b)=>{const k=x=>x.time<'06:00'?'2'+x.time:'1'+x.time;return k(a).localeCompare(k(b))});save();route();setTimeout(()=>$('sName')?.focus(),50);return}

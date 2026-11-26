@@ -55,6 +55,12 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 - **Noget for dig** vises på forsiden og på Min profil, når du har bedømt mindst to øl. Den foreslår op til fire øl, du ikke har bedømt, med en begrundelse som "Du plejer at kunne lide pilsner".
 - **Du er mest enig med** vises på Min profil. Den sammenligner dine karakterer med andres på de øl, I begge har bedømt (mindst to fælles øl), og viser enigheden i procent.
 
+### Karakterer med kommatal
+- Hver kategori (udseende, duft, smag, fylde og helhed) får en karakter fra 1,0 til 5,0.
+- Et tryk på en stjerne giver et helt tal. Med − og + ved siden af retter man i trin på 0,1, fx fra 4,0 til 3,7. Tallet står mellem de to knapper, og den sidste stjerne bliver kun delvist fyldt.
+- Det gælder også, når man stemmer i en smagning.
+- Gamle bedømmelser med hele tal virker som før.
+
 ### Alkoholfri øl
 - Sæt hak i "Alkoholfri (højst 0,5 %)", når øllen tilføjes. Øl med en alkoholprocent på 0,5 eller under regnes også som alkoholfri.
 - Kortene viser "Alkoholfri", der er et filter "Kun alkoholfri", og toplisten har en fane kun for alkoholfri øl.
@@ -133,7 +139,7 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 
 ### Smagning med venner
 - **Opret:** Værten giver smagningen et navn og skriver 2 til 12 øl, én pr. linje. Blindsmagning er slået til som standard.
-- **Vær med:** Gæster åbner linket, scanner QR-koden eller skriver koden. De giver hver øl 1 til 5 stjerner. Flere kan stemme på samme telefon ved at skrive et nyt navn.
+- **Vær med:** Gæster åbner linket, scanner QR-koden eller skriver koden. De giver hver øl en karakter fra 1 til 5, gerne med kommatal. Flere kan stemme på samme telefon ved at skrive et nyt navn.
 - **Blindsmagning:** Øllene vises som "Øl A, B, C", indtil resultatet er afsløret.
 - **Afsløring:** Kun værten kan afsløre. Ranglisten vises hos alle inden for få sekunder, nedefra og op, med vinderen til sidst. Hver øl viser gennemsnit, antal stemmer og din egen karakter.
 - **Bagefter:** Værten kan åbne for flere stemmer eller slette smagningen for alle. "Del resultatet som billede" laver et billede med aftenens vinder og resten af ranglisten.
