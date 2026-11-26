@@ -68,6 +68,18 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 - Tryk **Drej hjulet**. Når det stopper, står øllen under hjulet med link til dens side.
 - Hjulet vælger kun én øl ad gangen. Under hjulet står Sundhedsstyrelsens anbefalinger, et link til Genstand-tælleren og nummeret til Alkolinjen.
 
+### Indstillinger, design og farver
+- Siden **Indstillinger** (under Mere i menuen) samler de valg, der kun gælder ens egen enhed.
+- **Design og farver:** baggrund (Nat, Fjord, Skov, Aften, Stout, Kul), farver (Solnedgang, Hav, Skov, Bær, Guld), mønster (Ingen, Bobler, Bølger, Stjerner) og bobler, der stiger op bag siden.
+- **Tema efter højtid:** "Efter dato" skifter selv farver ved jul, påske og andre højtider. Man kan også vælge ét fast eller Normal.
+- **Sprog:** dansk eller engelsk.
+- Vælger man en anden farve end Solnedgang, gælder den også, når der er højtid.
+
+### Små effekter
+- Tal tæller op under *Siden i tal*. Fem stjerner, at følge en smager, at gemme en bedømmelse, et nyt mærke og lykkehjulets resultat giver et drys.
+- Fem hurtige tryk på logoet øverst giver en hemmelig skål.
+- Med "mindre bevægelse" slået til på enheden er effekterne væk.
+
 ### Siden i tal og besøgstæller
 - På **Om** står *Siden i tal*: besøg i alt, besøg i dag, antal øl, bedømmelser og smagere.
 - Besøg er, hvor mange gange siden er åbnet. Det er ikke antal personer. Der gemmes kun ét tal pr. dag, og der gemmes ikke noget på den besøgendes enhed.

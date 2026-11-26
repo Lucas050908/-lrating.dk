@@ -142,6 +142,15 @@ Widget-data, som `syncApp()` sender:
 
 **Billeder til widgets:** `wImgs()` finder de øl, widgets viser (ugens øl, top 3, forslaget og de 4 seneste), og `wThumb()` tegner hvert billede ned til 288 × 288 px JPEG. Der sendes kun igen, når listen eller et billede har ændret sig. Android gemmer dem som filer i appens egen mappe (`files/wimg/<id>.jpg`, klassen `WImg`) og sletter dem, der ikke bruges længere. Desktop gemmer dem i `widget-images.json` i brugerens datamappe. Begge steder tjekkes id, type og størrelse, før noget gemmes.
 
+### Indstillinger og udseende
+- `S.look` har `bg`, `acc`, `pat` og `fx`. Mulighederne står i `LOOK`, og `lookOf(k)` giver det gyldige valg eller standarden. `applyLook()` sætter `data-bg`, `data-acc` og `data-pat` på `<html>` og farven i `theme-color`. Standardvalget fjerner attributten, så siden uden valg er præcis som før.
+- **Baggrund:** Hver `[data-bg=…]`-regel sætter `--nv`, `--nv2`, `--nv3`, `--sky`, `--ln` og `--nvr` (baggrundsfarven som tre tal). Reglen gælder også inde i `.hero`, `.bar`, `.nav` med flere, som ellers låser farverne. Gennemsigtige lag skrives som `rgb(var(--nvr)/.55)`.
+- **Farver:** `[data-acc=…]` sætter `--sun`, `--pk` og `--gl` og står efter højtidernes regler, så et valg vinder over højtiden.
+- **Mønster:** `[data-pat=…] body` lægger et svagt mønster som `background-image`.
+- **Bobler:** `fx` er en ny slags, `bubbles`, i den samme motor som sne og konfetti (`spawn`, `tick`). Højtidens egen effekt går forud.
+- `settingsView()` tegner siden. Knapperne bruger `data-look="bg:skov"`, `data-seas` og `data-setlang`. De hedder ikke `data-season` og `data-lang`, fordi de navne allerede bruges af stilarket og sprogmenuen.
+- `cuRun()` får tal med `data-cu` til at tælle op, når en side vises første gang. `burst(x, y, n)` kan nu lave et lille drys med få prikker.
+
 ### Besøgstæller
 - `sbVisit()` kalder `besoeg()` i databasen én gang, hver gang siden åbnes. Et sideskift inde på siden tæller ikke. Svaret ligger i `VIS` (i alt, i dag, første dag) og gemmes ikke på enheden.
 - `supabase/005-besoeg.sql` laver tabellen `site_visits` (én række pr. dag) og funktionerne `besoeg()` (læg 1 til og svar) og `besoeg_tal()` (kun læs). Tabellen kan ikke læses eller ændres direkte. Dagen regnes i dansk tid.

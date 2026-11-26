@@ -15,7 +15,7 @@ def make_photo(b):
 def check(n,c,x=''):
     res.append(bool(c)); print(('PASS ' if c else 'FAIL ')+n,'' if c else x)
 def ls(pg): return json.loads(pg.evaluate("localStorage.getItem('olrating-v1')"))
-VIEWS=['','#alle','#toplisten','#aarets','#swipe','#buddies','#hjul','#galleri','#sammenlign','#byttur','#smagning','#venner','#nyt','#stilguide','#profil','#tilfoej','#kalender','#dagbog','#mad','#genstande','#privatliv','#om','#afmeld-00000000-0000-4000-a000-000000000001']
+VIEWS=['','#alle','#toplisten','#aarets','#swipe','#buddies','#hjul','#indstillinger','#galleri','#sammenlign','#byttur','#smagning','#venner','#nyt','#stilguide','#profil','#tilfoej','#kalender','#dagbog','#mad','#genstande','#privatliv','#om','#afmeld-00000000-0000-4000-a000-000000000001']
 def run(b,name,vw):
     M=Mock(); errs=[]
     c=b.new_context(viewport={'width':vw[0],'height':vw[1]},accept_downloads=True,service_workers='block',locale='da-DK'); c.route(f'https://{HOST}/**',M.handle)
@@ -147,7 +147,7 @@ def run(b,name,vw):
     wi=json.loads(pg.evaluate("window.__wi.at(-1)||'{}'")); used={x.get('id') for x in [w['week'] or {},w['rec'] or {}]+w['top']+w['latest']}; withimg={b['id'] for b in ls(pg)['beers'] if b.get('img')}
     T('widget-data: øl har id, og siden sender tal for hele siden',all(x.get('id') for x in w['top']+w['latest']) and (w['week'] is None or w['week'].get('id')) and w['site']['visits']==M.visits and w['site']['today']==M.visits_today and w['site']['tasters']>=2 and w['beers']==len(ls(pg)['beers']),w.get('site'))
     T('widget-billeder: små JPEG-billeder af de øl, widgets viser, og kun dem',set(wi)==(used&withimg) and all(v.startswith('data:image/jpeg;base64,') and 500<len(v)<88000 for v in wi.values()) and (len(wi)>0 or not (used&withimg)),(sorted(wi),sorted(used&withimg)))
-    pg.goto(URL+'#om'); pg.wait_for_timeout(500); ot=pg.inner_text('#omTal')
+    pg.goto(URL+'#om'); pg.wait_for_timeout(1400); ot=pg.inner_text('#omTal')   # tallene tæller op i 0,7 sekund
     T('om: siden i tal viser besøg, øl, bedømmelser og smagere',pg.eval_on_selector_all('#omTal .ex-t','e=>e.length')==5 and f'{M.visits:,}'.replace(',','.') in ot and 'besøg i alt' in ot and 'besøg i dag' in ot and 'smagere' in ot and 'talt siden 26. november 2026' in pg.inner_text('#app') and not over(),ot)
     pg.goto(URL); pg.wait_for_timeout(700)
     T('forside: nedtælling og Noget for dig',pg.query_selector('.nextev') is not None and ('dage' in pg.inner_text('.nextev') or 'I dag' in pg.inner_text('.nextev') or 'I morgen' in pg.inner_text('.nextev')) and pg.query_selector('.fy.home') is not None and not over(),pg.inner_text('.nextev') if pg.query_selector('.nextev') else None)
@@ -213,6 +213,21 @@ def run(b,name,vw):
     T('beer buddies: Magnus er bedste match med samme procent som på hans side',pg.eval_on_selector_all('.bud','e=>e.length')==1 and '81 %' in bt and 'Bedste match' in bt and 'Magnus' in bt and '4 øl til fælles' in bt and 'Mest enige om' in bt and 'Du: ' in bt and pg.query_selector('.bud .budl a[href^="#beer-"]') is not None and not over(),bt[:220])
     was=pg.inner_text('.bud [data-follow]'); pg.click('.bud [data-follow]'); pg.wait_for_timeout(400); mid=pg.inner_text('.bud [data-follow]'); pg.click('.bud [data-follow]'); pg.wait_for_timeout(400)
     T('beer buddies: man kan følge og holde op igen fra kortet',was=='Følger ✓' and mid=='Følg' and pg.inner_text('.bud [data-follow]')=='Følger ✓' and 'Magnus' in ls(pg)['follow'],(was,mid))
+    # --- design og farver: baggrund, farver og mønster skifter med det samme, gemmes på enheden og kan slås fra igen
+    pg.goto(URL+'#indstillinger'); pg.wait_for_timeout(500)
+    for v in ['bg:skov','acc:hav','pat:bobler']: pg.click(f'[data-look="{v}"]'); pg.wait_for_timeout(300)
+    lk=pg.evaluate("[document.documentElement.dataset.bg,document.documentElement.dataset.acc,document.documentElement.dataset.pat,getComputedStyle(document.body).backgroundColor,getComputedStyle(document.documentElement).getPropertyValue('--sun').trim(),getComputedStyle(document.body).backgroundImage!=='none',document.querySelector('meta[name=theme-color]').content]")
+    T('design: baggrund, farver og mønster skifter med det samme og gemmes',lk==['skov','hav','bobler','rgb(15, 36, 27)','#4cc2ff',True,'#0f241b'] and ls(pg)['look']=={'bg':'skov','acc':'hav','pat':'bobler'} and pg.get_attribute('[data-look="bg:skov"]','aria-pressed')=='true' and pg.get_attribute('[data-look="bg:nat"]','aria-pressed')=='false' and not over(),lk)
+    pg.reload(); pg.wait_for_timeout(900)
+    T('design: valget huskes, når siden åbnes igen',pg.evaluate("document.documentElement.dataset.bg+document.documentElement.dataset.acc+document.documentElement.dataset.pat")=='skovhavbobler' and pg.evaluate("getComputedStyle(document.body).backgroundColor")=='rgb(15, 36, 27)' and pg.evaluate("getComputedStyle(document.querySelector('.bar')).backgroundColor").startswith('rgba(15, 36, 27'),pg.evaluate("getComputedStyle(document.querySelector('.bar')).backgroundColor"))
+    for v in ['bg:nat','acc:std','pat:none']: pg.click(f'[data-look="{v}"]'); pg.wait_for_timeout(250)
+    T('design: tilbage til det normale',pg.evaluate("[document.documentElement.dataset.bg,document.documentElement.dataset.acc,document.documentElement.dataset.pat].every(x=>x===undefined)") and pg.evaluate("getComputedStyle(document.body).backgroundColor")=='rgb(15, 29, 54)' and pg.evaluate("document.querySelector('meta[name=theme-color]').content")=='#0f1d36')
+    pg.click('[data-seas=jul]'); pg.wait_for_timeout(300); sj=pg.evaluate("[document.documentElement.dataset.season,document.getElementById('seasonSel').value,document.querySelector('[data-seas=jul]').getAttribute('aria-pressed')]"); pg.click('[data-seas=auto]'); pg.wait_for_timeout(300)
+    T('indstillinger: tema efter højtid kan vælges og følger med i bunden af siden',sj==['jul','jul','true'] and ls(pg)['season']=='auto',sj)
+    pg.click('[data-setlang=en]'); pg.wait_for_timeout(900); h_en=pg.inner_text('h1'); pg.click('[data-setlang=da]'); pg.wait_for_timeout(900)
+    T('indstillinger: sprog kan skiftes begge veje',h_en=='Make the site your own' and pg.inner_text('h1')=='Gør siden til din egen' and pg.get_attribute('[data-setlang=da]','aria-pressed')=='true',h_en)
+    pg.goto(URL+'#profil'); pg.wait_for_timeout(400)
+    T('profil: link til indstillinger, og design ligger ikke på profilen',pg.query_selector('#setLink a[href="#indstillinger"]') is not None and pg.query_selector('#lookBox') is None)
     # --- lykkehjulet: hjulet vælger én øl, og resultatet er den øl, pilen peger på
     pg.goto(URL+'#hjul'); pg.wait_for_timeout(500); nseg=pg.eval_on_selector_all('#hjG text','e=>e.length'); ht=pg.inner_text('#app')
     T('lykkehjul: hjul med øl, fem grupper og en ansvarlig tekst',2<=nseg<=10 and pg.eval_on_selector_all('[data-hj]','e=>e.length')==5 and pg.eval_on_selector_all('[data-hj][aria-pressed=true]','e=>e.length')==1 and 'Alkolinjen' in ht and 'Sundhedsstyrelsen' in ht and pg.query_selector('.box a[href="#genstande"]') is not None and not over(),(nseg,ht[:120]))

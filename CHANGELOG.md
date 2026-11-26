@@ -4,6 +4,15 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Aften (20:47–21:01): indstillinger med design og farver, og små effekter
+- **Indstillinger** er en ny side (`#indstillinger`, under Mere i menuen, i bunden af siden og fra Min profil). Alt på den gemmes kun på enheden.
+- **Design og farver:** Man kan vælge baggrund (Nat, Fjord, Skov, Aften, Stout, Kul), farver (Solnedgang, Hav, Skov, Bær, Guld) og mønster (Ingen, Bobler, Bølger, Stjerner), og man kan slå bobler til, der stiger op bag siden. Siden ser ud som før, indtil man selv vælger noget andet.
+- **Tema efter højtid** og **sprog** kan også vælges på Indstillinger. De to valg står stadig i bunden af siden.
+- **Små effekter:** Tallene under *Siden i tal* tæller op. Fem stjerner giver et lille drys, og det gør det også at følge en smager. Hjertet på ønskelisten banker, når man trykker, og karakteren på et øl-kort vipper, når man holder musen over. Fem hurtige tryk på logoet giver en hemmelig skål.
+- Alle effekter er slået fra, hvis man har bedt sin enhed om mindre bevægelse.
+- **Teknik:** Baggrundsfarven i gennemsigtige lag (menuen, forsidebilledet, mærkater) følger nu den valgte baggrund gennem `--nvr`.
+- **Test:** 6 nye tjek i `test_site.py`, og Indstillinger er med i tjekket af den engelske udgave. Alle tre test består (179, 85 og 14 tjek).
+
 ### Aften (20:26–20:46): widgets med billeder, og siden i tal
 - **Billeder i widgets (Android):** Ugens øl, Noget for dig og Seneste bedømmelser viser nu et billede af øllen. Der er en ny widget, **Ugens øl med billede**, med et stort billede.
 - **Ny widget: Siden i tal** (Android) med besøg i alt og i dag, antal øl, bedømmelser og smagere.
