@@ -36,7 +36,7 @@ public class PhotoWidget extends AppWidgetProvider {
             }
         } catch (Exception ignored) {}
         float den = ctx.getResources().getDisplayMetrics().density;
-        Bitmap b = WImg.load(ctx, id, Math.min(480, Math.round(220 * den)), 18 * den);
+        Bitmap b = WImg.load(ctx, id, Math.round(220 * den), 18 * den);
         if (b != null) v.setImageViewBitmap(R.id.photo, b);
         else v.setImageViewResource(R.id.photo, R.mipmap.ic_launcher);
         v.setTextViewText(R.id.name, name);

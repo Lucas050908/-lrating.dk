@@ -47,15 +47,17 @@ Bedøm de øl, du drikker, med billede og karakter. Se toplisten, hold smagning 
 Tag et billede af øllen, giv den karakter fra 1 til 5 for udseende, duft, smag, fylde og helhed, og se hvad andre mener om den. Alle bedømmelser samles i en fælles topliste.
 
 Det kan du:
-• Bedømme øl med billede, smagsord og smagsprofil
+• Bedømme øl med billede, smagsord og smagsprofil, og give præcise karakterer som 3,7
 • Se toplisten, også kun for lyse, mørke eller alkoholfri øl
 • Se årets øl, årets bryggeri og årets stil
 • Få forslag til øl, du nok vil kunne lide, ud fra dine egne karakterer
 • Holde blindsmagning med vennerne, hvor alle stemmer på deres egen telefon
 • Planlægge en bytur med rute, tidspunkter og tilmelding, og gemme den som et minde bagefter
-• Følge dine venner og se, hvem du er mest enig med
+• Følge dine venner og finde dine beer buddies: dem, der smager som dig
+• Lade lykkehjulet vælge én ny øl at smage, når du ikke kan bestemme dig
+• Vælge din egen baggrund, dine farver og et mønster
 • Holde øje med dine genstande med en tæller, der bygger på Sundhedsstyrelsens anbefalinger
-• Have en lille widget på skrivebordet med ugens øl og toplisten
+• Have en lille widget på skrivebordet med billeder af øllene, toplisten og tal for hele siden
 
 ølrating har ingen reklamer og ingen sporing. Du skal ikke oprette en konto. Appen findes på dansk og engelsk.
 
@@ -71,8 +73,10 @@ Første version i Microsoft Store.
 - Fælles topliste
 - Blindsmagning med venner
 - Byttur med rute og tilmelding
-- Widget med ugens øl
+- Widget med billeder af øllene
 - Genstand-tæller
+- Beer buddies
+- Design og farver efter eget valg
 
 ## Tekster til butikssiden (engelsk)
 Appen findes nu også på engelsk. Tilføj sproget **English** under butikssider i Partner Center, og brug teksterne her.
@@ -88,15 +92,17 @@ Rate the beers you drink with a photo and a score. See the top list, hold tastin
 Take a photo of the beer, rate it from 1 to 5 for look, aroma, taste, body and overall, and see what others think of it. All ratings are gathered in a shared top list.
 
 What you can do:
-• Rate beers with a photo, tasting notes and a flavour profile
+• Rate beers with a photo, tasting notes and a flavour profile, with precise scores like 3.7
 • See the top list, also for pale, dark or alcohol-free beers only
 • See the beer, brewery and style of the year
 • Get suggestions for beers you will probably like, based on your own ratings
 • Hold a blind tasting with friends, where everyone votes on their own phone
 • Plan a pub crawl with a route, times and sign-up, and keep it as a memory afterwards
-• Follow your friends and see who you agree with the most
+• Follow your friends and find your beer buddies: the people who taste like you
+• Let the beer wheel pick one new beer to try when you can't decide
+• Choose your own background, colours and pattern
 • Keep track of your units with a counter based on the Danish Health Authority's recommendations
-• Keep a small widget on the desktop with the beer of the week and the top list
+• Keep a small widget on the desktop with pictures of the beers, the top list and numbers for the whole site
 
 ølrating has no ads and no tracking. You don't need to create an account. The app is available in Danish and English.
 
@@ -112,8 +118,10 @@ First version in Microsoft Store.
 - Shared top list and Beer of the year
 - Blind tasting with friends
 - Pub crawl with route and sign-up
-- Widget with the beer of the week
+- Widget with pictures of the beers
 - Unit counter
+- Beer buddies
+- Your own design and colours
 
 ## Skærmbilleder
 Ligger i mappen `store/` (dansk) og `store/en/` (engelsk) i størrelsen 1366 × 768, som Store kræver som minimum. De laves med `python3 store/lav-skaermbilleder.py`, så de kan laves om, når siden ændrer sig.

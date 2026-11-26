@@ -48,6 +48,14 @@ For at opdateringer kan installeres oven i den gamle app, skal appen signeres me
 - `ANDROID_KEYSTORE_PASSWORD`: adgangskoden
 - **Nøglen må aldrig committes.** `.gitignore` udelukker `*.keystore` og `*.jks`.
 
+## Prøv de nye widgets på telefonen (2 minutter)
+1. Afinstallér den gamle app. Hent `olrating.apk` fra GitHub-udgivelsen `android-app`, og installér den.
+2. Åbn appen én gang, og vent til forsiden er vist. Så får widgets data og billeder.
+3. Hold fingeren på hjemmeskærmen → Widgets → ølrating. Tilføj **Ugens øl med billede** og **Siden i tal**.
+4. Tjek: Ugens øl viser et billede, hvis øllen har et. Siden i tal viser øl, bedømmelser og smagere. Besøg viser en streg, indtil `supabase/005-besoeg.sql` er kørt.
+5. Tryk på hver widget. Ugens øl åbner øllen, og Siden i tal åbner Om.
+6. Virker noget ikke, så tag et skærmbillede og send det. Skriv, hvilken telefon det er.
+
 ## Microsoft Store
 Se [STORE.md](STORE.md) for trin for trin, tekster og skærmbilleder.
 - Lucas har en Microsoft-udviklerkonto.

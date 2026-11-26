@@ -4,6 +4,13 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Aften (22:37–22:39): widgets gennemgået, tjekliste og Store-tekster
+- **Android-widgets gennemgået linje for linje.** Rettet: Billedet i *Ugens øl med billede* kunne blive op til 480 × 480 punkter. Android afviser en widget-opdatering på over ca. 1 MB, og så ville widgetten ikke blive opdateret. Billederne er nu højst 288 × 288, som er den størrelse, siden sender. Hjørnerne skaleres med.
+- Billederne gemmes nu først i en midlertidig fil og omdøbes bagefter, så en widget aldrig kan læse et halvt skrevet billede.
+- Alle id'er, tekster og filer, som koden henviser til, er tjekket mod layout-filerne. Appen er stadig ikke prøvet på en rigtig telefon.
+- **Tjekliste på 2 minutter** til at prøve de nye widgets står i `docs/DRIFT.md`.
+- **Microsoft Store:** Teksterne på dansk og engelsk i `docs/STORE.md` nævner nu kommatal, Beer buddies, Lykkehjulet, design og farver, og widgetten med billeder.
+
 ### Aften (22:12–22:37): små skærme, tastatur og to faner
 - **Nyt værktøj, `tests/layout.py`:** Det går 25 sider igennem i 320, 360, 390 og 1280 px, på dansk og engelsk, og finder vandret scroll, knapper oven i hinanden, knapper uden for skærmen og trykflader under 24 × 24 px på telefon (WCAG 2.2).
 - **Rettet, fordi det fandt det:** Afkrydsningen *Alkoholfri* på Tilføj øl lå inde i etiketten til alkoholprocenten, så et tryk på teksten flyttede markøren til procentfeltet i stedet for at krydse af. Den har nu sin egen etiket. Skyderne i smagsprofilen var 16 px høje og er nu 28 px. Bryggeri-knappen på en øls side og linket "Se hele toplisten" har fået større trykflade.

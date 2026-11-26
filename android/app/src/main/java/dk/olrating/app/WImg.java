@@ -26,6 +26,8 @@ final class WImg {
     private WImg() {}
 
     static final String OK_ID = "[A-Za-z0-9_-]{1,40}";
+    /** Billederne fra siden er 288 × 288. Større giver intet, og Android afviser widget-opdateringer på over ca. 1 MB. */
+    static final int MAX_PX = 288;
 
     static File dir(Context ctx) {
         File d = new File(ctx.getFilesDir(), "wimg");
@@ -44,7 +46,10 @@ final class WImg {
                 String d = o.optString(id);
                 if (!id.matches(OK_ID) || !d.startsWith("data:image/jpeg;base64,") || d.length() > 90000) continue;
                 byte[] b = Base64.decode(d.substring(d.indexOf(',') + 1), Base64.DEFAULT);
-                try (FileOutputStream f = new FileOutputStream(new File(dir(ctx), id + ".jpg"))) { f.write(b); }
+                // Skriv først til en midlertidig fil og omdøb den bagefter, så en widget aldrig læser et halvt skrevet billede
+                File tmp = new File(dir(ctx), id + ".tmp");
+                try (FileOutputStream f = new FileOutputStream(tmp)) { f.write(b); }
+                if (!tmp.renameTo(new File(dir(ctx), id + ".jpg"))) { tmp.delete(); continue; }
                 keep.add(id + ".jpg");
             }
             File[] all = dir(ctx).listFiles();
@@ -56,6 +61,7 @@ final class WImg {
     static Bitmap load(Context ctx, String id, int px, float radius) {
         try {
             if (id == null || !id.matches(OK_ID) || px < 1) return null;
+            if (px > MAX_PX) { radius = radius * MAX_PX / px; px = MAX_PX; }   // hjørnerne skal se ens ud, også når billedet bliver mindre
             File f = new File(dir(ctx), id + ".jpg");
             if (!f.exists()) return null;
             Bitmap src = BitmapFactory.decodeFile(f.getPath());
@@ -79,7 +85,7 @@ final class WImg {
     /** Viser billedet i en ImageView i en widget. Skjuler den, hvis der ikke er noget billede. */
     static boolean into(Context ctx, RemoteViews v, int viewId, String id, int dp, int radiusDp) {
         float den = ctx.getResources().getDisplayMetrics().density;
-        Bitmap b = load(ctx, id, Math.min(480, Math.round(dp * den)), radiusDp * den);
+        Bitmap b = load(ctx, id, Math.round(dp * den), radiusDp * den);
         if (b == null) {
             v.setViewVisibility(viewId, View.GONE);
             return false;
