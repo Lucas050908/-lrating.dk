@@ -175,6 +175,13 @@ create table if not exists public.mail_news (
 );
 alter table public.mail_news enable row level security;    -- ingen regler: kun ejerne (i Supabase) og serveren
 
+-- Loft: højst 200 ventende rækker pr. bruger, så ingen kan fylde en andens kø (og indbakke) op.
+create or replace function public.mail_plads(u uuid) returns boolean
+language sql stable security definer set search_path = public as $$
+  select (select count(*) from mail_queue q where q.user_id = u and q.sent_at is null) < 200
+$$;
+revoke all on function public.mail_plads(uuid) from public, anon, authenticated;
+
 -- Ny bedømmelse: besked til den, der har tilføjet øllen, og til dem, der følger smageren.
 create or replace function public.mail_ny_bedoemmelse() returns trigger
 language plpgsql security definer set search_path = public as $$
@@ -185,11 +192,11 @@ begin
   d := jsonb_build_object('who', new.who, 'beer', b.name, 'id', b.id, 's', new.data->'s');
   if b.owner <> new.owner then
     insert into mail_queue (user_id, kind, data)
-      select p.user_id, 'my_beer', d from mail_prefs p where p.user_id = b.owner and p.my_beer;
+      select p.user_id, 'my_beer', d from mail_prefs p where p.user_id = b.owner and p.my_beer and mail_plads(p.user_id);
   end if;
   insert into mail_queue (user_id, kind, data)
     select p.user_id, 'friends', d from mail_prefs p
-    where p.friends and p.user_id <> new.owner
+    where p.friends and p.user_id <> new.owner and mail_plads(p.user_id)
       and exists (select 1 from unnest(p.follows) f where lower(f) = lower(new.who));
   return new;
 exception when others then return new;   -- en fejl i mail-køen må aldrig forhindre en bedømmelse i at blive gemt
@@ -206,7 +213,7 @@ begin
   if t.id is not null and t.owner <> new.owner then
     insert into mail_queue (user_id, kind, data)
       select p.user_id, 'events', jsonb_build_object('type', 'tour', 'who', new.name, 'name', t.name, 'id', t.id)
-      from mail_prefs p where p.user_id = t.owner and p.events;
+      from mail_prefs p where p.user_id = t.owner and p.events and mail_plads(p.user_id);
   end if;
   return new;
 exception when others then return new;
@@ -223,7 +230,7 @@ begin
   if t.id is not null and t.owner <> new.owner then
     insert into mail_queue (user_id, kind, data)
       select p.user_id, 'events', jsonb_build_object('type', 'tasting', 'who', new.who, 'name', t.name, 'id', t.id)
-      from mail_prefs p where p.user_id = t.owner and p.events;
+      from mail_prefs p where p.user_id = t.owner and p.events and mail_plads(p.user_id);
   end if;
   return new;
 exception when others then return new;

@@ -4,6 +4,12 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Eftermiddag (12:55–13:01): loft over mail-køen og småting
+- **Databasen (`supabase/003`):** Højst 200 ventende mails pr. bruger, så ingen kan fylde en andens kø og indbakke op. Bedømmelsen eller tilmeldingen bliver gemt som altid.
+- **Min profil:** "Flest uenige" bliver ikke vist, når det er den samme bedømmelse som "Flest enige".
+- **Nyt på siden** nævner prikken ved nye stemmer.
+- **Test:** 2 nye tjek i `test_sql.js` (81 i alt).
+
 ### Middag (12:36–12:52): se når nogen har stemt på dine bedømmelser
 - **Gul prik ved nye stemmer:** Har nogen swipet på dine bedømmelser, siden du sidst kiggede, får Min profil en lille prik. På mobil sidder den også på menu-knappen.
 - **Boksen "Er andre enige med dig?"** viser nu "+3 nye stemmer siden sidst" og hvilken af dine bedømmelser flest er enige i, og hvilken flest er uenige i, med link til øllen.

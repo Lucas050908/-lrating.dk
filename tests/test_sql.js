@@ -140,6 +140,12 @@ const path=require('path');const os=require('os');const {pathToFileURL}=require(
  r=await as('b',`select mail_afmeld('${PU}') v`);ok('afmeld-siden kan afmelde uden login, når nøglen er rigtig',r.rows&&r.rows[0].v===true&&(await adm(`select news from mail_prefs where user_id='${U.p}'`)).rows[0].news===false,JSON.stringify(r));
  r=await as('b',`select mail_afmeld('${U.a}') v`);ok('en ukendt nøgle afmelder ingen',r.rows&&r.rows[0].v===false,JSON.stringify(r));
  await as('p',`update mail_prefs set news=true,my_beer=true,friends=true,events=true`);await adm(`delete from auth.users where id='${U.q}'`);
+ // loft over køen: ingen kan fylde en andens kø op
+ await adm(`insert into mail_queue(user_id,kind,data) select '${U.p}','events','{}' from generate_series(1,200)`);
+ await as('b',`insert into tour_members(tour,name) values('t1','Spam')`);await as('c',`insert into reviews(id,beer,who,data) values('r6','bp','magnus','{}')`);
+ r=await adm(`select count(*)::int n from mail_queue where user_id='${U.p}' and sent_at is null`);ok('højst 200 ventende mails pr. bruger, og bedømmelsen blev gemt alligevel',r.rows[0].n===200&&(await adm(`select count(*)::int n from reviews where id='r6'`)).rows[0].n===1,r.rows[0].n);
+ await adm(`delete from mail_queue where user_id='${U.p}' and sent_at is null`);
+ r=await as('b',`select mail_plads('${U.p}')`);ok('brugere kan ikke kalde hjælpefunktionen',!!r.err&&/permission denied/.test(r.err),JSON.stringify(r));
  // flyt data fra anonym enhed til kontoen
  r=await as('p',`select konto_flyt_start()`);ok('en rigtig konto kan ikke hente flyttebevis',!!r.err,JSON.stringify(r));
  r=await as('a',`select konto_flyt_start() t`);const tok=r.rows&&r.rows[0].t;ok('A henter flyttebevis',!!tok,r.err);

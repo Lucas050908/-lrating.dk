@@ -75,6 +75,7 @@
 - **Mailvalg:** `acctPrefs()` og `acctSavePrefs()` læser og skriver brugerens række i `mail_prefs`. Navn, sprog og (hvis mails om venner er slået til) hvem man følger, sendes med og opdateres af `acctTouch()`, når de ændres.
 
 ### Mails
+- **Loft:** `mail_plads(bruger)` er sand, så længe brugeren har under 200 ventende rækker. Triggerne spørger den, før de lægger noget i kø.
 - **Kø:** Triggere i databasen (`supabase/003`) lægger en række i `mail_queue`, når der kommer en bedømmelse, en tilmelding til en byttur eller en stemme i en smagning, som en bruger har bedt om mail om. En nyhed (`mail_news`) lægges i kø til alle med nyheder slået til, når ejerne sætter flueben i `send` (`supabase/004`).
 - **Udsendelse:** `pg_cron` kalder hvert 10. minut funktionen `mails` (`supabase/functions/mails/index.ts`) gennem `pg_net`, men kun når køen ikke er tom. Kaldet har en nøgle med (`x-cron-key`), som kun står i tabellen `mail_state`. Uden den rigtige nøgle sker der ingenting.
 - **Reglerne står i databasen,** så de kan testes: `mail_hent(nøgle)` giver én samlet mail pr. bruger, højst én i timen, "ven har bedømt" højst én gang om dagen (dansk dato), og sletter det, brugeren har slået fra. Rækkerne mærkes som taget (`taken_at`), og `mail_faerdig(nøgle, ids, r)` kvitterer: `1` sendt, `0` prøv igen næste gang, `-1` afvist (prøv igen om en time). Taget, men ikke kvitteret inden for 30 minutter, bliver frigivet. Usendt i 3 dage bliver slettet.
