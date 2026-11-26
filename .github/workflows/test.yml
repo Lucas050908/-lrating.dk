@@ -27,6 +27,30 @@ jobs:
       - name: Databasens regler (konto, stemmer og mails)
         if: always()
         run: npm install --no-save @electric-sql/pglite && node tests/test_sql.js
+  safari:
+    name: Siden i Safaris motor (WebKit, som på iPhone)
+    runs-on: ubuntu-latest
+    # Fejl her stopper ikke resten: nogle tjek bruger ting, kun Chrome har i testen. Loggen viser, hvad der er galt.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install playwright && python -m playwright install --with-deps webkit
+      - name: Start siden
+        run: python3 -m http.server 8811 >/dev/null 2>&1 &
+      - name: Hele siden klikket igennem (WebKit)
+        continue-on-error: true
+        run: BROWSER=webkit python3 tests/test_site.py
+      - name: To enheder deler data (WebKit)
+        if: always()
+        continue-on-error: true
+        run: BROWSER=webkit python3 tests/test_sync.py
+      - name: Den engelske version (WebKit)
+        if: always()
+        continue-on-error: true
+        run: BROWSER=webkit python3 tests/test_en.py
   database:
     name: Den rigtige database
     runs-on: ubuntu-latest

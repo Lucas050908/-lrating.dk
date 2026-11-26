@@ -178,5 +178,6 @@ Alle test bruger Playwright og en lokal server: `python3 -m http.server 8811 &`.
 | `mock_supabase.py` | Efterligning af Supabase i hukommelsen, som de to test ovenfor bruger | Nej |
 | `e2e_supabase.py` | Det samme forløb mod den rigtige database, inkl. forsøg på at rette andres data direkte gennem API'et. Opretter data med TEST i navnet og sletter dem igen | **Ja** |
 
+- **Andre browsere:** `BROWSER=webkit python3 tests/test_site.py` kører testen i Safaris motor (kræver `python -m playwright install webkit`). På GitHub kører jobbet "Siden i Safaris motor" alle tre test sådan. Det fejler ikke hele kørslen, fordi enkelte tjek bruger ting, som kun Chrome har i testen.
 - **GitHub Actions (`test.yml`):** `test_site.py`, `test_sync.py` og `test_en.py` kører ved hver ændring af siden. `e2e_supabase.py` kører kun ved manuel start eller når commit-beskeden indeholder `[database-test]`.
 - Byggemiljøet, hvor koden skrives, kan ikke selv nå Supabase. Derfor køres testen mod den rigtige database på GitHub.

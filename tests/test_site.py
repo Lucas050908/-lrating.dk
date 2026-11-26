@@ -216,7 +216,7 @@ def run(b,name,vw):
     T('no JS or console errors',not errs,errs[:4])
     c.close()
 with sync_playwright() as p:
-    b=p.chromium.launch(); make_photo(b)
+    b=getattr(p,os.environ.get('BROWSER','chromium')).launch(); make_photo(b)
     run(b,'pc',(1280,900)); run(b,'mobil',(390,844))
     # offline via service worker
     c=b.new_context(); c.route(f'https://{HOST}/**',Mock().handle); pg=c.new_page(); pg.goto(URL); pg.wait_for_timeout(3500)   # også her den efterlignede database, så testen aldrig rører den rigtige

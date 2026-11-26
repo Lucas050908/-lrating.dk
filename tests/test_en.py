@@ -131,7 +131,7 @@ def strip_user(t):
 def main():
     dump=sys.argv[sys.argv.index('--dump')+1] if '--dump' in sys.argv else None
     with sync_playwright() as p:
-        b=p.chromium.launch()
+        b=getattr(p,os.environ.get('BROWSER','chromium')).launch()
         da,e1=crawl(b,'da'); en,e2=crawl(b,'en')
         # statiske tjek af ordbogen i en rigtig side
         M0=Mock(); c=b.new_context(service_workers='block'); c.route(f'https://{HOST}/**',M0.handle); pg=c.new_page(); pg.goto(URL); pg.wait_for_timeout(600)

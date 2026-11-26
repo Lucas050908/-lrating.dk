@@ -4,6 +4,9 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Eftermiddag (13:02–13:02): test i Safaris motor
+- **Ny test på GitHub:** De tre test af siden kan nu køre i WebKit, som er motoren i Safari på iPhone (`BROWSER=webkit`). Jobbet "Siden i Safaris motor" kører ved hver ændring og stopper ikke resten, hvis noget fejler. Det er første skridt mod at vide, om siden virker på iPhone uden at have en i hånden.
+
 ### Eftermiddag (12:55–13:01): loft over mail-køen og småting
 - **Databasen (`supabase/003`):** Højst 200 ventende mails pr. bruger, så ingen kan fylde en andens kø og indbakke op. Bedømmelsen eller tilmeldingen bliver gemt som altid.
 - **Min profil:** "Flest uenige" bliver ikke vist, når det er den samme bedømmelse som "Flest enige".

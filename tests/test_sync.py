@@ -18,7 +18,7 @@ def mut(pg,js,wait=3000):
     pg.evaluate("(()=>{const S=JSON.parse(localStorage.getItem('olrating-v1'));"+js+";localStorage.setItem('olrating-v1',JSON.stringify(S))})()")
     pg.reload(); pg.wait_for_timeout(wait)
 with sync_playwright() as p:
-    b=p.chromium.launch(); M=Mock(); errs=[]
+    b=getattr(p,os.environ.get('BROWSER','chromium')).launch(); M=Mock(); errs=[]
     def ctx(name,vw,state=None,quiet=False):   # quiet: svar som 403, 422 og 429 er ventede (forkert kode, mailen findes, for mange mails)
         c=b.new_context(viewport={'width':vw[0],'height':vw[1]},locale='da-DK'); c.route(f'https://{HOST}/**',M.handle)
         pg=c.new_page(); pg.on('pageerror',lambda e:errs.append(name+': '+str(e)))
