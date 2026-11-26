@@ -30,6 +30,7 @@
   - Alt fra links bliver renset i `cleanTour()` med længdegrænser.
 
 ### Beregninger i `index.html`
+- `enrich()`: alle øl med deres bedømmelser (`rs`) og gennemsnit (`avg`). Resultatet gemmes i `EC`, mens én side bliver tegnet, og nulstilles i `save()`, `route()`, `renderGrid()` og når browseren har tegnet færdig. Hvert kald får sin egen kopi af listen, så den frit kan sorteres.
 - `isAf(b)`: alkoholfri, hvis `b.af` er sat, eller alkoholprocenten er over 0 og højst 0,5.
 - `forYou(n)`: forslag til øl, brugeren ikke har bedømt. Udgangspunktet er øllens gennemsnit. Der lægges til eller trækkes fra efter, hvor meget brugerens karakterer for samme stil (vægt 0,8) og samme smagsord (vægt 0,6) ligger over eller under brugerens eget gennemsnit.
 - `agree()`: enighed med andre i procent: 100 minus den gennemsnitlige forskel i karakter på fælles øl, hvor en forskel på 4 svarer til 0 %.

@@ -21,7 +21,7 @@ Danske øl, bedømt af dem der drikker dem.
 
 ## Kort fortalt
 
-- **Hjemmeside:** én fil (`index.html`) uden server og byggetrin, hostet gratis på GitHub Pages.
+- **Hjemmeside:** én fil (`index.html`) uden server og byggetrin, hostet gratis på GitHub Pages. Dansk som standard, og engelsk med knappen EN.
 - **Apps:**
   - Android-app (`android/`), med 6 widgets.
   - Program til Windows og Linux (`desktop/`), med en widget der ligger øverst på skærmen.
@@ -39,12 +39,13 @@ Danske øl, bedømt af dem der drikker dem.
 | `index.html` | Hele hjemmesiden: design, sider og logik |
 | `sw.js`, `manifest.webmanifest` | Installerbar app (PWA) og offline |
 | `img/`, `fonts/`, `js/qr.js` | Billeder, ikoner, skrifttyper, QR-kode-bibliotek (MIT) |
+| `js/en.js` | Den engelske ordbog. Hentes kun, når man vælger English |
 | `404.html`, `CNAME`, `robots.txt`, `sitemap.xml` | Fejlside, domæne og søgemaskiner |
 | `android/` | Android-app og widgets |
 | `desktop/` | Windows/Linux-program (Electron) og desktop-widget |
 | `supabase/` | Database-tabeller og sikkerhedsregler |
 | `tests/` | Automatiske test af siden og databasen |
-| `.github/workflows/` | Automatisk bygning af Android- og desktop-app |
+| `.github/workflows/` | Automatisk bygning af Android- og desktop-app (også pakken til Microsoft Store) og automatiske test |
 | `docs/` | Dokumentation |
 | `store/` | Skærmbilleder til Microsoft Store (opdigtede eksempler) |
 
