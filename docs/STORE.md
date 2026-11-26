@@ -4,7 +4,7 @@ Alt, der skal bruges for at få ølrating i Microsoft Store. Teksterne kan kopie
 
 ## Status
 - [x] Udviklerkonto hos Microsoft (Lucas)
-- [x] Tekster og skærmbilleder (denne fil og mappen `store/`)
+- [x] Tekster og skærmbilleder på dansk og engelsk (denne fil og mappen `store/`)
 - [x] Bygning af pakken er sat op på GitHub (`desktop/store-build.js`), med ikoner til Store i `desktop/build/appx/`
 - [ ] Navnet reserveret i Partner Center
 - [ ] De tre værdier fra *Produktidentitet* lagt ind i `desktop/store.json`
@@ -49,14 +49,15 @@ Tag et billede af øllen, giv den karakter fra 1 til 5 for udseende, duft, smag,
 Det kan du:
 • Bedømme øl med billede, smagsord og smagsprofil
 • Se toplisten, også kun for lyse, mørke eller alkoholfri øl
+• Se årets øl, årets bryggeri og årets stil
 • Få forslag til øl, du nok vil kunne lide, ud fra dine egne karakterer
 • Holde blindsmagning med vennerne, hvor alle stemmer på deres egen telefon
-• Planlægge en bytur med rute, tidspunkter og tilmelding
+• Planlægge en bytur med rute, tidspunkter og tilmelding, og gemme den som et minde bagefter
 • Følge dine venner og se, hvem du er mest enig med
 • Holde øje med dine genstande med en tæller, der bygger på Sundhedsstyrelsens anbefalinger
 • Have en lille widget på skrivebordet med ugens øl og toplisten
 
-ølrating har ingen reklamer og ingen sporing. Du skal ikke oprette en konto.
+ølrating har ingen reklamer og ingen sporing. Du skal ikke oprette en konto. Appen findes på dansk og engelsk.
 
 Nyd øl med omtanke. Appen er for voksne.
 
@@ -73,19 +74,61 @@ Første version i Microsoft Store.
 - Widget med ugens øl
 - Genstand-tæller
 
+## Tekster til butikssiden (engelsk)
+Appen findes nu også på engelsk. Tilføj sproget **English** under butikssider i Partner Center, og brug teksterne her.
+
+**Name:** ølrating
+
+**Short description (max. 200 characters):**
+Rate the beers you drink with a photo and a score. See the top list, hold tastings with friends, plan a pub crawl, and follow what the others are tasting.
+
+**Description:**
+ølrating is the place for people who like beer and want to remember what they have tasted.
+
+Take a photo of the beer, rate it from 1 to 5 for look, aroma, taste, body and overall, and see what others think of it. All ratings are gathered in a shared top list.
+
+What you can do:
+• Rate beers with a photo, tasting notes and a flavour profile
+• See the top list, also for pale, dark or alcohol-free beers only
+• See the beer, brewery and style of the year
+• Get suggestions for beers you will probably like, based on your own ratings
+• Hold a blind tasting with friends, where everyone votes on their own phone
+• Plan a pub crawl with a route, times and sign-up, and keep it as a memory afterwards
+• Follow your friends and see who you agree with the most
+• Keep track of your units with a counter based on the Danish Health Authority's recommendations
+• Keep a small widget on the desktop with the beer of the week and the top list
+
+ølrating has no ads and no tracking. You don't need to create an account. The app is available in Danish and English.
+
+Enjoy beer responsibly. The app is for adults.
+
+**What's new in this version:**
+First version in Microsoft Store.
+
+**Search terms (max. 7):** beer, beer rating, brewery, tasting, top list, pub crawl, craft beer
+
+**Features (short points):**
+- Rate beers with a photo and a score
+- Shared top list and Beer of the year
+- Blind tasting with friends
+- Pub crawl with route and sign-up
+- Widget with the beer of the week
+- Unit counter
+
 ## Skærmbilleder
-Ligger i mappen `store/` i størrelsen 1366 × 768, som Store kræver som minimum.
+Ligger i mappen `store/` (dansk) og `store/en/` (engelsk) i størrelsen 1366 × 768, som Store kræver som minimum. De laves med `python3 store/lav-skaermbilleder.py`, så de kan laves om, når siden ændrer sig.
 
 | Fil | Viser |
 |---|---|
 | `1-forside.png` | Forsiden med ugens øl |
-| `2-alle-oel.png` | Listen over øl |
+| `2-alle-oel.png` | Listen over øl og toplisten |
 | `3-oel.png` | En øl med oplysninger |
 | `4-smagning.png` | Resultatet af en blindsmagning |
 | `5-byttur.png` | En bytur med rute og deltagere |
-| `6-profil.png` | Min profil med forslag |
+| `6-profil.png` | Min profil |
+| `7-aarets-oel.png` | Årets øl |
 
-**Bemærk:** Øllene, bryggerierne og navnene på billederne er opdigtede eksempler, lavet kun til skærmbillederne. De findes ikke på den rigtige side. Skift dem gerne ud med rigtige skærmbilleder, når der er kommet øl på ølrating.dk.
+**Bemærk:** Øllene, bryggerierne, barerne og navnene på billederne er opdigtede eksempler, lavet kun til skærmbillederne. De findes ikke på den rigtige side. Skift dem gerne ud med rigtige skærmbilleder, når der er kommet øl på ølrating.dk.
 
 ## Logo
 Store laver selv de fleste størrelser ud fra app-ikonet. Brug `img/icon-512.png`, hvis der bliver bedt om et billede.

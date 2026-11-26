@@ -4,6 +4,10 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Formiddag (10:21–10:22): Microsoft Store på engelsk
+- **Tekster til Store på engelsk** står nu i `docs/STORE.md`, og de danske tekster nævner Årets øl, minder og de to sprog.
+- **Nye skærmbilleder** på dansk (`store/`) og engelsk (`store/en/`), nu 7 af hver, med Årets øl og sprogknappen. De laves af `store/lav-skaermbilleder.py` og kan laves om, når siden ændrer sig. Eksemplerne er stadig opdigtede.
+
 ### Formiddag (10:15–10:13): hurtigere og pænere
 - **Hurtigere med mange øl:** Min profil tog over et halvt sekund at åbne med 400 øl og 1.200 bedømmelser. Nu tager den omkring en fjerdedel af tiden. Listen over øl med gennemsnit bliver regnet ud én gang pr. side i stedet for én gang pr. bedømmelse.
 - **Byttur:** Felterne til et nyt stop var så smalle på pc, at teksten i dem blev skåret af. De står nu i to rækker.
