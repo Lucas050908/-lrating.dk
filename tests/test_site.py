@@ -193,6 +193,16 @@ def run(b,name,vw):
     T('venner: sendes ikke til databasen','follow' not in json.dumps(M.t))
     pg.goto(URL+'#beer-ux1'); pg.wait_for_timeout(500); pg.click('.rv .who >> nth=0'); pg.wait_for_timeout(400)
     T('navn i en bedømmelse fører til smagerens side',pg.evaluate('location.hash').startswith('#smager-'))
+    # --- lange ord uden mellemrum (fx et ølnavn fra en anden bruger) må ikke give vandret scroll
+    pg.evaluate("""(()=>{const S=JSON.parse(localStorage.getItem('olrating-v1')),W='Etmegetlangtordudenmellemrumsomaldrigvilstoppe';
+      S.beers.forEach((b,i)=>{if(i%2===0){b.name=W+b.name;b.brewery=W+'bryggeriet';b.city=W}});S.reviews.forEach((r,i)=>{if(i%3===0)r.text=W+W});
+      S.tours.push({id:'langtur01',name:W+'tur',date:'2026-11-20T19:00',meet:W,note:W,host:'Lucas',stops:[{name:W+'bar',time:'19:00',addr:W+' 12'}],members:[{name:'Lucas'},{name:W.slice(0,38)}]});
+      S.tast=[{id:'langsmag1',name:W,host:'Lucas',blind:false,revealed:true,beers:[W,'B'],votes:{Lucas:[5,4]}}];localStorage.setItem('olrating-v1',JSON.stringify(S))})()""")
+    pg.goto(URL+'#profil'); pg.reload(); pg.wait_for_timeout(1500); bad=[]
+    for v in VIEWS+['#beer-ux1','#beer-ux2','#byttur-langtur01','#smagning-langsmag1','#smager-Lucas','#bryggeri-Etmegetlangtordudenmellemrumsomaldrigvilstoppebryggeriet']:
+        pg.goto(URL+v); pg.wait_for_timeout(300)
+        if over(): bad.append(v)
+    T('lange ord uden mellemrum giver ikke vandret scroll',not bad,bad)
     T('no JS or console errors',not errs,errs[:4])
     c.close()
 with sync_playwright() as p:

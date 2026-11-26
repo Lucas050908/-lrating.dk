@@ -56,6 +56,10 @@
 - Valgmulighederne i formularer har faste danske værdier (`value`), så data gemmes ens på begge sprog. Stilarter, smagsord, lande og størrelser gemmes altid på dansk og oversættes kun, når de vises.
 - **Ikke oversat:** adresserne (`#toplisten` osv.), widgets i Android-appen og i programmet til Windows og Linux, og beskrivelsen i søgemaskiner.
 
+### Lange ord
+- `#app{overflow-wrap:anywhere}` lader lange ord uden mellemrum knække, så brugerindhold ikke kan gøre siden bredere end skærmen. Knapper, mærkater og formularfelter er undtaget.
+- Overskrifter har `hyphens:auto`, så lange sammensatte ord får bindestreg, hvor browseren har en ordbog til sproget.
+
 ### Offline
 - `sw.js` gemmer app-skallen.
 - **Husk at hæve `const V='olrating-vNN'` ved hver udgivelse**, ellers ser brugerne den gamle version.

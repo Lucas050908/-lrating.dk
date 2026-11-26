@@ -11,7 +11,7 @@ def check(n,c,x=''):
     res.append(bool(c)); print(('PASS ' if c else 'FAIL ')+n,'' if c else x)
 NOW=datetime.datetime(2026,11,26,20,30)   # uret står stille, så teksterne er ens i de to gennemløb
 # Indhold, som brugerne selv har skrevet. Det skal IKKE oversættes.
-USER=['Findes Ikke','pasttour1','futtour01','nowtour01','emptytour','tastopen1','tastgues1','Limfjordsporter','Thisted Bryghus','Thisted','Skærgaard Pilsner','Fanø Bryghus','Fanø','Nørresundby IPA','Søgaards Bryghus','Aalborg','Fri Hvede','Svaneke Bryghus','Svaneke','Julebryg fra Skagen','Skagen Bryghus','Skagen','Havn Stout','Aalborg Bryghus','Ny og ubedømt','Lucas','Magnus','Sofie','Emil',
+USER=['Ukendt Person','Findes Ikke','pasttour1','futtour01','nowtour01','emptytour','tastopen1','tastgues1','Limfjordsporter','Thisted Bryghus','Thisted','Skærgaard Pilsner','Fanø Bryghus','Fanø','Nørresundby IPA','Søgaards Bryghus','Aalborg','Fri Hvede','Svaneke Bryghus','Svaneke','Julebryg fra Skagen','Skagen Bryghus','Skagen','Havn Stout','Aalborg Bryghus','Ny og ubedømt','Lucas','Magnus','Sofie','Emil',
  'Mørk og blød med et strejf af kaffe.','Rigtig god til julefrokosten','Lidt for bitter til mig','Føtex','J-dag i Aalborg','Nytårstur','Fredagsbar','Nytorv','Husk julesweater!','John Bull Pub','Den Tatoverede Enke','Østerågade 20','Julefrokost 2026','Sommersmagning','Åben smagning','Øl fra Nordjylland','Øl fra Fyn','Øl fra Sjælland','5701234567890']
 SEED="""(()=>{const S=JSON.parse(localStorage.getItem('olrating-v1')||'{}');const d='2026-11-20',s=(a,b,c,e,f)=>({look:a,aroma:b,taste:c,feel:e,overall:f});
  S.beers=[];S.reviews=[];
@@ -79,7 +79,7 @@ def crawl(b,lang):
     if pg.query_selector('[data-editrev]'): pg.click('[data-editrev]'); pg.wait_for_timeout(300); grab('#beer+retanm')
     pg.goto(URL+'#beer-a1'); pg.wait_for_timeout(400)
     if pg.query_selector('[data-delrev]'): pg.click('[data-delrev]'); pg.wait_for_timeout(300); grab('#beer+fortryd'); pg.click('.undo button'); pg.wait_for_timeout(300)
-    pg.goto(URL+'#galleri'); pg.wait_for_timeout(300)
+    pg.goto(URL+'#smager-Ukendt%20Person'); pg.wait_for_timeout(300); grab('#smager+ukendt')
     # uden navn
     seed('')
     for h in ['#profil','#dagbog','#venner','#byttur','#smagning','#genstande','#beer-a1','#byttur-futtour01','#smagning-tastgues1','']: go(h,h+'+ukendt')
@@ -100,7 +100,7 @@ def segs(strings):
 SAME=set('''IPA Stout Porter Sour Lager Pale Ale Brown Ale Bock Pilsner Bitter Citrus Malt Normal Halloween USA Mexico Japan England Android Windows Linux iPhone iPad Safari Chrome OK Web Share GitHub Supabase Google Maps QR Top Min Max IBU cl % ABV
 ølrating ølrating.dk .dk Lucas Valentin Ottesen Magnus Birkgaard Froberg Limfjorden Start Info Tema Dansk English Sprog · Language Sprog Language'''.replace('\n',' ').split(' '))
 SAME|={'Pale Ale','Brown Ale','J-dag','Web Share','Google Maps','Lucas Valentin Ottesen','Magnus Birkgaard Froberg'}
-SAME|={'Linux:','Windows:','Downloads','TOP 3','+ Stop','Download backup','Snifter','Pizza','Burger','Mild','ølrating.dk logo','olrating.apk','olrating-windows.exe','olrating-linux.AppImage','andersenlucas84@gmail.com','Findes Ikke','cl','Fx mfx3k2abcd','Globetrotter','ølrating<1>.dk</1>','1 stop'}
+SAME|={'Scan','Linux:','Windows:','Downloads','TOP 3','+ Stop','Download backup','Snifter','Pizza','Burger','Mild','ølrating.dk logo','olrating.apk','olrating-windows.exe','olrating-linux.AppImage','andersenlucas84@gmail.com','Findes Ikke','cl','Fx mfx3k2abcd','Globetrotter','ølrating<1>.dk</1>','1 stop'}
 # Mønstre for tekster, der er ens på begge sprog: mål, koder og navne med tal
 SAME_RE=re.compile(r'^(\d+ cl|\d+ IBU|© \d{4} .*|[\d.,]+ ?%|[A-ZÆØÅ]|✓ .+|\d\. .+|“.*”|.+ ↗|■ .+)$')
 def letters(t): return re.search(r'[A-Za-zÆØÅæøå]{2,}',t) is not None

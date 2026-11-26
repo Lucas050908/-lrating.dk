@@ -4,6 +4,14 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Formiddag (09:25–09:42): lange ord og finpudsning af engelsk
+- **Lange ord uden mellemrum** (fx et ølnavn på 45 tegn, som en anden bruger har skrevet) kunne gøre 14 af siderne bredere end skærmen på mobil. Nu bliver ordet delt, og overskrifter får en rigtig bindestreg, hvor telefonen kan.
+- **Ugens øl på mobil:** Billedet og karakteren er lidt mindre, så lange navne som "Limfjordsporter" kan stå på én linje.
+- **Enighed på Min profil** står nu i to linjer på smalle skærme, så navnet ikke bliver klemt.
+- **Årets øl:** "den ene bedømmelse" og "1 øl" i stedet for "de 1 bedømmelse" og "1 forskellige øl".
+- **Engelsk:** Flere tekster er oversat (bl.a. lysboksen, Vis flere, installér-knappen og slettede øl), og pladsholderen i tekstfelter bliver nu også oversat.
+- **Test:** Nyt tjek med lange ord på alle sider (pc og mobil).
+
 ### Formiddag (08:45–09:19): engelsk version
 - **Hele siden findes nu på engelsk.** Knappen EN i topmenuen skifter sprog, og valget kan også ændres i sidefoden. Dansk er stadig standard.
 - Oversættelsen ligger i en ordbog for sig selv (`js/en.js`, ca. 700 tekster og 110 mønstre), som kun hentes, når man vælger engelsk. Den danske side er uændret.
