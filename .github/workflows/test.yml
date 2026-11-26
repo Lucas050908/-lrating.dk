@@ -27,30 +27,35 @@ jobs:
       - name: Databasens regler (konto, stemmer og mails)
         if: always()
         run: npm install --no-save @electric-sql/pglite && node tests/test_sql.js
-  safari:
-    name: Siden i Safaris motor (WebKit, som på iPhone)
+  andre:
+    name: Siden i ${{ matrix.navn }}
     runs-on: ubuntu-latest
-    # Fejl her stopper ikke resten: nogle tjek bruger ting, kun Chrome har i testen. Loggen viser, hvad der er galt.
+    # Fejl her stopper ikke resten af kørslen, men jobbet bliver rødt, så det kan ses. WebKit på Linux er tæt på Safari, men ikke helt det samme.
     continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - browser: webkit
+            navn: Safaris motor (WebKit, som på iPhone)
+          - browser: firefox
+            navn: Firefox
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: pip install playwright && python -m playwright install --with-deps webkit
+      - run: pip install playwright && python -m playwright install --with-deps ${{ matrix.browser }}
       - name: Start siden
         run: python3 -m http.server 8811 >/dev/null 2>&1 &
-      - name: Den engelske version (WebKit)
-        continue-on-error: true
-        run: BROWSER=webkit python3 tests/test_en.py
-      - name: Hele siden klikket igennem (WebKit)
+      - name: Den engelske version
+        run: BROWSER=${{ matrix.browser }} python3 tests/test_en.py
+      - name: Hele siden klikket igennem
         if: always()
-        continue-on-error: true
-        run: BROWSER=webkit python3 tests/test_site.py
-      - name: To enheder deler data (WebKit)
+        run: BROWSER=${{ matrix.browser }} python3 tests/test_site.py
+      - name: To enheder deler data
         if: always()
-        continue-on-error: true
-        run: BROWSER=webkit python3 tests/test_sync.py
+        run: BROWSER=${{ matrix.browser }} python3 tests/test_sync.py
   database:
     name: Den rigtige database
     runs-on: ubuntu-latest

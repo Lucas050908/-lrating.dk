@@ -4,6 +4,11 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Eftermiddag (14:09–14:18): også Firefox, og fejl i andre browsere kan ses
+- **Safaris motor:** Efter rettelsen består alle tre test i WebKit, også tjekket ved 360 og 320 px.
+- **Firefox:** De tre test kører nu også i Firefox på GitHub.
+- **Synlige fejl:** Fejler noget i WebKit eller Firefox, bliver det job rødt, men resten af kørslen fortsætter.
+
 ### Eftermiddag (13:56–14:05): de smalleste telefoner
 - **320 px:** To knapper gjorde siden for bred på de smalleste telefoner: "Swipe på andres bedømmelser" på Min profil og knappen på Afmeld mails på engelsk. De knækker nu over to linjer.
 - **Test:** `test_en.py` tjekker nu alle hovedsider for vandret scroll ved 390, 360 og 320 px på engelsk og ved 320 px på dansk (14 tjek).
