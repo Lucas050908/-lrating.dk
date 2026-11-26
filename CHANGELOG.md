@@ -9,6 +9,7 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 - **Browsere kl. 15:25:** Chrome, Safaris motor (WebKit) og Firefox består alle tre test på GitHub. Ét tjek fejlede først i Firefox (flere stemmer på samme telefon i en smagning). Stemmen nåede ikke frem inden for testens ventetid. Efter at testen venter længere, består det. I Firefox springes tjekket uden net over.
 - **Guiden (`docs/KONTO.md`)** siger tydeligere, at konto og mails kun er prøvet mod en efterligning, og at `003` skal køres i den nyeste udgave.
 - **Rettet her i loggen:** Testen mod den rigtige database har 22 tjek, ikke 23.
+- **README** nævner flaget til sprogskift og funktionen, der sender mails.
 
 ### Eftermiddag (14:54–14:57): Firefox består
 - **Firefox:** Efter rettelserne i testen var der to ting tilbage, og begge ligger i testværktøjet: Firefox afviser al navigation uden net, før service workeren bliver spurgt, så det tjek springes over i Firefox, og en afbrudt forbindelse giver en besked med en anden ordlyd end i Chrome.

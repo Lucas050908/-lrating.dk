@@ -22,7 +22,7 @@ Danske øl, bedømt af dem der drikker dem.
 
 ## Kort fortalt
 
-- **Hjemmeside:** én fil (`index.html`) uden server og byggetrin, hostet gratis på GitHub Pages. Dansk som standard, og engelsk med knappen EN.
+- **Hjemmeside:** én fil (`index.html`) uden server og byggetrin, hostet gratis på GitHub Pages. Dansk som standard, og engelsk med flaget øverst på siden.
 - **Apps:**
   - Android-app (`android/`), med 6 widgets.
   - Program til Windows og Linux (`desktop/`), med en widget der ligger øverst på skærmen.
@@ -44,7 +44,7 @@ Danske øl, bedømt af dem der drikker dem.
 | `404.html`, `CNAME`, `robots.txt`, `sitemap.xml` | Fejlside, domæne og søgemaskiner |
 | `android/` | Android-app og widgets |
 | `desktop/` | Windows/Linux-program (Electron) og desktop-widget |
-| `supabase/` | Database-tabeller og sikkerhedsregler |
+| `supabase/` | Database-tabeller og sikkerhedsregler, og funktionen der sender mails (`functions/mails`) |
 | `tests/` | Automatiske test af siden og databasen |
 | `.github/workflows/` | Automatisk bygning af Android- og desktop-app (også pakken til Microsoft Store) og automatiske test |
 | `docs/` | Dokumentation |
