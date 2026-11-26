@@ -4,6 +4,12 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Eftermiddag (15:00–15:13): status ved dagens afslutning
+- **Den rigtige database kl. 15:00:** 22 af 22 tjek bestod. Der ligger 1 øl og 1 bedømmelse. Siden svarer på https, og versionen på nettet er den samme som i koden (v51). `003`, `004` og funktionen `mails` er ikke sat op endnu.
+- **Browsere:** Chrome og Safaris motor består alle tre test. Firefox består `test_en.py` og `test_site.py`. I `test_sync.py` fejlede ét tjek i Firefox (flere stemmer på samme telefon i en smagning). Det ligner en stemme, der ikke nåede frem i tide, så testen venter nu længere. Det er ikke afklaret, om det er hele forklaringen.
+- **Guiden (`docs/KONTO.md`)** siger tydeligere, at konto og mails kun er prøvet mod en efterligning, og at `003` skal køres i den nyeste udgave.
+- **Rettet her i loggen:** Testen mod den rigtige database har 22 tjek, ikke 23.
+
 ### Eftermiddag (14:54–14:57): Firefox består
 - **Firefox:** Efter rettelserne i testen var der to ting tilbage, og begge ligger i testværktøjet: Firefox afviser al navigation uden net, før service workeren bliver spurgt, så det tjek springes over i Firefox, og en afbrudt forbindelse giver en besked med en anden ordlyd end i Chrome.
 - **Status for browsere:** Chrome, Safaris motor (WebKit) og Firefox kører alle tre test på GitHub ved hver ændring.
@@ -11,7 +17,7 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 ### Eftermiddag (14:32–14:41): første kørsel i Firefox
 - **Resultat:** `test_en.py` bestod alt i Firefox. `test_site.py` og `test_sync.py` fejlede kun på to ting, som begge ligger i testen: testens eget billede var et afkortet JPEG, som Firefox melder fejl om, og tjekket uden net fejlede ved genindlæsning.
 - **Rettet i testene:** Testbilledet er nu et gyldigt JPEG. Tjekket uden net prøver både at genindlæse og at åbne siden igen og skriver, hvad der skete.
-- **Den rigtige database kl. 14:22:** 23 af 23 tjek bestod. Der ligger 1 øl og 1 bedømmelse. `003`, `004` og funktionen `mails` er ikke sat op endnu.
+- **Den rigtige database kl. 14:22:** 22 af 22 tjek bestod. Der ligger 1 øl og 1 bedømmelse. `003`, `004` og funktionen `mails` er ikke sat op endnu.
 
 ### Eftermiddag (14:09–14:18): også Firefox, og fejl i andre browsere kan ses
 - **Safaris motor:** Efter rettelsen består alle tre test i WebKit, også tjekket ved 360 og 320 px.
@@ -58,7 +64,7 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 - **Databasen:** `supabase/003-konto-mails-enig.sql` har fået tabellen `konto_data` (én række pr. konto, som kun kontoen selv kan læse). Er 003 kørt før kl. 12:24 i dag, skal den køres igen.
 - **Privatliv** og teksten i Konto-boksen fortæller, hvad der gemmes på kontoen.
 - **Test:** 4 nye tjek i `test_sync.py` med to enheder på samme konto og 7 nye i `test_sql.js` (78 i alt). Testen mod den rigtige database skriver nu også, hvis 003 er kørt i en ældre udgave.
-- **Drift:** `002-slet-billeder.sql` er kørt. Det er bekræftet af testen mod den rigtige database kl. 12:00 (23 af 23 tjek).
+- **Drift:** `002-slet-billeder.sql` er kørt. Det er bekræftet af testen mod den rigtige database kl. 12:00 (22 af 22 tjek).
 
 ### Middag (12:00–12:08): småting efter mail-delen
 - **Afmeld-siden husker svaret,** hvis man fx skifter sprog, efter man har afmeldt.

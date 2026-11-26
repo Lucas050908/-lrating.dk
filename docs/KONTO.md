@@ -1,6 +1,6 @@
 # Konto og mails – sådan slås det til
 
-Koden er færdig og testet, men den er **skjult på siden**, indtil tingene her er sat op. Det er ting, kun ejerne kan gøre,
+Koden er færdig, men den er **skjult på siden**, indtil tingene her er sat op. Den er testet mod en efterligning af databasen og mailtjenesten, ikke mod de rigtige. Derfor er sidste punkt i hvert trin at prøve det. Det er ting, kun ejerne kan gøre,
 fordi de kræver login hos Supabase, one.com og en mailtjeneste.
 
 Der er to trin. **Trin 1** giver login med kode på mail. **Trin 2** giver mails om opdateringer. Trin 2 kræver trin 1.
@@ -26,7 +26,7 @@ Der er to trin. **Trin 1** giver login med kode på mail. **Trin 2** giver mails
 2. Markér alt, og kopiér.
 3. Supabase → **SQL Editor** → sæt ind → **Run**. Kommer der en advarsel om "Potential issues", så tryk Run alligevel.
 
-Filen blev udvidet den 26-11-2026 kl. 12:24 (ønskeliste og følger, der følger kontoen). Har du kørt den før det, så kør den igen. Den kan køres flere gange uden at gøre skade.
+Filen er sidst ændret den 26-11-2026 kl. 13:01. Har du kørt den før det, så kør den igen. Den kan køres flere gange uden at gøre skade.
 
 ### 1.2 Opret Resend, og tilføj domænet
 1. Opret en konto på <https://resend.com>.
@@ -92,7 +92,7 @@ Supabase → **Authentication → Sign In / Providers**:
 | Der kommer ingen mail | Resend → **Emails**: står mailen der? Hvis nej: tjek 1.3. Hvis ja med fejl: tjek at domænet er grønt (1.2). |
 | Mailen har et link i stedet for en kode | Skabelonen mangler `{{ .Token }}` (1.4). |
 | Koden har 8 tal | Email OTP Length skal være 6 (1.5). |
-| "Koden passer ikke", selvom den er rigtig | Skriv det til Claude. Det er det ene sted, der ikke har kunnet testes mod den rigtige Supabase. |
+| "Koden passer ikke", selvom den er rigtig | Skriv det til Claude. Login er kun prøvet mod en efterligning af Supabase, så her kan der være noget, der skal rettes i koden. |
 | "Der er sendt for mange mails" | Supabase → Authentication → **Rate Limits** → hæv "Rate limit for sending emails". |
 
 ---
@@ -108,7 +108,7 @@ når en man følger bedømmer en øl, og når nogen melder sig til ens byttur el
 3. Navn: `mails` (præcis sådan, med små bogstaver).
 4. Slet det, der står i editoren, sæt indholdet ind, og tryk **Deploy**.
 5. Åbn funktionen → fanen **Details** → slå **Verify JWT with legacy secret** **fra** → gem.
-   (Tjek den igen, hvis du senere retter funktionen. Den kan slå sig til af sig selv.)
+   (Tjek den igen, hvis du senere retter funktionen. Nogle har oplevet, at den slår sig til igen.)
 
 ### 2.2 Giv funktionen en nøgle til Resend
 1. Resend → **API Keys → Create API Key**. Navn: `mails`. Permission: **Sending access**.
@@ -148,7 +148,7 @@ Det er det samme som 2.4: Ny række i `mail_news`, læs den igennem, og sæt `se
 - En bruger får højst **én mail i timen**. Sker der flere ting, bliver de samlet i én mail.
 - "En, jeg følger, har bedømt en øl" kommer højst **én gang om dagen**.
 - Slår brugeren en slags mail fra, bliver det, der venter, slettet.
-- Hver mail har et afmeld-link. Det virker uden login. Mailprogrammer som Gmail viser også deres egen afmeld-knap.
+- Hver mail har et afmeld-link. Det virker uden login. Mailprogrammer som Gmail kan også vise deres egen afmeld-knap.
 - Ingen får mail uden selv at have slået det til.
 
 ## Hvor ligger hvad

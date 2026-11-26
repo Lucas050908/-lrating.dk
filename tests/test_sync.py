@@ -117,6 +117,9 @@ with sync_playwright() as p:
     A.fill('#vWho','Sofie')
     for i,v in enumerate([3,5,5]): A.click(f'#voteForm .rate[data-k="t{i}"] [data-star="{v}"]')
     A.click('#voteForm button.btn'); A.wait_for_timeout(2500)
+    for _ in range(12):   # langsomme browsere (Firefox på GitHub) kan være længere om at sende stemmen
+        if sorted(n for (t,n) in M.votes if t==sid)==['Lucas','Magnus','Sofie']: break
+        A.wait_for_timeout(500)
     check('smagning: flere kan stemme på samme telefon',sorted(n for (t,n) in M.votes if t==sid)==['Lucas','Magnus','Sofie'],list(M.votes))
     A.click('#tastReveal'); A.wait_for_timeout(2500)
     check('smagning: afsløring gemt',M.t['tastings'][sid]['data']['revealed']==True)
