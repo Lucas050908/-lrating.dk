@@ -95,6 +95,10 @@
 - `cleanRev()` gemmer nu én decimal i stedet for at afrunde til hele tal. Databasen gemmer karaktererne som JSON, så den skulle ikke ændres.
 - Tallet vises med komma på dansk og punktum på engelsk (`fmt`). `setLang` kalder `rateSet` igen, så tal, der allerede er valgt, følger sproget.
 
+### Forslag til logo (`img/logoer/`)
+- Mappen har 10 forslag som SVG, nummereret `01` til `10`. De bruger sidens farver: nat `#0f1d36`, sol `#ff7a3d`, aften `#f0566b` og guld `#ffc85a`.
+- Filerne bruges ikke af siden endnu. Når ét er valgt, skal det ind som `img/favicon.svg`, og `icon-192.png`, `icon-512.png`, `apple-touch-icon.png` og ikonerne i `android/` og `desktop/` skal laves ud fra det.
+
 ### Lange ord
 - `#app{overflow-wrap:anywhere}` lader lange ord uden mellemrum knække, så brugerindhold ikke kan gøre siden bredere end skærmen. Knapper, mærkater og formularfelter er undtaget.
 - Overskrifter har `hyphens:auto`, så lange sammensatte ord får bindestreg, hvor browseren har en ordbog til sproget.

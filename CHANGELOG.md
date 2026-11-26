@@ -4,6 +4,10 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Aften (19:49–20:00): 10 forslag til nyt logo
+- **Logoer:** Der ligger 10 forslag til logo som SVG i `img/logoer/` (stjernekapsel, Ø-mærke, krus, solnedgang i glasset, fem stjerner, humle, skål, ølnål, sekskant og ordmærke). De er tegnet i sidens egne farver.
+- Ingen af dem er taget i brug endnu. Siden og apps bruger stadig det nuværende logo, indtil ét er valgt.
+
 ### Aften (19:30–19:56): Beer buddies
 - **Beer buddies** er en ny side (`#buddies`), der finder dem, der smager som dig. Den sammenligner dine karakterer med de andres på de øl, I begge har bedømt, og viser jeres match i procent.
 - Hvert match viser, hvor mange øl I har til fælles, hvilken øl I er mest enige om, hvilken I er mest uenige om, og et tip: en øl, din buddy kan lide, som du ikke har bedømt.
