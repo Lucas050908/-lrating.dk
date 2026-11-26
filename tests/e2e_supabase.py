@@ -107,5 +107,13 @@ with sync_playwright() as p:
         ok('19 testdata er ryddet væk',not left,left)
         if errs: print('browser-beskeder:',errs[:6])
         b.close()
+# Hvad ligger der i databasen lige nu? (Alt i databasen er offentligt, så det må gerne stå i loggen.)
+try:
+    c,B=api('/rest/v1/beers?select=id,name,brewery,img,created_at,data&order=created_at.desc&limit=1000'); c2,RV=api('/rest/v1/reviews?select=id,who,created_at&order=created_at.desc&limit=1000')
+    c3,T=api('/rest/v1/tours?select=id&limit=1000'); c4,TS=api('/rest/v1/tastings?select=id&limit=1000')
+    print(f"STATUS database: {len(B)} øl, {len(RV)} bedømmelser, {len(T)} byture, {len(TS)} smagninger")
+    for b in B[:5]: print('STATUS øl:',b['created_at'][:16],'|',b['name'][:40],'|',(b.get('brewery') or '')[:30],'| tilføjet af',str((b.get('data') or {}).get('addedBy',''))[:20],'| billede' if b.get('img') else '| uden billede')
+    print('STATUS smagere:',sorted({r['who'][:20] for r in RV})[:12])
+except Exception as e: print('STATUS database: kunne ikke læses',e)
 print('ALT OK' if all(R.values()) else f'{list(R.values()).count(False)} FEJL af {len(R)}')
 sys.exit(0 if all(R.values()) else 1)
