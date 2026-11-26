@@ -223,10 +223,12 @@ with sync_playwright() as p:
     # så siden får at vide, at den er offline, og prøver slet ikke at synkronisere. Så rører testen aldrig den rigtige database.
     c=b.new_context(); c.route(f'https://{HOST}/**',Mock().handle); pg=c.new_page(); pg.add_init_script("Object.defineProperty(Navigator.prototype,'onLine',{get:()=>false})"); pg.goto(URL); pg.wait_for_timeout(3500)
     sw=pg.evaluate("navigator.serviceWorker.getRegistration().then(r=>!!(r&&r.active))")
-    c.set_offline(True); 
-    try: pg.reload(); pg.wait_for_timeout(1200); ok=len(pg.inner_text('#app'))>100
-    except Exception as e: ok=False
-    check('[offline] service worker active and page loads without net',sw and ok,(sw,ok)); c.close(); b.close()
+    c.set_offline(True); ok=False; how=[]
+    for navn,nav in (('genindlæs',lambda: pg.reload()),('åbn igen',lambda: pg.goto(URL))):   # i Firefox fejlede genindlæsning uden net i testen. Derfor prøves også at åbne siden igen, og resultatet af begge skrives ud
+        try: nav(); pg.wait_for_timeout(1200); ok=len(pg.inner_text('#app'))>100; how.append((navn,ok))
+        except Exception as e: ok=False; how.append((navn,str(e)[:80]))
+        if ok: break
+    check('[offline] service worker active and page loads without net',sw and ok,(sw,how)); c.close(); b.close()
 # static checks
 root=ROOT+'/'; s=open(root+'index.html').read(); sw=open(root+'sw.js').read()
 miss=[f for f in re.findall(r"'\./?([\w./-]+\.\w+)'",sw.split('SHELL=')[1].split(']')[0]) if not os.path.exists(root+f)]

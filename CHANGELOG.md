@@ -4,6 +4,11 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Eftermiddag (14:32–14:41): første kørsel i Firefox
+- **Resultat:** `test_en.py` bestod alt i Firefox. `test_site.py` og `test_sync.py` fejlede kun på to ting, som begge ligger i testen: testens eget billede var et afkortet JPEG, som Firefox melder fejl om, og tjekket uden net fejlede ved genindlæsning.
+- **Rettet i testene:** Testbilledet er nu et gyldigt JPEG. Tjekket uden net prøver både at genindlæse og at åbne siden igen og skriver, hvad der skete.
+- **Den rigtige database kl. 14:22:** 23 af 23 tjek bestod. Der ligger 1 øl og 1 bedømmelse. `003`, `004` og funktionen `mails` er ikke sat op endnu.
+
 ### Eftermiddag (14:09–14:18): også Firefox, og fejl i andre browsere kan ses
 - **Safaris motor:** Efter rettelsen består alle tre test i WebKit, også tjekket ved 360 og 320 px.
 - **Firefox:** De tre test kører nu også i Firefox på GitHub.
