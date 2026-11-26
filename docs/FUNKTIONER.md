@@ -65,7 +65,7 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 - Kortet ligger på Stilguiden. Det er et forenklet Danmarkskort, tegnet i selve siden, så der ikke hentes noget fra korttjenester.
 - Hver by med et bryggeri får en prik, og tallet viser, hvor mange bryggerier der er i byen.
 - En gul prik betyder, at du har bedømt en øl fra et bryggeri i byen. En orange prik betyder, at du ikke har prøvet noget derfra endnu.
-- Byen findes ud fra det, der er skrevet i feltet "By", da øllen blev tilføjet. Kendes byen ikke, står bryggeriet på en liste under kortet.
+- Byen findes ud fra det, der er skrevet i feltet "By", da øllen blev tilføjet. Kortet kender omkring 310 danske byer og bydele. Kendes byen ikke, står bryggeriet på en liste under kortet.
 
 ### Nedtælling
 - Forsiden viser, hvor mange dage der er til næste øl-dag: J-dag, påske, sankthans, jul eller nytår.

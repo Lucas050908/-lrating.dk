@@ -4,6 +4,11 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Formiddag (10:50–10:48): flere byer på kortet
+- **Kortet over bryggerier** kender nu 310 danske byer og bydele mod 71 før, så langt flere bryggerier kan få en prik. Bl.a. Sæby, Støvring, Hvide Sande, Assens, Sorø, Gilleleje, Nexø og bydelene i København og Aarhus.
+- **Nyt på siden** fortæller nu om dansk og engelsk.
+- **Test:** Nyt tjek af, at alle byer i tabellen ligger inden for Danmark.
+
 ### Formiddag (10:27–10:38): bedre sprogskift
 - **Ny sprogvælger:** Knappen i topmenuen viser nu et flag og DA eller EN og åbner en lille menu med Dansk og English.
 - **Skiftet sker med det samme.** Før blev hele siden hentet igen, og man røg op til toppen. Nu skifter teksten på stedet med en blød overgang, og man bliver stående, hvor man var. Tekst, man er ved at skrive i en formular, bliver stående.

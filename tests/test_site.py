@@ -232,6 +232,8 @@ check('[filer] everything the service worker caches exists',not miss,miss)
 loc=set(re.findall(r'(?:src|href)="((?:img|fonts|js)/[^"#?]+)"',s))|set(re.findall(r"url\(((?:img|fonts)/[^)]+)\)",s))|set(re.findall(r"'((?:img|js)/[\w./-]+)'",s))
 miss=[f for f in loc if not os.path.exists(root+f)]; check('[filer] all referenced images, fonts and scripts exist',not miss,miss)
 m=json.load(open(root+'manifest.webmanifest')); miss=[i['src'] for i in m['icons'] if not os.path.exists(root+i['src'])]; check('[filer] manifest valid, icons exist',not miss,miss)
+dkc=s[s.index('const DKC='):s.index('};',s.index('const DKC='))]; pts=re.findall(r'\[([\d.]+),([\d.]+)\]',dkc); out=[q for q in pts if not(8.0<=float(q[0])<=15.3 and 54.5<=float(q[1])<=57.8)]
+check('[kort] over 250 byer i tabellen, og alle ligger i Danmark',len(pts)>250 and not out,(len(pts),out[:3]))
 check('[links] downloads point at fixed tags, none at latest','releases/latest' not in s and s.count('releases/download/android-app/olrating.apk')>=2 and 'desktop-app/olrating-windows.exe' in s)
 check('[sikkerhed] no secret keys in repo',os.system(f"cd {root} && git grep -nIE 'sb_secret_|service_role|BEGIN (RSA |EC )?PRIVATE KEY|storePassword *= *\"[^\"]' -- . ':!docs' ':!CLAUDE.md' ':!supabase' ':!tests' >/dev/null")!=0)
 print('ALL PASS' if all(res) else f'{res.count(False)} FAILED of {len(res)}')
