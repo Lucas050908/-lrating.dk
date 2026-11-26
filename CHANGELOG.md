@@ -4,6 +4,11 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Morgen (06:15–06:22): sidste test
+- **Fuld test:** Begge testpakker er grønne, lokalt og på GitHub. Android-appen (med genveje og 7 widgets) og programmerne til Windows og Linux er bygget uden fejl og ligger klar til download.
+- **Forhåndsvisningen i Claude** er opdateret til samme version som ølrating.dk. Download af backup og delekort virker ikke i forhåndsvisningen, kun på den rigtige side.
+- Status over det, der venter, står i `docs/IDEER.md`.
+
 ### Nat (04:55–04:57)
 - **Findes den allerede?** Når du skriver navnet på en ny øl, foreslår siden øl, der ligner og allerede findes, så du kan bedømme dem i stedet for at oprette en dublet. Den tåler stavefejl og kender også stregkoden.
 - **Nyt på siden:** Ny side (`#nyt`) med en kort oversigt over de nyeste funktioner og links til dem. Der er link i sidefoden under "Om".
