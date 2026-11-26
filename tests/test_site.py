@@ -219,7 +219,9 @@ with sync_playwright() as p:
     b=getattr(p,os.environ.get('BROWSER','chromium')).launch(); make_photo(b)
     run(b,'pc',(1280,900)); run(b,'mobil',(390,844))
     # offline via service worker
-    c=b.new_context(); c.route(f'https://{HOST}/**',Mock().handle); pg=c.new_page(); pg.goto(URL); pg.wait_for_timeout(3500)   # også her den efterlignede database, så testen aldrig rører den rigtige
+    # Her skal service workeren være med. Kald fra en side med service worker kan gå uden om den efterlignede database (set i WebKit),
+    # så siden får at vide, at den er offline, og prøver slet ikke at synkronisere. Så rører testen aldrig den rigtige database.
+    c=b.new_context(); c.route(f'https://{HOST}/**',Mock().handle); pg=c.new_page(); pg.add_init_script("Object.defineProperty(Navigator.prototype,'onLine',{get:()=>false})"); pg.goto(URL); pg.wait_for_timeout(3500)
     sw=pg.evaluate("navigator.serviceWorker.getRegistration().then(r=>!!(r&&r.active))")
     c.set_offline(True); 
     try: pg.reload(); pg.wait_for_timeout(1200); ok=len(pg.inner_text('#app'))>100

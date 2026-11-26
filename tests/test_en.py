@@ -172,7 +172,8 @@ def main():
         p2.set_viewport_size({'width':390,'height':800}); wide=[]
         for h in ['','#toplisten','#aarets','#byttur','#smagning','#venner','#stilguide','#profil','#tilfoej','#kalender','#mad','#genstande','#privatliv','#om','#nyt','#sammenlign']:
             p2.goto(URL+h); p2.wait_for_timeout(300)
-            if p2.evaluate('document.documentElement.scrollWidth>innerWidth+1'): wide.append(h)
+            if p2.evaluate('document.documentElement.scrollWidth>innerWidth+1'):   # skriv også, hvilke elementer der stikker ud
+                wide.append(h+' '+str(p2.evaluate("[...document.querySelectorAll('#app *,footer *')].filter(e=>e.getBoundingClientRect().right>innerWidth+1&&![...e.children].some(c=>c.getBoundingClientRect().right>innerWidth+1)).slice(0,4).map(e=>e.tagName+(e.id?'#'+e.id:'')+'.'+String(e.className).slice(0,30)+' '+Math.round(e.getBoundingClientRect().right)+' '+(e.textContent||e.value||'').trim().slice(0,30))")))
         p2.reload(); p2.wait_for_timeout(1500)
         lang_ok=p2.evaluate("document.documentElement.lang")=='en' and p2.evaluate("document.getElementById('langSel').value")=='en' and p2.is_visible('#langBtn')
         p2.select_option('#langSel','da'); p2.wait_for_timeout(800)

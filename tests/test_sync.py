@@ -20,7 +20,7 @@ def mut(pg,js,wait=3000):
 with sync_playwright() as p:
     b=getattr(p,os.environ.get('BROWSER','chromium')).launch(); M=Mock(); errs=[]
     def ctx(name,vw,state=None,quiet=False):   # quiet: svar som 403, 422 og 429 er ventede (forkert kode, mailen findes, for mange mails)
-        c=b.new_context(viewport={'width':vw[0],'height':vw[1]},locale='da-DK'); c.route(f'https://{HOST}/**',M.handle)
+        c=b.new_context(viewport={'width':vw[0],'height':vw[1]},locale='da-DK',service_workers='block'); c.route(f'https://{HOST}/**',M.handle)   # uden service worker: ellers kan kald gå uden om den efterlignede database (set i WebKit)
         pg=c.new_page(); pg.on('pageerror',lambda e:errs.append(name+': '+str(e)))
         pg.on('console',lambda m:errs.append(name+' console: '+m.text) if m.type=='error' and 'Synk' not in m.text and 'ERR_FAILED' not in m.text and not (quiet and 'Failed to load resource' in m.text) else None)
         init="window.__sh=[];navigator.share=async d=>{window.__sh.push(d)};window.confirm=()=>true;window.prompt=()=>'%s';"%name
@@ -215,7 +215,7 @@ with sync_playwright() as p:
     # --- enig eller uenig (swipe): stemmer på andres bedømmelser, tal hos den der har bedømt
     M2=Mock(); errs2=[]
     def ctx2(state):
-        c=b.new_context(viewport={'width':390,'height':844},locale='da-DK'); c.route(f'https://{HOST}/**',M2.handle); pg=c.new_page(); pg.on('pageerror',lambda e:errs2.append(str(e)))
+        c=b.new_context(viewport={'width':390,'height':844},locale='da-DK',service_workers='block'); c.route(f'https://{HOST}/**',M2.handle); pg=c.new_page(); pg.on('pageerror',lambda e:errs2.append(str(e)))
         pg.add_init_script("if(!localStorage.getItem('olrating-v1'))localStorage.setItem('olrating-v1',%s);"%json.dumps(json.dumps(state))); return pg
     mk=lambda who,beers,revs:{"beers":[{"id":i,"name":n,"brewery":"Testbryg","style":"Pilsner","abv":5,"size":"33 cl flaske","date":"2026-11-20","addedBy":who,"img":""} for i,n in beers],"reviews":[{"id":i,"beer":bb,"who":who,"date":d,"s":C,"text":t} for i,bb,d,t in revs],"me":who}
     W1=ctx2(mk('Lucas',[('us1','Swipeøl et'),('us2','Swipeøl to')],[('rs1','us1','2026-11-20','Rigtig god'),('rs2','us2','2026-11-21','')])); W1.goto(URL+'#swipe'); W1.wait_for_timeout(3500)

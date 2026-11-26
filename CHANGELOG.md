@@ -4,6 +4,10 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Eftermiddag (13:10–13:21): første kørsel i Safaris motor
+- **Resultat:** `test_site.py` bestod alle 143 tjek i WebKit. `test_en.py` fandt én ting: siden Tilføj øl får vandret scroll på mobil på engelsk i WebKit. Testen skriver nu, hvilket element der stikker ud, så det kan rettes.
+- **Rettet i testene:** `test_sync.py` kørte med service worker slået til. I WebKit gik kald fra siden så uden om den efterlignede database og ud på nettet. Nu er service workeren slået fra i den test, og i den ene test, hvor den skal være med (offline), tror siden, at den er offline, og synkroniserer ikke.
+
 ### Eftermiddag (13:02–13:02): test i Safaris motor
 - **Ny test på GitHub:** De tre test af siden kan nu køre i WebKit, som er motoren i Safari på iPhone (`BROWSER=webkit`). Jobbet "Siden i Safaris motor" kører ved hver ændring og stopper ikke resten, hvis noget fejler. Det er første skridt mod at vide, om siden virker på iPhone uden at have en i hånden.
 
