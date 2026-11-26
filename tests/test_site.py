@@ -228,7 +228,10 @@ with sync_playwright() as p:
         try: nav(); pg.wait_for_timeout(1200); ok=len(pg.inner_text('#app'))>100; how.append((navn,ok))
         except Exception as e: ok=False; how.append((navn,str(e)[:80]))
         if ok: break
-    check('[offline] service worker active and page loads without net',sw and ok,(sw,how)); c.close(); b.close()
+    # I Firefox afviser testværktøjet al navigation uden net (NS_ERROR_OFFLINE), før service workeren bliver spurgt. Der kan tjekket ikke bruges.
+    if os.environ.get('BROWSER')=='firefox': print('SPRING OVER [offline]: kan ikke prøves i Firefox i testen. Service worker aktiv:',sw)
+    else: check('[offline] service worker active and page loads without net',sw and ok,(sw,how))
+    c.close(); b.close()
 # static checks
 root=ROOT+'/'; s=open(root+'index.html').read(); sw=open(root+'sw.js').read()
 miss=[f for f in re.findall(r"'\./?([\w./-]+\.\w+)'",sw.split('SHELL=')[1].split(']')[0]) if not os.path.exists(root+f)]

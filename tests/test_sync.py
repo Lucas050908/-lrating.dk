@@ -22,7 +22,7 @@ with sync_playwright() as p:
     def ctx(name,vw,state=None,quiet=False):   # quiet: svar som 403, 422 og 429 er ventede (forkert kode, mailen findes, for mange mails)
         c=b.new_context(viewport={'width':vw[0],'height':vw[1]},locale='da-DK',service_workers='block'); c.route(f'https://{HOST}/**',M.handle)   # uden service worker: ellers kan kald gå uden om den efterlignede database (set i WebKit)
         pg=c.new_page(); pg.on('pageerror',lambda e:errs.append(name+': '+str(e)))
-        pg.on('console',lambda m:errs.append(name+' console: '+m.text) if m.type=='error' and 'Synk' not in m.text and 'ERR_FAILED' not in m.text and not (quiet and 'Failed to load resource' in m.text) else None)
+        pg.on('console',lambda m:errs.append(name+' console: '+m.text) if m.type=='error' and 'Synk' not in m.text and 'ERR_FAILED' not in m.text and 'CORS request did not succeed' not in m.text and not (quiet and 'Failed to load resource' in m.text) else None)
         init="window.__sh=[];navigator.share=async d=>{window.__sh.push(d)};window.confirm=()=>true;window.prompt=()=>'%s';"%name
         if state: init+="if(!localStorage.getItem('olrating-v1'))localStorage.setItem('olrating-v1',%s);"%json.dumps(json.dumps(state))
         pg.add_init_script(init); return pg

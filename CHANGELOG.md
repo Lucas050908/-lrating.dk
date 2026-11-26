@@ -4,6 +4,10 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Eftermiddag (14:54–14:57): Firefox består
+- **Firefox:** Efter rettelserne i testen var der to ting tilbage, og begge ligger i testværktøjet: Firefox afviser al navigation uden net, før service workeren bliver spurgt, så det tjek springes over i Firefox, og en afbrudt forbindelse giver en besked med en anden ordlyd end i Chrome.
+- **Status for browsere:** Chrome, Safaris motor (WebKit) og Firefox kører alle tre test på GitHub ved hver ændring.
+
 ### Eftermiddag (14:32–14:41): første kørsel i Firefox
 - **Resultat:** `test_en.py` bestod alt i Firefox. `test_site.py` og `test_sync.py` fejlede kun på to ting, som begge ligger i testen: testens eget billede var et afkortet JPEG, som Firefox melder fejl om, og tjekket uden net fejlede ved genindlæsning.
 - **Rettet i testene:** Testbilledet er nu et gyldigt JPEG. Tjekket uden net prøver både at genindlæse og at åbne siden igen og skriver, hvad der skete.
