@@ -15,7 +15,7 @@ def make_photo(b):
 def check(n,c,x=''):
     res.append(bool(c)); print(('PASS ' if c else 'FAIL ')+n,'' if c else x)
 def ls(pg): return json.loads(pg.evaluate("localStorage.getItem('olrating-v1')"))
-VIEWS=['','#alle','#toplisten','#galleri','#sammenlign','#byttur','#smagning','#venner','#nyt','#stilguide','#profil','#tilfoej','#kalender','#dagbog','#mad','#genstande','#privatliv','#om']
+VIEWS=['','#alle','#toplisten','#aarets','#galleri','#sammenlign','#byttur','#smagning','#venner','#nyt','#stilguide','#profil','#tilfoej','#kalender','#dagbog','#mad','#genstande','#privatliv','#om']
 def run(b,name,vw):
     M=Mock(); errs=[]
     c=b.new_context(viewport={'width':vw[0],'height':vw[1]},accept_downloads=True,service_workers='block'); c.route(f'https://{HOST}/**',M.handle)
@@ -138,6 +138,18 @@ def run(b,name,vw):
     T('alkoholfri: filter viser kun de to alkoholfri',names==['Fri Hvede','Nul Komma'] and 'Alkoholfri' in pg.inner_text('#grid .card >> nth=0'),names)
     pg.goto(URL+'#toplisten'); pg.wait_for_timeout(400); pg.click('.chip:has-text("Alkoholfri")'); pg.wait_for_timeout(300)
     T('alkoholfri: egen topliste',pg.eval_on_selector_all('.toplist li','e=>e.length')==2)
+    # --- del toplisten som billede, og Årets øl
+    pg.evaluate("navigator.canShare=undefined")
+    with pg.expect_download(timeout=10000) as dl: pg.click('#topCard')
+    T('topliste: del som billede (jpg > 40 kB)',dl.value.suggested_filename=='toplisten-olrating.jpg' and os.path.getsize(dl.value.path())>40000,os.path.getsize(dl.value.path()))
+    pg.goto(URL+'#aarets'); pg.wait_for_timeout(400)
+    if pg.query_selector('[data-year="2026"][aria-pressed="false"]'): pg.click('[data-year="2026"]'); pg.wait_for_timeout(300)
+    aw=pg.inner_text('.awards')
+    T('årets øl: vinder, næste på listen og priser',pg.inner_text('.winner h2')=='Fjord IPA' and pg.inner_text('.winner b.s')=='5,0' and pg.evaluate("[...document.querySelectorAll('.toplist li a')].map(x=>x.textContent)")==['Nul Komma','Skærgaard Pilsner','Havn Stout'] and 'Testbryg ux1' in aw and 'Pilsner' in aw and 'Fri Hvede' in aw and 'nykommer' not in aw.lower(),(pg.inner_text('.winner'),aw))
+    T('årets øl: tal for året og ingen vandret scroll','10 bedømmelser af 6 forskellige øl fra 6 bryggerier, givet af 2 smagere' in pg.inner_text('#yearNums') and not over(),pg.inner_text('#yearNums'))
+    pg.evaluate("navigator.canShare=undefined")
+    with pg.expect_download(timeout=10000) as dl: pg.click('#yearCard')
+    T('årets øl: del som billede (jpg > 40 kB)',dl.value.suggested_filename=='aarets-oel-2026-olrating.jpg' and os.path.getsize(dl.value.path())>40000,dl.value.suggested_filename)
     pg.goto(URL+'#beer-ux5'); pg.wait_for_timeout(500); a=pg.query_selector('[data-unit]') is None
     pg.goto(URL+'#beer-ux1'); pg.wait_for_timeout(500)
     T('alkoholfri: ingen +Genstand på 0 %, men på almindelig øl',a and pg.query_selector('[data-unit]') is not None)

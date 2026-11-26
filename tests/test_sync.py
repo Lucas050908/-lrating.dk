@@ -147,7 +147,7 @@ with sync_playwright() as p:
     check('fjendtlig: bedømmelse renset',rx['s']=={'look':1,'aroma':5,'taste':1,'feel':1,'overall':1} and rx['img']=='' and rx['prof'] is None and rx['again']==1 and len(rx['tags'])==1,rx)
     H.goto(URL+'#byttur'); H.wait_for_timeout(300); H.fill('#tCode','xsstour1'); H.click('#codeForm button'); H.wait_for_timeout(2000)
     H.goto(URL+'#smagning-xsstast1'); H.wait_for_timeout(4500)
-    pages=['','#alle','#beer-xss1','#beer-ok1','#toplisten','#galleri','#stilguide','#venner','#smager-'+X.replace('"','%22').replace(' ','%20'),'#bryggeri-'+X.replace('"','%22').replace(' ','%20'),'#byttur','#byttur-xsstour1','#smagning','#smagning-xsstast1','#profil','#dagbog','#sammenlign']
+    pages=['','#alle','#beer-xss1','#beer-ok1','#toplisten','#aarets','#galleri','#stilguide','#venner','#smager-'+X.replace('"','%22').replace(' ','%20'),'#bryggeri-'+X.replace('"','%22').replace(' ','%20'),'#byttur','#byttur-xsstour1','#smagning','#smagning-xsstast1','#profil','#dagbog','#sammenlign']
     bad=[]
     for h in pages:
         H.goto(URL+h); H.wait_for_timeout(450)

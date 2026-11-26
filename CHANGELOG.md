@@ -4,6 +4,11 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Formiddag (08:11–08:18): Årets øl og topliste som billede
+- **Årets øl:** Ny side (`#aarets`) med årets vinder, de næste på listen, årets bryggeri, årets stil, årets alkoholfri og årets nykommer. Kun bedømmelser fra året tæller, og en øl skal have mindst 2 bedømmelser for at være med, når der er øl, der har det. Siden ligger under Mere, i sidefoden og som link på Toplisten.
+- **Del toplisten som billede:** Ny knap på Toplisten og på Årets øl, der laver et billede med de 5 bedste øl. Det deles på samme måde som delekortet for en enkelt øl.
+- **Test:** 4 nye tjek af Årets øl og de to billeder.
+
 ### Morgen (07:48): altid mørk
 - **Siden er nu altid mørk.** Før skiftede den selv til et lyst tema mellem kl. 7 og 17. Valget "Udseende" i sidefoden er fjernet, og et lyst tema, der var valgt tidligere, bliver ignoreret.
 

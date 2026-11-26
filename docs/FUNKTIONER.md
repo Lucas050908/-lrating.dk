@@ -9,7 +9,8 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 | Forside | `#` | Ugens øl, søgning (også med stregkodescanner), filtre, sortering, "Vis flere" (24 ad gangen), seneste bedømmelser, app-sektion |
 | Øl | `#beer-<id>` | Billede, oplysninger, karakterer i 5 kategorier, smagsprofil og anmeldelser. Store knapper: Bedøm den, Vil smage og + Genstand. Små knapper: Del, Del som billede, Sammenlign, Ret oplysninger og Slet øl med fortryd |
 | Tilføj øl | `#tilfoej` | Navn, bryggeri, stil, land/by, alkohol, IBU, farve, størrelse, pris, købested, servering, stregkode, billede og bedømmelse. Siden foreslår øl, der allerede findes, mens du skriver, så der ikke kommer dubletter |
-| Toplisten | `#toplisten` | Samlet, lyse og mørke øl |
+| Toplisten | `#toplisten` | Samlet, lyse, mørke og alkoholfri øl. Knappen "Del toplisten som billede" laver et billede af de 5 bedste |
+| Årets øl | `#aarets` | Årets vinder, de næste på listen, årets bryggeri, stil, alkoholfri og nykommer. Se [Årets øl](#årets-øl) |
 | Galleri | `#galleri` | Alle billeder med lysboks |
 | Sammenlign | `#sammenlign` | To øl side om side |
 | Byttur | `#byttur` | Se [Byttur](#byttur) |
@@ -28,7 +29,7 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 
 ### Menuen
 - Topmenuen viser Alle øl, Toplisten, Galleri, Sammenlign, Byttur, Mere, Min profil og Tilføj øl.
-- Under **Mere** ligger Smagning med venner, Venner, Genstand-tæller, Stilguide og bryggerier, Ølkalender, Øl til maden og Min øl-dagbog.
+- Under **Mere** ligger Smagning med venner, Venner, Genstand-tæller, Årets øl, Stilguide og bryggerier, Ølkalender, Øl til maden og Min øl-dagbog.
 - Under 1100 px bredde bliver menuen til en knap, der viser alle sider i én liste.
 
 ### Fælles database
@@ -65,7 +66,15 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 - Den tåler også en stavefejl i ord på mindst 4 bogstaver, fx ét bogstav for meget eller for lidt, et forkert bogstav eller to bogstaver byttet om.
 - Der søges i navn, bryggeri, stil, by, land, stregkode og navne på dem, der har tilføjet eller bedømt.
 
+### Årets øl
+- Kun bedømmelser fra det valgte år tæller. Er der bedømmelser fra flere år, kan året vælges øverst.
+- Har mindst én øl fået 2 bedømmelser i året, skal en øl have mindst 2 for at være med på listen. Så vinder en øl ikke på en enkelt topkarakter.
+- **Årets priser:** årets bryggeri (bedste gennemsnit, mindst 2 bedømmelser), årets stil (flest bedømmelser), årets alkoholfri og årets nykommer (bedste øl, der er tilføjet i året, hvis det ikke er vinderen selv).
+- Nederst står årets tal: antal bedømmelser, forskellige øl, bryggerier og smagere. Der kåres ingen personer, og ingen bliver belønnet for at drikke meget.
+- "Del Årets øl som billede" laver et billede af årets 5 bedste.
+
 ### Del som billede
+- Toplisten og Årets øl kan deles som et billede på 1080×1350 med de 5 bedste øl, deres billeder og karakterer.
 - Laver et delekort på 1080×1350 med fjordfoto, øllens billede, navn, bryggeri, stil, alkohol og karakter.
 - Delekortet deles direkte på telefoner, der kan det. Ellers bliver det hentet som fil, og i Android-appen bliver det gemt i Billeder/ølrating.
 
