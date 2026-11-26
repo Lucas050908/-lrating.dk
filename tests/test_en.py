@@ -113,7 +113,7 @@ def main():
         b=p.chromium.launch()
         da,e1=crawl(b,'da'); en,e2=crawl(b,'en')
         # statiske tjek af ordbogen i en rigtig side
-        c=b.new_context(service_workers='block'); pg=c.new_page(); pg.goto(URL); pg.wait_for_timeout(600)
+        M0=Mock(); c=b.new_context(service_workers='block'); c.route(f'https://{HOST}/**',M0.handle); pg=c.new_page(); pg.goto(URL); pg.wait_for_timeout(600)
         info=pg.evaluate("""async()=>{await new Promise((ok,no)=>{const s=document.createElement('script');s.src='js/en.js';s.onload=ok;s.onerror=no;document.head.appendChild(s)});const E=window.EN_DATA,x=E.x,bad=[];
           for(const k in x){const v=x[k];if(typeof v!=='string'){bad.push('ikke tekst: '+k);continue}if(v!==k&&Object.prototype.hasOwnProperty.call(x,v)&&x[v]!==v)bad.push('kæde: '+k+' -> '+v+' -> '+x[v])}
           return {n:Object.keys(x).length,r:E.r.length,bad}}""")
@@ -128,8 +128,8 @@ def main():
                 t=t.replace("\\'","'")
                 if t.startswith(' '): t='7'+t     # tekst, der sættes efter et navn
                 if re.search(r'[a-zæøå]{3,}',t) and ' ' in t and t not in lits: lits.append(t)
-        c2=b.new_context(service_workers='block'); p2=c2.new_page(); p2.goto(URL); p2.wait_for_timeout(400)
-        p2.evaluate("localStorage.setItem('olrating-v1',JSON.stringify({lang:'en'}))"); p2.reload(); p2.wait_for_timeout(1500)
+        c2=b.new_context(service_workers='block'); c2.route(f'https://{HOST}/**',M0.handle); p2=c2.new_page(); p2.goto(URL); p2.wait_for_timeout(1500)   # ventetiden lader første synkronisering blive færdig
+        p2.evaluate("localStorage.setItem('olrating-v1',JSON.stringify({...JSON.parse(localStorage.getItem('olrating-v1')||'{}'),lang:'en'}))"); p2.reload(); p2.wait_for_timeout(2000)
         untr=[t for t in lits if p2.evaluate("t=>window.__tr.s(t)===t",t)]
         # brede engelske tekster må ikke give vandret scroll på mobil
         p2.set_viewport_size({'width':390,'height':800}); wide=[]
