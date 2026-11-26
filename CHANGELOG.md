@@ -4,6 +4,13 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Middag (11:12–11:32): Enig eller uenig? og konto
+- **Enig eller uenig? (`#swipe`):** Ny side, hvor man swiper på andres bedømmelser som på Tinder. Til højre for enig, til venstre for uenig. Knapper og piletaster virker også, og der er Spring over og Fortryd.
+- **Se hvem der er enige med dig:** Ved hver bedømmelse står der nu, hvor mange der er enige og uenige, og Min profil har boksen "Er andre enige med dig?" med den samlede procent.
+- **Konto med kode på mail (skjult indtil videre):** Frivillig konto på Min profil. Man skriver sin mail, får en kode på 6 tal og er logget ind. Ens øl følger med på ny telefon, og man kan slå fire slags mails til. Den vises først for alle, når mail-delen er sat op. Den kan prøves på `#konto-test`.
+- **Databasen (`supabase/003-konto-mails-enig.sql`):** Nye tabeller til stemmer, mailvalg og en kø med mails, og funktioner til at flytte data til en konto og slette en konto. Filen skal køres i Supabase.
+- **Test:** 27 nye tjek i `test_sync.py` af swipe og konto på to enheder, og en ny test (`tests/test_sql.js`, 32 tjek), der afprøver SQL-filen i en rigtig Postgres i hukommelsen. Den kører også på GitHub.
+
 ### Formiddag (10:50–10:48): flere byer på kortet
 - **Kortet over bryggerier** kender nu 310 danske byer og bydele mod 71 før, så langt flere bryggerier kan få en prik. Bl.a. Sæby, Støvring, Hvide Sande, Assens, Sorø, Gilleleje, Nexø og bydelene i København og Aarhus.
 - **Nyt på siden** fortæller nu om dansk og engelsk.

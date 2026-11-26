@@ -15,7 +15,7 @@ def make_photo(b):
 def check(n,c,x=''):
     res.append(bool(c)); print(('PASS ' if c else 'FAIL ')+n,'' if c else x)
 def ls(pg): return json.loads(pg.evaluate("localStorage.getItem('olrating-v1')"))
-VIEWS=['','#alle','#toplisten','#aarets','#galleri','#sammenlign','#byttur','#smagning','#venner','#nyt','#stilguide','#profil','#tilfoej','#kalender','#dagbog','#mad','#genstande','#privatliv','#om']
+VIEWS=['','#alle','#toplisten','#aarets','#swipe','#galleri','#sammenlign','#byttur','#smagning','#venner','#nyt','#stilguide','#profil','#tilfoej','#kalender','#dagbog','#mad','#genstande','#privatliv','#om']
 def run(b,name,vw):
     M=Mock(); errs=[]
     c=b.new_context(viewport={'width':vw[0],'height':vw[1]},accept_downloads=True,service_workers='block',locale='da-DK'); c.route(f'https://{HOST}/**',M.handle)

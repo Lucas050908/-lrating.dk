@@ -62,7 +62,13 @@ def crawl(b,lang):
     def grab(k): out[k]=pg.evaluate(GRAB)
     def go(h,k=None,wait=450): pg.goto(URL+h); pg.wait_for_timeout(wait); grab(k or h)
     seed('Lucas')
-    for h in ['','#toplisten','#aarets','#galleri','#sammenlign','#byttur','#byttur-pasttour1','#byttur-futtour01','#byttur-nowtour01','#byttur-emptytour','#byttur-findesikke','#smagning','#smagning-tastopen1','#smagning-tastdone1','#smagning-tastgues1','#smagning-tastgues2',
+    # andres bedømmelser får en anden ejer, så der er noget at swipe på, og mine egne får stemmer
+    for r in M.t['reviews'].values():
+        if r['who']!='Lucas': r['owner']='00000000-0000-4000-8000-00000000ffff'
+    for i,k in enumerate([k for k,r in M.t['reviews'].items() if r['who']=='Lucas'][:3]):
+        M.rvotes[(k,'u1')]=1; M.rvotes[(k,'u2')]=1 if i else -1
+    pg.evaluate("sbSync()"); pg.wait_for_timeout(1800)
+    for h in ['','#swipe','#toplisten','#aarets','#galleri','#sammenlign','#byttur','#byttur-pasttour1','#byttur-futtour01','#byttur-nowtour01','#byttur-emptytour','#byttur-findesikke','#smagning','#smagning-tastopen1','#smagning-tastdone1','#smagning-tastgues1','#smagning-tastgues2',
               '#venner','#smager-Magnus','#smager-Sofie','#nyt','#stilguide','#bryggeri-Thisted%20Bryghus','#bryggeri-Findes%20Ikke','#profil','#tilfoej','#kalender','#dagbog','#mad','#genstande','#privatliv','#om','#beer-a1','#beer-a2','#beer-a3','#beer-a4','#beer-a5','#beer-a7','#beer-findesikke']: go(h)
     # filtre, tom søgning og sortering
     pg.goto(URL+'#alle'); pg.wait_for_timeout(400); pg.evaluate("document.querySelectorAll('details').forEach(d=>d.open=true)"); grab('#alle+filtre')
@@ -80,6 +86,12 @@ def crawl(b,lang):
     pg.goto(URL+'#beer-a1'); pg.wait_for_timeout(400)
     if pg.query_selector('[data-delrev]'): pg.click('[data-delrev]'); pg.wait_for_timeout(300); grab('#beer+fortryd'); pg.click('.undo button'); pg.wait_for_timeout(300)
     pg.goto(URL+'#smager-Ukendt%20Person'); pg.wait_for_timeout(300); grab('#smager+ukendt')
+    pg.goto(URL+'#swipe'); pg.wait_for_timeout(400); pg.evaluate("document.getElementById('swYes').click()"); pg.wait_for_timeout(600); grab('#swipe+stemt')
+    pg.evaluate("document.getElementById('swSkip').click()"); pg.wait_for_timeout(600)
+    for i in range(12):
+        if not pg.query_selector('#swNo'): break
+        pg.evaluate("document.getElementById('swNo').click()"); pg.wait_for_timeout(500)
+    grab('#swipe+færdig')
     # uden navn
     seed('')
     for h in ['#profil','#dagbog','#venner','#byttur','#smagning','#genstande','#beer-a1','#byttur-futtour01','#smagning-tastgues1','']: go(h,h+'+ukendt')
@@ -87,7 +99,7 @@ def crawl(b,lang):
     c.close(); M=Mock(); c=b.new_context(viewport={'width':1280,'height':900},service_workers='block',locale='da-DK'); c.route(f'https://{HOST}/**',M.handle)
     pg=c.new_page(); pg.on('pageerror',lambda e:errs.append(str(e))); pg.clock.set_fixed_time(NOW)
     seed('',empty=True)
-    for h in ['','#toplisten','#aarets','#galleri','#sammenlign','#stilguide','#profil','#dagbog','#venner','#byttur','#smagning','#genstande','#tilfoej','#kalender']: go(h,h+'+tom')
+    for h in ['','#swipe','#toplisten','#aarets','#galleri','#sammenlign','#stilguide','#profil','#dagbog','#venner','#byttur','#smagning','#genstande','#tilfoej','#kalender']: go(h,h+'+tom')
     c.close()
     return out,errs
 def segs(strings):
@@ -100,7 +112,7 @@ def segs(strings):
 SAME=set('''IPA Stout Porter Sour Lager Pale Ale Brown Ale Bock Pilsner Bitter Citrus Malt Normal Halloween USA Mexico Japan England Android Windows Linux iPhone iPad Safari Chrome OK Web Share GitHub Supabase Google Maps QR Top Min Max IBU cl % ABV
 ølrating ølrating.dk .dk Lucas Valentin Ottesen Magnus Birkgaard Froberg Limfjorden Start Info Tema Dansk English Sprog · Language Sprog Language'''.replace('\n',' ').split(' '))
 SAME|={'Pale Ale','Brown Ale','J-dag','Web Share','Google Maps','Lucas Valentin Ottesen','Magnus Birkgaard Froberg'}
-SAME|={'Scan','Linux:','Windows:','Downloads','TOP 3','+ Stop','Download backup','Snifter','Pizza','Burger','Mild','ølrating.dk logo','olrating.apk','olrating-windows.exe','olrating-linux.AppImage','andersenlucas84@gmail.com','Findes Ikke','cl','Fx mfx3k2abcd','Globetrotter','ølrating<1>.dk</1>','1 stop'}
+SAME|={'Swipe','Scan','Linux:','Windows:','Downloads','TOP 3','+ Stop','Download backup','Snifter','Pizza','Burger','Mild','ølrating.dk logo','olrating.apk','olrating-windows.exe','olrating-linux.AppImage','andersenlucas84@gmail.com','Findes Ikke','cl','Fx mfx3k2abcd','Globetrotter','ølrating<1>.dk</1>','1 stop'}
 # Mønstre for tekster, der er ens på begge sprog: mål, koder og navne med tal
 SAME_RE=re.compile(r'^(\d+ cl|\d+ IBU|© \d{4} .*|[\d.,]+ ?%|[A-ZÆØÅ]|✓ .+|\d\. .+|“.*”|.+ ↗|■ .+)$')
 def letters(t): return re.search(r'[A-Za-zÆØÅæøå]{2,}',t) is not None

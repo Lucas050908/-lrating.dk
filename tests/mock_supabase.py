@@ -8,8 +8,15 @@ CORS={'access-control-allow-origin':'*','access-control-allow-headers':'*','acce
 class Mock:
     def __init__(s):
         s.n=0; s.tok={}; s.ref={}; s.t={'beers':{},'reviews':{},'tours':{},'tastings':{}}; s.members={}; s.votes={}; s.store={}; s.log=[]; s.down=False
+        # konto: brugere, mails der "sendes" (koden er altid 123456 for ny konto og 654321 for login), mailvalg og flytning af data
+        s.users={}; s.emails={}; s.mails=[]; s.prefs={}; s.flyt={}; s.mail_limit=False; s.has_konto_sql=True
+        s.rvotes={}   # enig/uenig: (bedømmelse, bruger) -> 1 eller -1
+    def user(s,uid):
+        u=s.users.get(uid,{}); return {'id':uid,'is_anonymous':not u.get('email'),**({'email':u['email']} if u.get('email') else {})}
     def sess(s,uid,n):
-        return {'access_token':f'tok{n}','refresh_token':f'ref{n}','expires_in':3600,'token_type':'bearer','user':{'id':uid,'is_anonymous':True}}
+        return {'access_token':f'tok{n}','refresh_token':f'ref{n}','expires_in':3600,'token_type':'bearer','user':s.user(uid)}
+    def new_sess(s,uid):
+        s.n+=1; se=s.sess(uid,s.n); s.tok[se['access_token']]=uid; s.ref[se['refresh_token']]=(uid,s.n); return se
     def handle(s,route,req):
         u=urlparse(req.url); path=u.path; q={k:v[0] for k,v in parse_qs(u.query).items()}; m=req.method
         def out(code,body=None,ct='application/json',raw=None):
@@ -21,15 +28,87 @@ class Mock:
         bearer=(req.headers.get('authorization') or '').replace('Bearer ','')
         uid=s.tok.get(bearer)
         body=None
-        if m in('POST','PATCH') and not path.startswith('/storage'):
+        if m in('POST','PATCH','PUT') and not path.startswith('/storage'):
             try: body=json.loads(req.post_data or '{}')
             except Exception: body={}
         if path=='/auth/v1/signup':
-            s.n+=1; uid=f'00000000-0000-4000-8000-{s.n:012d}'; se=s.sess(uid,s.n); s.tok[se['access_token']]=uid; s.ref[se['refresh_token']]=(uid,s.n); return out(200,se)
+            s.n+=1; uid=f'00000000-0000-4000-8000-{s.n:012d}'; s.users[uid]={'email':None,'pending':None}; se=s.sess(uid,s.n); s.tok[se['access_token']]=uid; s.ref[se['refresh_token']]=(uid,s.n); return out(200,se)
         if path=='/auth/v1/token':
             r=s.ref.get(body.get('refresh_token'))
-            if not r: return out(400,{'error':'invalid_grant'})
+            if not r or r[0] not in s.users: return out(400,{'error':'invalid_grant'})
             return out(200,s.sess(*r))
+        # --- konto: mail på den anonyme bruger, login med kode, log ud
+        if path=='/auth/v1/user' and m=='PUT':
+            if not uid: return out(401,{'msg':'no session'})
+            em=(body.get('email') or '').lower()
+            if s.mail_limit: return out(429,{'code':429,'error_code':'over_email_send_rate_limit','msg':'email rate limit exceeded'})
+            if em in s.emails and s.emails[em]!=uid: return out(422,{'code':422,'error_code':'email_exists','msg':'A user with this email address has already been registered'})
+            s.users[uid]['pending']=em; s.mails.append((em,'email_change','123456')); return out(200,s.user(uid))
+        if path=='/auth/v1/otp' and m=='POST':
+            em=(body.get('email') or '').lower()
+            if s.mail_limit: return out(429,{'code':429,'error_code':'over_email_send_rate_limit','msg':'email rate limit exceeded'})
+            if em not in s.emails: return out(422,{'code':422,'error_code':'otp_disabled','msg':'Signups not allowed for otp'})
+            s.mails.append((em,'magiclink','654321')); return out(200,{})
+        if path=='/auth/v1/verify' and m=='POST':
+            em=(body.get('email') or '').lower(); bad=lambda: out(403,{'code':403,'error_code':'otp_expired','msg':'Token has expired or is invalid'})
+            if body.get('type')=='email_change':
+                u=[k for k,v in s.users.items() if v.get('pending')==em]
+                if not u or body.get('token')!='123456': return bad()
+                s.users[u[0]].update(email=em,pending=None); s.emails[em]=u[0]; return out(200,s.new_sess(u[0]))
+            if body.get('type')=='email':
+                if em not in s.emails or body.get('token')!='654321': return bad()
+                return out(200,s.new_sess(s.emails[em]))
+            return bad()
+        if path=='/auth/v1/logout' and m=='POST':
+            s.tok.pop(bearer,None); return out(204)
+        mr=re.match(r'^/rest/v1/rpc/(\w+)$',path)
+        if mr:
+            fn=mr.group(1); anon=bool(uid) and not s.users.get(uid,{}).get('email')
+            if not s.has_konto_sql: return out(404,{'code':'PGRST202','message':'Could not find the function'})
+            if not uid: return out(401,{'code':'42501'})
+            if fn=='konto_flyt_start':
+                if not anon: return out(400,{'message':'kun anonyme brugere'})
+                t=f'00000000-0000-4000-9000-{len(s.flyt)+1:012d}'; s.flyt[t]=uid; return out(200,t)
+            if fn=='konto_flyt_slut':
+                f=s.flyt.pop(body.get('t'),None)
+                if anon or not f: return out(400,{'message':'ukendt eller udløbet'})
+                n=0
+                for T in s.t.values():
+                    for r in T.values():
+                        if r['owner']==f: r['owner']=uid; n+=1
+                for k,o in list(s.members.items()):
+                    if o==f: s.members[k]=uid
+                for v in s.votes.values():
+                    if v['owner']==f: v['owner']=uid
+                for (r,o),v in list(s.rvotes.items()):
+                    if o==f:
+                        del s.rvotes[(r,o)]
+                        if (r,uid) not in s.rvotes and s.t['reviews'].get(r,{}).get('owner')!=uid: s.rvotes[(r,uid)]=v
+                s.users.pop(f,None); return out(200,n)
+            if fn=='konto_slet':
+                em=s.users.get(uid,{}).get('email'); s.emails.pop(em,None); s.users.pop(uid,None); s.prefs.pop(uid,None); return out(204)
+            return out(404,{'message':'no function'})
+        if path in('/rest/v1/review_votes','/rest/v1/review_vote_counts'):
+            if not s.has_konto_sql: return out(404,{'code':'PGRST205','message':'Could not find the table'})
+            if path.endswith('counts'):
+                c={}
+                for (r,o),v in s.rvotes.items(): c.setdefault(r,[0,0])[0 if v==1 else 1]+=1
+                return out(200,[{'review':r,'enig':a,'uenig':d} for r,(a,d) in c.items()])
+            if m=='GET': return out(200,[{'review':r,'v':v} for (r,o),v in s.rvotes.items() if o==uid])
+            if m=='POST':
+                r=body.get('review'); rv=s.t['reviews'].get(r)
+                if not uid: return out(401,{'code':'42501'})
+                if not rv: return out(409,{'code':'23503'})
+                if rv['owner']==uid or body.get('v') not in(1,-1): return out(403,{'code':'42501','message':'new row violates row-level security policy'})
+                s.rvotes[(r,uid)]=body['v']; return out(201)
+            if m=='DELETE':
+                s.rvotes.pop((q.get('review','')[3:],uid),None); return out(204)
+        if path=='/rest/v1/mail_prefs':
+            if not s.has_konto_sql: return out(404,{'code':'PGRST205','message':'Could not find the table'})
+            if m=='GET': return out(200,[s.prefs[uid]] if uid in s.prefs else [])
+            if m=='POST':
+                if not uid or not s.users.get(uid,{}).get('email'): return out(403,{'code':'42501','message':'rls'})
+                s.prefs[uid]={**s.prefs.get(uid,{}),**body}; return out(201)
         mt=re.match(r'^/rest/v1/(\w+)$',path)
         if mt:
             tb=mt.group(1)

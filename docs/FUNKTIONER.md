@@ -15,6 +15,7 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 | Sammenlign | `#sammenlign` | To øl side om side |
 | Byttur | `#byttur` | Se [Byttur](#byttur) |
 | Smagning | `#smagning` | Se [Smagning med venner](#smagning-med-venner) |
+| Enig eller uenig? | `#swipe` | Swipe på andres bedømmelser. Se [Enig eller uenig?](#enig-eller-uenig-swipe) |
 | Venner | `#venner` | Dem du følger, deres nyeste bedømmelser og forslag til andre smagere |
 | Smager | `#smager-<navn>` | En persons bedømmelser, gennemsnit, yndlingsstil, enighed med dig og knappen Følg |
 | Stilguide | `#stilguide` | Ølstile, kort over bryggerier og alle bryggerier |
@@ -38,7 +39,7 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 
 ### Menuen
 - Topmenuen viser Alle øl, Toplisten, Galleri, Sammenlign, Byttur, Mere, Min profil, Tilføj øl og sprogvælgeren.
-- Under **Mere** ligger Smagning med venner, Venner, Genstand-tæller, Årets øl, Stilguide og bryggerier, Ølkalender, Øl til maden og Min øl-dagbog.
+- Under **Mere** ligger Smagning med venner, Venner, Enig eller uenig?, Genstand-tæller, Årets øl, Stilguide og bryggerier, Ølkalender, Øl til maden og Min øl-dagbog.
 - Under 1100 px bredde bliver menuen til en knap, der viser alle sider i én liste.
 
 ### Fælles database
@@ -109,6 +110,22 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
   - En bedømmelse tæller med, når navnet på bedømmelsen står på turens liste. Starter turen kl. 16 eller senere, tæller dagen efter også med.
   - "Del mindet som billede" laver et billede med dato, rute, hold og turens bedste øl.
   - Mindet viser kun, hvad der blev smagt og bedømt. Der er ingen opgørelse over, hvor meget nogen drak.
+
+### Enig eller uenig? (swipe)
+- Ét kort ad gangen med en bedømmelse, en anden har givet: øllens billede, navn, hvem der har bedømt, karakteren, teksten og smagsordene. Har du selv bedømt øllen, står din egen karakter nederst.
+- **Swipe til højre** for enig og **til venstre** for uenig. Mens du trækker, kommer stemplet ENIG eller UENIG frem. Knapperne under kortet og piletasterne gør det samme. "Spring over" gemmer kortet til senere, og "Fortryd" tager det seneste tilbage.
+- Bedømmelser af øl, du selv har bedømt, kommer først. Dine egne bedømmelser er ikke med, og du kan ikke stemme på dem.
+- **Den, der har bedømt, kan se tallene:** Ved hver bedømmelse står der, hvor mange der er enige og uenige, og Min profil har boksen "Er andre enige med dig?" med den samlede procent.
+- Stemmerne ligger i den fælles database. Hvem der har stemt hvad, kan ingen andre se. Kun tallene er offentlige.
+- Mangler databasen tilføjelsen `supabase/003-konto-mails-enig.sql`, gemmes stemmerne på enheden og sendes, når den er kørt.
+
+### Konto (frivillig, ikke slået til endnu)
+- Siden virker som altid uden konto: man skriver bare sit fornavn. En konto er et tilvalg på Min profil.
+- **Login med kode:** Man skriver sin mail og får en kode på 6 tal. Der er ingen adgangskode.
+- **Samme konto på flere enheder:** Første gang bliver enhedens anonyme bruger til kontoen, så alt, der er lavet på enheden, følger med. Logger man ind på en anden enhed, flyttes den enheds øl og bedømmelser over på kontoen.
+- **Mails, man selv slår til:** nyheder om siden, når nogen bedømmer en øl, man har tilføjet, når en, man følger, bedømmer en øl (højst én mail om dagen), og når nogen melder sig til ens byttur eller stemmer i ens smagning.
+- **Log ud og slet konto** ligger samme sted. Sletter man kontoen, forsvinder login og mailvalg. Øl og bedømmelser bliver stående, medmindre man sletter dem først.
+- Kontoen er skjult på siden, indtil mail-delen er sat op (se `docs/KONTO.md`). Den kan prøves på én enhed ved at åbne `ølrating.dk/#konto-test`.
 
 ### Smagning med venner
 - **Opret:** Værten giver smagningen et navn og skriver 2 til 12 øl, én pr. linje. Blindsmagning er slået til som standard.

@@ -59,6 +59,19 @@
 - Valgmulighederne i formularer har faste danske værdier (`value`), så data gemmes ens på begge sprog. Stilarter, smagsord, lande og størrelser gemmes altid på dansk og oversættes kun, når de vises.
 - **Ikke oversat:** adresserne (`#toplisten` osv.), widgets i Android-appen og i programmet til Windows og Linux, og beskrivelsen i søgemaskiner.
 
+### Enig eller uenig (stemmer på bedømmelser)
+- `S.rv` er egne stemmer (`{bedømmelse: 1 eller -1}`), `S.rvq` er stemmer, der venter på at blive sendt, `S.rvc` er tallene fra databasen (`{bedømmelse: [enige, uenige]}`), og `S.rvs` er dem, der er sprunget over.
+- `sbVotes()` kører sidst i hver synkronisering. Den sender køen til tabellen `review_votes` og henter tallene fra viewet `review_vote_counts` og ens egne stemmer. Svarer databasen 404, sættes `rvOk=false`, og der prøves først igen ved næste indlæsning.
+- `swipeDeck()` vælger kortene, `swAct(id, v)` gemmer en stemme (eller et spring over) og lader kortet flyve ud, og `swipeWire()` står for trækket med fingeren eller musen.
+- `rvC(id)` giver tallene til visning. En stemme, der ikke er sendt endnu, tælles med.
+
+### Konto
+- `KONTO` (konstant i `index.html`) slår kontoen til for alle. `kontoOn()` er også sand, når `localStorage['olrating-konto']` er `1`, og det sætter adressen `#konto-test`.
+- **Ny konto:** `acctSend(mail)` kalder `PUT /auth/v1/user` med mailen på den anonyme bruger. Supabase sender en kode, og `acctVerify(kode)` bekræfter den med `POST /auth/v1/verify` (`type: email_change`). Brugeren beholder sit id.
+- **Mailen findes i forvejen:** `PUT` svarer 422, og der bedes i stedet om en login-kode (`POST /auth/v1/otp`, `type: email`). Før koden bekræftes, henter den anonyme bruger et flyttebevis (`konto_flyt_start`), og bagefter afleverer kontoen det (`konto_flyt_slut`), så databasen skifter ejer på enhedens rækker.
+- `isAcct()` er sand, når sessionen har en mail og ikke er anonym. `acctOut()` logger ud, og enheden får en ny anonym bruger ved næste synkronisering. `acctDel()` kalder `konto_slet`.
+- **Mailvalg:** `acctPrefs()` og `acctSavePrefs()` læser og skriver brugerens række i `mail_prefs`. Navn, sprog og (hvis mails om venner er slået til) hvem man følger, sendes med og opdateres af `acctTouch()`, når de ændres.
+
 ### Lange ord
 - `#app{overflow-wrap:anywhere}` lader lange ord uden mellemrum knække, så brugerindhold ikke kan gøre siden bredere end skærmen. Knapper, mærkater og formularfelter er undtaget.
 - Overskrifter har `hyphens:auto`, så lange sammensatte ord får bindestreg, hvor browseren har en ordbog til sproget.
@@ -150,6 +163,7 @@ Alle test bruger Playwright og en lokal server: `python3 -m http.server 8811 &`.
 | `test_site.py` | Hele siden klikket igennem på pc (1280 px) og mobil (390 px): tilføj øl med foto, bedøm, ret, søg, del, delekort, genstande, temaer, backup, slet med fortryd, ryd alt, gendan, offline, filer og links | Nej |
 | `test_sync.py` | To enheder deler data: øl, billeder, afvist redigering af andres øl, offline-kø, ingen gentegning mens man skriver, sletning med fortryd, byttur, smagning og fjendtlige data i databasen (indlejret kode og forkerte typer) | Nej |
 | `test_en.py` | Den engelske version: alle sider og tilstande gås igennem på dansk og engelsk med stillestående ur. Testen fejler, hvis en tekst er ens i de to udgaver eller stadig har danske bogstaver, hvis en besked i koden (toast, confirm, prompt) mangler i ordbogen, hvis brugernes eget indhold bliver oversat, eller hvis en side får vandret scroll på mobil | Nej |
+| `test_sql.js` | `supabase/003-konto-mails-enig.sql` afprøvet i en rigtig Postgres i hukommelsen (PGlite): hvem der må stemme, at man kun ser sine egne stemmer, flytning af data til en konto, mailvalg og køen med mails. Kræver `npm install --no-save @electric-sql/pglite` | Nej |
 | `mock_supabase.py` | Efterligning af Supabase i hukommelsen, som de to test ovenfor bruger | Nej |
 | `e2e_supabase.py` | Det samme forløb mod den rigtige database, inkl. forsøg på at rette andres data direkte gennem API'et. Opretter data med TEST i navnet og sletter dem igen | **Ja** |
 

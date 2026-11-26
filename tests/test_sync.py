@@ -19,10 +19,10 @@ def mut(pg,js,wait=3000):
     pg.reload(); pg.wait_for_timeout(wait)
 with sync_playwright() as p:
     b=p.chromium.launch(); M=Mock(); errs=[]
-    def ctx(name,vw,state=None):
+    def ctx(name,vw,state=None,quiet=False):   # quiet: svar som 403, 422 og 429 er ventede (forkert kode, mailen findes, for mange mails)
         c=b.new_context(viewport={'width':vw[0],'height':vw[1]},locale='da-DK'); c.route(f'https://{HOST}/**',M.handle)
         pg=c.new_page(); pg.on('pageerror',lambda e:errs.append(name+': '+str(e)))
-        pg.on('console',lambda m:errs.append(name+' console: '+m.text) if m.type=='error' and 'Synk' not in m.text and 'ERR_FAILED' not in m.text else None)
+        pg.on('console',lambda m:errs.append(name+' console: '+m.text) if m.type=='error' and 'Synk' not in m.text and 'ERR_FAILED' not in m.text and not (quiet and 'Failed to load resource' in m.text) else None)
         init="window.__sh=[];navigator.share=async d=>{window.__sh.push(d)};window.confirm=()=>true;window.prompt=()=>'%s';"%name
         if state: init+="if(!localStorage.getItem('olrating-v1'))localStorage.setItem('olrating-v1',%s);"%json.dumps(json.dumps(state))
         pg.add_init_script(init); return pg
@@ -158,6 +158,67 @@ with sync_playwright() as p:
     check('fjendtlig: almindelige øl vises stadig',H.eval_on_selector_all('#grid .card','e=>e.length')==1)
     for k in ['xss1','x" onmouseover="window.__xss=1','ok1']: M.t['beers'].pop(k,None)
     for k in ['rxss1','rxss2']: M.t['reviews'].pop(k,None)
+    # --- konto: login med kode på mail, samme konto på to enheder, mailvalg, log ud og slet
+    kb=lambda i,n:{"beers":[{"id":i,"name":n,"brewery":"Testbryg","style":"Pilsner","abv":5,"size":"33 cl flaske","date":"2026-11-20","addedBy":"Lucas","img":""}],"reviews":[],"me":"Lucas"}
+    sb=lambda pg:json.loads(pg.evaluate("localStorage.getItem('olrating-sb')"))
+    K1=ctx('Lucas',(390,844),kb('uk1','Kontoøl et'),quiet=True); K1.goto(URL+'#profil'); K1.wait_for_timeout(3000)
+    check('konto: skjult, indtil den er slået til',K1.query_selector('#acctBox') is None)
+    K1.goto(URL+'#konto-test'); K1.wait_for_timeout(900); uid1=sb(K1)['user']['id']
+    K1.fill('#acMail','Lucas@Example.dk'); K1.click('#acctForm button'); K1.wait_for_timeout(1000)
+    check('konto: en kode sendes til mailen',M.mails[-1:]==[('lucas@example.dk','email_change','123456')] and K1.query_selector('#acCode') is not None,M.mails[-1:])
+    K1.fill('#acCode','000000'); K1.click('#acctCode button'); K1.wait_for_timeout(1000)
+    check('konto: en forkert kode afvises',K1.query_selector('#acCode') is not None and not M.users[uid1]['email'] and 'passer ikke' in K1.inner_text('#toast'),K1.inner_text('#toast'))
+    K1.fill('#acCode','123456'); K1.click('#acctCode button'); K1.wait_for_timeout(2500); se=sb(K1)
+    check('konto: logget ind med samme bruger-id, og øllen er stadig min',se['user']['id']==uid1 and se['user'].get('email')=='lucas@example.dk' and 'lucas@example.dk' in K1.inner_text('#acctBox') and M.t['beers']['uk1']['owner']==uid1,se['user'])
+    K1.check('#mp_my_beer'); K1.wait_for_timeout(800); K1.check('#mp_friends'); K1.wait_for_timeout(800); pr=M.prefs.get(uid1,{})
+    check('konto: mailvalg gemmes med navn og sprog',pr.get('my_beer') is True and pr.get('friends') is True and pr.get('news') is False and pr.get('name')=='Lucas' and pr.get('lang')=='da',pr)
+    K2=ctx('Lucas',(390,844),kb('uk2','Kontoøl to'),quiet=True); K2.goto(URL+'#konto-test'); K2.wait_for_timeout(3500); uid2=sb(K2)['user']['id']
+    ok0=uid2!=uid1 and M.t['beers']['uk2']['owner']==uid2
+    K2.fill('#acMail','lucas@example.dk'); K2.click('#acctForm button'); K2.wait_for_timeout(1200)
+    check('konto: findes mailen i forvejen, sendes en login-kode',ok0 and M.mails[-1:]==[('lucas@example.dk','magiclink','654321')],M.mails[-1:])
+    K2.fill('#acCode','654321'); K2.click('#acctCode button'); K2.wait_for_timeout(3000); se2=sb(K2)
+    check('konto: samme konto på den anden enhed, og dens øl er flyttet over på kontoen',se2['user']['id']==uid1 and M.t['beers']['uk2']['owner']==uid1 and uid2 not in M.users,(se2['user'],M.t['beers']['uk2']['owner']))
+    K2.goto(URL+'#beer-uk1'); K2.wait_for_timeout(1500); e1=K2.query_selector('#editBeer') is not None
+    K2.goto(URL+'#beer-uk2'); K2.wait_for_timeout(900); e2=K2.query_selector('#editBeer') is not None
+    check('konto: begge øl kan rettes fra den anden enhed',e1 and e2,(e1,e2))
+    K2.goto(URL+'#profil'); K2.wait_for_timeout(1800)
+    check('konto: mailvalgene følger med kontoen',K2.is_checked('#mp_my_beer') and not K2.is_checked('#mp_news'))
+    K2.click('#acOut'); K2.wait_for_timeout(3000); se3=sb(K2)
+    K2.goto(URL+'#beer-uk1'); K2.wait_for_timeout(900)
+    check('konto: log ud giver en ny anonym bruger, som ikke kan rette kontoens øl',se3['user']['id']!=uid1 and not se3['user'].get('email') and K2.query_selector('#editBeer') is None,se3['user'])
+    M.mail_limit=True; K2.goto(URL+'#profil'); K2.wait_for_timeout(900); K2.fill('#acMail','ny@example.dk'); K2.click('#acctForm button'); K2.wait_for_timeout(1000)
+    check('konto: for mange mails giver en forståelig besked','for mange mails' in K2.inner_text('#toast') and K2.query_selector('#acCode') is None,K2.inner_text('#toast')); M.mail_limit=False
+    M.has_konto_sql=False; K1.goto(URL+'#profil'); K1.reload(); K1.wait_for_timeout(2500)
+    check('konto: mangler databasen tilføjelsen, står der at mails ikke er slået til','ikke slået til' in K1.inner_text('#acctBox') and K1.query_selector('#mp_news') is None,K1.inner_text('#acctBox')[:120]); M.has_konto_sql=True
+    K1.reload(); K1.wait_for_timeout(2500); K1.click('#acDel'); K1.wait_for_timeout(3000)
+    check('konto: slet konto fjerner login og mailvalg','lucas@example.dk' not in M.emails and uid1 not in M.prefs and K1.query_selector('#acMail') is not None and not sb(K1)['user'].get('email'),list(M.emails))
+    # --- enig eller uenig (swipe): stemmer på andres bedømmelser, tal hos den der har bedømt
+    M2=Mock(); errs2=[]
+    def ctx2(state):
+        c=b.new_context(viewport={'width':390,'height':844},locale='da-DK'); c.route(f'https://{HOST}/**',M2.handle); pg=c.new_page(); pg.on('pageerror',lambda e:errs2.append(str(e)))
+        pg.add_init_script("if(!localStorage.getItem('olrating-v1'))localStorage.setItem('olrating-v1',%s);"%json.dumps(json.dumps(state))); return pg
+    mk=lambda who,beers,revs:{"beers":[{"id":i,"name":n,"brewery":"Testbryg","style":"Pilsner","abv":5,"size":"33 cl flaske","date":"2026-11-20","addedBy":who,"img":""} for i,n in beers],"reviews":[{"id":i,"beer":bb,"who":who,"date":d,"s":C,"text":t} for i,bb,d,t in revs],"me":who}
+    W1=ctx2(mk('Lucas',[('us1','Swipeøl et'),('us2','Swipeøl to')],[('rs1','us1','2026-11-20','Rigtig god'),('rs2','us2','2026-11-21','')])); W1.goto(URL+'#swipe'); W1.wait_for_timeout(3500)
+    check('swipe: egne bedømmelser er ikke med',W1.query_selector('#swc') is None and 'ingen bedømmelser' in W1.inner_text('#app'),W1.inner_text('#app')[:120])
+    W2=ctx2(mk('Magnus',[],[])); W2.goto(URL+'#swipe'); W2.wait_for_timeout(3500); u2=sb(W2)['user']['id']
+    t=W2.inner_text('#swc')
+    check('swipe: kort med øl, smager og karakter','Swipeøl to' in t and 'Lucas' in t and 'gav den' in t and '4,4' in t and '2 tilbage' in W2.inner_text('#app') and not W2.evaluate('document.documentElement.scrollWidth>innerWidth+1'),t[:120])
+    W2.click('#swYes'); W2.wait_for_timeout(2500)
+    check('swipe: Enig bliver gemt i databasen, og næste kort kommer',M2.rvotes.get(('rs2',u2))==1 and 'Swipeøl et' in W2.inner_text('#swc'),dict(M2.rvotes))
+    bx=W2.eval_on_selector('#swc','e=>{const r=e.getBoundingClientRect();return [r.left+r.width/2,r.top+120]}')
+    W2.mouse.move(bx[0],bx[1]); W2.mouse.down(); W2.mouse.move(bx[0]-60,bx[1]+4,steps=4); stamp=W2.evaluate("getComputedStyle(document.querySelector('#swc .stamp.n')).opacity"); W2.mouse.move(bx[0]-170,bx[1]+8,steps=6); W2.mouse.up(); W2.wait_for_timeout(2500)
+    check('swipe: træk til venstre giver Uenig, og stemplet vises undervejs',M2.rvotes.get(('rs1',u2))==-1 and float(stamp)>0.5 and 'alle igennem' in W2.inner_text('#app') and 'enig i 1 af 2' in W2.inner_text('#app'),(dict(M2.rvotes),stamp,W2.inner_text('#app')[:160]))
+    W2.click('#swUndo'); W2.wait_for_timeout(2500)
+    check('swipe: Fortryd fjerner stemmen igen',('rs1',u2) not in M2.rvotes and W2.query_selector('#swc') is not None,dict(M2.rvotes))
+    W2.keyboard.press('ArrowRight'); W2.wait_for_timeout(2500)
+    check('swipe: piletasterne virker',M2.rvotes.get(('rs1',u2))==1)
+    W1.evaluate("sbSync()"); W1.wait_for_timeout(1500); W1.goto(URL+'#profil'); W1.wait_for_timeout(900); rb=W1.inner_text('#rvBox')
+    W1.goto(URL+'#beer-us1'); W1.wait_for_timeout(900)
+    check('swipe: den, der har bedømt, ser hvor mange der er enige','100 %' in rb and '2 enige' in rb and '0 uenige' in rb and '👍 1 enig' in W1.inner_text('.rv'),(rb[:120],W1.inner_text('.rv')[:120]))
+    M2.has_konto_sql=False; W3=ctx2(mk('Sofie',[],[])); W3.goto(URL+'#swipe'); W3.wait_for_timeout(3500); W3.click('#swNo'); W3.wait_for_timeout(1500); s3=ls(W3)
+    check('swipe: uden tabellen i databasen gemmes stemmen på enheden og venter',len(s3['rv'])==1 and len(s3['rvq'])==1 and not [k for k in M2.rvotes if k[1] not in (u2,)],s3.get('rvq'))
+    M2.has_konto_sql=True; W3.reload(); W3.wait_for_timeout(3500)
+    check('swipe: stemmen sendes, når tabellen findes',len(M2.rvotes)==3 and not ls(W3)['rvq'] and not errs2,(dict(M2.rvotes),errs2[:2]))
     check('no JS errors',not errs,errs[:5])
     b.close()
 print('ALL PASS' if ok else 'SOME FAILED')

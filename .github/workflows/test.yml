@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['index.html', 'sw.js', 'js/**', 'tests/**', '.github/workflows/test.yml']
+    paths: ['index.html', 'sw.js', 'js/**', 'tests/**', 'supabase/**', '.github/workflows/test.yml']
 jobs:
   side:
     name: Siden (pc og mobil, efterlignet database)
@@ -24,6 +24,9 @@ jobs:
       - name: Den engelske version er oversat
         if: always()
         run: python3 tests/test_en.py
+      - name: Databasens regler (konto, stemmer og mails)
+        if: always()
+        run: npm install --no-save @electric-sql/pglite && node tests/test_sql.js
   database:
     name: Den rigtige database
     runs-on: ubuntu-latest
