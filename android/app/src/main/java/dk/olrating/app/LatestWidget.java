@@ -25,6 +25,7 @@ public class LatestWidget extends AppWidgetProvider {
         RemoteViews v = new RemoteViews(ctx.getPackageName(), R.layout.widget_latest);
         int[] rows = {R.id.l1, R.id.l2, R.id.l3, R.id.l4};
         int[] scores = {R.id.s1, R.id.s2, R.id.s3, R.id.s4};
+        int[] imgs = {R.id.i1, R.id.i2, R.id.i3, R.id.i4};
         String raw = ctx.getSharedPreferences(TopWidget.PREFS, Context.MODE_PRIVATE).getString(TopWidget.KEY, null);
         JSONArray a = null;
         try { if (raw != null) a = new JSONObject(raw).optJSONArray("latest"); } catch (Exception ignored) {}
@@ -34,7 +35,9 @@ public class LatestWidget extends AppWidgetProvider {
                 JSONObject r = a.optJSONObject(i);
                 v.setTextViewText(rows[i], r.optString("name") + "  ·  " + r.optString("who"));
                 v.setTextViewText(scores[i], r.optString("score"));
+                WImg.into(ctx, v, imgs[i], r.optString("id"), 22, 6);
             } else {
+                v.setViewVisibility(imgs[i], android.view.View.GONE);
                 v.setTextViewText(rows[i], i == 0 && n == 0 ? "Ingen bedømmelser endnu" : "");
                 v.setTextViewText(scores[i], "");
             }

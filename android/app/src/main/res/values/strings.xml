@@ -12,6 +12,10 @@
     <string name="widget_units_label">ølrating: Genstand-tæller</string>
     <string name="widget_suggest_desc">Et forslag til en øl, du nok kan lide, og nedtælling til næste øl-dag</string>
     <string name="widget_suggest_label">ølrating: Noget for dig</string>
+    <string name="widget_photo_desc">Ugens øl med et stort billede af øllen</string>
+    <string name="widget_photo_label">ølrating: Ugens øl med billede</string>
+    <string name="widget_site_desc">Tal for hele siden: besøg, øl, bedømmelser og smagere</string>
+    <string name="widget_site_label">ølrating: Siden i tal</string>
     <string name="sc_rate_short">Bedøm øl</string>
     <string name="sc_rate_long">Bedøm en øl</string>
     <string name="sc_units_short">Genstande</string>

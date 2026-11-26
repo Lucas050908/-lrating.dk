@@ -6,11 +6,22 @@ const fs = require('fs');
 const SITE = 'https://xn--lrating-p1a.dk/';
 const HOSTS = ['lucas050908.github.io', 'xn--lrating-p1a.dk', 'www.xn--lrating-p1a.dk'];
 const ICON = path.join(__dirname, 'build', 'icon.png');
-let win, widget, tray, lastData = null;
+let win, widget, tray, lastData = null, lastImgs = {};
 
 const stateFile = () => path.join(app.getPath('userData'), 'widget.json');
 function loadState() { try { return JSON.parse(fs.readFileSync(stateFile(), 'utf8')); } catch (e) { return {}; } }
 function saveState(s) { try { fs.writeFileSync(stateFile(), JSON.stringify(s)); } catch (e) {} }
+// Små billeder af øllene til widgetten. De ligger i deres egen fil, så de kun skrives, når de ændrer sig.
+const imgFile = () => path.join(app.getPath('userData'), 'widget-images.json');
+function cleanImgs(o) {
+  const out = {}; let n = 0;
+  for (const [k, v] of Object.entries(o && typeof o === 'object' ? o : {})) {
+    if (n >= 12) break;
+    if (/^[\w-]{1,40}$/.test(k) && typeof v === 'string' && v.startsWith('data:image/jpeg;base64,') && v.length < 90000) { out[k] = v; n++; }
+  }
+  return out;
+}
+function loadImgs() { try { return cleanImgs(JSON.parse(fs.readFileSync(imgFile(), 'utf8'))); } catch (e) { return {}; } }
 
 function isOurs(url) { try { return HOSTS.includes(new URL(url).hostname); } catch (e) { return false; } }
 
@@ -39,14 +50,14 @@ function createWidget() {
   if (widget) { widget.show(); return; }
   const st = loadState(), wa = screen.getPrimaryDisplay().workArea;
   widget = new BrowserWindow({
-    width: 320, height: 300,
-    x: st.x ?? wa.x + wa.width - 340, y: st.y ?? wa.y + 20,
+    width: 360, height: 300,
+    x: st.x ?? wa.x + wa.width - 380, y: st.y ?? wa.y + 20,
     frame: false, resizable: false, transparent: true, skipTaskbar: true,
     alwaysOnTop: st.onTop !== false, icon: ICON, show: false,
     webPreferences: { preload: path.join(__dirname, 'widget-preload.js'), contextIsolation: true, nodeIntegration: false, sandbox: true }
   });
   widget.loadFile(path.join(__dirname, 'widget.html'));
-  widget.once('ready-to-show', () => { widget.showInactive(); if (lastData) widget.webContents.send('data', lastData); });
+  widget.once('ready-to-show', () => { widget.showInactive(); widget.webContents.send('images', lastImgs); if (lastData) widget.webContents.send('data', lastData); });
   widget.on('moved', () => { const [x, y] = widget.getPosition(); saveState({ ...loadState(), x, y, open: true }); });
   widget.on('closed', () => { widget = null; });
   saveState({ ...loadState(), open: true });
@@ -61,6 +72,13 @@ ipcMain.on('widget-data', (_e, json) => {
   saveState({ ...loadState(), data: lastData });
   if (widget) widget.webContents.send('data', lastData);
   if (tray) tray.setToolTip(lastData.week ? `Ugens øl: ${lastData.week.name} (${lastData.week.score})` : 'ølrating');
+});
+// Hjemmesiden sender små billeder af de øl, widgetten viser: {"øl-id": "data:image/jpeg;base64,…"}
+ipcMain.on('widget-images', (_e, json) => {
+  if (typeof json !== 'string' || json.length > 900000) return;
+  try { lastImgs = cleanImgs(JSON.parse(json)); } catch (e) { return; }
+  try { fs.writeFileSync(imgFile(), JSON.stringify(lastImgs)); } catch (e) {}
+  if (widget) widget.webContents.send('images', lastImgs);
 });
 ipcMain.on('widget-open', (_e, hash) => showMain(typeof hash === 'string' && /^#[\w-]*$/.test(hash) ? hash : ''));
 ipcMain.on('widget-close', closeWidget);
@@ -92,7 +110,7 @@ else {
   app.on('second-instance', () => showMain());
   app.whenReady().then(() => {
     Menu.setApplicationMenu(null);
-    const st = loadState(); lastData = st.data || null;
+    const st = loadState(); lastData = st.data || null; lastImgs = loadImgs();
     createMain();
     try { buildTray(); } catch (e) { /* nogle Linux-skriveborde har ingen bakke */ }
     if (st.open !== false) createWidget();

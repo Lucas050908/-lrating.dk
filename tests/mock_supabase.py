@@ -11,6 +11,7 @@ class Mock:
         # konto: brugere, mails der "sendes" (koden er altid 123456 for ny konto og 654321 for login), mailvalg og flytning af data
         s.users={}; s.emails={}; s.mails=[]; s.prefs={}; s.unsub={}; s.kdata={}; s.has_kdata=True; s.flyt={}; s.mail_limit=False; s.has_konto_sql=True; s.no_konto=set()   # no_konto: brugere, der skal opleve en database uden 003
         s.rvotes={}   # enig/uenig: (bedømmelse, bruger) -> 1 eller -1
+        s.has_besoeg=True; s.visits=1000; s.visits_today=4   # besøgstæller (supabase/005)
     def user(s,uid):
         u=s.users.get(uid,{}); return {'id':uid,'is_anonymous':not u.get('email'),**({'email':u['email']} if u.get('email') else {})}
     def sess(s,uid,n):
@@ -64,6 +65,10 @@ class Mock:
         mr=re.match(r'^/rest/v1/rpc/(\w+)$',path)
         if mr:
             fn=mr.group(1); anon=bool(uid) and not s.users.get(uid,{}).get('email')
+            if fn in ('besoeg','besoeg_tal'):   # kræver ikke login og afhænger ikke af 003
+                if not s.has_besoeg: return out(404,{'code':'PGRST202','message':'Could not find the function'})
+                if fn=='besoeg': s.visits+=1; s.visits_today+=1
+                return out(200,{'total':s.visits,'today':s.visits_today,'week':s.visits_today,'since':'2026-11-26'})
             if not s.has_konto_sql or uid in s.no_konto: return out(404,{'code':'PGRST202','message':'Could not find the function'})
             if fn=='mail_afmeld':   # kræver ikke login: nøglen i linket er adgangen
                 who=[u for u,t in s.unsub.items() if t==body.get('u') and u in s.prefs]

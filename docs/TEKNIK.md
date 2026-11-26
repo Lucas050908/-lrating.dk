@@ -124,18 +124,29 @@ Siden kalder `window.OlratingApp`, hvis den findes. Det gør den i Android-appen
 | Metode | Hvem kalder | Hvad |
 |---|---|---|
 | `updateWidget(json)` | Siden, efter hver `save()` og ved start | Sender data til widgets (se nedenfor) |
+| `updateImages(json)` | Siden, når de øl, widgets viser, eller deres billeder har ændret sig | Sender små billeder: `{"øl-id":"data:image/jpeg;base64,…"}`, højst 10 øl, 288 × 288 px |
 | `takeUnits()` | Siden ved start, når appen kommer i forgrunden, og hvert 5. sekund | Henter genstande lagt til fra widget (JSON-liste med tidsstempler) og tømmer listen |
 | `saveImage(dataUrl, navn)` | Siden (kun Android) | Gemmer delekort i Billeder |
 | `isApp()` | Siden | `true` |
 
 Widget-data, som `syncApp()` sender:
 ```json
-{"week":{"name","brewery","score"},"top":[{"name","score"}],
- "latest":[{"name","who","score"}],
+{"week":{"id","name","brewery","score"},"top":[{"id","name","score"}],
+ "latest":[{"id","name","who","score"}],
  "me":{"name","count","beers","avg","style"},
  "rec":{"id","name","why","score"}, "next":{"n","date"},
- "units":{"today","week","todayN","weekN"},"beers":12,"reviews":31}
+ "units":{"today","week","todayN","weekN"},"beers":12,"reviews":31,
+ "site":{"visits":1234,"today":17,"tasters":9}}
 ```
+`site.visits` og `site.today` er `null`, indtil besøgstælleren har svaret (se Besøgstæller).
+
+**Billeder til widgets:** `wImgs()` finder de øl, widgets viser (ugens øl, top 3, forslaget og de 4 seneste), og `wThumb()` tegner hvert billede ned til 288 × 288 px JPEG. Der sendes kun igen, når listen eller et billede har ændret sig. Android gemmer dem som filer i appens egen mappe (`files/wimg/<id>.jpg`, klassen `WImg`) og sletter dem, der ikke bruges længere. Desktop gemmer dem i `widget-images.json` i brugerens datamappe. Begge steder tjekkes id, type og størrelse, før noget gemmes.
+
+### Besøgstæller
+- `sbVisit()` kalder `besoeg()` i databasen én gang, hver gang siden åbnes. Et sideskift inde på siden tæller ikke. Svaret ligger i `VIS` (i alt, i dag, første dag) og gemmes ikke på enheden.
+- `supabase/005-besoeg.sql` laver tabellen `site_visits` (én række pr. dag) og funktionerne `besoeg()` (læg 1 til og svar) og `besoeg_tal()` (kun læs). Tabellen kan ikke læses eller ændres direkte. Dagen regnes i dansk tid.
+- Findes funktionen ikke, sker der ingenting: Om viser tre tal i stedet for fem, og widgets viser en streg.
+- Alle kan kalde `besoeg()`, så tallet kan pustes op. Det er et tal til pynt, ikke en måling.
 
 ## Android (`android/`)
 - **Opsætning:** Gradle med plugin 8.5.2, compileSdk 34, minSdk 24, pakke `dk.olrating.app`.

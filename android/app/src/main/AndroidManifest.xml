@@ -68,5 +68,19 @@
             </intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_suggest_info" />
         </receiver>
+
+        <receiver android:name=".PhotoWidget" android:exported="false" android:label="@string/widget_photo_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_photo_info" />
+        </receiver>
+
+        <receiver android:name=".SiteWidget" android:exported="false" android:label="@string/widget_site_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_site_info" />
+        </receiver>
     </application>
 </manifest>

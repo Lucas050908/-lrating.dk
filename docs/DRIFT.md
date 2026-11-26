@@ -36,6 +36,7 @@ Workflowet **Tjek domæne** (`.github/workflows/domaene.yml`) kan startes under 
   2. Authentication → Sign In / Providers → slå **Allow anonymous sign-ins** til.
 - `supabase/002-slet-billeder.sql` er kørt (bekræftet af testen mod den rigtige database den 26-11-2026: billedet forsvinder, når en øl slettes).
 - **Mangler at blive kørt:** `supabase/003-konto-mails-enig.sql` (stemmer i "Enig eller uenig?", konto og mailvalg) og senere `supabase/004-mails.sql` (udsendelse af mails). Indtil 003 er kørt, bliver stemmer liggende på enheden og sendes senere.
+- **Besøgstæller:** `supabase/005-besoeg.sql` slår tælleren til. Den kan køres alene, også før 003 og 004: Supabase → SQL Editor → indsæt hele filen → Run. Tallet starter på 0 den dag, filen køres.
 - **Konto og mails:** Kræver en mailtjeneste (Resend), DNS-linjer hos one.com, to mailskabeloner og en funktion i Supabase. Hele opsætningen står trin for trin i `docs/KONTO.md`. Nøglen fra Resend må kun stå hos Resend og i Supabase.
 - **Tjek at det virker:** Åbn ølrating.dk → Min profil. Nederst skal der stå "● Forbundet". Tilføj en øl på én enhed, og se den dukke op på en anden inden for et halvt minut.
 - **Moderation:** Alle kan tilføje øl. Brugere kan trykke "Anmeld" på andres øl og bedømmelser. Det sender en mail til fejlrapport-adressen med et id. Upassende indhold slettes i Supabase → Table Editor (`beers`, `reviews`, søg på id) eller Storage (`billeder`).

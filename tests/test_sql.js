@@ -17,6 +17,8 @@ const path=require('path');const os=require('os');const {pathToFileURL}=require(
  const schema=fs.readFileSync(R+'schema.sql','utf8');await db.exec(schema.slice(0,schema.indexOf('-- Billeder')));
  const sql=fs.readFileSync(R+'003-konto-mails-enig.sql','utf8');
  await db.exec(sql);await db.exec(sql);ok('003 kan køres to gange',true);
+ const sql5=fs.readFileSync(R+'005-besoeg.sql','utf8');
+ await db.exec(sql5);await db.exec(sql5);ok('005 kan køres to gange, også før 003 og 004',true);
  const sql4=fs.readFileSync(R+'004-mails.sql','utf8');
  await db.exec(sql4);await db.exec(sql4);ok('004 kan køres to gange (det planlagte job springes over, når pg_cron ikke findes)',true);
  const U={a:'00000000-0000-4000-8000-00000000000a',b:'00000000-0000-4000-8000-00000000000b',c:'00000000-0000-4000-8000-00000000000c',p:'00000000-0000-4000-8000-0000000000aa',q:'00000000-0000-4000-8000-0000000000bb'};
@@ -157,6 +159,13 @@ const path=require('path');const os=require('os');const {pathToFileURL}=require(
  ok('ejeren er skiftet, den anonyme bruger er væk, og kontoens stemme på egen bedømmelse er fjernet',r.rows[0].b===U.p&&r.rows[0].r===U.p&&r.rows[0].u===0&&r.rows[0].v===0,JSON.stringify(r.rows));
  r=await as('p',`select konto_flyt_slut('${tok}')`);ok('beviset kan kun bruges én gang',!!r.err);
  r=await as('p',`update beers set name='Rettet' where id='b1'`);ok('kontoen kan nu rette øllen',!r.err&&r.affectedRows===1,JSON.stringify(r));
+ // besøgstæller (005)
+ r=await as('a',`select besoeg() v`);const v1=r.rows&&r.rows[0].v;r=await as('b',`select besoeg() v`);const v2=r.rows&&r.rows[0].v;
+ ok('besoeg() lægger 1 til og svarer med i alt, i dag og første dag',v1&&v2&&Number(v1.total)===1&&Number(v2.total)===2&&Number(v2.today)===2&&Number(v2.week)===2&&/^\d{4}-\d\d-\d\d$/.test(v2.since),JSON.stringify([v1,v2]));
+ r=await as('c',`select besoeg_tal() v`);ok('besoeg_tal() læser uden at tælle',r.rows&&Number(r.rows[0].v.total)===2&&Number((await adm(`select sum(visits)::int n from site_visits`)).rows[0].n)===2,JSON.stringify(r));
+ await adm(`insert into site_visits values (current_date-30, 40)`);r=await as('c',`select besoeg_tal() v`);ok('ældre dage tæller med i alt, men ikke i dag eller i ugen',r.rows&&Number(r.rows[0].v.total)===42&&Number(r.rows[0].v.today)===2&&Number(r.rows[0].v.week)===2,JSON.stringify(r));
+ r=await as('a',`select * from site_visits`);const r2=await as('a',`update site_visits set visits=999999`);const r3=await as('a',`insert into site_visits values (current_date-1, 5)`);
+ ok('tabellen kan ikke læses eller ændres direkte',!!r.err&&!!r2.err&&!!r3.err&&Number((await adm(`select sum(visits)::int n from site_visits`)).rows[0].n)===42,JSON.stringify([r.err,r2.err,r3.err]));
  // slet konto
  r=await as('p',`select konto_slet()`);ok('slet konto',!r.err,r.err);
  r=await adm(`select (select count(*)::int from auth.users where id='${U.p}') u,(select count(*)::int from mail_prefs) p,(select count(*)::int from mail_queue) q,(select count(*)::int from konto_data) k,(select count(*)::int from beers where owner='${U.p}') b`);

@@ -4,6 +4,15 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Aften (20:26–20:46): widgets med billeder, og siden i tal
+- **Billeder i widgets (Android):** Ugens øl, Noget for dig og Seneste bedømmelser viser nu et billede af øllen. Der er en ny widget, **Ugens øl med billede**, med et stort billede.
+- **Ny widget: Siden i tal** (Android) med besøg i alt og i dag, antal øl, bedømmelser og smagere.
+- **Windows og Linux:** Widgetten viser små billeder af øllene og har en ny fane, **Siden**, med de samme tal. Fanen Seneste hedder nu Nyt, og widgetten er blevet lidt bredere.
+- **Besøgstæller:** Siden tæller, hvor mange gange den bliver åbnet. Der gemmes kun ét tal pr. dag, ikke hvem der besøger siden, og ikke noget på den besøgendes enhed. Tallet står under *Siden i tal* på Om, og Privatliv er opdateret.
+- **Skal gøres af Lucas:** Kør `supabase/005-besoeg.sql` i Supabase. Tælleren starter på 0 den dag. Indtil da viser Om og widgets ikke noget besøgstal.
+- **Apps:** Android-appen og programmet til Windows og Linux skal hentes igen, før de nye widgets er der. De er ikke prøvet på en rigtig telefon eller pc, kun bygget på GitHub.
+- **Test:** 3 nye tjek i `test_site.py`, 4 i `test_sync.py` og 5 i `test_sql.js`.
+
 ### Aften (20:15–20:40): Lykkehjulet
 - **Lykkehjulet** er en ny side (`#hjul`): Kan man ikke vælge, drejer man hjulet, og det vælger én øl, man kan smage og bedømme.
 - Man vælger selv, hvilke øl der skal på hjulet: øl man ikke har smagt, alle øl, ønskelisten, toppen (4,0 og derover) eller de alkoholfri. Hjulet viser op til 10 øl ad gangen, og "Nye øl på hjulet" trækker 10 andre.

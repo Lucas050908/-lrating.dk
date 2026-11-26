@@ -68,6 +68,11 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 - Tryk **Drej hjulet**. Når det stopper, står øllen under hjulet med link til dens side.
 - Hjulet vælger kun én øl ad gangen. Under hjulet står Sundhedsstyrelsens anbefalinger, et link til Genstand-tælleren og nummeret til Alkolinjen.
 
+### Siden i tal og besøgstæller
+- På **Om** står *Siden i tal*: besøg i alt, besøg i dag, antal øl, bedømmelser og smagere.
+- Besøg er, hvor mange gange siden er åbnet. Det er ikke antal personer. Der gemmes kun ét tal pr. dag, og der gemmes ikke noget på den besøgendes enhed.
+- Tælleren starter den dag, `supabase/005-besoeg.sql` bliver kørt. Besøg før den dag kan ikke findes frem. Indtil da viser Om kun øl, bedømmelser og smagere.
+
 ### Karakterer med kommatal
 - Hver kategori (udseende, duft, smag, fylde og helhed) får en karakter fra 1,0 til 5,0.
 - Et tryk på en stjerne giver et helt tal. Med − og + ved siden af retter man i trin på 0,1, fx fra 4,0 til 3,7. Tallet står mellem de to knapper, og den sidste stjerne bliver kun delvist fyldt.
@@ -177,16 +182,20 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 
 | Widget | Indhold | Tryk |
 |---|---|---|
-| Ugens øl | Ugens øl, top 3, antal øl og bedømmelser | Åbner appen, "+ Bedøm" åbner Tilføj øl |
+| Ugens øl | Ugens øl med billede, top 3, antal øl og bedømmelser | Åbner appen, "+ Bedøm" åbner Tilføj øl |
+| Ugens øl med billede | Et stort billede af ugens øl med navn, bryggeri og karakter | Åbner øllen |
 | Bedøm øl (1×1) | Knap | Åbner Tilføj øl |
-| Seneste bedømmelser | De 4 nyeste med navn og karakter | Åbner appen |
+| Seneste bedømmelser | De 4 nyeste med et lille billede af øllen, navn og karakter | Åbner appen |
 | Min statistik | Øl smagt, gennemsnit, yndlingsstil | Åbner Min profil |
 | Genstand-tæller | Genstande i dag og på 7 dage | **+1** lægger en genstand til uden at åbne appen. Ellers åbnes tælleren |
-| Noget for dig | Et forslag til en øl, du ikke har bedømt, med begrundelse, og nedtælling til næste øl-dag | Åbner øllen |
+| Noget for dig | Et forslag til en øl, du ikke har bedømt, med billede og begrundelse, og nedtælling til næste øl-dag | Åbner øllen |
+| Siden i tal | Besøg i alt og i dag, antal øl, bedømmelser og smagere | Åbner Om |
+
+Billederne i widgets er små kopier af øllenes egne billeder. En øl uden billede vises uden. Billeder og tal bliver hentet, når appen åbnes.
 
 ### Windows og Linux
 - Programmet (Electron) viser siden i et eget vindue og har et ikon ved uret med en menu.
-- En **widget** ligger i hjørnet og kan sættes til altid at være øverst. Den har fanerne **Top**, **Seneste**, **Mig** og **Genst.**, hvor **+1** lægger en genstand til. Widgettens placering huskes.
+- En **widget** ligger i hjørnet og kan sættes til altid at være øverst. Den har fanerne **Top**, **Nyt**, **Mig**, **Genst.** og **Siden**. Top og Nyt viser små billeder af øllene, på Genst. lægger **+1** en genstand til, og Siden viser besøg i alt og i dag, antal øl, bedømmelser og smagere. Widgettens placering huskes.
 - Windows: `olrating-windows.exe`, en bærbar fil uden installation. SmartScreen-advarslen kommer, fordi filen ikke er signeret. Den forsvinder, når appen kommer i Microsoft Store.
 - Linux: `olrating-linux.AppImage`.
 

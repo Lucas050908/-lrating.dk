@@ -46,7 +46,9 @@ public class TopWidget extends AppWidgetProvider {
                 v.setTextViewText(R.id.week_name, w.optString("name"));
                 v.setTextViewText(R.id.week_meta, w.optString("brewery"));
                 v.setTextViewText(R.id.week_score, w.optString("score"));
+                WImg.into(ctx, v, R.id.week_img, w.optString("id"), 48, 12);
             } else {
+                v.setViewVisibility(R.id.week_img, android.view.View.GONE);
                 v.setTextViewText(R.id.week_name, "Ingen øl endnu");
                 v.setTextViewText(R.id.week_meta, "Tryk for at tilføje den første");
                 v.setTextViewText(R.id.week_score, "");

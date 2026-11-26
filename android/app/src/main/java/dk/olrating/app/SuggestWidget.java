@@ -40,7 +40,7 @@ public class SuggestWidget extends AppWidgetProvider {
     static RemoteViews build(Context ctx) {
         RemoteViews v = new RemoteViews(ctx.getPackageName(), R.layout.widget_suggest);
         String raw = ctx.getSharedPreferences(TopWidget.PREFS, Context.MODE_PRIVATE).getString(TopWidget.KEY, null);
-        String hash = "";
+        String hash = "", img = "";
         String name = "Bedøm et par øl", why = "Så foreslår vi nogle, du nok kan lide", score = "", next = "";
         try {
             JSONObject d = raw == null ? new JSONObject() : new JSONObject(raw);
@@ -49,6 +49,7 @@ public class SuggestWidget extends AppWidgetProvider {
                 name = r.optString("name"); why = r.optString("why"); score = r.optString("score");
                 String id = r.optString("id");
                 if (id.matches("[A-Za-z0-9_-]{1,40}")) hash = "#beer-" + id;
+                img = id;
             }
             JSONObject n = d.optJSONObject("next");
             if (n != null) {
@@ -60,6 +61,7 @@ public class SuggestWidget extends AppWidgetProvider {
         v.setTextViewText(R.id.why, why);
         v.setTextViewText(R.id.score, score);
         v.setTextViewText(R.id.next, next);
+        WImg.into(ctx, v, R.id.img, img, 52, 12);
         v.setOnClickPendingIntent(R.id.root, TopWidget.open(ctx, hash, 9));
         return v;
     }

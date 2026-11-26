@@ -24,11 +24,25 @@ public class Bridge {
         if (json == null || json.length() > 20000) return;
         ctx.getSharedPreferences(TopWidget.PREFS, Context.MODE_PRIVATE)
            .edit().putString(TopWidget.KEY, json).putLong(UnitsWidget.SAVED_AT, System.currentTimeMillis()).apply();
+        refreshWidgets();
+    }
+
+    /** Små billeder af de øl, widgets viser: {"øl-id":"data:image/jpeg;base64,…"}. */
+    @JavascriptInterface
+    public void updateImages(String json) {
+        if (json == null || json.length() > 900000) return;
+        WImg.save(ctx, json);
+        refreshWidgets();
+    }
+
+    private void refreshWidgets() {
         TopWidget.refreshAll(ctx);
         LatestWidget.refreshAll(ctx);
         StatsWidget.refreshAll(ctx);
         UnitsWidget.refreshAll(ctx);
         SuggestWidget.refreshAll(ctx);
+        PhotoWidget.refreshAll(ctx);
+        SiteWidget.refreshAll(ctx);
     }
 
     /** Gemmer et delekort (data-URL med JPEG) i telefonens Billeder. */
