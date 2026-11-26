@@ -9,7 +9,7 @@ class Mock:
     def __init__(s):
         s.n=0; s.tok={}; s.ref={}; s.t={'beers':{},'reviews':{},'tours':{},'tastings':{}}; s.members={}; s.votes={}; s.store={}; s.log=[]; s.down=False
         # konto: brugere, mails der "sendes" (koden er altid 123456 for ny konto og 654321 for login), mailvalg og flytning af data
-        s.users={}; s.emails={}; s.mails=[]; s.prefs={}; s.flyt={}; s.mail_limit=False; s.has_konto_sql=True
+        s.users={}; s.emails={}; s.mails=[]; s.prefs={}; s.unsub={}; s.flyt={}; s.mail_limit=False; s.has_konto_sql=True; s.no_konto=set()   # no_konto: brugere, der skal opleve en database uden 003
         s.rvotes={}   # enig/uenig: (bedømmelse, bruger) -> 1 eller -1
     def user(s,uid):
         u=s.users.get(uid,{}); return {'id':uid,'is_anonymous':not u.get('email'),**({'email':u['email']} if u.get('email') else {})}
@@ -64,7 +64,11 @@ class Mock:
         mr=re.match(r'^/rest/v1/rpc/(\w+)$',path)
         if mr:
             fn=mr.group(1); anon=bool(uid) and not s.users.get(uid,{}).get('email')
-            if not s.has_konto_sql: return out(404,{'code':'PGRST202','message':'Could not find the function'})
+            if not s.has_konto_sql or uid in s.no_konto: return out(404,{'code':'PGRST202','message':'Could not find the function'})
+            if fn=='mail_afmeld':   # kræver ikke login: nøglen i linket er adgangen
+                who=[u for u,t in s.unsub.items() if t==body.get('u') and u in s.prefs]
+                for u in who: s.prefs[u].update(news=False,my_beer=False,friends=False,events=False)
+                return out(200,bool(who))
             if not uid: return out(401,{'code':'42501'})
             if fn=='konto_flyt_start':
                 if not anon: return out(400,{'message':'kun anonyme brugere'})
@@ -89,7 +93,7 @@ class Mock:
                 em=s.users.get(uid,{}).get('email'); s.emails.pop(em,None); s.users.pop(uid,None); s.prefs.pop(uid,None); return out(204)
             return out(404,{'message':'no function'})
         if path in('/rest/v1/review_votes','/rest/v1/review_vote_counts'):
-            if not s.has_konto_sql: return out(404,{'code':'PGRST205','message':'Could not find the table'})
+            if not s.has_konto_sql or uid in s.no_konto: return out(404,{'code':'PGRST205','message':'Could not find the table'})
             if path.endswith('counts'):
                 c={}
                 for (r,o),v in s.rvotes.items(): c.setdefault(r,[0,0])[0 if v==1 else 1]+=1
@@ -104,11 +108,11 @@ class Mock:
             if m=='DELETE':
                 s.rvotes.pop((q.get('review','')[3:],uid),None); return out(204)
         if path=='/rest/v1/mail_prefs':
-            if not s.has_konto_sql: return out(404,{'code':'PGRST205','message':'Could not find the table'})
+            if not s.has_konto_sql or uid in s.no_konto: return out(404,{'code':'PGRST205','message':'Could not find the table'})
             if m=='GET': return out(200,[s.prefs[uid]] if uid in s.prefs else [])
             if m=='POST':
                 if not uid or not s.users.get(uid,{}).get('email'): return out(403,{'code':'42501','message':'rls'})
-                s.prefs[uid]={**s.prefs.get(uid,{}),**body}; return out(201)
+                s.prefs[uid]={**s.prefs.get(uid,{}),**body}; s.unsub.setdefault(uid,f'00000000-0000-4000-a000-{len(s.unsub)+1:012d}'); return out(201)
         mt=re.match(r'^/rest/v1/(\w+)$',path)
         if mt:
             tb=mt.group(1)

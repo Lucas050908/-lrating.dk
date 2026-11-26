@@ -4,6 +4,19 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Middag (11:35–11:57): mails om opdateringer
+- **Mails er bygget (skjult, indtil de er sat op):** Brugere med konto kan få mail, når nogen bedømmer deres øl, når en, de følger, bedømmer en øl, når nogen melder sig til deres byttur eller stemmer i deres smagning, og når der er nyt om siden. Sker der flere ting, samles de i én mail. Man får højst én mail i timen, og "ven har bedømt" højst én gang om dagen.
+- **Mailen** er på dansk eller engelsk efter brugerens sprog, har links til øllen, turen eller smagningen, og findes både med og uden formatering.
+- **Afmeld mails (`#afmeld-…`):** Ny side, som linket nederst i hver mail fører til. Et tryk slår alle mails fra, også uden login. Der sker først noget, når man trykker, så et mailprogram, der åbner linket for at tjekke det, ikke afmelder nogen ved en fejl.
+- **Nyheder fra ejerne:** Skriv en række i tabellen `mail_news` i Supabase, læs den igennem, og sæt flueben i `send`. Så går den til alle, der har slået nyheder til.
+- **Databasen (`supabase/004-mails.sql`):** Reglerne for udsendelsen står i databasen (`mail_hent`, `mail_faerdig`, `mail_afmeld`), og et job kalder funktionen hvert 10. minut, når der er noget at sende. Kaldet har en nøgle med, som kun databasen kender.
+- **Funktionen (`supabase/functions/mails/index.ts`):** Sender gennem mailtjenesten Resend. Nøglen til Resend ligger som hemmelighed i Supabase og ikke i repoet.
+- **Guide (`docs/KONTO.md`):** Hele opsætningen trin for trin: mailtjeneste, DNS-linjer hos one.com, mailskabelon med kode (`supabase/mail-skabelon.html`), indstillinger i Supabase og hvordan det prøves.
+- **Test:** `tests/test_sql.js` afprøver nu også 004 og selve funktionen mod en rigtig Postgres i hukommelsen (71 tjek mod 32 før). `test_sync.py` tjekker afmeld-siden, og `test_en.py` går nu også konto-boksen og afmeld-siden igennem på engelsk.
+- **Testen mod den rigtige database** (`e2e_supabase.py`) tjekker nu enig-stemmer, når 003 er kørt, og skriver, om 003, 004 og funktionen `mails` er sat op.
+- **Oprydning:** Pythons mellemfiler (`__pycache__`) lå ved en fejl i repoet og er fjernet.
+- **Rettet i testen:** `test_sync.py` kunne fejle på GitHub, fordi en anden åben enhed synkroniserede, mens databasen blev efterlignet uden tilføjelsen. Nu oplever kun den ene bruger det.
+
 ### Middag (11:12–11:32): Enig eller uenig? og konto
 - **Enig eller uenig? (`#swipe`):** Ny side, hvor man swiper på andres bedømmelser som på Tinder. Til højre for enig, til venstre for uenig. Knapper og piletaster virker også, og der er Spring over og Fortryd.
 - **Se hvem der er enige med dig:** Ved hver bedømmelse står der nu, hvor mange der er enige og uenige, og Min profil har boksen "Er andre enige med dig?" med den samlede procent.

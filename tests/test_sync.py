@@ -183,13 +183,24 @@ with sync_playwright() as p:
     check('konto: begge øl kan rettes fra den anden enhed',e1 and e2,(e1,e2))
     K2.goto(URL+'#profil'); K2.wait_for_timeout(1800)
     check('konto: mailvalgene følger med kontoen',K2.is_checked('#mp_my_beer') and not K2.is_checked('#mp_news'))
+    # afmeld-linket nederst i mails: virker uden login, men først når man trykker på knappen
+    tok=M.unsub.get(uid1,''); K2.goto(URL+'#afmeld-ikke-en-noegle'); K2.wait_for_timeout(700)
+    check('afmeld: et ugyldigt link siger det og har ingen knap','ikke gyldigt' in K2.inner_text('#unsubBox') and K2.query_selector('#unsubGo') is None,K2.inner_text('#unsubBox'))
+    K2.goto(URL+'#afmeld-00000000-0000-4000-a000-999999999999'); K2.wait_for_timeout(700); K2.click('#unsubGo'); K2.wait_for_timeout(900)
+    check('afmeld: en ukendt nøgle ændrer ingenting','virker ikke længere' in K2.inner_text('#unsubBox') and M.prefs[uid1].get('my_beer') is True,K2.inner_text('#unsubBox'))
+    K2.goto(URL+'#afmeld-'+tok); K2.wait_for_timeout(700); still=M.prefs[uid1].get('my_beer') is True
+    K2.click('#unsubGo'); K2.wait_for_timeout(900); pr=M.prefs[uid1]
+    check('afmeld: intet sker, før man trykker, og så er alle mails slået fra',still and 'Du er afmeldt' in K2.inner_text('#unsubBox') and not any(pr.get(k) for k in('news','my_beer','friends','events')),(still,K2.inner_text('#unsubBox'),pr))
+    K2.goto(URL+'#profil'); K2.wait_for_timeout(1800)
+    check('afmeld: fluebenene på profilen er væk bagefter',K2.query_selector('#mp_my_beer') is not None and not K2.is_checked('#mp_my_beer') and not K2.is_checked('#mp_friends'))
     K2.click('#acOut'); K2.wait_for_timeout(3000); se3=sb(K2)
     K2.goto(URL+'#beer-uk1'); K2.wait_for_timeout(900)
     check('konto: log ud giver en ny anonym bruger, som ikke kan rette kontoens øl',se3['user']['id']!=uid1 and not se3['user'].get('email') and K2.query_selector('#editBeer') is None,se3['user'])
     M.mail_limit=True; K2.goto(URL+'#profil'); K2.wait_for_timeout(900); K2.fill('#acMail','ny@example.dk'); K2.click('#acctForm button'); K2.wait_for_timeout(1000)
     check('konto: for mange mails giver en forståelig besked','for mange mails' in K2.inner_text('#toast') and K2.query_selector('#acCode') is None,K2.inner_text('#toast')); M.mail_limit=False
-    M.has_konto_sql=False; K1.goto(URL+'#profil'); K1.reload(); K1.wait_for_timeout(2500)
-    check('konto: mangler databasen tilføjelsen, står der at mails ikke er slået til','ikke slået til' in K1.inner_text('#acctBox') and K1.query_selector('#mp_news') is None,K1.inner_text('#acctBox')[:120]); M.has_konto_sql=True
+    # kun denne bruger oplever en database uden tilføjelsen. Ellers får de andre åbne enheder 404-fejl, mens de synkroniserer
+    M.no_konto.add(uid1); K1.goto(URL+'#profil'); K1.reload(); K1.wait_for_timeout(2500)
+    check('konto: mangler databasen tilføjelsen, står der at mails ikke er slået til','ikke slået til' in K1.inner_text('#acctBox') and K1.query_selector('#mp_news') is None,K1.inner_text('#acctBox')[:120]); M.no_konto.clear()
     K1.reload(); K1.wait_for_timeout(2500); K1.click('#acDel'); K1.wait_for_timeout(3000)
     check('konto: slet konto fjerner login og mailvalg','lucas@example.dk' not in M.emails and uid1 not in M.prefs and K1.query_selector('#acMail') is not None and not sb(K1)['user'].get('email'),list(M.emails))
     # --- enig eller uenig (swipe): stemmer på andres bedømmelser, tal hos den der har bedømt

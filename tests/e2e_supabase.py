@@ -66,6 +66,14 @@ with sync_playwright() as p:
         Bp.evaluate("(()=>{const S=JSON.parse(localStorage.getItem('olrating-v1'));S.me='TestB';S.reviews.push({id:'%s',beer:'%s',who:'TestB',date:'%s',s:{look:3,aroma:3,taste:4,feel:3,overall:4},text:'Automatisk test B'});localStorage.setItem('olrating-v1',JSON.stringify(S))})()"%(R2,BID,time.strftime('%Y-%m-%d')))
         Bp.reload(); ok('10 den anden enheds bedømmelse gemmes',wait(lambda: row('reviews','id=eq.'+R2)))
         A.reload(); ok('11 første enhed henter den',wait(lambda: any(x['id']==R2 for x in ls(A)['reviews']),45))
+        # enig/uenig – kun når supabase/003 er kørt i databasen
+        c,d=api('/rest/v1/review_vote_counts?select=review&limit=1')
+        if c==200:
+            c1,d1=api('/rest/v1/review_votes',method='POST',token=tokB,body={'review':R1,'v':1}); c2,d2=api('/rest/v1/review_votes',method='POST',token=tokA,body={'review':R1,'v':1})
+            c3,d3=api('/rest/v1/review_vote_counts?select=review,enig,uenig&review=eq.'+R1)
+            ok('11b enig-stemme gemmes, og man kan ikke stemme på sin egen bedømmelse',c1 in(200,201) and c2 in(401,403) and c3==200 and d3 and d3[0]['enig']==1 and d3[0]['uenig']==0,(c1,d1,c2,d2,c3,d3))
+            c4,d4=api('/rest/v1/review_votes?select=review&review=eq.'+R1,token=tokA); ok('11c man kan ikke se, hvem der har stemt',c4==200 and d4==[],(c4,d4))
+        else: print('SPRING OVER enig/uenig: supabase/003-konto-mails-enig.sql er ikke kørt i databasen endnu (svar %s)'%c,flush=True)
         # byttur
         A.goto(URL+'#byttur'); A.wait_for_selector('#tName'); A.fill('#tName','TEST tur '+RID); A.fill('#tDate',(datetime.datetime.now()+datetime.timedelta(days=1)).strftime('%Y-%m-%dT20:00')); A.fill('#tMeet','Test'); A.click('#tourForm button')
         A.wait_for_selector('#stopForm'); tid=A.evaluate('location.hash')[8:]; A.fill('#sName','TEST bar'); A.fill('#sTime','20:15'); A.click('#stopForm button')
@@ -96,7 +104,7 @@ with sync_playwright() as p:
         ok('testen kørte til ende',False,repr(e))
     finally:
         # oprydning, uanset hvad der skete
-        if tokB: api('/rest/v1/reviews?id=eq.'+R2,method='DELETE',token=tokB); 
+        if tokB: api('/rest/v1/review_votes?review=eq.'+R1,method='DELETE',token=tokB); api('/rest/v1/reviews?id=eq.'+R2,method='DELETE',token=tokB); 
         if tokB and tid: api(f'/rest/v1/tour_members?tour=eq.{tid}&name=eq.TestB',method='DELETE',token=tokB)
         if tokA:
             api('/rest/v1/reviews?id=eq.'+R1,method='DELETE',token=tokA); api('/rest/v1/beers?id=eq.'+BID,method='DELETE',token=tokA)
@@ -115,5 +123,11 @@ try:
     for b in B[:5]: print('STATUS øl:',b['created_at'][:16],'|',b['name'][:40],'|',(b.get('brewery') or '')[:30],'| tilføjet af',str((b.get('data') or {}).get('addedBy',''))[:20],'| billede' if b.get('img') else '| uden billede')
     print('STATUS smagere:',sorted({r['who'][:20] for r in RV})[:12])
 except Exception as e: print('STATUS database: kunne ikke læses',e)
+# Er tilføjelserne til konto og mails sat op? (Kun læsning. mail_afmeld med en nøgle, der ikke findes, ændrer ingenting.)
+try:
+    c,_=api('/rest/v1/review_vote_counts?select=review&limit=1'); print('STATUS supabase/003 (stemmer, konto, mailvalg):','kørt' if c==200 else 'IKKE kørt endnu (svar %s)'%c)
+    c,_=api('/rest/v1/rpc/mail_afmeld',method='POST',body={'u':'00000000-0000-4000-8000-000000000000'}); print('STATUS supabase/004 (udsendelse af mails):','kørt' if c==200 else 'IKKE kørt endnu (svar %s)'%c)
+    c,_=api('/functions/v1/mails',raw=True); print('STATUS funktionen mails:','oprettet' if c==200 else 'oprettet, men "Verify JWT" er slået til' if c==401 else 'IKKE oprettet endnu (svar %s)'%c)
+except Exception as e: print('STATUS konto og mails: kunne ikke læses',e)
 print('ALT OK' if all(R.values()) else f'{list(R.values()).count(False)} FEJL af {len(R)}')
 sys.exit(0 if all(R.values()) else 1)

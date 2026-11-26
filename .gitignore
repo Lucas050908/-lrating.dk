@@ -6,3 +6,6 @@ android/app/build/
 android/local.properties
 desktop/node_modules/
 desktop/dist/
+__pycache__/
+*.pyc
+node_modules/

@@ -92,6 +92,15 @@ def crawl(b,lang):
         if not pg.query_selector('#swNo'): break
         pg.evaluate("document.getElementById('swNo').click()"); pg.wait_for_timeout(500)
     grab('#swipe+færdig')
+    # konto (skjult indtil den er sat op) og afmeld-siden fra linket i mails
+    pg.goto(URL+'#konto-test'); pg.wait_for_timeout(700); grab('#konto+ny')
+    pg.fill('#acMail','lucas@example.dk'); pg.evaluate("document.querySelector('#acctForm button').click()"); pg.wait_for_timeout(900); grab('#konto+kode')
+    pg.fill('#acCode','123456'); pg.evaluate("document.querySelector('#acctCode button').click()"); pg.wait_for_timeout(2500); grab('#konto+logget ind')
+    pg.evaluate("document.getElementById('mp_news').click()"); pg.wait_for_timeout(700); grab('#konto+mailvalg')
+    go('#privatliv','#privatliv+konto'); go('#afmeld-ikke-en-noegle','#afmeld+ugyldig')
+    go('#afmeld-00000000-0000-4000-a000-999999999999','#afmeld+ukendt'); pg.evaluate("document.getElementById('unsubGo').click()"); pg.wait_for_timeout(600); grab('#afmeld+ukendt+svar')
+    go('#afmeld-'+next(iter(M.unsub.values()),'x'),'#afmeld'); pg.evaluate("document.getElementById('unsubGo').click()"); pg.wait_for_timeout(600); grab('#afmeld+svar')
+    pg.goto(URL+'#profil'); pg.wait_for_timeout(1500); pg.evaluate("document.getElementById('acOut').click()"); pg.wait_for_timeout(2500); pg.evaluate("localStorage.removeItem('olrating-konto')")
     # uden navn
     seed('')
     for h in ['#profil','#dagbog','#venner','#byttur','#smagning','#genstande','#beer-a1','#byttur-futtour01','#smagning-tastgues1','']: go(h,h+'+ukendt')
@@ -114,7 +123,7 @@ SAME=set('''IPA Stout Porter Sour Lager Pale Ale Brown Ale Bock Pilsner Bitter C
 SAME|={'Pale Ale','Brown Ale','J-dag','Web Share','Google Maps','Lucas Valentin Ottesen','Magnus Birkgaard Froberg'}
 SAME|={'Swipe','Scan','Linux:','Windows:','Downloads','TOP 3','+ Stop','Download backup','Snifter','Pizza','Burger','Mild','ølrating.dk logo','olrating.apk','olrating-windows.exe','olrating-linux.AppImage','andersenlucas84@gmail.com','Findes Ikke','cl','Fx mfx3k2abcd','Globetrotter','ølrating<1>.dk</1>','1 stop'}
 # Mønstre for tekster, der er ens på begge sprog: mål, koder og navne med tal
-SAME_RE=re.compile(r'^(\d+ cl|\d+ IBU|© \d{4} .*|[\d.,]+ ?%|[A-ZÆØÅ]|✓ .+|\d\. .+|“.*”|.+ ↗|■ .+)$')
+SAME_RE=re.compile(r'^(\d+ cl|\d+ IBU|© \d{4} .*|[\d.,]+ ?%|[A-ZÆØÅ]|✓ .+|\d\. .+|“.*”|.+ ↗|■ .+|[^\s@]+@[^\s@]+)$')
 def letters(t): return re.search(r'[A-Za-zÆØÅæøå]{2,}',t) is not None
 def strip_user(t):
     for u in sorted(USER,key=len,reverse=True): t=t.replace(u,'')

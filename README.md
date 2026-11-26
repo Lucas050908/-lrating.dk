@@ -13,6 +13,7 @@ Danske øl, bedømt af dem der drikker dem.
 | [docs/FUNKTIONER.md](docs/FUNKTIONER.md) | Alt hvad siden og apps kan, side for side |
 | [docs/TEKNIK.md](docs/TEKNIK.md) | Hvordan det er bygget: filer, data, sider, bro til apps, widgets, byggeprocesser |
 | [docs/STORE.md](docs/STORE.md) | Microsoft Store: trin for trin, tekster og skærmbilleder |
+| [docs/KONTO.md](docs/KONTO.md) | Konto og mails: opsætning trin for trin (mailtjeneste, Supabase, test) |
 | [docs/DRIFT.md](docs/DRIFT.md) | Domæne, DNS, GitHub Pages, HTTPS, database, app-signering, Microsoft Store, huskeliste |
 | [docs/IDEER.md](docs/IDEER.md) | Det, der venter, og idéer til senere |
 | [CHANGELOG.md](CHANGELOG.md) | Hvad der er lavet hvornår |

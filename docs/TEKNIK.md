@@ -72,6 +72,14 @@
 - `isAcct()` er sand, når sessionen har en mail og ikke er anonym. `acctOut()` logger ud, og enheden får en ny anonym bruger ved næste synkronisering. `acctDel()` kalder `konto_slet`.
 - **Mailvalg:** `acctPrefs()` og `acctSavePrefs()` læser og skriver brugerens række i `mail_prefs`. Navn, sprog og (hvis mails om venner er slået til) hvem man følger, sendes med og opdateres af `acctTouch()`, når de ændres.
 
+### Mails
+- **Kø:** Triggere i databasen (`supabase/003`) lægger en række i `mail_queue`, når der kommer en bedømmelse, en tilmelding til en byttur eller en stemme i en smagning, som en bruger har bedt om mail om. En nyhed (`mail_news`) lægges i kø til alle med nyheder slået til, når ejerne sætter flueben i `send` (`supabase/004`).
+- **Udsendelse:** `pg_cron` kalder hvert 10. minut funktionen `mails` (`supabase/functions/mails/index.ts`) gennem `pg_net`, men kun når køen ikke er tom. Kaldet har en nøgle med (`x-cron-key`), som kun står i tabellen `mail_state`. Uden den rigtige nøgle sker der ingenting.
+- **Reglerne står i databasen,** så de kan testes: `mail_hent(nøgle)` giver én samlet mail pr. bruger, højst én i timen, "ven har bedømt" højst én gang om dagen (dansk dato), og sletter det, brugeren har slået fra. Rækkerne mærkes som taget (`taken_at`), og `mail_faerdig(nøgle, ids, r)` kvitterer: `1` sendt, `0` prøv igen næste gang, `-1` afvist (prøv igen om en time). Taget, men ikke kvitteret inden for 30 minutter, bliver frigivet. Usendt i 3 dage bliver slettet.
+- **Funktionen er tynd:** den henter, bygger mailen (dansk eller engelsk, HTML og ren tekst, alt brugerindhold bliver escapet) og sender den gennem Resends API. Den bruger ingen pakker, så den kan kopieres ind i Supabase. Nøglen til Resend er en hemmelighed i Supabase (`RESEND_API_KEY`) og står ikke i repoet. `Idempotency-Key` gør, at den samme mail ikke sendes to gange.
+- **Afmelding:** Linket i mailen går til `#afmeld-<nøgle>` på siden (`unsubView`). Først når man trykker på knappen, kaldes `mail_afmeld(nøgle)`, som alle må kalde, fordi nøglen (`mail_prefs.unsub`) er tilfældig og kun står i brugerens egne mails. Mailprogrammers egen afmeld-knap (`List-Unsubscribe`) rammer funktionen med `POST ?unsub=`. En Edge Function kan ikke vise HTML, så `GET ?unsub=` sender bare videre til siden.
+- Opsætningen trin for trin står i `docs/KONTO.md`.
+
 ### Lange ord
 - `#app{overflow-wrap:anywhere}` lader lange ord uden mellemrum knække, så brugerindhold ikke kan gøre siden bredere end skærmen. Knapper, mærkater og formularfelter er undtaget.
 - Overskrifter har `hyphens:auto`, så lange sammensatte ord får bindestreg, hvor browseren har en ordbog til sproget.
@@ -163,7 +171,7 @@ Alle test bruger Playwright og en lokal server: `python3 -m http.server 8811 &`.
 | `test_site.py` | Hele siden klikket igennem på pc (1280 px) og mobil (390 px): tilføj øl med foto, bedøm, ret, søg, del, delekort, genstande, temaer, backup, slet med fortryd, ryd alt, gendan, offline, filer og links | Nej |
 | `test_sync.py` | To enheder deler data: øl, billeder, afvist redigering af andres øl, offline-kø, ingen gentegning mens man skriver, sletning med fortryd, byttur, smagning og fjendtlige data i databasen (indlejret kode og forkerte typer) | Nej |
 | `test_en.py` | Den engelske version: alle sider og tilstande gås igennem på dansk og engelsk med stillestående ur. Testen fejler, hvis en tekst er ens i de to udgaver eller stadig har danske bogstaver, hvis en besked i koden (toast, confirm, prompt) mangler i ordbogen, hvis brugernes eget indhold bliver oversat, eller hvis en side får vandret scroll på mobil | Nej |
-| `test_sql.js` | `supabase/003-konto-mails-enig.sql` afprøvet i en rigtig Postgres i hukommelsen (PGlite): hvem der må stemme, at man kun ser sine egne stemmer, flytning af data til en konto, mailvalg og køen med mails. Kræver `npm install --no-save @electric-sql/pglite` | Nej |
+| `test_sql.js` | `supabase/003-konto-mails-enig.sql` og `004-mails.sql` afprøvet i en rigtig Postgres i hukommelsen (PGlite): hvem der må stemme, at man kun ser sine egne stemmer, flytning af data til en konto, mailvalg og køen med mails. Funktionen `supabase/functions/mails` køres mod den samme database med en efterlignet mailtjeneste: indhold på dansk og engelsk, højst én mail i timen, venner én gang om dagen, nyheder, fejl hos mailtjenesten og afmelding. Kræver `npm install --no-save @electric-sql/pglite` | Nej |
 | `mock_supabase.py` | Efterligning af Supabase i hukommelsen, som de to test ovenfor bruger | Nej |
 | `e2e_supabase.py` | Det samme forløb mod den rigtige database, inkl. forsøg på at rette andres data direkte gennem API'et. Opretter data med TEST i navnet og sletter dem igen | **Ja** |
 
