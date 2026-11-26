@@ -4,6 +4,10 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Nat (04:53): idéliste
+- **`docs/IDEER.md`:** En samlet liste over det, der venter på Lucas, større idéer der kræver en beslutning (engelsk version, scan af etiket, smartwatch, iPhone-app, login), og mindre idéer til senere.
+- **Test mod den rigtige database kl. 05:00:** 21 af 22 tjek bestået. Det sidste venter stadig på `supabase/002-slet-billeder.sql`.
+
 ### Nat (04:40–04:42): sikkerhed
 - **Data udefra bliver renset:** Alle kan skrive til den fælles database, så siden stoler ikke længere på det, den henter. Øl og bedømmelser fra databasen og fra backup-filer får nu tjekket typer, længder og felter, før de bruges. Ugyldige id'er bliver droppet, og billeder må kun komme fra sidens eget billedlager.
 - **Ny test med fjendtlige data:** Testen lægger øl, bedømmelser, byture og smagninger med indlejret kode og forkerte typer i databasen og går 17 sider igennem. Ingen kode bliver kørt, ingen side går ned, og almindelige øl vises stadig.
