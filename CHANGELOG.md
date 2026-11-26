@@ -4,6 +4,15 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Nat (03:20–03:45): tilgængelighed
+- **Automatisk tjek af tilgængelighed** (axe, WCAG 2 A og AA) på 18 sider i begge temaer og på pc og mobil. Antallet af fund faldt fra 341 til 43, og de sidste ligger lige under grænsen for kontrast.
+- **Rettet:**
+  - Menuen i det lyse tema var grå og svær at læse øverst på siden. Den er nu mørk.
+  - Knappen "+ Tilføj øl" mistede sin orange farve, når man stod på siden Tilføj øl.
+  - Orange overskrifter og tal er mørkere i det lyse tema.
+  - Grå hjælpetekst, datoer på bedømmelser og låste mærker er blevet tydeligere.
+  - Billedlinks på Sammenlign har fået navn til skærmlæsere, og kortet over bryggerier kan bruges med tastatur.
+
 ### Nat (03:10–03:20): lyst tema
 - **Bedre læsbarhed i det lyse tema:** Gule tal og links på hvid baggrund var svære at læse. De er nu mørk rav i det lyse tema (karakterer, toplisten, nedtælling, links). På mørke flader som forsidebilledet, menuen og karakter-mærket på øl-kortene er farven stadig gul.
 - "✓ Du er med" på en byttur og "● Forbundet" på Min profil er nu mørkegrønne i det lyse tema.

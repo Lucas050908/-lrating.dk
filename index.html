@@ -36,10 +36,11 @@
 @font-face{font-family:Inter;font-style:normal;font-weight:600;font-display:swap;src:url(fonts/inter-600.woff2) format("woff2")}
 @font-face{font-family:Inter;font-style:normal;font-weight:700;font-display:swap;src:url(fonts/inter-700.woff2) format("woff2")}
 @font-face{font-family:Sora;font-style:normal;font-weight:700;font-display:swap;src:url(fonts/sora-700.woff2) format("woff2")}
-:root{--glt:var(--gl);--ink:#0f1d36;--nv:#0f1d36;--nv2:#16294a;--nv3:#1d3557;--sky:#8fb6e3;--sun:#ff7a3d;--pk:#f0566b;--gl:#ffc85a;--tx:#eaf1fb;--ln:rgba(143,182,227,.18);--grad:linear-gradient(90deg,var(--pk),var(--sun),var(--gl));color-scheme:dark}
-[data-mode=light]{--glt:#a15f00;--nv:#f3f6fb;--nv2:#ffffff;--nv3:#e3ebf6;--tx:#13203a;--ln:rgba(15,29,54,.13);--sky:#3767a8;color-scheme:light}
+:root{--glt:var(--gl);--sunt:var(--sun);--ink:#0f1d36;--nv:#0f1d36;--nv2:#16294a;--nv3:#1d3557;--sky:#8fb6e3;--sun:#ff7a3d;--pk:#f0566b;--gl:#ffc85a;--tx:#eaf1fb;--ln:rgba(143,182,227,.18);--grad:linear-gradient(90deg,var(--pk),var(--sun),var(--gl));color-scheme:dark}
+[data-mode=light]{--glt:#855000;--sunt:#b93a08;--nv:#f3f6fb;--nv2:#ffffff;--nv3:#e3ebf6;--tx:#13203a;--ln:rgba(15,29,54,.13);--sky:#3767a8;color-scheme:light}
 [data-mode=light] body{background:#f3f6fb}
-.hero,.bar,.nav,.lbox,.scan,.week,.phone,footer,.now,.podium .win,.undo,.toast,.sc{--glt:#ffc85a}
+[data-mode=light] .bar{background:rgba(15,29,54,.88)}
+.hero,.bar,.nav,.lbox,.scan,.week,.phone,footer,.now,.podium .win,.undo,.toast,.sc{--glt:#ffc85a;--sunt:#ff7a3d}
 .hero,.bar,.nav,.lbox,.scan,.week,.phone{--nv:#0f1d36;--nv2:#16294a;--nv3:#1d3557;--tx:#eaf1fb;--ln:rgba(143,182,227,.18);--sky:#8fb6e3;color:var(--tx)}
 [data-mode=light] .card,[data-mode=light] .box,[data-mode=light] .panel,[data-mode=light] .gcard,[data-mode=light] .scorebox{box-shadow:0 10px 30px -18px rgba(15,29,54,.35)}
 [data-mode=light] input::placeholder,[data-mode=light] textarea::placeholder{color:rgba(19,32,58,.45)}
@@ -71,7 +72,7 @@ footer .fbot{padding-bottom:max(18px,env(safe-area-inset-bottom))}
 .bar{pointer-events:auto;max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:10px 20px;padding:8px 8px 8px 20px;border-radius:99px;background:rgba(15,29,54,.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.16);transition:background .3s}
 .scrolled .bar{background:rgba(15,29,54,.92)}
 .logo{font-family:Sora,sans-serif;font-weight:700;font-size:22px;letter-spacing:-.03em;text-decoration:none;color:#fff}
-.logo b{color:var(--sun);font-weight:700}
+.logo b{color:var(--sunt);font-weight:700}
 .logo{display:inline-flex;align-items:center;gap:10px}
 .badge-ic{width:36px;height:36px;transition:transform .6s cubic-bezier(.2,.8,.3,1.4)}
 .logo:hover .badge-ic{transform:rotate(-20deg) scale(1.08)}
@@ -80,6 +81,7 @@ footer .fbot{padding-bottom:max(18px,env(safe-area-inset-bottom))}
 .nav a:hover,.nav a[aria-current=page]{background:rgba(255,255,255,.14)}
 .navmore{position:relative;display:flex}#navMore{background:transparent;color:#fff;font-weight:600;font-size:15px;padding:10px 14px;min-height:0;gap:4px}#navMore:hover,.navmore.open #navMore,.navmore.cur #navMore{background:rgba(255,255,255,.14);transform:none;filter:none}
 .navdd{display:none;position:absolute;right:0;top:calc(100% + 12px);min-width:240px;flex-direction:column;gap:2px;background:rgba(15,29,54,.97);border:1px solid var(--ln);border-radius:18px;padding:8px;box-shadow:0 18px 40px rgba(0,0,0,.4)}.navmore.open .navdd{display:flex}.navdd a{border-radius:12px}
+.nav a.cta:hover,.nav a.cta[aria-current=page]{background:var(--sun);filter:brightness(1.06)}
 .cta{background:var(--sun);color:var(--ink)!important;border-radius:99px;padding:11px 20px;text-decoration:none;font-weight:700;white-space:nowrap}
 .bar .menu{display:none;padding:0;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.16);color:#fff;align-items:center;justify-content:center;cursor:pointer}
 @media(max-width:1100px){.navmore{display:block}#navMore{display:none}.navdd{display:flex;position:static;min-width:0;background:none;border:0;padding:0;box-shadow:none;border-top:1px solid var(--ln);margin-top:4px;padding-top:4px}.navdd a{border-radius:99px}.nav{max-height:calc(100vh - 90px);overflow:auto}.nav{position:absolute;top:66px;left:12px;right:12px;flex-direction:column;background:rgba(15,29,54,.97);border:1px solid var(--ln);border-radius:22px;padding:8px;display:none}.nav.open{display:flex}.bar .menu{display:flex;margin-left:auto}.bar>.cta{display:none}}
@@ -115,7 +117,7 @@ label{font-weight:600;display:grid;gap:6px}
 .pop button{min-height:34px;padding:4px 12px;font-weight:600;background:transparent;color:#fff;border:1px solid rgba(255,255,255,.3)}
 .week{background:rgba(15,29,54,.8);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(143,182,227,.3);border-radius:26px;padding:22px;text-decoration:none;display:block;transition:transform .3s}
 .week:hover{transform:translateY(-4px)}
-.kick{font-size:13px;font-weight:700;color:var(--sun);letter-spacing:.04em;text-transform:uppercase}
+.kick{font-size:13px;font-weight:700;color:var(--sunt);letter-spacing:.04em;text-transform:uppercase}
 .wk{display:grid;grid-template-columns:84px minmax(0,1fr) auto;gap:16px;align-items:center;margin:12px 0 16px}
 .thumb{border-radius:16px;overflow:hidden;background:var(--nv3)}
 .thumb img,.thumb svg{width:100%;height:100%;object-fit:cover}
@@ -154,7 +156,7 @@ label{font-weight:600;display:grid;gap:6px}
 .ex{position:absolute;bottom:10px;left:12px;background:var(--gl);color:var(--ink);border-radius:99px;padding:1px 9px;font-size:12px;font-weight:700}
 .cb{padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
 .cb h3{font-size:19px;line-height:1.15}
-.meta{font-size:14px;opacity:.75}
+.meta{font-size:14px;opacity:.85}
 .tags{display:flex;gap:6px;flex-wrap:wrap}
 .tag{font-size:12px;font-weight:600;border:1px solid var(--ln);border-radius:99px;padding:2px 9px}
 .cf{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;border-top:1px solid var(--ln);padding-top:10px}
@@ -249,7 +251,7 @@ label{font-weight:600;display:grid;gap:6px}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}#tourForm label,.tform label{display:flex;flex-direction:column;gap:6px;font-weight:600}.tform textarea{resize:vertical}
 .thead{display:flex;gap:20px;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;margin-top:12px}.tbtns{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.pill.ok{position:static;background:rgba(80,200,120,.18);color:#7be3a0;padding:10px 16px;border-radius:99px;font-weight:700}
 .now{margin-top:22px;background:linear-gradient(135deg,var(--sun),var(--pk));color:var(--ink);border-radius:22px;padding:18px 22px;display:flex;flex-direction:column;gap:2px}.now .kick{color:var(--ink);opacity:.8}.now b{font-size:28px;font-family:Sora,sans-serif}
-.tgrid{display:grid;grid-template-columns:1.4fr 1fr;gap:28px;margin-top:28px}.route{list-style:none;margin:0;padding:0;position:relative}.route li{display:grid;grid-template-columns:56px 1fr auto;gap:12px;align-items:center;padding:12px 0 12px;border-left:3px solid var(--ln);padding-left:16px;margin-left:8px;position:relative}.route li::before{content:"";position:absolute;left:-9px;top:20px;width:15px;height:15px;border-radius:50%;background:var(--nv);border:3px solid var(--gl)}.route li.done{opacity:.55}.route li.done::before{background:var(--gl)}.route li.cur::before{background:var(--sun);border-color:var(--sun);box-shadow:0 0 0 6px rgba(255,122,61,.25)}.route li.cur b{color:var(--sun)}.route .tm{font-weight:700;font-variant-numeric:tabular-nums}.route a{display:block;font-size:13px}.route button{padding:4px 8px}
+.tgrid{display:grid;grid-template-columns:1.4fr 1fr;gap:28px;margin-top:28px}.route{list-style:none;margin:0;padding:0;position:relative}.route li{display:grid;grid-template-columns:56px 1fr auto;gap:12px;align-items:center;padding:12px 0 12px;border-left:3px solid var(--ln);padding-left:16px;margin-left:8px;position:relative}.route li::before{content:"";position:absolute;left:-9px;top:20px;width:15px;height:15px;border-radius:50%;background:var(--nv);border:3px solid var(--gl)}.route li.done{opacity:.55}.route li.done::before{background:var(--gl)}.route li.cur::before{background:var(--sun);border-color:var(--sun);box-shadow:0 0 0 6px rgba(255,122,61,.25)}.route li.cur b{color:var(--sunt)}.route .tm{font-weight:700;font-variant-numeric:tabular-nums}.route a{display:block;font-size:13px}.route button{padding:4px 8px}
 .stopf{display:grid;grid-template-columns:1.3fr 110px 1.3fr auto;gap:8px;margin-top:14px}.mem{display:grid;grid-template-columns:36px 1fr;gap:8px 10px;align-items:center}.mem .av{width:36px;height:36px;border-radius:50%;background:var(--gl);color:var(--ink);display:grid;place-items:center;font-weight:800}
 .qrbox{background:#fff;border-radius:18px;padding:10px;width:200px;max-width:100%;margin:20px 0 8px}.qrbox svg{display:block;width:100%;height:auto}.safe{margin-top:28px}.sbtns{display:flex;gap:10px;flex-wrap:wrap}
 @media(max-width:760px){.tgrid,.g2{grid-template-columns:1fr}.stopf{grid-template-columns:1fr 110px}.stopf input:nth-child(3){grid-column:1/-1}.stopf .btn{grid-column:1/-1}}
@@ -264,7 +266,7 @@ label{font-weight:600;display:grid;gap:6px}
 @media(max-width:760px){.bmap{grid-template-columns:1fr;padding:16px}}
 .acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}.acts.sm{gap:8px;margin-top:12px}.acts.sm .ghost{min-height:38px;padding:7px 15px;font-size:14px;font-weight:600}
 .cf .sm{display:none}.cf b{white-space:nowrap}@media(max-width:600px){.cf .lg{display:none}.cf .sm{display:inline}}
-.okc{color:#7be3a0}[data-mode=light] .okc{color:#1c7a45}[data-mode=light] .pill.ok{color:#1c7a45;background:rgba(40,160,90,.14)}
+.okc{color:#7be3a0}[data-mode=light] .okc{color:#1c7a45}[data-mode=light] .pill.ok{color:#14532d;background:rgba(40,160,90,.16)}[data-mode=light] .todaylab{color:#9f1239}
 .podium{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:10px}.podium li{display:grid;grid-template-columns:44px 1fr auto;gap:14px;align-items:center;background:var(--nv2);border:1px solid var(--ln);border-radius:18px;padding:14px 18px;opacity:0;animation:rise .6s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:var(--d)}
 .podium .pl{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:800;background:var(--nv);border:2px solid var(--ln)}.podium li>div{display:flex;flex-direction:column;min-width:0}.podium li>div b{font-size:19px;overflow-wrap:anywhere}.podium .big{font-size:28px}
 .podium .win{background:linear-gradient(135deg,var(--sun),var(--gl));color:var(--ink);border-color:transparent}.podium .win .pl{background:var(--ink);color:var(--glt);border-color:var(--ink)}.podium .win .meta,.podium .win .big{color:var(--ink);opacity:1}
@@ -314,7 +316,7 @@ footer .wrap{position:relative;z-index:2}
 .wish[aria-pressed=true]{background:var(--pk);border-color:var(--pk);color:#fff}
 /* badges, scanner */
 .badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:14px}
-.badge{background:var(--nv);border:1px solid var(--ln);border-radius:18px;padding:14px;text-align:center;display:grid;gap:6px;justify-items:center;opacity:.45;filter:grayscale(1)}
+.badge{background:var(--nv);border:1px solid var(--ln);border-radius:18px;padding:14px;text-align:center;display:grid;gap:6px;justify-items:center;opacity:.8;filter:grayscale(1)}
 .badge.got{opacity:1;filter:none;border-color:rgba(255,200,90,.5);box-shadow:0 0 24px -8px rgba(255,200,90,.6)}
 .badge svg{width:56px;height:56px}
 .badge b{font-size:15px}.badge small{font-size:12.5px;opacity:.75;line-height:1.35}
@@ -344,7 +346,7 @@ footer .wrap{position:relative;z-index:2}
 .caltrack i{position:absolute;top:4px;bottom:4px;border-radius:7px;display:flex;align-items:center;padding:0 8px;font-style:normal;font-size:12px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;transform-origin:left;animation:grow 1s cubic-bezier(.2,.8,.2,1) both}
 .today{position:absolute;top:-6px;bottom:-6px;width:2px;background:var(--pk);z-index:2}
 .calhead div{position:relative}
-.todaylab{position:absolute;top:-2px;transform:translateX(-50%);font-size:11px;font-weight:700;color:var(--pk);background:var(--nv);padding:0 4px}
+.todaylab{position:absolute;top:-2px;transform:translateX(-50%);font-size:11px;font-weight:700;color:#ff9aa8;background:var(--nv);padding:0 4px}
 @media(max-width:600px){.caltrack i{font-size:0;padding:0}.calhead,.calrow{grid-template-columns:96px minmax(0,1fr)}.calrow>span{font-size:13px}.calhead div span:nth-child(even){visibility:hidden}}
 .next{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:14px;margin:22px 0 30px}
 .next div{background:var(--nv2);border:1px solid var(--ln);border-radius:20px;padding:16px 18px}
@@ -552,7 +554,7 @@ async function sbRun(){if(!navigator.onLine){sbOk=false;return}sbBusy=true;const
   try{await sbAuth();await sbPush();await sbPull();await sbTours();await sbTast();sbOk=true}catch(e){sbOk=false;console.warn('Synk fejlede',e)}
   finally{sbBusy=false;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}if(JSON.stringify([S.beers,S.reviews,S.tours,S.tast])!==before){syncApp();if(sbFull&&location.hash==='#smagning-'+sbFull){sbFull='';route();return}sbFull='';const a=document.activeElement,open=document.querySelector('.lbox:not([hidden]),#scan:not([hidden])');const typing=a&&/INPUT|TEXTAREA/.test(a.tagName)&&a.value!=='';if(!dirty&&!open&&!typing)softRoute()}
    document.querySelectorAll('.sbst').forEach(el=>el.innerHTML=sbStatus());if(Object.keys(S.gone).length)sbSoon(9500)}}
-const sbStatus=()=>sbOk?'<span class="okc">● Forbundet</span> – dine øl og bedømmelser deles med alle':'<span style="color:var(--sun)">● Ikke forbundet</span> – dine data gemmes på enheden og deles, når der er forbindelse';
+const sbStatus=()=>sbOk?'<span class="okc">● Forbundet</span> – dine øl og bedømmelser deles med alle':'<span style="color:var(--sunt)">● Ikke forbundet</span> – dine data gemmes på enheden og deles, når der er forbindelse';
 function sbSoon(ms=1500){clearTimeout(sbTimer);sbTimer=setTimeout(sbSync,ms)}
 /* ---------- byttur ---------- */
 const b64e=o=>btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
@@ -715,7 +717,7 @@ function card(b,i){return `<a class="card" href="#beer-${esc(b.id)}" style="--i:
  <div class="cf"><span style="display:flex;align-items:center;gap:8px">${avatar(b.addedBy)}<span style="opacity:.8">${b.rs.length} <span class="lg">${b.rs.length===1?'bedømmelse':'bedømmelser'}</span><span class="sm">bed.</span></span></span>${b.rs.length?`<b>${againPct(b)}% igen</b>`:''}</div></div></a>`}
 function topTags(b){const tc={};b.rs.forEach(r=>(r.tags||[]).forEach(t=>tc[t]=(tc[t]||0)+1));const t=Object.entries(tc).sort((a,c)=>c[1]-a[1]).slice(0,3);return t.length?`<div class="tags">${t.map(([x])=>`<span class="tag">${esc(x)}</span>`).join('')}</div>`:''}
 function revRow(r,withBeer){const b=withBeer?enrich().find(x=>x.id===r.beer):null;
-  return `<div class="rv">${avatar(r.who)}<div><div><a href="${esc(tLink(r.who))}" class="who"><b>${esc(r.who)}</b></a>${b?` om <a href="#beer-${esc(b.id)}"><b>${esc(b.name)}</b></a>`:''} <span class="s">${fmt(tot(r))}</span></div>${r.text?`<p>${esc(r.text)}</p>`:''}${!withBeer&&r.tags?.length?`<div class="tags" style="margin-top:6px">${r.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>`:''}${r.img?`<img src="${esc(src(r.img))}" alt="Foto fra ${esc(r.who)}" loading="lazy">`:''}<div style="font-size:12px;opacity:.6;margin-top:3px">${ago(r.date)}${r.edited?' · rettet':''}${withBeer?'':' · '+(r.again?'Vil købe den igen':'Køber den ikke igen')}</div>${!withBeer&&S.me&&r.who.toLowerCase()===S.me.toLowerCase()&&mineObj(r)?`<div class="revact"><button type="button" class="ghost" data-edit="${esc(r.id)}">Ret</button><button type="button" class="ghost" data-delrev="${esc(r.id)}">Slet</button></div>`:''}</div></div>`}
+  return `<div class="rv">${avatar(r.who)}<div><div><a href="${esc(tLink(r.who))}" class="who"><b>${esc(r.who)}</b></a>${b?` om <a href="#beer-${esc(b.id)}"><b>${esc(b.name)}</b></a>`:''} <span class="s">${fmt(tot(r))}</span></div>${r.text?`<p>${esc(r.text)}</p>`:''}${!withBeer&&r.tags?.length?`<div class="tags" style="margin-top:6px">${r.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>`:''}${r.img?`<img src="${esc(src(r.img))}" alt="Foto fra ${esc(r.who)}" loading="lazy">`:''}<div style="font-size:12px;opacity:.75;margin-top:3px">${ago(r.date)}${r.edited?' · rettet':''}${withBeer?'':' · '+(r.again?'Vil købe den igen':'Køber den ikke igen')}</div>${!withBeer&&S.me&&r.who.toLowerCase()===S.me.toLowerCase()&&mineObj(r)?`<div class="revact"><button type="button" class="ghost" data-edit="${esc(r.id)}">Ret</button><button type="button" class="ghost" data-delrev="${esc(r.id)}">Slet</button></div>`:''}</div></div>`}
 function weekBeer(L){const wk=Date.now()-7*DAY,rated=L.filter(b=>b.rs.length);if(!rated.length)return null;const rec=rated.filter(b=>b.rs.some(r=>new Date(r.date).getTime()>wk));return[...(rec.length?rec:rated)].sort((a,c)=>c.avg-a.avg||c.rs.length-a.rs.length)[0]}
 
 function home(){const L=enrich(),Rv=reviews().slice().sort((a,b)=>b.date.localeCompare(a.date)),c=SEASON[season],h=c?.h||['Øl smager bedst','med udsigt.'],wb=weekBeer(L);
@@ -735,7 +737,7 @@ function home(){const L=enrich(),Rv=reviews().slice().sort((a,b)=>b.date.localeC
   </div></section>
   <div class="grad"></div>
   <div class="wrap"><div class="stats">
-   ${[[L.length,'øl bedømt','var(--gl)','M8 3h8l-1 18H9z'],[Rv.length,'bedømmelser','var(--sun)','M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z'],[new Set(Rv.map(r=>r.who)).size,'smagere','var(--pk)','M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c1-4 4-6 8-6s7 2 8 6'],[new Set(L.map(b=>b.brewery)).size,'bryggerier','var(--sky)','M4 21V9l8-5 8 5v12M9 21v-6h6v6']].map(([v,l,c,p])=>`<div class="stat"><span class="i"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${p}"/></svg></span><div><b style="color:${c}">${v.toLocaleString('da-DK')}</b><small>${l}</small></div></div>`).join('')}
+   ${[[L.length,'øl bedømt','var(--gl)','M8 3h8l-1 18H9z'],[Rv.length,'bedømmelser','var(--sun)','M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z'],[new Set(Rv.map(r=>r.who)).size,'smagere','var(--pk)','M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c1-4 4-6 8-6s7 2 8 6'],[new Set(L.map(b=>b.brewery)).size,'bryggerier','var(--sky)','M4 21V9l8-5 8 5v12M9 21v-6h6v6']].map(([v,l,c,p])=>`<div class="stat"><span class="i"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${p}"/></svg></span><div><b style="color:${c.replace('--gl)','--glt)').replace('--sun)','--sunt)')}">${v.toLocaleString('da-DK')}</b><small>${l}</small></div></div>`).join('')}
   </div>${(e=>`<a class="nextev" href="#kalender"><b>${e.left===0?'I dag':e.left===1?'I morgen':'Om '+e.left+' dage'}</b> er det ${esc(e.n)} · Se ølkalenderen →</a>`)(nextEvent())}${fyBox(4,'home')}</div>
   <section class="band"><div class="wrap main">
    <div><div class="head"><h2 id="alle">${F.q?`Resultater for “${esc(F.q)}”`:'Højest bedømt lige nu'}</h2>
@@ -965,7 +967,7 @@ function brewMap(L){const me=(S.me||'').trim().toLowerCase(),vis=new Set(L.filte
   L.forEach(b=>{if(!b.brewery||seen[b.brewery])return;seen[b.brewery]=1;const k=String(b.city||'').toLowerCase().replace(/[0-9]/g,'').replace(/\s+/g,' ').trim().replace(/\s[a-zæøå]$/,''),c=DKC[k];if(!c){off.push(b.brewery);return}(pts[k]=pts[k]||{c,city:b.city.replace(/[0-9]/g,'').trim(),br:[]}).br.push(b.brewery)});
   const A=Object.values(pts).sort((a,b)=>b.br.length-a.br.length);if(!A.length)return '';
   const P=([x,y])=>[+((x-7.9)*56).toFixed(1),+((57.9-y)*100).toFixed(1)],nv=A.reduce((n,p)=>n+p.br.filter(x=>vis.has(x)).length,0),nb=A.reduce((n,p)=>n+p.br.length,0);
-  return `<div class="bmap"><svg viewBox="0 0 415 345" role="img" aria-label="Forenklet kort over Danmark med ${nb} bryggerier">${DKMAP.map(p=>`<path d="M${p.map(q=>P(q).join(' ')).join('L')}Z"/>`).join('')}
+  return `<div class="bmap"><svg viewBox="0 0 415 345" role="group" aria-label="Forenklet kort over Danmark med ${nb} bryggerier">${DKMAP.map(p=>`<path d="M${p.map(q=>P(q).join(' ')).join('L')}Z"/>`).join('')}
    ${A.map(p=>{const [x,y]=P(p.c),v=p.br.some(n=>vis.has(n)),one=p.br.length===1;return `<a href="${one?'#bryggeri-'+encodeURIComponent(p.br[0]):'#alle'}"${one?'':` data-mapq="${esc(p.city)}"`} class="${v?'v':''}"><title>${esc(p.city)}: ${esc(p.br.join(', '))}</title><circle cx="${x}" cy="${y}" r="${Math.min(13,5+p.br.length*1.6)}"/>${p.br.length>1?`<text x="${x}" y="${y+3.2}" text-anchor="middle">${p.br.length}</text>`:''}</a>`}).join('')}</svg>
    <div><h3 style="margin:0 0 6px">Bryggerier på kortet</h3><p class="meta" style="margin:0 0 12px">${nb} ${nb===1?'bryggeri':'bryggerier'} i ${A.length} ${A.length===1?'by':'byer'}${me?`. Du har bedømt øl fra ${nv}.`:'.'}</p>
     <div class="bml">${A.map(p=>`<div><b>${esc(p.city)}</b>${p.br.map(n=>`<a href="#bryggeri-${encodeURIComponent(n)}" class="${vis.has(n)?'v':''}">${vis.has(n)?'✓ ':''}${esc(n)}</a>`).join('')}</div>`).join('')}</div>
@@ -1013,13 +1015,13 @@ function cmpView(){const L=enrich().sort((a,b)=>a.name.localeCompare(b.name,'da'
   const sa=subs(A),sb=subs(B),pa=profAvg(A),pb=profAvg(B);
   return `<section class="band" style="padding-top:120px"><div class="wrap" style="max-width:960px"><h1 style="font-size:clamp(34px,5vw,60px)">Sammenlign to øl</h1><p class="meta" style="margin:10px 0 22px">Vælg to øl og se dem side om side. Det bedste tal i hver række er fremhævet.</p>
   <div class="panel" style="overflow-x:auto"><table class="cmp"><thead><tr><th></th><td>${sel(0,A.id)}</td><td>${sel(1,B.id)}</td></tr></thead><tbody>
-  <tr><th></th><td><a href="#beer-${esc(A.id)}"><div class="thumb">${photo(A)}</div></a></td><td><a href="#beer-${esc(B.id)}"><div class="thumb">${photo(B)}</div></a></td></tr>
+  <tr><th></th><td><a href="#beer-${esc(A.id)}" aria-label="${esc(A.name)}"><div class="thumb">${photo(A)}</div></a></td><td><a href="#beer-${esc(B.id)}" aria-label="${esc(B.name)}"><div class="thumb">${photo(B)}</div></a></td></tr>
   ${row('Samlet score',A.rs.length?A.avg:null,B.rs.length?B.avg:null,1)}
   ${sa.map(([l,v],i)=>row(l,A.rs.length?v:null,B.rs.length?sb[i][1]:null,1)).join('')}
   ${row('Bedømmelser',A.rs.length,B.rs.length,0)}${row('Køber igen',A.rs.length?againPct(A)+' %':null,B.rs.length?againPct(B)+' %':null,0)}
   ${row('Stil',A.style,B.style,0)}${row('Alkohol',A.abv||null,B.abv||null,1)}${row('Pris (kr)',A.price||null,B.price||null,1,false)}${row('Bryggeri',A.brewery,B.brewery,0)}
   </tbody></table></div>
-  ${pa||pb?`<div class="box" style="margin-top:22px"><h3>Smagsprofil</h3><p class="meta" style="margin:4px 0 8px"><span style="color:var(--sun);font-weight:700">■ ${esc(A.name)}</span> · <span style="color:var(--sky);font-weight:700">■ ${esc(B.name)}</span></p>${radar(pa||[0,0,0,0,0],PROF.map(x=>x[1]),pb)}</div>`:''}
+  ${pa||pb?`<div class="box" style="margin-top:22px"><h3>Smagsprofil</h3><p class="meta" style="margin:4px 0 8px"><b><span style="color:var(--sun)" aria-hidden="true">■</span> ${esc(A.name)}</b> · <b><span style="color:var(--sky)" aria-hidden="true">■</span> ${esc(B.name)}</b></p>${radar(pa||[0,0,0,0,0],PROF.map(x=>x[1]),pb)}</div>`:''}
   </div></section>`}
 /* ---------- ølkalender (typiske perioder) ---------- */
 function calView(){const y=new Date().getFullYear(),E=easter(y),day=x=>Math.floor((x-new Date(y,0,1))/DAY),yl=day(new Date(y+1,0,1));

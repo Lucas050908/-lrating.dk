@@ -7,7 +7,7 @@
 - **Sikkerhed:**
   - Content-Security-Policy i `<meta>`: `script-src 'self' 'unsafe-inline'`. `connect-src` og `img-src` tillader kun siden selv og `https://bbcegrufmzgfgzxazldr.supabase.co`.
   - Al brugertekst sendes gennem `esc()`.
-- **Farver:** `--gl` er den gule accentfarve til flader og ikoner. `--glt` bruges til gul *tekst*. I det mørke tema er de ens. I det lyse tema er `--glt` mørk rav (`#a15f00`), så tekst kan læses på hvid baggrund. Elementer, der altid er mørke (forsidebillede, menu, sidefod, `.sc` m.fl.), sætter `--glt` tilbage til gul.
+- **Farver:** `--gl` (gul) og `--sun` (orange) er accentfarver til flader og ikoner. `--glt` og `--sunt` bruges til farvet *tekst*. I det mørke tema er de ens. I det lyse tema er de mørkere (`#855000` og `#b93a08`), så tekst kan læses på hvid baggrund. Elementer, der altid er mørke (forsidebillede, menu, sidefod, `.sc` m.fl.), sætter `--glt` tilbage til gul.
 - **Skrifttyper:** Inter og Sora ligger lokalt i `fonts/`, så der ikke sendes noget til Google.
 
 ### Data på enheden
@@ -111,6 +111,8 @@ Widget-data, som `syncApp()` sender:
 - **Byttur:** Værten gemmer turen i `tours`. Tilmeldinger lægges i køen `S.joins` og indsættes i `tour_members`. `sbFindTour(kode)` henter en tur ud fra dens id.
 
 ## Test (`tests/`)
+Tilgængelighed er tjekket med axe-core (WCAG 2 A og AA) på alle sider i begge temaer. Det tjek ligger ikke i repoet, fordi det kræver en ekstra pakke, men kan gentages med `npm install axe-core` og Playwrights `add_script_tag`.
+
 Alle test bruger Playwright og en lokal server: `python3 -m http.server 8811 &`.
 
 | Fil | Hvad | Rører den rigtige database? |
