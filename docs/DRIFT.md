@@ -46,6 +46,7 @@ For at opdateringer kan installeres oven i den gamle app, skal appen signeres me
 - **Nøglen må aldrig committes.** `.gitignore` udelukker `*.keystore` og `*.jks`.
 
 ## Microsoft Store
+Se [STORE.md](STORE.md) for trin for trin, tekster og skærmbilleder.
 - Lucas har en Microsoft-udviklerkonto.
 - **Det mangler:** Reservér navnet i Partner Center, og send de tre værdier fra *Produktidentitet* til udvikleren:
   - `Package/Identity/Name`

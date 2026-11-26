@@ -132,6 +132,14 @@ def run(b,name,vw):
     pg.goto(URL+'#beer-ux1'); pg.wait_for_timeout(500)
     T('alkoholfri: ingen +Genstand på 0 %, men på almindelig øl',a and pg.query_selector('[data-unit]') is not None)
     pg.goto(URL+'#tilfoej'); pg.wait_for_timeout(400); pg.fill('#bAbv','0,3'); T('tilføj: alkoholfri-felt og hint',pg.query_selector('#bAf') is not None and pg.inner_text('#abvHint')=='Alkoholfri',pg.inner_text('#abvHint'))
+    # --- menuen "Mere"
+    pg.goto(URL); pg.wait_for_timeout(500)
+    if vw[0]>1100:
+        pg.click('#navMore'); pg.wait_for_timeout(200); vis=pg.is_visible('#navdd a[data-nav="smagning"]'); pg.click('#navdd a[data-nav="venner"]'); pg.wait_for_timeout(400)
+        T('menu: Mere åbner og fører til Venner',vis and pg.evaluate('location.hash')=='#venner' and not pg.is_visible('#navdd') and pg.evaluate("document.querySelector('.navmore').classList.contains('cur')"))
+    else:
+        pg.click('#menuBtn'); pg.wait_for_timeout(250); vis=pg.is_visible('#navdd a[data-nav="smagning"]') and pg.is_visible('#nav a[data-nav="profil"]'); pg.click('#navdd a[data-nav="genstande"]'); pg.wait_for_timeout(400)
+        T('menu: mobilmenuen viser alle sider og lukker efter valg',vis and pg.evaluate('location.hash')=='#genstande' and not pg.is_visible('#nav') and not over())
     # --- venner: smagerside, følg, feed
     pg.goto(URL+'#smager-Magnus'); pg.wait_for_timeout(500)
     T('smager: side med navn, antal og enighed',pg.inner_text('h1')=='Magnus' and '6 øl bedømt' in pg.inner_text('.thead') and '81 % enige' in pg.inner_text('.thead'),pg.inner_text('.thead'))

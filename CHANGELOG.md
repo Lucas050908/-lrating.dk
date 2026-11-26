@@ -4,6 +4,11 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Nat (01:10–01:30)
+- **Menuen "Mere":** Topmenuen har fået en undermenu med Smagning med venner, Venner, Genstand-tæller, Stilguide, Ølkalender, Øl til maden og Min øl-dagbog. På mobil vises alle sider i én liste.
+- **Microsoft Store:** `docs/STORE.md` med trin for trin, færdige tekster til butikssiden og seks skærmbilleder i `store/`. Skærmbillederne bruger opdigtede eksempler.
+- **Byttur:** Knappen "Send svar til værten" vises ikke længere for værten selv, og heller ikke når tilmeldingen allerede er gemt i databasen.
+
 ### Nat (00:55–01:10)
 - **Venner:** Ny side, hvor du følger andre smagere og ser deres nyeste bedømmelser samlet. "Find smagere" foreslår dem, du er mest enig med. Hvem du følger, gemmes kun på din egen enhed.
 - **Smagerside:** Hvert navn i en bedømmelse er nu et link til en side med personens bedømmelser, gennemsnit, yndlingsstil og jeres enighed i procent.

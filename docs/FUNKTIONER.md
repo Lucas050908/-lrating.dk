@@ -25,6 +25,11 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 | Genstand-tæller | `#genstande` | Se [Genstand-tæller](#genstand-tæller) |
 | Privatliv / Om | `#privatliv`, `#om` | Privatlivspolitik, ejere og fejlrapport |
 
+### Menuen
+- Topmenuen viser Alle øl, Toplisten, Galleri, Sammenlign, Byttur, Mere, Min profil og Tilføj øl.
+- Under **Mere** ligger Smagning med venner, Venner, Genstand-tæller, Stilguide og bryggerier, Ølkalender, Øl til maden og Min øl-dagbog.
+- Under 1100 px bredde bliver menuen til en knap, der viser alle sider i én liste.
+
 ### Fælles database
 - Alle ser de samme øl, bedømmelser og billeder. Nyt hentes, når siden åbnes, og derefter hvert 30. sekund.
 - Kun den enhed, der har lavet en øl eller bedømmelse, kan rette og slette den. Knapperne vises ikke hos andre.
