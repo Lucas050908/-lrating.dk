@@ -4,6 +4,13 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Eftermiddag (13:25–13:55): fejl fundet i Safaris motor og småting på små skærme
+- **Tilføj øl kunne få vandret scroll i Safari:** Det skjulte filfelt til billedet lå for enden af hjælpeteksten, og Safari regnede dets indhold med i sidens bredde. Nu ligger det i hjørnet af billedfeltet og fylder 1 px. Fejlen blev fundet af den nye test i WebKit og kunne ikke ses i Chrome.
+- **Billedfeltet viser nu en ramme,** når man kommer til det med tastaturet.
+- **Sidefoden:** Mailadressen stak ud af sin kolonne på mobil. Nu knækker den.
+- **Meget smalle telefoner (320 px):** Logoet er lidt mindre, og sprogknappen viser kun flaget, så de ikke støder sammen.
+- **Test:** `test_sync.py` og `test_site.py` består nu alle tjek i WebKit. `test_en.py` skriver, hvilket element der gør siden for bred. Det engelske tjek køres først i WebKit-jobbet.
+
 ### Eftermiddag (13:10–13:21): første kørsel i Safaris motor
 - **Resultat:** `test_site.py` bestod alle 143 tjek i WebKit. `test_en.py` fandt én ting: siden Tilføj øl får vandret scroll på mobil på engelsk i WebKit. Testen skriver nu, hvilket element der stikker ud, så det kan rettes.
 - **Rettet i testene:** `test_sync.py` kørte med service worker slået til. I WebKit gik kald fra siden så uden om den efterlignede database og ud på nettet. Nu er service workeren slået fra i den test, og i den ene test, hvor den skal være med (offline), tror siden, at den er offline, og synkroniserer ikke.

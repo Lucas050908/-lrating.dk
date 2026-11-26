@@ -74,6 +74,7 @@ footer .fbot{padding-bottom:max(18px,env(safe-area-inset-bottom))}
 .logo{font-family:Sora,sans-serif;font-weight:700;font-size:22px;letter-spacing:-.03em;text-decoration:none;color:#fff}
 .logo b{color:var(--sunt);font-weight:700}
 .logo{display:inline-flex;align-items:center;gap:10px}
+@media(max-width:350px){.logo{font-size:19px;gap:7px}#langCode{display:none}}
 .badge-ic{width:36px;height:36px;transition:transform .6s cubic-bezier(.2,.8,.3,1.4)}
 .logo:hover .badge-ic{transform:rotate(-20deg) scale(1.08)}
 .nav{display:flex;gap:2px;margin-left:auto}
@@ -260,7 +261,9 @@ html.trw body{visibility:hidden}
 @keyframes rad{from{transform:scale(0)}}
 .drop{border:2px dashed rgba(143,182,227,.45);border-radius:22px;padding:16px;display:grid;grid-template-columns:110px minmax(0,1fr);gap:16px;align-items:center;cursor:pointer;font-weight:400;transition:background .2s}
 .drop.over{background:rgba(255,122,61,.12)}
-.drop input{position:absolute;opacity:0;width:1px;height:1px}
+.drop{position:relative}.drop:has(input:focus-visible){outline:3px solid var(--gl);outline-offset:2px}
+/* Filfeltet er skjult, men kan stadig få fokus. Det ligger i hjørnet af feltet og fylder 1 px, så Safari ikke regner dets indhold med i sidens bredde. */
+.drop input{position:absolute;left:0;top:0;opacity:0;width:1px;height:1px;min-height:0;padding:0;border:0;overflow:hidden}
 .prev{width:110px;height:110px;border-radius:18px;background:var(--nv);display:grid;place-items:center;overflow:hidden}
 .prev img{width:100%;height:100%;object-fit:cover}
 /* top + gallery */
@@ -428,7 +431,7 @@ footer .wrap{position:relative;z-index:2}
 .undo.show{opacity:1;transform:translate(-50%,0)}
 .undo button{min-height:40px;padding:6px 16px}
 .dot{position:fixed;border-radius:50%;pointer-events:none;z-index:85}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.sr{position:absolute;width:1px;height:1px;min-height:0;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 @media(max-width:860px){.hero .wrap{grid-template-columns:minmax(0,1fr);gap:22px}.hero{min-height:0}.hero .wrap{padding-top:150px}}
 @media(max-width:600px){.hero::after{background:linear-gradient(180deg,rgba(15,29,54,.55) 0%,rgba(15,29,54,.05) 18%,rgba(15,29,54,.55) 40%,var(--nv) 75%)}
 .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.cb{padding:10px 12px 12px;gap:6px}.cb h3{font-size:15px}.card .tags{display:none}.cf{font-size:12px}.cf .av{display:none}.sc{font-size:16px;padding:3px 8px}.pill{font-size:11px;top:8px;left:8px}
@@ -453,7 +456,7 @@ footer .wrap{position:relative;z-index:2}
       <div><img src="img/logo.svg" width="96" height="96" alt="ølrating.dk logo" style="margin-bottom:12px"><div class="logo" style="font-size:30px"><span>ølrating<b>.dk</b></span></div><p style="opacity:.85;margin:10px 0 0;max-width:24em">Danske øl, bedømt af dem der drikker dem. Lavet ved Limfjorden.</p></div>
       <div><b>Udforsk</b><a href="#">Alle øl</a><a href="#toplisten">Toplisten</a><a href="#aarets">Årets øl</a><a href="#galleri">Galleri</a><a href="#stilguide">Stilguide og bryggerier</a><a href="#kalender">Ølkalender</a><a href="#mad">Øl til maden</a><a href="#sammenlign">Sammenlign øl</a><a href="https://github.com/Lucas050908/-lrating.dk/releases/download/android-app/olrating.apk" rel="noopener">Hent Android-appen</a></div>
       <div><b>Fællesskab</b><a href="#tilfoej">Tilføj øl</a><a href="#profil">Min profil</a><a href="#byttur">Byttur</a><a href="#venner">Venner</a><a href="#swipe">Enig eller uenig?</a><a href="#smagning">Smagning med venner</a><a href="#dagbog">Min øl-dagbog</a><a href="#genstande">Genstand-tæller</a><a href="#" data-go="reviews">Seneste anmeldelser</a></div>
-      <div><b>Om</b><a href="#om">Om ølrating.dk</a><a href="#nyt">Nyt på siden</a><a href="#privatliv">Privatliv</a><a href="mailto:andersenlucas84@gmail.com?subject=Fejl%20p%C3%A5%20%C3%B8lrating.dk&body=Hvad%20skete%20der%3F%0A%0AHvilken%20side%20var%20du%20p%C3%A5%3F%0A%0ATelefon%2Fbrowser%3A%0A">Rapportér en fejl</a><span style="display:block;opacity:.7;font-size:13px;padding:2px 0 4px">andersenlucas84@gmail.com</span><span style="display:block;opacity:.85;padding:4px 0">Lavet ved Limfjorden</span><span style="display:block;opacity:.85;padding:4px 0">Drik med omtanke</span></div>
+      <div><b>Om</b><a href="#om">Om ølrating.dk</a><a href="#nyt">Nyt på siden</a><a href="#privatliv">Privatliv</a><a href="mailto:andersenlucas84@gmail.com?subject=Fejl%20p%C3%A5%20%C3%B8lrating.dk&body=Hvad%20skete%20der%3F%0A%0AHvilken%20side%20var%20du%20p%C3%A5%3F%0A%0ATelefon%2Fbrowser%3A%0A">Rapportér en fejl</a><span style="display:block;opacity:.7;font-size:13px;padding:2px 0 4px;overflow-wrap:anywhere">andersenlucas84@gmail.com</span><span style="display:block;opacity:.85;padding:4px 0">Lavet ved Limfjorden</span><span style="display:block;opacity:.85;padding:4px 0">Drik med omtanke</span></div>
     </div>
     <div class="fbot"><span>© 2026 ølrating.dk · Ejet af Lucas Valentin Ottesen og Magnus Birkgaard Froberg</span>
       <span style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><label for="seasonSel" style="display:flex;align-items:center;gap:8px;font-weight:400">Tema<select id="seasonSel"><option value="auto">Efter dato</option><option value="none">Normal</option><option value="nytaar">Nytår</option><option value="fastelavn">Fastelavn</option><option value="paaske">Påske</option><option value="sankthans">Sankthans</option><option value="halloween">Halloween</option><option value="jdag">J-dag</option><option value="jul">Jul</option></select></label><label for="langSel" data-notr style="display:flex;align-items:center;gap:8px;font-weight:400">Sprog · Language<select id="langSel"><option value="da">Dansk</option><option value="en">English</option></select></label></span></div>

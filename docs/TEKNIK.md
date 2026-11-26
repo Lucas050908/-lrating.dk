@@ -86,6 +86,7 @@
 ### Lange ord
 - `#app{overflow-wrap:anywhere}` lader lange ord uden mellemrum knække, så brugerindhold ikke kan gøre siden bredere end skærmen. Knapper, mærkater og formularfelter er undtaget.
 - Overskrifter har `hyphens:auto`, så lange sammensatte ord får bindestreg, hvor browseren har en ordbog til sproget.
+- **Skjulte filfelter:** `.drop input` og `.sr` har `padding:0`, `min-height:0` og `overflow:hidden`, og filfeltet i billedfeltet ligger i feltets hjørne (`left:0;top:0`). Safari regner ellers filfeltets indbyggede knaptekst med i sidens bredde, hvis feltet tilfældigvis står tæt på højre kant.
 
 ### Offline
 - `sw.js` gemmer app-skallen.
