@@ -40,17 +40,17 @@ jobs:
       - run: pip install playwright && python -m playwright install --with-deps webkit
       - name: Start siden
         run: python3 -m http.server 8811 >/dev/null 2>&1 &
+      - name: Den engelske version (WebKit)
+        continue-on-error: true
+        run: BROWSER=webkit python3 tests/test_en.py
       - name: Hele siden klikket igennem (WebKit)
+        if: always()
         continue-on-error: true
         run: BROWSER=webkit python3 tests/test_site.py
       - name: To enheder deler data (WebKit)
         if: always()
         continue-on-error: true
         run: BROWSER=webkit python3 tests/test_sync.py
-      - name: Den engelske version (WebKit)
-        if: always()
-        continue-on-error: true
-        run: BROWSER=webkit python3 tests/test_en.py
   database:
     name: Den rigtige database
     runs-on: ubuntu-latest

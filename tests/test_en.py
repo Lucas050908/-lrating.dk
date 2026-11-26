@@ -172,8 +172,12 @@ def main():
         p2.set_viewport_size({'width':390,'height':800}); wide=[]
         for h in ['','#toplisten','#aarets','#byttur','#smagning','#venner','#stilguide','#profil','#tilfoej','#kalender','#mad','#genstande','#privatliv','#om','#nyt','#sammenlign']:
             p2.goto(URL+h); p2.wait_for_timeout(300)
-            if p2.evaluate('document.documentElement.scrollWidth>innerWidth+1'):   # skriv også, hvilke elementer der stikker ud
-                wide.append(h+' '+str(p2.evaluate("[...document.querySelectorAll('#app *,footer *')].filter(e=>e.getBoundingClientRect().right>innerWidth+1&&![...e.children].some(c=>c.getBoundingClientRect().right>innerWidth+1)).slice(0,4).map(e=>e.tagName+(e.id?'#'+e.id:'')+'.'+String(e.className).slice(0,30)+' '+Math.round(e.getBoundingClientRect().right)+' '+(e.textContent||e.value||'').trim().slice(0,30))")))
+            if p2.evaluate('document.documentElement.scrollWidth>innerWidth+1'):   # skriv også, hvad der stikker ud: elementer, tekst og mål
+                wide.append(h+' '+str(p2.evaluate("""(()=>{const W=innerWidth,d=e=>e.tagName+(e.id?'#'+e.id:'')+'.'+String(e.className&&e.className.baseVal!==undefined?e.className.baseVal:e.className).slice(0,30);
+                  const els=[...document.querySelectorAll('body *')].filter(e=>{const r=e.getBoundingClientRect();return r.width>0&&r.right>W+1&&![...e.children].some(c=>c.getBoundingClientRect().right>W+1)}).slice(0,5).map(e=>d(e)+' right='+Math.round(e.getBoundingClientRect().right)+' pos='+getComputedStyle(e).position+' "'+(e.textContent||e.value||'').trim().slice(0,30)+'"');
+                  const tx=[];const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;while((n=w.nextNode())&&tx.length<5){if(!n.nodeValue.trim())continue;const g=document.createRange();g.selectNodeContents(n);const r=g.getBoundingClientRect();if(r.width>0&&r.right>W+1)tx.push(d(n.parentElement)+' tekst right='+Math.round(r.right)+' "'+n.nodeValue.trim().slice(0,30)+'"')}
+                  const sc=[...document.querySelectorAll('body *')].filter(e=>e.scrollWidth>e.clientWidth+1&&e.clientWidth>0&&getComputedStyle(e).overflowX==='visible'&&getComputedStyle(e).display!=='inline').slice(0,5).map(e=>d(e)+' sw='+e.scrollWidth+' cw='+e.clientWidth);
+                  return {W,doc:document.documentElement.scrollWidth,body:document.body.scrollWidth,client:document.documentElement.clientWidth,els,tx,sc}})()""")))
         p2.reload(); p2.wait_for_timeout(1500)
         lang_ok=p2.evaluate("document.documentElement.lang")=='en' and p2.evaluate("document.getElementById('langSel').value")=='en' and p2.is_visible('#langBtn')
         p2.select_option('#langSel','da'); p2.wait_for_timeout(800)
