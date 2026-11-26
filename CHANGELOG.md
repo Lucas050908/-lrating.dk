@@ -6,7 +6,7 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ### Eftermiddag (15:00–15:13): status ved dagens afslutning
 - **Den rigtige database kl. 15:00:** 22 af 22 tjek bestod. Der ligger 1 øl og 1 bedømmelse. Siden svarer på https, og versionen på nettet er den samme som i koden (v51). `003`, `004` og funktionen `mails` er ikke sat op endnu.
-- **Browsere:** Chrome og Safaris motor består alle tre test. Firefox består `test_en.py` og `test_site.py`. I `test_sync.py` fejlede ét tjek i Firefox (flere stemmer på samme telefon i en smagning). Det ligner en stemme, der ikke nåede frem i tide, så testen venter nu længere. Det er ikke afklaret, om det er hele forklaringen.
+- **Browsere kl. 15:25:** Chrome, Safaris motor (WebKit) og Firefox består alle tre test på GitHub. Ét tjek fejlede først i Firefox (flere stemmer på samme telefon i en smagning). Stemmen nåede ikke frem inden for testens ventetid. Efter at testen venter længere, består det. I Firefox springes tjekket uden net over.
 - **Guiden (`docs/KONTO.md`)** siger tydeligere, at konto og mails kun er prøvet mod en efterligning, og at `003` skal køres i den nyeste udgave.
 - **Rettet her i loggen:** Testen mod den rigtige database har 22 tjek, ikke 23.
 
