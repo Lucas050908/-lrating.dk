@@ -4,6 +4,15 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Aften (22:12–22:37): små skærme, tastatur og to faner
+- **Nyt værktøj, `tests/layout.py`:** Det går 25 sider igennem i 320, 360, 390 og 1280 px, på dansk og engelsk, og finder vandret scroll, knapper oven i hinanden, knapper uden for skærmen og trykflader under 24 × 24 px på telefon (WCAG 2.2).
+- **Rettet, fordi det fandt det:** Afkrydsningen *Alkoholfri* på Tilføj øl lå inde i etiketten til alkoholprocenten, så et tryk på teksten flyttede markøren til procentfeltet i stedet for at krydse af. Den har nu sin egen etiket. Skyderne i smagsprofilen var 16 px høje og er nu 28 px. Bryggeri-knappen på en øls side og linket "Se hele toplisten" har fået større trykflade.
+- **Tastatur:** Når man trykker på en valgknap (fx en baggrund i Indstillinger eller en gruppe på Lykkehjulet), bliver fokus nu på knappen. Før hoppede det til toppen af siden, fordi siden bliver tegnet igen.
+- **To faner:** Har man siden åben i to faner, tager den ene nu de ændringer med, som den anden gemmer. Før kunne den sidste fane, der gemte, slette den andens ændringer, fx en ny ønskeliste.
+- **Målt:** Første side vises efter ca. 0,76 sekund på en telefon, der er gjort 4 gange langsommere, mod 0,87 sekund i morges. `index.html` er vokset fra 55 til 96 kB pakket i løbet af dagen på grund af de nye funktioner. Den engelske ordbog hentes kun, når man vælger engelsk.
+- **Kendt:** Indtil `supabase/005-besoeg.sql` er kørt, viser browserens konsol én linje med "404" for besøgstælleren, hver gang siden åbnes. Siden virker som den skal. Linjen forsvinder, når filen er kørt.
+- **Test:** 2 nye tjek i `test_site.py` og 1 i `test_sync.py`.
+
 ### Aften (21:12–21:32): kontrasten er målt i alle 30 kombinationer
 - **Nyt værktøj, `tests/kontrast.py`:** Det åbner 14 sider i to skærmstørrelser i hver af de 30 kombinationer af baggrund og farver og måler kontrasten mellem al tekst og dens baggrund mod WCAG AA (4,5:1, og 3:1 for stor tekst).
 - **Rettet, fordi målingen fandt det:** Bogstavet i de runde navnemærker stod hvidt på en for lys farve (ned til 2,5:1). Farven er gjort mørkere. Tallet 3 i top 5 på forsiden er gjort fedt. Knappen "På din ønskeliste" har nu mørk tekst på den lyserøde baggrund i stedet for hvid (3,4:1 før).

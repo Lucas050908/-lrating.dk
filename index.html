@@ -415,7 +415,7 @@ footer .wrap{position:relative;z-index:2}
 .more summary::after{content:"+";font-size:20px;line-height:1}
 .more[open] summary::after{content:"–"}
 .fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:16px;padding:0 16px 16px}
-.fgrid input[type=range]{min-height:0;padding:0;border:0;background:transparent;accent-color:var(--sun)}
+.fgrid input[type=range]{min-height:28px;padding:0;border:0;background:transparent;accent-color:var(--sun)}
 .ck{display:flex;align-items:center;gap:10px;font-weight:600}
 .ck input{flex:none;width:22px;height:22px;min-height:0;accent-color:var(--sun)}
 .explore{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:16px}
@@ -775,7 +775,9 @@ async function sbFindTast(id){await sbAuth();const T=await sbFetch(`/rest/v1/tas
 async function sbFindTour(code){await sbAuth();const id=String(code).trim();if(!/^[a-z0-9]{6,40}$/i.test(id))return null;const T=await sbFetch(`/rest/v1/tours?id=eq.${encodeURIComponent(id)}&select=*`);if(!T.length)return null;
   const M=await sbFetch(`/rest/v1/tour_members?tour=eq.${encodeURIComponent(id)}&select=name`);return cleanTour({...T[0].data,id:T[0].id,members:M.map(m=>m.name)})}
 let sbP=null,dirty=false;function sbSync(){if(sbP)return sbP;sbP=sbRun().finally(()=>{sbP=null});return sbP}
-let softR=false;function softRoute(){const y=scrollY,f=document.activeElement?.id;softR=true;try{route()}finally{softR=false}scrollTo({top:y,behavior:'instant'});if(f)$(f)?.focus({preventScroll:true})}
+let softR=false;function softRoute(){const y=scrollY,a=document.activeElement,f=a?.id,d=!f&&a&&a!==document.body&&a.dataset?Object.entries(a.dataset)[0]:null;softR=true;try{route()}finally{softR=false}scrollTo({top:y,behavior:'instant'});
+  /* Fokus bliver, hvor det var, så man ikke mister sin plads med tastaturet: efter id, ellers efter knappens første data-felt */
+  if(f)$(f)?.focus({preventScroll:true});else if(d)try{document.querySelector(`[data-${d[0].replace(/[A-Z]/g,m=>'-'+m.toLowerCase())}="${CSS.escape(d[1])}"]`)?.focus({preventScroll:true})}catch(e){}}
 async function sbRun(){if(!navigator.onLine){sbOk=false;return}sbBusy=true;const snap=()=>JSON.stringify([S.beers,S.reviews,S.tours,S.tast,S.me,S.wish,S.follow]),before=snap();
   try{await sbAuth();await sbPush();await sbPull();await sbTours();await sbTast();await sbVotes();await sbKonto();sbOk=true}catch(e){sbOk=false;console.warn('Synk fejlede',e)}
   finally{sbBusy=false;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}rvDot();if(snap()!==before){syncApp();if(sbFull&&location.hash==='#smagning-'+sbFull){sbFull='';route();return}sbFull='';const a=document.activeElement,open=document.querySelector('.lbox:not([hidden]),#scan:not([hidden])');const typing=a&&/INPUT|TEXTAREA/.test(a.tagName)&&a.value!=='';if(!dirty&&!open&&!typing)softRoute()}
@@ -1023,7 +1025,7 @@ function home(){const L=enrich(),Rv=reviews().slice().sort((a,b)=>b.date.localeC
    <aside class="side">
     <div class="box"><h3>Toplisten</h3><div style="font-size:13px;opacity:.7;margin-bottom:4px">Gennemsnit af alle bedømmelser</div>
      ${top.map((b,i)=>`<a class="rk" href="#beer-${esc(b.id)}"><span class="n" style="color:${['var(--gl)','var(--sun)','var(--pk)','var(--sky)','var(--sky)'][i]}">${i+1}</span><span><b style="font-size:15px">${esc(b.name)}</b><br><span class="meta" style="font-size:13px">${esc(b.brewery)}</span></span><b class="s">${fmt(b.avg)}</b></a>`).join('')||'<p class="meta">Ingen bedømte øl endnu.</p>'}
-     <a href="#toplisten" style="display:block;margin-top:12px;font-weight:600;font-size:14px;color:var(--glt)">Se hele toplisten →</a></div>
+     <a href="#toplisten" style="display:block;margin-top:6px;padding:6px 0;font-weight:600;font-size:14px;color:var(--glt)">Se hele toplisten →</a></div>
     <div class="box" id="reviews"><h3>Seneste anmeldelser</h3>${Rv.slice(0,4).map(r=>revRow(r,true)).join('')||'<p class="meta">Ingen endnu.</p>'}</div>
    </aside></div></section>
   <section class="band" style="padding-top:0"><div class="wrap"><h2 style="font-size:clamp(28px,3.4vw,42px);margin-bottom:20px">Mere at udforske</h2><div class="explore">
@@ -1087,7 +1089,7 @@ function addView(){const E=F.editBeer?beers().find(b=>b.id===F.editBeer):null,v=
   <label for="bCountry">Land<select id="bCountry">${COUNTRIES.map(x=>`<option value="${esc(x)}"${sel(x,E?.country||'Danmark')}>${x}</option>`).join('')}</select></label>
   <label for="bCode">Stregkode <span class="hint">valgfri</span><span style="display:flex;gap:8px"><input id="bCode" inputmode="numeric" maxlength="20" value="${esc(E?.code||F.code||'')}" placeholder="Fx 5740600001234">${HAS_BD?'<button type="button" class="ghost" id="scanAdd" style="flex:none">Scan</button>':''}</span></label></div>
   <h3 class="fh">Smag og styrke</h3>
-  <div class="two"><label for="bAbv">Alkohol % <span class="hint" id="abvHint">${E?.abv?abvLabel(E.abv):''}</span><input id="bAbv" inputmode="decimal" maxlength="5" placeholder="5,0" value="${E?.abv?fmt(E.abv):''}"><span class="ck" style="font-weight:400;margin-top:8px"><input type="checkbox" id="bAf"${E&&isAf(E)?' checked':''} style="width:22px;min-height:22px;height:22px;padding:0">Alkoholfri (højst 0,5 %)</span></label>
+  <div class="two"><div style="display:grid;gap:8px;align-content:start"><label for="bAbv">Alkohol % <span class="hint" id="abvHint">${E?.abv?abvLabel(E.abv):''}</span><input id="bAbv" inputmode="decimal" maxlength="5" placeholder="5,0" value="${E?.abv?fmt(E.abv):''}"></label><label class="ck" for="bAf" style="font-weight:400;min-height:32px"><input type="checkbox" id="bAf"${E&&isAf(E)?' checked':''} style="width:22px;min-height:22px;height:22px;padding:0">Alkoholfri (højst 0,5 %)</label></div>
   <label for="bIbu">Bitterhed (IBU) <span class="hint" id="ibuHint">${E?.ibu?ibuLabel(E.ibu):'står tit på etiketten'}</span><input id="bIbu" type="number" inputmode="numeric" min="0" max="150" placeholder="Fx 35" value="${v('ibu')}"></label></div>
   <div><div style="font-weight:600;margin-bottom:8px">Farve</div><div class="swatches">${COLORS.map(([n,c])=>`<button type="button" class="sw" data-color="${n}" aria-pressed="${E?.color===n}" aria-label="${n}"><i style="background:${c}"></i>${n}</button>`).join('')}</div></div>
   <h3 class="fh">Køb og servering</h3>
@@ -1106,7 +1108,7 @@ function beerView(id){const b=enrich().find(x=>x.id===id);if(!b)return `<section
   return `<div class="wrap"><div class="detail"><div class="ph">${photo(b)}</div>
   <div><a href="#" class="meta">← Alle øl</a><div style="margin-top:12px"><span class="tag" style="font-size:13px">${esc(b.style)}</span></div><h1 style="font-size:clamp(34px,5vw,60px);margin-top:10px;overflow-wrap:anywhere">${esc(b.name)}</h1><div class="meta" style="font-size:18px;margin-top:6px">${esc(b.brewery)}${b.city?', '+esc(b.city):''}</div>
    <div class="info">
-    <div class="r"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gl)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V9l8-5 8 5v12M9 21v-6h6v6"/></svg><span>Bryggeri</span><b><button type="button" data-brew="${esc(b.brewery)}" style="all:unset;cursor:pointer;text-decoration:underline">${esc(b.brewery)}</button>${b.city||b.country?` <small>· ${esc([b.city,b.country].filter(Boolean).join(', '))}</small>`:''}</b></div>
+    <div class="r"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gl)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V9l8-5 8 5v12M9 21v-6h6v6"/></svg><span>Bryggeri</span><b><button type="button" data-brew="${esc(b.brewery)}" style="all:unset;cursor:pointer;text-decoration:underline;display:inline-block;padding:4px 0">${esc(b.brewery)}</button>${b.city||b.country?` <small>· ${esc([b.city,b.country].filter(Boolean).join(', '))}</small>`:''}</b></div>
     <div class="r"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gl)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3h8l-1 18H9zM8.5 8h7"/></svg><span>Stil</span><b>${esc(b.style)} <small>· ${(GUIDE[b.style]||GUIDE.Andet)[0]}</small></b></div>
     ${b.abv?`<div class="r"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gl)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19L19 5M7.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM16.5 18a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/></svg><span>Alkohol</span><b>${fmt(b.abv)} % <small>· ${abvLabel(b.abv)}</small><span class="meter"><i style="width:${Math.min(100,b.abv/12*100)}%"></i></span></b></div>`:''}
     ${b.ibu?`<div class="r"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gl)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c3 4 6 7 6 11a6 6 0 0 1-12 0c0-4 3-7 6-11z"/></svg><span>Bitterhed</span><b>${esc(b.ibu)} IBU <small>· ${ibuLabel(b.ibu)}</small><span class="meter"><i style="width:${Math.min(100,b.ibu)}%"></i></span></b></div>`:''}
@@ -1751,6 +1753,9 @@ applyMode();applyLook();applySeason();
 (async()=>{try{navigator.storage?.persist?.()}catch(e){}await loadImgs();await migrateImgs();takePending();await langBoot();route();loadDone();syncApp();sbSync();sbVisit();if(kontoOn()&&isAcct())acctPrefs()})();
 setInterval(()=>{if(!document.hidden)sbSync()},30000);setInterval(()=>{if(!document.hidden&&/^#(smagning|byttur)-/.test(location.hash))sbSync()},6000);addEventListener('online',()=>sbSync());
 document.addEventListener('input',()=>{dirty=true},true);document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('form'))dirty=true},true);
+/* En anden fane har gemt: tag dens data med her, så den næste gemning i denne fane ikke sletter det, den anden fane lavede.
+   Skriver man i en formular, tegnes siden først igen, når man skifter side. */
+addEventListener('storage',e=>{if(e.key!==KEY||!e.newValue)return;try{const x=JSON.parse(e.newValue);if(!x||typeof x!=='object'||Array.isArray(x))return;S={...S,...x};if(!Array.isArray(S.wish))S.wish=[];if(!S.look||typeof S.look!=='object'||Array.isArray(S.look))S.look={};EC=null;applyLook();if(!dirty)softRoute();syncApp()}catch(err){}});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)return;if(takePending()&&location.hash==='#genstande')route();sbSoon(200)});
 if(window.OlratingApp?.takeUnits)setInterval(()=>{if(takePending()&&location.hash==='#genstande')route()},5000);
 if('serviceWorker' in navigator&&/^https:|localhost/.test(location.href)){addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}

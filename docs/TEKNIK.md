@@ -224,6 +224,12 @@ Widget-data, som `syncApp()` sender:
 
 ## Test (`tests/`)
 
+**Layout (`tests/layout.py`):** Køres, når noget på siderne flyttes. 25 sider i 320, 360, 390 og 1280 px, på dansk og engelsk: vandret scroll, knapper oven i hinanden (hver linje af et link for sig), knapper uden for skærmen og trykflader under 24 × 24 px på telefon. Undtaget er links midt i en sætning, felter med en større etiket og knapper i en række, der kan swipes til siden. Tager omkring tre minutter.
+
+**To faner:** `addEventListener('storage', …)` tager det, en anden fane gemmer, ind i `S`, så den næste `save()` ikke overskriver det. Skriver man i en formular (`dirty`), tegnes siden ikke igen før næste sideskift.
+
+**Fokus efter et valg:** `softRoute()` sætter fokus tilbage på den knap, der blev trykket på: efter `id`, ellers efter knappens første `data-`felt.
+
 **Kontrast (`tests/kontrast.py`):** Køres, når farver, baggrunde eller temaer ændres. Den går 14 sider igennem i 390 og 1280 px i alle 30 kombinationer af baggrund og farver og finder for hver tekst den nærmeste baggrundsfarve, også gennem gennemsigtige lag. Den ender med `ALT OK` eller en liste med `SVAG`. `python3 tests/kontrast.py nat std` måler kun én kombination. Den er ikke med i de tre faste test, fordi den tager omkring fem minutter.
 
 Tilgængelighed er tjekket med axe-core (WCAG 2 A og AA) på alle sider i begge temaer. Det tjek ligger ikke i repoet, fordi det kræver en ekstra pakke, men kan gentages med `npm install axe-core` og Playwrights `add_script_tag`.

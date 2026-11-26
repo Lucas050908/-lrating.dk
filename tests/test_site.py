@@ -213,6 +213,11 @@ def run(b,name,vw):
     T('beer buddies: Magnus er bedste match med samme procent som på hans side',pg.eval_on_selector_all('.bud','e=>e.length')==1 and '81 %' in bt and 'Bedste match' in bt and 'Magnus' in bt and '4 øl til fælles' in bt and 'Mest enige om' in bt and 'Du: ' in bt and pg.query_selector('.bud .budl a[href^="#beer-"]') is not None and not over(),bt[:220])
     was=pg.inner_text('.bud [data-follow]'); pg.click('.bud [data-follow]'); pg.wait_for_timeout(400); mid=pg.inner_text('.bud [data-follow]'); pg.click('.bud [data-follow]'); pg.wait_for_timeout(400)
     T('beer buddies: man kan følge og holde op igen fra kortet',was=='Følger ✓' and mid=='Følg' and pg.inner_text('.bud [data-follow]')=='Følger ✓' and 'Magnus' in ls(pg)['follow'],(was,mid))
+    pg.goto(URL+'#tilfoej'); pg.wait_for_timeout(400); pg.click('label[for=bAf]'); af1=pg.is_checked('#bAf'); foc=pg.evaluate('document.activeElement.id'); pg.click('label[for=bAf]')
+    T('tilføj: et tryk på teksten Alkoholfri krydser af og flytter ikke markøren til procentfeltet',af1 and not pg.is_checked('#bAf') and foc!='bAbv' and not over(),(af1,foc))
+    pg.goto(URL+'#indstillinger'); pg.wait_for_timeout(400); pg.focus('[data-look="pat:boelger"]'); pg.keyboard.press('Enter'); pg.wait_for_timeout(300); fk=pg.evaluate("document.activeElement.dataset.look||document.activeElement.tagName"); pg.keyboard.press('Shift+Tab'); pg.keyboard.press('Enter'); pg.wait_for_timeout(300)
+    T('tastatur: fokus bliver på knappen, når siden tegnes igen efter et valg',fk=='pat:boelger' and pg.evaluate("document.documentElement.dataset.pat")=='bobler',(fk,pg.evaluate("document.documentElement.dataset.pat")))
+    pg.click('[data-look="pat:none"]'); pg.wait_for_timeout(200)
     # --- loading screen: vises med det samme, er væk igen når siden er klar, og spærrer ikke for tryk
     pg.goto(URL+'#om'); pg.reload(wait_until='commit'); pg.wait_for_selector('#load .ldb',state='attached',timeout=4000); pe=pg.evaluate("getComputedStyle(document.getElementById('load')).pointerEvents")
     pg.wait_for_selector('#load',state='detached',timeout=6000)

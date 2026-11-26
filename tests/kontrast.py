@@ -39,24 +39,30 @@ MEASURE = r"""(()=>{
      const key=k+'|'+cs.color+'|'+Math.round(worst*10);if(seen.has(key))continue;seen.add(key);out.push({k,t:t.slice(0,30),r:Math.round(worst*100)/100,need,fg:cs.color,op:Math.round(op*100)/100,bg:bgs.map(B=>B.slice(0,3).map(Math.round).join(',')).slice(0,2).join(' / '),px:size})}}
  return out})()"""
 
-only = sys.argv[1:3]
-combos = [(b, a) for b in BG for a in ACC] if len(only) < 2 else [(only[0], only[1])]
-bad = {}
-with sync_playwright() as p:
-    br = p.chromium.launch(); M = Mock()
-    for vw in ((390, 844), (1280, 900)):
-        c = br.new_context(viewport={'width': vw[0], 'height': vw[1]}, locale='da-DK', service_workers='block', reduced_motion='reduce'); c.route(f'https://{HOST}/**', M.handle); pg = c.new_page()
-        pg.goto(URL); pg.wait_for_timeout(1200)
-        for b, a in combos:
-            pg.evaluate(SEED.replace('LOOK', json.dumps({'bg': b, 'acc': a}))); pg.reload(); pg.wait_for_timeout(900)
-            for h in PAGES:
-                pg.goto(URL + h); pg.wait_for_timeout(250)
-                for f in pg.evaluate(MEASURE):
-                    key = (f['k'], f['fg'], f['bg']); e = bad.setdefault(key, {**f, 'hvor': set(), 'komb': set()}); e['r'] = min(e['r'], f['r']); e['hvor'].add(h or '#'); e['komb'].add(b + '+' + a)
-        c.close()
-    br.close()
-rows = sorted(bad.values(), key=lambda e: e['r'])
-for e in rows:
-    print(f"SVAG {e['r']}:1 (krav {e['need']}) {e['k']} «{e['t']}» {e['px']}px tekst {e['fg']} gennemsigtighed {e['op']} på {e['bg']} | sider: {' '.join(sorted(e['hvor'])[:5])} | {len(e['komb'])} af {len(combos)} kombinationer: {' '.join(sorted(e['komb'])[:4])}")
-print(f'{len(rows)} slags tekst er for svag' if rows else f'ALT OK ({len(combos)} kombinationer, {len(PAGES)} sider, 2 skærmstørrelser)')
-sys.exit(1 if rows else 0)
+def main():
+    global bad
+    only = sys.argv[1:3]
+    combos = [(b, a) for b in BG for a in ACC] if len(only) < 2 else [(only[0], only[1])]
+    bad = {}
+    with sync_playwright() as p:
+        br = p.chromium.launch(); M = Mock()
+        for vw in ((390, 844), (1280, 900)):
+            c = br.new_context(viewport={'width': vw[0], 'height': vw[1]}, locale='da-DK', service_workers='block', reduced_motion='reduce'); c.route(f'https://{HOST}/**', M.handle); pg = c.new_page()
+            pg.goto(URL); pg.wait_for_timeout(1200)
+            for b, a in combos:
+                pg.evaluate(SEED.replace('LOOK', json.dumps({'bg': b, 'acc': a}))); pg.reload(); pg.wait_for_timeout(900)
+                for h in PAGES:
+                    pg.goto(URL + h); pg.wait_for_timeout(250)
+                    for f in pg.evaluate(MEASURE):
+                        key = (f['k'], f['fg'], f['bg']); e = bad.setdefault(key, {**f, 'hvor': set(), 'komb': set()}); e['r'] = min(e['r'], f['r']); e['hvor'].add(h or '#'); e['komb'].add(b + '+' + a)
+            c.close()
+        br.close()
+    rows = sorted(bad.values(), key=lambda e: e['r'])
+    for e in rows:
+        print(f"SVAG {e['r']}:1 (krav {e['need']}) {e['k']} «{e['t']}» {e['px']}px tekst {e['fg']} gennemsigtighed {e['op']} på {e['bg']} | sider: {' '.join(sorted(e['hvor'])[:5])} | {len(e['komb'])} af {len(combos)} kombinationer: {' '.join(sorted(e['komb'])[:4])}")
+    print(f'{len(rows)} slags tekst er for svag' if rows else f'ALT OK ({len(combos)} kombinationer, {len(PAGES)} sider, 2 skærmstørrelser)')
+    sys.exit(1 if rows else 0)
+
+
+if __name__ == '__main__':
+    main()
