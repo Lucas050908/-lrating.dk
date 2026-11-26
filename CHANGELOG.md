@@ -4,6 +4,11 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Middag (12:00–12:08): småting efter mail-delen
+- **Afmeld-siden husker svaret,** hvis man fx skifter sprog, efter man har afmeldt.
+- **Flueben** ved lange tekster (mailvalg på Min profil) blev klemt og var ikke lige store. De har nu alle samme størrelse.
+- **Guiden (`docs/KONTO.md`)** har fået en genvej: Login kan prøves med ens egen mail, før mailtjenesten er sat op.
+
 ### Middag (11:35–11:57): mails om opdateringer
 - **Mails er bygget (skjult, indtil de er sat op):** Brugere med konto kan få mail, når nogen bedømmer deres øl, når en, de følger, bedømmer en øl, når nogen melder sig til deres byttur eller stemmer i deres smagning, og når der er nyt om siden. Sker der flere ting, samles de i én mail. Man får højst én mail i timen, og "ven har bedømt" højst én gang om dagen.
 - **Mailen** er på dansk eller engelsk efter brugerens sprog, har links til øllen, turen eller smagningen, og findes både med og uden formatering.

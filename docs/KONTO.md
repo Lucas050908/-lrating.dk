@@ -17,6 +17,10 @@ Der er to trin. **Trin 1** giver login med kode på mail. **Trin 2** giver mails
 
 ## Trin 1: Login med kode på mail
 
+> **Genvej, hvis du bare vil se det virke først:** Lav 1.1, 1.4 og 1.5, og spring 1.2 og 1.3 over. Så sender Supabase selv koden,
+> men kun til den mailadresse, du selv bruger hos Supabase (den fra din GitHub), og højst 2 mails i timen.
+> Det er nok til at prøve 1.6. Resend (1.2 og 1.3) skal til, før andre end dig kan få en kode.
+
 ### 1.1 Kør database-filen 003 (hvis du ikke allerede har gjort det)
 1. Åbn filen: <https://raw.githubusercontent.com/Lucas050908/-lrating.dk/main/supabase/003-konto-mails-enig.sql>
 2. Markér alt, og kopiér.
