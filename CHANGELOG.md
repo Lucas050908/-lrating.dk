@@ -4,6 +4,9 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Middag (12:26–12:33): knapperne på Enig eller uenig?
+- **Knapperne Uenig, Spring over og Enig** står nu på én linje også på små skærme. Før knækkede "👎 Uenig" over to linjer på en telefon. Tjekket på 390 og 320 px på dansk og engelsk.
+
 ### Middag (12:25–12:25): svar-adresse på mails
 - **Funktionen `mails`** kan få en valgfri svar-adresse (`MAIL_REPLY_TO` under Secrets i Supabase), så svar på en mail havner i en indbakke, nogen læser. Guiden er opdateret, og `test_sql.js` tjekker det (79 tjek).
 
