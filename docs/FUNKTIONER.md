@@ -27,8 +27,15 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 | Nyt på siden | `#nyt` | Oversigt over de nyeste funktioner med links |
 | Privatliv / Om | `#privatliv`, `#om` | Privatlivspolitik, ejere og fejlrapport |
 
+### Dansk og engelsk
+- Siden er dansk som standard. Knappen **EN** i topmenuen skifter til engelsk, og **DA** skifter tilbage. Valget kan også ændres under "Sprog · Language" i sidefoden, og det huskes på enheden.
+- Hele siden er oversat: menuer, alle sider, formularer, beskeder, mærker, stilguide, privatlivspolitik og delebillederne.
+- På engelsk skrives tal med punktum (4.5), datoer på engelsk, og priser som DKK.
+- Det, brugerne selv har skrevet (navne på øl, anmeldelser, byture), bliver ikke oversat.
+- Widgets i apps er stadig kun på dansk.
+
 ### Menuen
-- Topmenuen viser Alle øl, Toplisten, Galleri, Sammenlign, Byttur, Mere, Min profil og Tilføj øl.
+- Topmenuen viser Alle øl, Toplisten, Galleri, Sammenlign, Byttur, Mere, Min profil, Tilføj øl og sprogknappen EN/DA.
 - Under **Mere** ligger Smagning med venner, Venner, Genstand-tæller, Årets øl, Stilguide og bryggerier, Ølkalender, Øl til maden og Min øl-dagbog.
 - Under 1100 px bredde bliver menuen til en knap, der viser alle sider i én liste.
 

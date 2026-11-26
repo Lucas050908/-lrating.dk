@@ -83,8 +83,9 @@ footer .fbot{padding-bottom:max(18px,env(safe-area-inset-bottom))}
 .navdd{display:none;position:absolute;right:0;top:calc(100% + 12px);min-width:240px;flex-direction:column;gap:2px;background:rgba(15,29,54,.97);border:1px solid var(--ln);border-radius:18px;padding:8px;box-shadow:0 18px 40px rgba(0,0,0,.4)}.navmore.open .navdd{display:flex}.navdd a{border-radius:12px}
 .nav a.cta:hover,.nav a.cta[aria-current=page]{background:var(--sun);filter:brightness(1.06)}
 .cta{background:var(--sun);color:var(--ink)!important;border-radius:99px;padding:11px 20px;text-decoration:none;font-weight:700;white-space:nowrap}
+.bar .langb{font:600 13px Inter,sans-serif;min-width:40px;height:40px;padding:0 8px;border-radius:99px;border:1px solid rgba(255,255,255,.32);background:none;color:#fff;cursor:pointer;margin-left:-12px}.bar .langb:hover{background:rgba(255,255,255,.14)}
 .bar .menu{display:none;padding:0;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.16);color:#fff;align-items:center;justify-content:center;cursor:pointer}
-@media(max-width:1100px){.navmore{display:block}#navMore{display:none}.navdd{display:flex;position:static;min-width:0;background:none;border:0;padding:0;box-shadow:none;border-top:1px solid var(--ln);margin-top:4px;padding-top:4px}.navdd a{border-radius:99px}.nav{max-height:calc(100vh - 90px);overflow:auto}.nav{position:absolute;top:66px;left:12px;right:12px;flex-direction:column;background:rgba(15,29,54,.97);border:1px solid var(--ln);border-radius:22px;padding:8px;display:none}.nav.open{display:flex}.bar .menu{display:flex;margin-left:auto}.bar>.cta{display:none}}
+@media(max-width:1100px){.navmore{display:block}#navMore{display:none}.navdd{display:flex;position:static;min-width:0;background:none;border:0;padding:0;box-shadow:none;border-top:1px solid var(--ln);margin-top:4px;padding-top:4px}.navdd a{border-radius:99px}.nav{max-height:calc(100vh - 90px);overflow:auto}.nav{position:absolute;top:66px;left:12px;right:12px;flex-direction:column;background:rgba(15,29,54,.97);border:1px solid var(--ln);border-radius:22px;padding:8px;display:none}.nav.open{display:flex}.bar .menu{display:flex;order:3}.bar .langb{margin-left:auto;order:2;height:44px;min-width:44px}.bar>.cta{display:none}}
 /* buttons + inputs */
 button,.btn{font:inherit;font-weight:700;cursor:pointer;min-height:46px;border-radius:99px;border:0;padding:11px 24px;background:var(--sun);color:var(--ink);text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;transition:transform .2s cubic-bezier(.2,.8,.3,1.5),filter .2s}
 button:hover,.btn:hover{transform:translateY(-2px);filter:brightness(1.08)}
@@ -117,6 +118,7 @@ label{font-weight:600;display:grid;gap:6px}
 .pop button{min-height:34px;padding:4px 12px;font-weight:600;background:transparent;color:#fff;border:1px solid rgba(255,255,255,.3)}
 .week{background:rgba(15,29,54,.8);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(143,182,227,.3);border-radius:26px;padding:22px;text-decoration:none;display:block;transition:transform .3s}
 .week:hover{transform:translateY(-4px)}
+html.trw body{visibility:hidden}
 .kick{font-size:13px;font-weight:700;color:var(--sunt);letter-spacing:.04em;text-transform:uppercase}
 .wk{display:grid;grid-template-columns:84px minmax(0,1fr) auto;gap:16px;align-items:center;margin:12px 0 16px}
 .thumb{border-radius:16px;overflow:hidden;background:var(--nv3)}
@@ -413,7 +415,7 @@ footer .wrap{position:relative;z-index:2}
 <div class="top" id="top"><div class="bar">
   <a class="logo" href="#" aria-label="ølrating.dk forside"><img src="img/favicon.svg" width="36" height="36" alt="" class="badge-ic"><span>ølrating<b>.dk</b></span></a>
   <button class="menu" id="menuBtn" aria-label="Åbn menu" aria-expanded="false"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-  <nav class="nav" id="nav"><a href="#" data-nav="">Alle øl</a><a href="#toplisten" data-nav="toplisten">Toplisten</a><a href="#galleri" data-nav="galleri">Galleri</a><a href="#sammenlign" data-nav="sammenlign">Sammenlign</a><a href="#byttur" data-nav="byttur">Byttur</a><div class="navmore"><button type="button" id="navMore" aria-expanded="false" aria-haspopup="true" aria-controls="navdd">Mere<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="navdd" id="navdd"><a href="#smagning" data-nav="smagning">Smagning med venner</a><a href="#venner" data-nav="venner">Venner</a><a href="#genstande" data-nav="genstande">Genstand-tæller</a><a href="#aarets" data-nav="aarets">Årets øl</a><a href="#stilguide" data-nav="stilguide">Stilguide og bryggerier</a><a href="#kalender" data-nav="kalender">Ølkalender</a><a href="#mad" data-nav="mad">Øl til maden</a><a href="#dagbog" data-nav="dagbog">Min øl-dagbog</a></div></div><a href="#profil" data-nav="profil">Min profil</a><a href="#tilfoej" data-nav="tilfoej" class="cta">+ Tilføj øl</a></nav>
+  <nav class="nav" id="nav"><a href="#" data-nav="">Alle øl</a><a href="#toplisten" data-nav="toplisten">Toplisten</a><a href="#galleri" data-nav="galleri">Galleri</a><a href="#sammenlign" data-nav="sammenlign">Sammenlign</a><a href="#byttur" data-nav="byttur">Byttur</a><div class="navmore"><button type="button" id="navMore" aria-expanded="false" aria-haspopup="true" aria-controls="navdd">Mere<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="navdd" id="navdd"><a href="#smagning" data-nav="smagning">Smagning med venner</a><a href="#venner" data-nav="venner">Venner</a><a href="#genstande" data-nav="genstande">Genstand-tæller</a><a href="#aarets" data-nav="aarets">Årets øl</a><a href="#stilguide" data-nav="stilguide">Stilguide og bryggerier</a><a href="#kalender" data-nav="kalender">Ølkalender</a><a href="#mad" data-nav="mad">Øl til maden</a><a href="#dagbog" data-nav="dagbog">Min øl-dagbog</a></div></div><a href="#profil" data-nav="profil">Min profil</a><a href="#tilfoej" data-nav="tilfoej" class="cta">+ Tilføj øl</a></nav><button type="button" id="langBtn" class="langb" data-notr aria-label="Switch to English">EN</button>
 </div></div>
 <main id="app"></main>
 <footer>
@@ -427,7 +429,7 @@ footer .wrap{position:relative;z-index:2}
       <div><b>Om</b><a href="#om">Om ølrating.dk</a><a href="#nyt">Nyt på siden</a><a href="#privatliv">Privatliv</a><a href="mailto:andersenlucas84@gmail.com?subject=Fejl%20p%C3%A5%20%C3%B8lrating.dk&body=Hvad%20skete%20der%3F%0A%0AHvilken%20side%20var%20du%20p%C3%A5%3F%0A%0ATelefon%2Fbrowser%3A%0A">Rapportér en fejl</a><span style="display:block;opacity:.7;font-size:13px;padding:2px 0 4px">andersenlucas84@gmail.com</span><span style="display:block;opacity:.85;padding:4px 0">Lavet ved Limfjorden</span><span style="display:block;opacity:.85;padding:4px 0">Drik med omtanke</span></div>
     </div>
     <div class="fbot"><span>© 2026 ølrating.dk · Ejet af Lucas Valentin Ottesen og Magnus Birkgaard Froberg</span>
-      <span style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><label for="seasonSel" style="display:flex;align-items:center;gap:8px;font-weight:400">Tema<select id="seasonSel"><option value="auto">Efter dato</option><option value="none">Normal</option><option value="nytaar">Nytår</option><option value="fastelavn">Fastelavn</option><option value="paaske">Påske</option><option value="sankthans">Sankthans</option><option value="halloween">Halloween</option><option value="jdag">J-dag</option><option value="jul">Jul</option></select></label></span></div>
+      <span style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><label for="seasonSel" style="display:flex;align-items:center;gap:8px;font-weight:400">Tema<select id="seasonSel"><option value="auto">Efter dato</option><option value="none">Normal</option><option value="nytaar">Nytår</option><option value="fastelavn">Fastelavn</option><option value="paaske">Påske</option><option value="sankthans">Sankthans</option><option value="halloween">Halloween</option><option value="jdag">J-dag</option><option value="jul">Jul</option></select></label><label for="langSel" data-notr style="display:flex;align-items:center;gap:8px;font-weight:400">Sprog · Language<select id="langSel"><option value="da">Dansk</option><option value="en">English</option></select></label></span></div>
   </div>
 </footer>
 <div class="scan" id="scan" hidden role="dialog" aria-label="Scan stregkode"><div style="position:relative;overflow:hidden"><video id="scanV" playsinline muted></video><div class="frame"></div></div><div class="bot"><b>Hold stregkoden inden for rammen</b><button type="button" id="scanX" class="ghost">Luk</button></div></div>
@@ -438,7 +440,8 @@ footer .wrap{position:relative;z-index:2}
 {
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const fmt=x=>(+x).toFixed(1).replace('.',',');
+let EN=null;
+const fmt=x=>{const v=(+x).toFixed(1);return EN?v:v.replace('.',',')};
 const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const DAY=864e5;
 const STYLES={'Pilsner':'#e8b21c','Lager':'#c98a1a','IPA':'#e07a1f','Pale Ale':'#e89a2c','Hvede':'#f0cf6b','Sour':'#e0567c','Stout':'#2a1606','Porter':'#4a2412','Brown Ale':'#8a4a1a','Bock':'#9a3d12','Juleøl':'#8a2a12','Påskebryg':'#f0b832','Andet':'#c98a2a'};
@@ -467,6 +470,43 @@ const KEY='olrating-v1';
 let S={beers:[],reviews:[],me:'',season:'auto',wish:[],mode:'auto'};
 try{const x=JSON.parse(localStorage.getItem(KEY)||'null');if(x)S={...S,...x}}catch(e){}
 if(!Array.isArray(S.wish))S.wish=[];
+if(S.lang!=='en')S.lang='da';
+/* ---------- sprog ----------
+   Siden er skrevet på dansk. Vælger man English i sidefoden, hentes js/en.js, og al tekst bliver oversat, når den lander på siden.
+   Ordbogen har faste tekster (x) og mønstre til tekster med tal og navne (r). Tekst i elementer med data-notr bliver ikke rørt. */
+const LOC=()=>EN?'en-GB':'da-DK',trC=new Map(),TRA=['placeholder','aria-label','title','alt'];
+function trK(k){let v=trC.get(k);if(v!==undefined)return v;v=Object.prototype.hasOwnProperty.call(EN.x,k)?EN.x[k]:null;if(v==null){for(const [re,f] of EN.r)if(re.test(k)){const r=k.replace(re,f);if(r!==k){v=r;break}}}if(trC.size>5000)trC.clear();trC.set(k,v);return v}
+function trS(t){if(!EN||typeof t!=='string'||!t)return t;const m=/^([\s·]*)([\s\S]*?)([\s·]*)$/.exec(t),k=m[2].replace(/\s+/g,' ');if(!k)return t;let o=trK(k);
+  if(o==null&&k.includes(' · ')){let hit=false;const q=k.split(' · ').map(x=>{const v=trK(x);if(v==null)return x;hit=true;return v});if(hit)o=q.join(' · ')}
+  return o==null?t:m[1]+o+m[3]}
+/* En sætning med fed skrift eller links i bliver oversat samlet: de små elementer skrives som <1>…</1>, <2>…</2> i nøglen og i oversættelsen. */
+function trSkel(n){let has=false,txt=false,i=0,k='';for(let c=n.firstChild;c;c=c.nextSibling){if(c.nodeType===3){if(c.nodeValue.trim())txt=true;k+=c.nodeValue}
+  else if(c.nodeType===1){if(c.nodeName==='BR'){k+='<br>';continue}if(c.firstElementChild||c.hasAttribute('data-notr')||/^(SELECT|TEXTAREA|SCRIPT|STYLE)$/.test(c.nodeName))return null;i++;const t=c.textContent;if(t.trim())has=true;k+='<'+i+'>'+t+'</'+i+'>'}}
+  return has&&txt?k.replace(/\s+/g,' ').trim():null}
+const trN=new WeakMap();   /* værn mod løkker: en sætning bliver højst oversat 4 gange i samme element */
+function trFill(n,v){const els=[],brs=[];for(const c of [...n.childNodes]){if(c.nodeType===3)c.remove();else if(c.nodeType===1)(c.nodeName==='BR'?brs:els).push(c)}
+  for(const tk of v.split(/(<\d+>[\s\S]*?<\/\d+>|<br>)/)){if(!tk)continue;const m=/^<(\d+)>([\s\S]*)<\/\d+>$/.exec(tk);
+   if(tk==='<br>')n.appendChild(brs.shift()||document.createElement('br'));
+   else if(m){const e=els[m[1]-1];if(!e)continue;els[m[1]-1]=null;if(e.firstChild)e.firstChild.nodeValue=m[2];else if(m[2])e.textContent=m[2];n.appendChild(e)}
+   else n.appendChild(document.createTextNode(tk))}
+  els.forEach(e=>{if(e)n.appendChild(e)})}
+function trEl(n){if(n.nodeType===3){const o=trS(n.nodeValue);if(o!==n.nodeValue)n.nodeValue=o;return}
+  if(n.nodeType!==1||n.nodeName==='SCRIPT'||n.nodeName==='STYLE'||n.hasAttribute('data-notr'))return;
+  for(const a of TRA){const v=n.getAttribute(a);if(v){const o=trS(v);if(o!==v)n.setAttribute(a,o)}}
+  if(n.nodeName==='TEXTAREA')return;
+  if(n.firstElementChild){const k=trSkel(n);if(k){const v=trK(k);if(v!=null&&v!==k&&(trN.get(n)||0)<4){trN.set(n,(trN.get(n)||0)+1);for(let c=n.firstElementChild;c;c=c.nextElementSibling)for(const a of TRA){const x=c.getAttribute(a);if(x){const o=trS(x);if(o!==x)c.setAttribute(a,o)}}trFill(n,v);return}}}
+  for(let c=n.firstChild;c;c=c.nextSibling)trEl(c)}
+function trNode(n){const e=n.nodeType===1?n:n.parentElement;if(!e||e.closest('[data-notr],script,style'))return;trEl(n.nodeType===1?n:e)}
+const trObs=new MutationObserver(ms=>{if(!EN)return;const seen=new Set();for(const m of ms){if(m.type==='attributes'){const e=m.target;if(!e.closest('[data-notr]')){const v=e.getAttribute(m.attributeName);if(v){const o=trS(v);if(o!==v)e.setAttribute(m.attributeName,o)}}continue}
+  if(m.type==='childList'&&m.target===document.body){m.addedNodes.forEach(x=>{if(x.nodeType===1)trNode(x)});continue}
+  const e=m.type==='childList'?m.target:m.target.parentElement;if(e&&!seen.has(e)&&e.isConnected){seen.add(e);trNode(e)}}});
+window.__tr={skel:trSkel,s:trS};
+function loadEN(){return new Promise(ok=>{if(window.EN_DATA)return ok(true);const sc=document.createElement('script');sc.src='js/en.js';sc.onload=()=>ok(!!window.EN_DATA);sc.onerror=()=>ok(false);document.head.appendChild(sc)})}
+async function langBoot(){$('langSel').value=S.lang;if(S.lang!=='en')return;$('langBtn').textContent='DA';$('langBtn').setAttribute('aria-label','Skift til dansk');const ok=await Promise.race([loadEN(),new Promise(r=>setTimeout(()=>r(false),5000))]);
+  if(ok){EN=window.EN_DATA;document.documentElement.lang='en';trEl(document.body);trObs.observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:TRA})}
+  document.documentElement.classList.remove('trw')}
+if(S.lang==='en')document.documentElement.classList.add('trw');
+{const c=window.confirm,p=window.prompt;window.confirm=m=>c.call(window,trS(m));window.prompt=(m,d)=>p.call(window,trS(m),d)}
 if(!Array.isArray(S.units))S.units=[];
 if(!Array.isArray(S.tours))S.tours=[];
 if(!Array.isArray(S.follow))S.follow=[];
@@ -596,7 +636,7 @@ function loadQR(){return window.qrcode?Promise.resolve():new Promise((ok,no)=>{c
 async function showQR(el,text){try{await loadQR();const q=qrcode(0,'L');q.addData(text);q.make();el.innerHTML=q.createSvgTag({cellSize:4,margin:2,scalable:true});el.querySelector('svg').setAttribute('aria-label','QR-kode til turen')}catch(e){el.textContent='QR-koden kunne ikke laves'}}
 /* ---------- genstande ---------- */
 const gOf=(cl,abv)=>Math.round(cl*10*abv/100*0.789/12*10)/10;
-const gFmt=g=>(Math.round(g*10)/10).toString().replace('.',',');
+const gFmt=g=>{const v=(Math.round(g*10)/10).toString();return EN?v:v.replace('.',',')};
 function dayStart(){const d=new Date();if(d.getHours()<6)d.setDate(d.getDate()-1);d.setHours(6,0,0,0);return d.getTime()}
 const uToday=()=>S.units.filter(u=>u.t>=dayStart()),uWeek=()=>S.units.filter(u=>u.t>=Date.now()-7*DAY);
 const gSum=a=>Math.round(a.reduce((x,u)=>x+u.g,0)*10)/10;
@@ -614,7 +654,7 @@ const againPct=b=>b.rs.length?Math.round(b.rs.filter(r=>r.again).length/b.rs.len
 const col=s=>STYLES[s]||STYLES.Andet;
 const hue=n=>{let h=0;for(const c of String(n))h=(h*31+c.charCodeAt(0))%360;return h};
 const avatar=n=>`<span class="av" style="background:hsl(${hue(n)} 55% 42%)">${esc(String(n).trim().charAt(0).toUpperCase())}</span>`;
-const dk=s=>new Date(s+'T12:00').toLocaleDateString('da-DK',{day:'numeric',month:'short',year:'numeric'});
+const dk=s=>new Date(s+'T12:00').toLocaleDateString(LOC(),{day:'numeric',month:'short',year:'numeric'});
 const ago=s=>{const n=Math.round((Date.now()-new Date(s+'T12:00'))/DAY);return n<=0?'i dag':n===1?'i går':`for ${n} dage siden`};
 
 /* ---------- pictures ---------- */
@@ -761,7 +801,7 @@ function home(){const L=enrich(),Rv=reviews().slice().sort((a,b)=>b.date.localeC
   </div></section>
   <div class="grad"></div>
   <div class="wrap"><div class="stats">
-   ${[[L.length,'øl bedømt','var(--gl)','M8 3h8l-1 18H9z'],[Rv.length,'bedømmelser','var(--sun)','M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z'],[new Set(Rv.map(r=>r.who)).size,'smagere','var(--pk)','M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c1-4 4-6 8-6s7 2 8 6'],[new Set(L.map(b=>b.brewery)).size,'bryggerier','var(--sky)','M4 21V9l8-5 8 5v12M9 21v-6h6v6']].map(([v,l,c,p])=>`<div class="stat"><span class="i"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${p}"/></svg></span><div><b style="color:${c.replace('--gl)','--glt)').replace('--sun)','--sunt)')}">${v.toLocaleString('da-DK')}</b><small>${l}</small></div></div>`).join('')}
+   ${[[L.length,'øl bedømt','var(--gl)','M8 3h8l-1 18H9z'],[Rv.length,'bedømmelser','var(--sun)','M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z'],[new Set(Rv.map(r=>r.who)).size,'smagere','var(--pk)','M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c1-4 4-6 8-6s7 2 8 6'],[new Set(L.map(b=>b.brewery)).size,'bryggerier','var(--sky)','M4 21V9l8-5 8 5v12M9 21v-6h6v6']].map(([v,l,c,p])=>`<div class="stat"><span class="i"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${p}"/></svg></span><div><b style="color:${c.replace('--gl)','--glt)').replace('--sun)','--sunt)')}">${v.toLocaleString(LOC())}</b><small>${l}</small></div></div>`).join('')}
   </div>${(e=>`<a class="nextev" href="#kalender"><b>${e.left===0?'I dag':e.left===1?'I morgen':'Om '+e.left+' dage'}</b> er det ${esc(e.n)} · Se ølkalenderen →</a>`)(nextEvent())}${fyBox(4,'home')}</div>
   <section class="band"><div class="wrap main">
    <div><div class="head"><h2 id="alle">${F.q?`Resultater for “${esc(F.q)}”`:'Højest bedømt lige nu'}</h2>
@@ -839,16 +879,16 @@ function addView(){const E=F.editBeer?beers().find(b=>b.id===F.editBeer):null,v=
   <h3 class="fh">Øllen</h3>
   <div class="two"><label for="bName">Øllens navn *<input id="bName" required maxlength="60" placeholder="Fx Limfjordsporter" value="${v('name')}"></label>
   <label for="bBrew">Bryggeri *<input id="bBrew" required maxlength="60" placeholder="Fx Thisted Bryghus" value="${v('brewery')}" list="brewList"><datalist id="brewList">${[...new Set(beers().map(b=>b.brewery))].map(x=>`<option value="${esc(x)}">`).join('')}</datalist></label>
-  <label for="bStyle">Stil *<select id="bStyle">${Object.keys(STYLES).map(x=>`<option${sel(x,E?.style)}>${x}</option>`).join('')}</select></label>
+  <label for="bStyle">Stil *<select id="bStyle">${Object.keys(STYLES).map(x=>`<option value="${esc(x)}"${sel(x,E?.style)}>${x}</option>`).join('')}</select></label>
   <label for="bCity">By<input id="bCity" maxlength="40" placeholder="Fx Thisted" value="${v('city')}"></label>
-  <label for="bCountry">Land<select id="bCountry">${COUNTRIES.map(x=>`<option${sel(x,E?.country||'Danmark')}>${x}</option>`).join('')}</select></label>
+  <label for="bCountry">Land<select id="bCountry">${COUNTRIES.map(x=>`<option value="${esc(x)}"${sel(x,E?.country||'Danmark')}>${x}</option>`).join('')}</select></label>
   <label for="bCode">Stregkode <span class="hint">valgfri</span><span style="display:flex;gap:8px"><input id="bCode" inputmode="numeric" maxlength="20" value="${esc(E?.code||F.code||'')}" placeholder="Fx 5740600001234">${HAS_BD?'<button type="button" class="ghost" id="scanAdd" style="flex:none">Scan</button>':''}</span></label></div>
   <h3 class="fh">Smag og styrke</h3>
   <div class="two"><label for="bAbv">Alkohol % <span class="hint" id="abvHint">${E?.abv?abvLabel(E.abv):''}</span><input id="bAbv" inputmode="decimal" maxlength="5" placeholder="5,0" value="${E?.abv?fmt(E.abv):''}"><span class="ck" style="font-weight:400;margin-top:8px"><input type="checkbox" id="bAf"${E&&isAf(E)?' checked':''} style="width:22px;min-height:22px;height:22px;padding:0">Alkoholfri (højst 0,5 %)</span></label>
   <label for="bIbu">Bitterhed (IBU) <span class="hint" id="ibuHint">${E?.ibu?ibuLabel(E.ibu):'står tit på etiketten'}</span><input id="bIbu" type="number" inputmode="numeric" min="0" max="150" placeholder="Fx 35" value="${v('ibu')}"></label></div>
   <div><div style="font-weight:600;margin-bottom:8px">Farve</div><div class="swatches">${COLORS.map(([n,c])=>`<button type="button" class="sw" data-color="${n}" aria-pressed="${E?.color===n}" aria-label="${n}"><i style="background:${c}"></i>${n}</button>`).join('')}</div></div>
   <h3 class="fh">Køb og servering</h3>
-  <div class="two"><label for="bSize">Størrelse<select id="bSize"><option value="">Vælg</option>${SIZES.map(x=>`<option${sel(x,E?.size)}>${x}</option>`).join('')}</select></label>
+  <div class="two"><label for="bSize">Størrelse<select id="bSize"><option value="">Vælg</option>${SIZES.map(x=>`<option value="${esc(x)}"${sel(x,E?.size)}>${x}</option>`).join('')}</select></label>
   <label for="bPrice">Pris (kr)<input id="bPrice" type="number" inputmode="decimal" min="0" step="0.5" placeholder="25" value="${v('price')}"></label>
   <label for="bPlace">Købt eller smagt hvor?<input id="bPlace" maxlength="60" placeholder="Fx Føtex, Ølbaren" value="${v('place')}"></label></div>
   <label for="bDesc">Beskrivelse af øllen<textarea id="bDesc" rows="3" maxlength="500" placeholder="Skum, duft, hvad bryggeriet skriver på etiketten…">${v('desc')}</textarea></label>
@@ -1021,9 +1061,10 @@ function yearView(){const now=String(new Date().getFullYear()),years=[...new Set
   <h3 style="margin:30px 0 0">Årets priser</h3><div class="awards">${aw.map(([k,n,m,h])=>h?`<a class="award" href="${esc(h)}"><span class="kick">${k}</span><b>${esc(n)}</b><span class="meta">${esc(m)}</span></a>`:`<div class="award"><span class="kick">${k}</span><b>${esc(n)}</b><span class="meta">${esc(m)}</span></div>`).join('')}</div>
   <div class="box" id="yearNums"><b>${y} i tal:</b> ${D.R.length} ${D.R.length===1?'bedømmelse':'bedømmelser'} af ${D.B.length} forskellige øl fra ${D.brews} ${D.brews===1?'bryggeri':'bryggerier'}, givet af ${D.who} ${D.who===1?'smager':'smagere'}.</div>
   <p style="margin-top:18px"><button type="button" class="ghost" id="yearCard" data-y="${y}">Del Årets øl som billede</button></p>`:`<div class="empty" style="margin-top:22px"><h3>Ingen bedømmelser i ${y} endnu</h3><span style="opacity:.8">Giv en øl karakter, så er kåringen i gang.</span><a class="btn" href="#alle">Find en øl</a></div>`}</div></section>`}
+function trCtx(x){const f=x.fillText;x.fillText=function(t,...a){return f.call(this,trS(String(t)),...a)};return x}
 function fitTxt(x,t,max){t=String(t);if(x.measureText(t).width<=max)return t;while(t.length>1&&x.measureText(t+'…').width>max)t=t.slice(0,-1);return t.trimEnd()+'…'}
 async function cardBg(W,H){try{await Promise.all(['700 10px Sora','400 10px Inter','600 10px Inter','700 10px Inter'].map(f=>document.fonts.load(f)))}catch(e){}
-  const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d'),[bg,lg]=await Promise.all([loadIm('img/fjord1.jpg'),loadIm('img/favicon.svg')]);
+  const c=document.createElement('canvas');c.width=W;c.height=H;const x=trCtx(c.getContext('2d')),[bg,lg]=await Promise.all([loadIm('img/fjord1.jpg'),loadIm('img/favicon.svg')]);
   if(bg){const k=Math.max(W/bg.width,H/bg.height);x.drawImage(bg,(W-bg.width*k)/2,(H-bg.height*k)/2,bg.width*k,bg.height*k)}else{x.fillStyle='#0f1d36';x.fillRect(0,0,W,H)}
   const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'rgba(15,29,54,.66)');g.addColorStop(.3,'rgba(15,29,54,.88)');g.addColorStop(1,'rgba(10,18,36,.97)');x.fillStyle=g;x.fillRect(0,0,W,H);
   if(lg)x.drawImage(lg,72,64,72,72);x.fillStyle='#fff';x.font='700 40px Sora';x.textBaseline='middle';x.fillText('ølrating',164,101);const lw=x.measureText('ølrating').width;x.fillStyle='#FF7A3D';x.fillText('.dk',164+lw,101);return{c,x}}
@@ -1037,13 +1078,13 @@ async function makeListCard(kick,title,list,foot){const W=1080,H=1350,{c,x}=awai
     x.textAlign='left';x.font='700 38px Sora';x.fillStyle='#fff';x.fillText(fitTxt(x,b.name,mw),tx+T+26,y+50);x.font='400 27px Inter';x.fillStyle='#B8C7DE';x.fillText(fitTxt(x,[b.brewery,b.style].filter(Boolean).join(' · '),mw),tx+T+26,y+98)});
   x.textAlign='center';x.font='400 28px Inter';x.fillStyle='rgba(234,241,251,.7)';x.fillText(foot||'Bedøm selv på ølrating.dk',W/2,H-60);return cardOut(c)}
 async function shareBlob(blob,name,title,text){if(!blob)return toast('Billedet kunne ikke laves');const file=new File([blob],name,{type:'image/jpeg'});
-  try{if(navigator.canShare?.({files:[file]})){await navigator.share({files:[file],title,text});return}}catch(e){if(e.name==='AbortError')return}
+  try{if(navigator.canShare?.({files:[file]})){await navigator.share({files:[file],title:trS(title),text:trS(text)});return}}catch(e){if(e.name==='AbortError')return}
   if(window.OlratingApp?.saveImage){const d=await blobToData(blob);toast(window.OlratingApp.saveImage(d,name)?'Billedet er gemt i Billeder':'Billedet kunne ikke gemmes');return}
   const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);toast('Billedet er hentet')}
 const fileSafe=t=>String(t).replace(/[^\wæøåÆØÅ-]+/g,'-').replace(/^-+|-+$/g,'')||'oel';
 async function shareTop(t){const list=topOf(t).slice(0,5);if(!list.length)return;toast('Laver billedet…');const n=TOPG[t][0];await shareBlob(await makeListCard('Toplisten',t?`De bedste ${n.toLowerCase()}`:`De ${list.length>1?list.length+' ':''}bedste øl`,list),'toplisten-olrating.jpg','Toplisten','Toplisten på ølrating.dk')}
 async function makeTourCard(t){const W=1080,H=1350,{c,x}=await cardBg(W,H),m=tourMem(t),stops=t.stops.slice(0,5),best=m.B[0];
-  x.textAlign='left';x.font='700 28px Inter';x.fillStyle='#FF9A5A';x.fillText(('Byttur · '+new Date(t.date).toLocaleDateString('da-DK',{day:'numeric',month:'long',year:'numeric'})).toUpperCase(),72,214);
+  x.textAlign='left';x.font='700 28px Inter';x.fillStyle='#FF9A5A';x.fillText(('Byttur · '+new Date(t.date).toLocaleDateString(LOC(),{day:'numeric',month:'long',year:'numeric'})).toUpperCase(),72,214);
   x.font='700 68px Sora';x.fillStyle='#fff';let y=292;for(const l of wrapTxt(x,t.name,W-144,2)){x.fillText(l,72,y);y+=80}y+=6;
   if(stops.length){x.font='700 28px Inter';x.fillStyle='#B8C7DE';x.fillText('RUTEN',72,y);y+=58;
    stops.forEach((s,i)=>{x.fillStyle='#FFC85A';x.beginPath();x.arc(92,y,10,0,7);x.fill();if(i<stops.length-1){x.fillStyle='rgba(255,200,90,.35)';x.fillRect(90,y+12,4,40)}
@@ -1055,7 +1096,7 @@ async function makeTourCard(t){const W=1080,H=1350,{c,x}=await cardBg(W,H),m=tou
 async function shareTour(t){toast('Laver billedet…');await shareBlob(await makeTourCard(t),fileSafe(t.name)+'-byttur-olrating.jpg',t.name,`${t.name} på ølrating.dk`)}
 async function shareYear(y){const list=yearData(y).top.slice(0,5);if(!list.length)return;toast('Laver billedet…');await shareBlob(await makeListCard('Årets øl '+y,'De bedste øl i '+y,list),`aarets-oel-${y}-olrating.jpg`,'Årets øl '+y,`Årets øl ${y} på ølrating.dk`)}
 async function makeCard(b){try{await Promise.all(['700 10px Sora','400 10px Inter','600 10px Inter'].map(f=>document.fonts.load(f)))}catch(e){}
-  const W=1080,H=1350,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+  const W=1080,H=1350,c=document.createElement('canvas');c.width=W;c.height=H;const x=trCtx(c.getContext('2d'));
   const [bg,ph,lg]=await Promise.all([loadIm('img/fjord1.jpg'),loadIm(src(b.img)),loadIm('img/favicon.svg')]);
   if(bg){const k=Math.max(W/bg.width,H/bg.height);x.drawImage(bg,(W-bg.width*k)/2,(H-bg.height*k)/2,bg.width*k,bg.height*k)}else{x.fillStyle='#0f1d36';x.fillRect(0,0,W,H)}
   const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'rgba(15,29,54,.55)');g.addColorStop(.45,'rgba(15,29,54,.78)');g.addColorStop(1,'rgba(10,18,36,.96)');x.fillStyle=g;x.fillRect(0,0,W,H);
@@ -1071,9 +1112,9 @@ async function makeCard(b){try{await Promise.all(['700 10px Sora','400 10px Inte
   x.font='400 28px Inter';x.fillStyle='rgba(234,241,251,.7)';x.fillText('Bedøm selv på ølrating.dk',W/2,H-60);
   return new Promise(ok=>c.toBlob(ok,'image/jpeg',.9))}
 async function shareCard(b){toast('Laver billedet…');await shareBlob(await makeCard(b),fileSafe(b.name)+'-olrating.jpg',b.name,`${b.name} på ølrating.dk`)}
-async function sendAnswer(tr){const nm=(S.me||'').trim();if(!tr||!nm)return;if(nm.toLowerCase()===tr.host.toLowerCase())return;const url=siteUrl()+'#byttur-svar-'+b64e({id:tr.id,name:nm}),text=`Jeg er med på ${tr.name}! Tryk på linket, så kommer jeg på listen:`;
-  try{if(navigator.share){await navigator.share({title:'Jeg er med',text,url});return}await navigator.clipboard.writeText(text+' '+url);toast(`Svaret er kopieret. Send det til ${tr.host}`)}catch(e){if(e.name!=='AbortError')toast('Kunne ikke dele svaret')}}
-async function shareBeer(b){const url=location.href.split('#')[0]+'#beer-'+b.id,text=`${b.name} fra ${b.brewery} har ${b.rs.length?fmt(b.avg):'ingen'} på ølrating.dk`;
+async function sendAnswer(tr){const nm=(S.me||'').trim();if(!tr||!nm)return;if(nm.toLowerCase()===tr.host.toLowerCase())return;const url=siteUrl()+'#byttur-svar-'+b64e({id:tr.id,name:nm}),text=trS(`Jeg er med på ${tr.name}! Tryk på linket, så kommer jeg på listen:`);
+  try{if(navigator.share){await navigator.share({title:trS('Jeg er med'),text,url});return}await navigator.clipboard.writeText(text+' '+url);toast(`Svaret er kopieret. Send det til ${tr.host}`)}catch(e){if(e.name!=='AbortError')toast('Kunne ikke dele svaret')}}
+async function shareBeer(b){const url=location.href.split('#')[0]+'#beer-'+b.id,text=trS(`${b.name} fra ${b.brewery} har ${b.rs.length?fmt(b.avg):'ingen'} på ølrating.dk`);
   try{if(navigator.share){await navigator.share({title:b.name,text,url});return}await navigator.clipboard.writeText(url);toast('Linket er kopieret')}catch(e){if(e.name!=='AbortError')toast('Kunne ikke dele. Kopiér adressen fra browseren.')}}
 
 /* ---------- sammenlign ---------- */
@@ -1107,9 +1148,9 @@ function calView(){const y=new Date().getFullYear(),E=easter(y),day=x=>Math.floo
   const left=d=>Math.ceil((new Date(d.getFullYear(),d.getMonth(),d.getDate())-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/DAY);
   const M=['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'];
   return `<section class="band" style="padding-top:120px"><div class="wrap" style="max-width:1100px"><h1 style="font-size:clamp(34px,5vw,60px)">Ølkalender ${y}</h1><p class="meta" style="margin:10px 0 0">Hvornår sæsonøllene typisk er på hylderne. Perioderne er omtrentlige og varierer fra bryggeri til bryggeri.</p>
-  <div class="next">${nxt.map(([n,d,t])=>`<div><span class="kick">${esc(n)}</span><b class="big">${left(d)===0?'I dag':left(d)+' dage'}</b><span class="meta">${d.toLocaleDateString('da-DK',{weekday:'long',day:'numeric',month:'long'})} · ${t}</span></div>`).join('')}</div>
+  <div class="next">${nxt.map(([n,d,t])=>`<div><span class="kick">${esc(n)}</span><b class="big">${left(d)===0?'I dag':left(d)+' dage'}</b><span class="meta">${d.toLocaleDateString(LOC(),{weekday:'long',day:'numeric',month:'long'})} · ${t}</span></div>`).join('')}</div>
   <div class="cal"><div class="calhead"><span></span><div>${M.map(m=>`<span>${m}</span>`).join('')}<b class="todaylab" style="left:${td/yl*100}%">I dag</b></div></div>
-  ${ev.map(([n,t,st,a,b,c],i)=>`<div class="calrow"><span><b>${n}</b><br><span class="meta" style="font-size:12px">${t}</span></span><div class="caltrack">${i===0?'':''}<i style="left:${day(a)/yl*100}%;width:${Math.max(2,(day(b)-day(a)+1)/yl*100)}%;background:${c};animation-delay:${i*.08}s">${a.toLocaleDateString('da-DK',{day:'numeric',month:'short'})}–${b.toLocaleDateString('da-DK',{day:'numeric',month:'short'})}</i><span class="today" style="left:${td/yl*100}%"></span></div></div>`).join('')}
+  ${ev.map(([n,t,st,a,b,c],i)=>`<div class="calrow"><span><b>${n}</b><br><span class="meta" style="font-size:12px">${t}</span></span><div class="caltrack">${i===0?'':''}<i style="left:${day(a)/yl*100}%;width:${Math.max(2,(day(b)-day(a)+1)/yl*100)}%;background:${c};animation-delay:${i*.08}s">${a.toLocaleDateString(LOC(),{day:'numeric',month:'short'})}–${b.toLocaleDateString(LOC(),{day:'numeric',month:'short'})}</i><span class="today" style="left:${td/yl*100}%"></span></div></div>`).join('')}
   </div>
   <div class="chips" style="margin-top:26px">${[...new Set(ev.map(e=>e[2]))].map(st=>`<button type="button" class="chip" data-style="${esc(st)}">Se ${esc(st.toLowerCase())}</button>`).join('')}</div></div></section>`}
 /* ---------- øl-dagbog ---------- */
@@ -1119,14 +1160,14 @@ function diaryView(){const me=S.me.trim().toLowerCase(),L=enrich(),bs=r=>L.find(
   const yr=mine.filter(r=>r.date.startsWith(y)),st={},tg={},mo={};yr.forEach(r=>{const b=bs(r);st[b.style]=(st[b.style]||0)+1;(r.tags||[]).forEach(t=>tg[t]=(tg[t]||0)+1);const m=r.date.slice(0,7);mo[m]=(mo[m]||0)+1});
   const best=[...yr].sort((a,b)=>tot(b)-tot(a))[0],favSt=Object.entries(st).sort((a,b)=>b[1]-a[1])[0],topM=Object.entries(mo).sort((a,b)=>b[1]-a[1])[0],brews=new Set(yr.map(r=>bs(r).brewery)).size;
   const groups={};mine.filter(r=>r.date.startsWith(y)).forEach(r=>{const k=r.date.slice(0,7);(groups[k]=groups[k]||[]).push(r)});
-  const mname=k=>new Date(k+'-15').toLocaleDateString('da-DK',{month:'long',year:'numeric'});
+  const mname=k=>new Date(k+'-15').toLocaleDateString(LOC(),{month:'long',year:'numeric'});
   return `<section class="band" style="padding-top:120px"><div class="wrap" style="max-width:960px"><h1 style="font-size:clamp(34px,5vw,60px)">Min øl-dagbog</h1>
   ${years.length>1?`<div class="chips" style="margin:16px 0">${years.map(v=>`<button type="button" class="chip" data-year="${v}" aria-pressed="${v===y}">${v}</button>`).join('')}</div>`:''}
   ${yr.length?`<div class="box" style="margin-top:20px;background:linear-gradient(135deg,var(--nv2),var(--nv3))"><span class="kick">Dit år i øl ${y}</span>
    <div class="pstats" style="margin:14px 0 0"><div><b>${yr.length}</b><small>øl smagt</small></div><div><b>${brews}</b><small>bryggerier</small></div><div><b>${fmt(yr.reduce((a,r)=>a+tot(r),0)/yr.length)}</b><small>gennemsnit</small></div><div><b style="font-size:19px">${favSt?esc(favSt[0]):'–'}</b><small>mest drukne stil</small></div><div><b style="font-size:19px;text-transform:capitalize">${topM?mname(topM[0]).split(' ')[0]:'–'}</b><small>travleste måned</small></div></div>
    ${best?`<p style="margin:16px 0 0">Årets bedste: <a href="#beer-${esc(best.beer)}"><b>${esc(bs(best).name)}</b></a> fra ${esc(bs(best).brewery)} med <b style="color:var(--glt)">${fmt(tot(best))}</b>.${Object.keys(tg).length?` Du smagte oftest ${Object.entries(tg).sort((a,b)=>b[1]-a[1]).slice(0,3).map(x=>esc(x[0].toLowerCase())).join(', ')}.`:''}</p>`:''}</div>`
    :`<div class="empty" style="margin-top:22px"><h3>Ingen øl i ${y} endnu</h3><a class="btn" href="#tilfoej">Tilføj en øl</a></div>`}
-  ${Object.entries(groups).map(([k,rs])=>`<div class="month"><h3>${mname(k)}</h3>${rs.map(r=>{const b=bs(r);return `<a class="mini" href="#beer-${esc(b.id)}"><div class="thumb">${r.img?`<img src="${esc(src(r.img))}" alt="">`:photo(b)}</div><span><b>${esc(b.name)}</b><br><span class="meta" style="font-size:13px">${esc(b.brewery)} · ${new Date(r.date+'T12:00').toLocaleDateString('da-DK',{day:'numeric',month:'short'})}${r.text?' · “'+esc(r.text.slice(0,60))+(r.text.length>60?'…':'')+'”':''}</span></span><b class="big" style="font-size:20px">${fmt(tot(r))}</b></a>`}).join('')}</div>`).join('')}
+  ${Object.entries(groups).map(([k,rs])=>`<div class="month"><h3>${mname(k)}</h3>${rs.map(r=>{const b=bs(r);return `<a class="mini" href="#beer-${esc(b.id)}"><div class="thumb">${r.img?`<img src="${esc(src(r.img))}" alt="">`:photo(b)}</div><span><b>${esc(b.name)}</b><br><span class="meta" style="font-size:13px">${esc(b.brewery)} · ${new Date(r.date+'T12:00').toLocaleDateString(LOC(),{day:'numeric',month:'short'})}${r.text?' · “'+esc(r.text.slice(0,60))+(r.text.length>60?'…':'')+'”':''}</span></span><b class="big" style="font-size:20px">${fmt(tot(r))}</b></a>`}).join('')}</div>`).join('')}
   </div></section>`}
 /* ---------- madforslag (klassiske kombinationer) ---------- */
 const DISHES={'Pizza':['Lager','Pale Ale','IPA'],'Burger':['Lager','IPA','Brown Ale'],'Flæskesteg':['Brown Ale','Juleøl','Bock'],'Fisk og skaldyr':['Pilsner','Hvede','Sour'],'Smørrebrød':['Pilsner','Lager','Porter'],'Julefrokost':['Juleøl','Porter','Pilsner'],'Karry og krydret':['IPA','Hvede','Pale Ale'],'Grill':['Porter','Brown Ale','Lager'],'Ost':['Pale Ale','Bock','Stout'],'Chokoladekage':['Stout','Porter'],'Salat':['Hvede','Pilsner','Sour'],'Østers':['Stout','Pilsner'],'Vildt':['Bock','Porter','Juleøl'],'Lam':['Påskebryg','Brown Ale','Bock']};
@@ -1145,13 +1186,13 @@ function genView(){const t=gSum(uToday()),w=gSum(uWeek()),T=uToday().slice().sor
    <div class="gbig"><span class="meta">Seneste 7 dage</span><b class="big">${gFmt(w)}</b><div class="gbar ${lvl}"><i style="width:${pct}%"></i></div><span class="meta">${w>10?'Over Sundhedsstyrelsens anbefaling på højst 10':`${gFmt(Math.max(0,10-w))} tilbage til anbefalingen på højst 10`}</span></div></div>
   <h3 style="margin:28px 0 10px">Tilføj en genstand</h3><div class="gq">${q.map(([n,cl,a])=>`<button type="button" class="ghost" data-unit="${gOf(cl,a)}" data-uname="${esc(n)}"><b>${esc(n)}</b><span>${gFmt(gOf(cl,a))} genst.</span></button>`).join('')}${mine.map(b=>{const cl=clOf(b.size)||33,g=gOf(cl,b.abv);return `<button type="button" class="ghost" data-unit="${g}" data-uname="${esc(b.name)}"><b>${esc(b.name)}</b><span>${cl} cl · ${fmt(b.abv)} % · ${gFmt(g)} genst.</span></button>`}).join('')}</div>
   <form id="unitForm" class="gform"><label>cl<input id="uCl" type="number" min="1" max="200" value="33" inputmode="numeric"></label><label>Alkohol %<input id="uAbv" type="text" value="4,6" inputmode="decimal"></label><button class="btn">+ Tilføj</button></form>
-  ${T.length?`<h3 style="margin:28px 0 10px">I dag</h3><div class="glist">${T.map(u=>`<div><span>${new Date(u.t).toLocaleTimeString('da-DK',{hour:'2-digit',minute:'2-digit'})}</span><b>${esc(u.n||'Genstand')}</b><span>${gFmt(u.g)}</span><button type="button" class="ghost" data-delunit="${u.t}" aria-label="Fjern">✕</button></div>`).join('')}</div>`:''}
+  ${T.length?`<h3 style="margin:28px 0 10px">I dag</h3><div class="glist">${T.map(u=>`<div><span>${new Date(u.t).toLocaleTimeString(LOC(),{hour:'2-digit',minute:'2-digit'})}</span><b>${esc(u.n||'Genstand')}</b><span>${gFmt(u.g)}</span><button type="button" class="ghost" data-delunit="${u.t}" aria-label="Fjern">✕</button></div>`).join('')}</div>`:''}
   <div class="box" style="margin-top:28px;line-height:1.6"><b>Sundhedsstyrelsen anbefaler</b> højst 10 genstande om ugen og højst 4 genstande på samme dag. Børn og unge under 18 år frarådes at drikke alkohol. En genstand er 12 gram ren alkohol, fx en almindelig øl på 33 cl. Tælleren er et skøn og kan ikke bruges til at vurdere, om du må køre bil. Kør aldrig, når du har drukket. Vil du tale med nogen om alkohol, kan du ringe gratis og anonymt til Alkolinjen på 80 200 500.</div>
   ${S.units.length?`<p style="margin-top:18px"><button type="button" class="ghost" id="clearUnits">Nulstil tælleren</button></p>`:''}</div></section>`}
-function tourList(){const A=S.tours.slice().sort((a,b)=>(a.date||'').localeCompare(b.date||'')),L=A.filter(t=>!tourOver(t)),O=A.filter(tourOver).reverse(),fd=t=>t.date?new Date(t.date).toLocaleString('da-DK',{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}):'Ingen dato';
+function tourList(){const A=S.tours.slice().sort((a,b)=>(a.date||'').localeCompare(b.date||'')),L=A.filter(t=>!tourOver(t)),O=A.filter(tourOver).reverse(),fd=t=>t.date?new Date(t.date).toLocaleString(LOC(),{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}):'Ingen dato';
   return `<section class="band" style="padding-top:120px"><div class="wrap" style="max-width:880px"><span class="kick">Byttur</span><h1 style="font-size:clamp(34px,5vw,56px);margin:8px 0 6px">Saml holdet og tag i byen</h1><p class="meta" style="max-width:36em">Lav en rute med barer og tidspunkter, del den med vennerne, og se hvem der er med. Under turen kan I se, hvor I er nu, og hvor I skal hen bagefter.</p>
   ${L.length?`<div class="tl">${L.map(t=>`<a class="tcard" href="#byttur-${esc(t.id)}"><b>${esc(t.name)}</b><span class="meta">${fd(t)} · ${t.stops.length} stop · ${t.members.length} med</span></a>`).join('')}</div>`:''}
-  ${O.length?`<h3 style="margin:26px 0 0">Minder</h3><div class="tl" id="tourOld" style="margin-top:12px">${O.map(t=>{const n=tourMem(t).B.length;return `<a class="tcard old" href="#byttur-${esc(t.id)}"><span class="mtag">Minde</span><b>${esc(t.name)}</b><span class="meta">${new Date(t.date).toLocaleDateString('da-DK',{weekday:'long',day:'numeric',month:'long',year:'numeric'})} · ${t.stops.length} stop · ${t.members.length} var med${n?` · ${n} øl bedømt`:''}</span></a>`}).join('')}</div>`:''}
+  ${O.length?`<h3 style="margin:26px 0 0">Minder</h3><div class="tl" id="tourOld" style="margin-top:12px">${O.map(t=>{const n=tourMem(t).B.length;return `<a class="tcard old" href="#byttur-${esc(t.id)}"><span class="mtag">Minde</span><b>${esc(t.name)}</b><span class="meta">${new Date(t.date).toLocaleDateString(LOC(),{weekday:'long',day:'numeric',month:'long',year:'numeric'})} · ${t.stops.length} stop · ${t.members.length} var med${n?` · ${n} øl bedømt`:''}</span></a>`}).join('')}</div>`:''}
   <form id="codeForm" class="box" style="margin-top:22px;display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end"><label style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:6px;font-weight:600">Har du fået en kode til en tur?<input id="tCode" required maxlength="40" autocapitalize="off" autocomplete="off" placeholder="Fx mfx3k2abcd"></label><button class="btn">Find turen</button></form>
   <form id="tourForm" class="box" style="margin-top:26px;display:grid;gap:14px"><h3 style="margin:0">Opret en ny tur</h3>
    <label>Navn på turen<input id="tName" required maxlength="80" placeholder="Fx J-dag i Aalborg"></label>
@@ -1164,7 +1205,7 @@ function tourView(id){const t=tourById(id);if(!t)return `<section class="band" s
   const cd=when&&ms>0?(ms>DAY?`om ${Math.ceil(ms/DAY)} dage`:`om ${Math.floor(ms/3600e3)} t ${Math.floor(ms%3600e3/60e3)} min`):'';
   return `<section class="band" style="padding-top:120px"><div class="wrap" style="max-width:880px"><a href="#byttur" class="meta">← Alle ture</a>
   <div class="thead"><div><span class="kick">${over?'Minde fra en byttur':'Byttur'}${isHost?' · du '+(over?'var':'er')+' vært':''}</span><h1 style="font-size:clamp(32px,5vw,52px);margin:6px 0">${esc(t.name)}</h1>
-   <div class="meta">${when?when.toLocaleString('da-DK',{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}):''}${cd?` · <b style="color:var(--glt)">${cd}</b>`:''}</div>
+   <div class="meta">${when?when.toLocaleString(LOC(),{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}):''}${cd?` · <b style="color:var(--glt)">${cd}</b>`:''}</div>
    ${t.meet?`<div style="margin-top:6px">Mødested: <a href="${mapUrl(t.meet)}" target="_blank" rel="noopener">${esc(t.meet)}</a></div>`:''}${t.note?`<p style="margin:10px 0 0;font-style:italic">“${esc(t.note)}”</p>`:''}</div>
    <div class="tbtns">${joined?`<span class="pill ok">✓ Du ${over?'var':'er'} med</span>${isHost||sbOk?'':`<button type="button" class="ghost" id="tourAnswer" data-id="${esc(t.id)}">Send svar til ${esc(t.host)}</button>`}`:`<button type="button" class="btn" id="tourJoin" data-id="${esc(t.id)}">${over?'Jeg var med':'🍻 Jeg er med'}</button>`}<button type="button" class="ghost" id="tourShare" data-id="${esc(t.id)}">Del turen</button></div></div>
   ${c>=0?`<div class="now"><span class="kick">Vi er her nu</span><b>${esc(t.stops[c].name)}</b>${t.stops[c+1]?`<span>Næste: ${esc(t.stops[c+1].name)} kl. ${esc(t.stops[c+1].time)}</span>`:'<span>Sidste stop. Kom godt hjem!</span>'}</div>`:''}
@@ -1250,7 +1291,7 @@ function route(){dirty=false;const h=location.hash.slice(1);let v;
   const qb=$('tourQR');if(qb)showQR(qb,qb.dataset.link);
   const pd=document.querySelector('.podium .win');if(pd&&!softR)setTimeout(()=>{if(pd.isConnected)burstAt(pd)},(+pd.parentElement.dataset.n-1)*550+500);
   if(h==='alle')$('alle')?.scrollIntoView();else scrollTo({top:0,behavior:'instant'});
-  document.title=h.startsWith('bryggeri-')?`${decodeURIComponent(h.slice(9))} – ølrating.dk`:h.startsWith('beer-')?`${enrich().find(x=>x.id===h.slice(5))?.name||'Øl'} – ølrating.dk`:'ølrating.dk – danske øl, bedømt af dig'}
+  document.title=trS(h.startsWith('bryggeri-')?`${decodeURIComponent(h.slice(9))} – ølrating.dk`:h.startsWith('beer-')?`${enrich().find(x=>x.id===h.slice(5))?.name||'Øl'} – ølrating.dk`:'ølrating.dk – danske øl, bedømt af dig')}
 document.addEventListener('click',e=>{if(!e.target.closest('.navmore')){document.querySelector('.navmore')?.classList.remove('open');$('navMore')?.setAttribute('aria-expanded','false')}});document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelector('.navmore')?.classList.remove('open')});
 addEventListener('hashchange',()=>{if(location.hash!=='#tilfoej')F.editBeer='';if(!$('scan').hidden)stopScan();route()});
 addEventListener('scroll',()=>$('top').classList.toggle('scrolled',scrollY>40),{passive:true});
@@ -1274,6 +1315,7 @@ function readReview(form){const s={};let ok=true;form.querySelectorAll('.rate').
 
 /* ---------- events ---------- */
 document.addEventListener('click',e=>{const t=e.target.closest('button,a');if(!t)return;
+  if(t.id==='langBtn'){S.lang=S.lang==='en'?'da':'en';save();location.reload();return}
   if(t.id==='navMore'){const o=t.parentElement.classList.toggle('open');t.setAttribute('aria-expanded',o);return}
   if(t.id==='menuBtn'){const o=$('nav').classList.toggle('open');t.setAttribute('aria-expanded',o);return}
   if(t.dataset.star){const r=t.closest('.rate'),v=+t.dataset.star;r.dataset.v=v;r.querySelectorAll('[data-star]').forEach(b=>{b.classList.remove('on');if(+b.dataset.star<=v){void b.offsetWidth;b.classList.add('on')}b.setAttribute('aria-checked',+b.dataset.star===v)})}
@@ -1316,11 +1358,11 @@ document.addEventListener('click',e=>{const t=e.target.closest('button,a');if(!t
   else if(t.dataset.mapq){Object.assign(F,{q:t.dataset.mapq,style:'',maxPrice:0,minAbv:0,maxAbv:0,ftags:[],untried:false,withImg:false,af:false})}
   else if(t.dataset.follow){const n=t.dataset.follow.trim();if(isF(n)){S.follow=S.follow.filter(x=>x.toLowerCase()!==n.toLowerCase());toast(`Du følger ikke længere ${n}`)}else{S.follow=[...S.follow,n].slice(-200);toast(`Du følger nu ${n}`)}save();softRoute()}
   else if(t.id==='tastReveal'||t.id==='tastReopen'){const tr=tastById(t.dataset.id);if(tr){tr.revealed=t.id==='tastReveal';save();route()}}
-  else if(t.id==='tastShare'){const tr=tastById(t.dataset.id),url=siteUrl()+'#smagning-'+tr.id,text=`Vær med til ${tr.name}: giv øllene karakter på din egen telefon.`;(async()=>{try{if(navigator.share){await navigator.share({title:tr.name,text,url});return}await navigator.clipboard.writeText(text+' '+url);toast('Linket er kopieret')}catch(e){if(e.name!=='AbortError')toast('Kunne ikke dele')}})()}
+  else if(t.id==='tastShare'){const tr=tastById(t.dataset.id),url=siteUrl()+'#smagning-'+tr.id,text=trS(`Vær med til ${tr.name}: giv øllene karakter på din egen telefon.`);(async()=>{try{if(navigator.share){await navigator.share({title:tr.name,text,url});return}await navigator.clipboard.writeText(text+' '+url);toast('Linket er kopieret')}catch(e){if(e.name!=='AbortError')toast('Kunne ikke dele')}})()}
   else if(t.id==='tastDel'){const id=t.dataset.id,tr=tastById(id),host=tr&&tr.owner&&tr.owner===myUid(),me=(S.me||'').trim();if(confirm(host?'Slet smagningen for alle?':'Fjern smagningen fra din liste?')){if(host)dq('/rest/v1/tastings?id=eq.'+encodeURIComponent(id));else if(me&&tr?.owner)dq(`/rest/v1/tasting_votes?tasting=eq.${encodeURIComponent(id)}&who=eq.${encodeURIComponent(me)}`);S.vq=S.vq.filter(q=>q.t!==id);S.tast=S.tast.filter(x=>x.id!==id);delete S.sh['s:'+id];save();location.hash='smagning'}}
   else if(t.id==='tourJoin'){const tr=tourById(t.dataset.id);let nm=(S.me||'').trim();if(!nm){nm=(prompt('Hvad hedder du?')||'').trim().slice(0,40);if(!nm)return;S.me=nm}if(!tr.members.some(m=>m.name.toLowerCase()===nm.toLowerCase()))tr.members.push({name:nm});S.joins.push({tour:tr.id,name:nm});save();route();burstAt(document.querySelector('.pill.ok')||t);(async()=>{const pend=()=>S.joins.some(j=>j.tour===tr.id&&j.name===nm);const wait=()=>Promise.race([sbSync(),new Promise(r=>setTimeout(r,5000))]);await wait();if(pend())await wait();if(!sbOk||pend())sendAnswer(tr);else toast('Du er tilmeldt. Vi ses!')})()}
   else if(t.id==='tourAnswer'){sendAnswer(tourById(t.dataset.id))}
-  else if(t.id==='tourShare'){const tr=tourById(t.dataset.id),url=tourLink(tr),text=`Tag med på ${tr.name}${tr.date?' '+new Date(tr.date).toLocaleString('da-DK',{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}):''}! Se ruten og meld dig til her:`;(async()=>{try{if(navigator.share){await navigator.share({title:tr.name,text,url});return}await navigator.clipboard.writeText(text+' '+url);toast('Linket er kopieret')}catch(e){if(e.name!=='AbortError')toast('Kunne ikke dele')}})()}
+  else if(t.id==='tourShare'){const tr=tourById(t.dataset.id),url=tourLink(tr),text=trS(`Tag med på ${tr.name}${tr.date?' '+new Date(tr.date).toLocaleString(LOC(),{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}):''}! Se ruten og meld dig til her:`);(async()=>{try{if(navigator.share){await navigator.share({title:tr.name,text,url});return}await navigator.clipboard.writeText(text+' '+url);toast('Linket er kopieret')}catch(e){if(e.name!=='AbortError')toast('Kunne ikke dele')}})()}
   else if(t.dataset.delstop){const tr=tourById(t.dataset.id);tr.stops.splice(+t.dataset.delstop,1);save();route()}
   else if(t.id==='tourDel'){const id=t.dataset.id,tr=tourById(id),host=tr&&tr.owner&&tr.owner===myUid(),me=(S.me||'').trim();if(confirm(host?'Slet turen for alle deltagere?':'Fjern turen fra din liste? Du bliver også meldt fra.')){if(host)dq('/rest/v1/tours?id=eq.'+encodeURIComponent(id));else if(me&&tr?.owner)dq(`/rest/v1/tour_members?tour=eq.${encodeURIComponent(id)}&name=eq.${encodeURIComponent(me)}`);S.joins=S.joins.filter(j=>j.tour!==id);S.tours=S.tours.filter(x=>x.id!==id);delete S.sh['t:'+id];save();location.hash='byttur'}}
   else if(t.dataset.unit){addUnit(+t.dataset.unit,t.dataset.uname);toast(`+${gFmt(+t.dataset.unit)} genstand · ${gFmt(gSum(uToday()))} i dag`);if(location.hash==='#genstande')route()}
@@ -1337,7 +1379,7 @@ document.addEventListener('click',e=>{const t=e.target.closest('button,a');if(!t
   else if(t.id==='wipeBtn'){if(t.dataset.sure){S.beers.forEach(b=>delImg(b.img));S.reviews.forEach(r=>delImg(r.img));S={...S,beers:[],reviews:[],wish:[]};save();toast('Dine data er slettet');route()}else{t.dataset.sure=1;t.textContent='Klik igen: alt slettes'}}});
 document.addEventListener('input',e=>{if(e.target.id==='bName'||e.target.id==='bBrew'||e.target.id==='bCode'){clearTimeout(dupT);dupT=setTimeout(dupCheck,250)}if(e.target.id==='bAbv'){$('abvHint').textContent=abvLabel(parseFloat(e.target.value.replace(',','.'))||0);return}if(e.target.id==='bIbu'){$('ibuHint').textContent=ibuLabel(+e.target.value)||'står tit på etiketten';return}if(e.target.id==='fPrice'){F.maxPrice=+e.target.value;$('fPriceO').textContent=F.maxPrice?`op til ${F.maxPrice} kr`:'alle priser';renderGrid();return}if(e.target.id==='fAbv'){F.maxAbv=+e.target.value;$('fAbvO').textContent=F.maxAbv?`op til ${F.maxAbv} %`:'alle';renderGrid();return}if(e.target.id==='fMinAbv'){F.minAbv=+e.target.value;$('fMinAbvO').textContent=F.minAbv?`mindst ${F.minAbv} %`:'alle';renderGrid();return}if(e.target.dataset.p){const k=e.target.dataset.p;$('o_'+k).textContent=e.target.value;e.target.closest('#profBox').dataset.touched='1';return}if(e.target.id==='q'){F.q=e.target.value.trim();renderGrid()}});
 document.addEventListener('change',e=>{if(e.target.dataset.cmp){CMP[+e.target.dataset.cmp]=e.target.value;route();return}if(e.target.id==='fUntried'){F.untried=e.target.checked;renderGrid();return}if(e.target.id==='fImg'){F.withImg=e.target.checked;renderGrid();return}if(e.target.id==='fAf'){F.af=e.target.checked;renderGrid();return}if(e.target.id==='importFile'){const f=e.target.files[0];if(!f)return;f.text().then(txt=>{const x=JSON.parse(txt);if(x.app!=='olrating'||!Array.isArray(x.beers)||!Array.isArray(x.reviews))throw 0;const ib=new Set(S.beers.map(b=>b.id)),ir=new Set(S.reviews.map(r=>r.id));const own=({owner,...o})=>o;S.beers=S.beers.concat(x.beers.map(cleanBeer).filter(b=>b&&!ib.has(b.id)).map(own));S.reviews=S.reviews.concat(x.reviews.map(cleanRev).filter(r=>r&&!ir.has(r.id)).map(own));S.wish=[...new Set([...S.wish,...(x.wish||[])])];if(!S.me&&x.me)S.me=x.me;if(save()){migrateImgs().then(()=>{toast('Backup indlæst');route()})}}).catch(()=>toast('Filen er ikke en ølrating-backup'));return}
-  if(e.target.id==='sort'){F.sort=e.target.value;renderGrid()}else if(e.target.id==='seasonSel'){S.season=e.target.value;save();applySeason();route()}});
+  if(e.target.id==='sort'){F.sort=e.target.value;renderGrid()}else if(e.target.id==='seasonSel'){S.season=e.target.value;save();applySeason();route()}else if(e.target.id==='langSel'){S.lang=e.target.value==='en'?'en':'da';save();location.reload()}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('scan').hidden){stopScan();return}if($('lb').hidden)return;if(e.key==='Escape')closeLb();else if(e.key==='ArrowRight')lbGo(1);else if(e.key==='ArrowLeft')lbGo(-1)});
 $('lbs').addEventListener('scroll',lbCount,{passive:true});
 document.addEventListener('submit',async e=>{const f=e.target;e.preventDefault();
@@ -1369,7 +1411,7 @@ document.addEventListener('submit',async e=>{const f=e.target;e.preventDefault()
     burstAt(f.querySelector('button[type=submit]'));delete pending.rImg;toast('Skål! Din bedømmelse er gemt');setTimeout(route,RM?0:650)}});
 
 applyMode();applySeason();
-(async()=>{try{navigator.storage?.persist?.()}catch(e){}await loadImgs();await migrateImgs();takePending();route();syncApp();sbSync()})();
+(async()=>{try{navigator.storage?.persist?.()}catch(e){}await loadImgs();await migrateImgs();takePending();await langBoot();route();syncApp();sbSync()})();
 setInterval(()=>{if(!document.hidden)sbSync()},30000);setInterval(()=>{if(!document.hidden&&/^#(smagning|byttur)-/.test(location.hash))sbSync()},6000);addEventListener('online',()=>sbSync());
 document.addEventListener('input',()=>{dirty=true},true);document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('form'))dirty=true},true);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)return;if(takePending()&&location.hash==='#genstande')route();sbSoon(200)});

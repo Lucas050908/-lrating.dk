@@ -21,6 +21,9 @@ jobs:
       - name: To enheder deler data
         if: always()
         run: python3 tests/test_sync.py
+      - name: Den engelske version er oversat
+        if: always()
+        run: python3 tests/test_en.py
   database:
     name: Den rigtige database
     runs-on: ubuntu-latest

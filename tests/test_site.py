@@ -26,6 +26,7 @@ def run(b,name,vw):
     over=lambda: pg.evaluate('document.documentElement.scrollWidth>innerWidth+1')
     pg.goto(URL); pg.wait_for_timeout(1500)
     T('empty site loads',pg.inner_text('h1')!='' and not errs,errs[:3])
+    T('sprog: dansk er standard, og knappen EN og sprogvalget i sidefoden findes',pg.evaluate('document.documentElement.lang')=='da' and pg.inner_text('#langBtn')=='EN' and pg.is_visible('#langBtn') and pg.evaluate("document.getElementById('langSel').value")=='da' and pg.inner_text('#nav a >> nth=0')=='Alle øl' and not over())
     # --- add a beer through the form
     pg.goto(URL+'#tilfoej'); pg.wait_for_timeout(500)
     pg.click('#addBtn'); pg.wait_for_timeout(300)

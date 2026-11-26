@@ -42,6 +42,20 @@
 - `nextEvent()`: nærmeste af J-dag (første fredag i november), påskedag, sankthans, juleaften og nytårsaften.
 - `myCounts()`: tal til mærkerne, bl.a. forskellige øl, stilarter, bryggerier, lande og alkoholfri.
 
+### Sprog (dansk og engelsk)
+- Al tekst i `index.html` er dansk. Valget gemmes i `S.lang` (`da` eller `en`) og skiftes med knappen EN/DA i topmenuen eller "Sprog · Language" i sidefoden. Siden genindlæses ved skift.
+- Ved engelsk hentes `js/en.js` (ligger også i service workerens cache). Den sætter `window.EN_DATA = {x, r}`:
+  - `x`: faste tekster, dansk → engelsk.
+  - `r`: mønstre (regulære udtryk) til tekster med tal og navne, fx "3 bedømmelser" eller "Bedøm Limfjordsporter".
+- **Oversættelsen sker i DOM'en.** `trEl()` går et element igennem og oversætter tekst og attributterne `placeholder`, `aria-label`, `title` og `alt`. En `MutationObserver` (`trObs`) oversætter alt nyt, der lander på siden, før det bliver vist. Derfor skal de enkelte sider ikke kende til sprog.
+  - `trS(t)`: oversætter én tekst. Mellemrum og prikker (·) i enderne bevares. Findes hele teksten ikke, prøves hver del mellem " · " for sig.
+  - `trSkel(el)`: en sætning med fed skrift eller links i oversættes samlet. De små elementer skrives som `<1>…</1>`, `<2>…</2>` i nøglen og i oversættelsen, og `trFill()` lægger teksten tilbage i de samme elementer.
+  - Elementer med `data-notr` bliver ikke oversat. Indhold, brugerne selv har skrevet, står ikke i ordbogen og bliver derfor ikke ændret.
+- `fmt()` og `gFmt()` skriver decimalpunktum på engelsk og komma på dansk. `LOC()` giver `en-GB` eller `da-DK` til datoer.
+- `confirm()` og `prompt()` er pakket ind, så teksten bliver oversat. Tekst på delebilleder oversættes i `trCtx()`.
+- Valgmulighederne i formularer har faste danske værdier (`value`), så data gemmes ens på begge sprog. Stilarter, smagsord, lande og størrelser gemmes altid på dansk og oversættes kun, når de vises.
+- **Ikke oversat:** adresserne (`#toplisten` osv.), widgets i Android-appen og i programmet til Windows og Linux, og beskrivelsen i søgemaskiner.
+
 ### Offline
 - `sw.js` gemmer app-skallen.
 - **Husk at hæve `const V='olrating-vNN'` ved hver udgivelse**, ellers ser brugerne den gamle version.
@@ -128,8 +142,9 @@ Alle test bruger Playwright og en lokal server: `python3 -m http.server 8811 &`.
 |---|---|---|
 | `test_site.py` | Hele siden klikket igennem på pc (1280 px) og mobil (390 px): tilføj øl med foto, bedøm, ret, søg, del, delekort, genstande, temaer, backup, slet med fortryd, ryd alt, gendan, offline, filer og links | Nej |
 | `test_sync.py` | To enheder deler data: øl, billeder, afvist redigering af andres øl, offline-kø, ingen gentegning mens man skriver, sletning med fortryd, byttur, smagning og fjendtlige data i databasen (indlejret kode og forkerte typer) | Nej |
+| `test_en.py` | Den engelske version: alle sider og tilstande gås igennem på dansk og engelsk med stillestående ur. Testen fejler, hvis en tekst er ens i de to udgaver eller stadig har danske bogstaver, hvis en besked i koden (toast, confirm, prompt) mangler i ordbogen, hvis brugernes eget indhold bliver oversat, eller hvis en side får vandret scroll på mobil | Nej |
 | `mock_supabase.py` | Efterligning af Supabase i hukommelsen, som de to test ovenfor bruger | Nej |
 | `e2e_supabase.py` | Det samme forløb mod den rigtige database, inkl. forsøg på at rette andres data direkte gennem API'et. Opretter data med TEST i navnet og sletter dem igen | **Ja** |
 
-- **GitHub Actions (`test.yml`):** `test_site.py` og `test_sync.py` kører ved hver ændring af siden. `e2e_supabase.py` kører kun ved manuel start eller når commit-beskeden indeholder `[database-test]`.
+- **GitHub Actions (`test.yml`):** `test_site.py`, `test_sync.py` og `test_en.py` kører ved hver ændring af siden. `e2e_supabase.py` kører kun ved manuel start eller når commit-beskeden indeholder `[database-test]`.
 - Byggemiljøet, hvor koden skrives, kan ikke selv nå Supabase. Derfor køres testen mod den rigtige database på GitHub.

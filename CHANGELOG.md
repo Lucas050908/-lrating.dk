@@ -4,6 +4,14 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Formiddag (08:45–09:19): engelsk version
+- **Hele siden findes nu på engelsk.** Knappen EN i topmenuen skifter sprog, og valget kan også ændres i sidefoden. Dansk er stadig standard.
+- Oversættelsen ligger i en ordbog for sig selv (`js/en.js`, ca. 700 tekster og 110 mønstre), som kun hentes, når man vælger engelsk. Den danske side er uændret.
+- På engelsk skrives tal med punktum, datoer på engelsk og priser som DKK. Delebillederne bliver også engelske. Det, brugerne selv har skrevet, bliver ikke oversat.
+- **Ny test (`tests/test_en.py`):** Går over 80 sider og tilstande igennem på begge sprog og fejler, hvis en tekst ikke er oversat. Den kører også på GitHub.
+- Reglen om sprog i `CLAUDE.md` er opdateret: ny tekst skal også i den engelske ordbog.
+- Formularerne gemmer nu stilart, størrelse og land med faste værdier, så data er ens på begge sprog.
+
 ### Formiddag (08:35–08:37): klar til Microsoft Store
 - **Pakke til Microsoft Store:** GitHub bygger nu også en `.appx`-pakke af Windows-programmet. Den mangler kun de tre værdier fra Partner Center, som skal stå i `desktop/store.json`. Indtil da bygges en prøvepakke, der viser, at bygningen virker.
 - **Ikoner til Store** i de størrelser, Microsoft kræver, ligger i `desktop/build/appx/`.
