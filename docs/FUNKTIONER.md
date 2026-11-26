@@ -75,6 +75,10 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 - **Sprog:** dansk eller engelsk.
 - Vælger man en anden farve end Solnedgang, gælder den også, når der er højtid.
 
+### Loading screen
+- Når siden åbnes, vises navnet og en bjælke, der fyldes som en fadøl med skum forrest. Den forsvinder, når siden er klar.
+- Den vises ikke, hvis enheden er sat til mindre bevægelse.
+
 ### Små effekter
 - Tal tæller op under *Siden i tal*. Fem stjerner, at følge en smager, at gemme en bedømmelse, et nyt mærke og lykkehjulets resultat giver et drys.
 - Fem hurtige tryk på logoet øverst giver en hemmelig skål.

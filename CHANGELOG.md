@@ -4,6 +4,13 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Aften (21:05–21:09): loading screen og værktøj til logoskift
+- **Loading screen:** Når siden åbnes, vises navnet og en fadølsbjælke, der fyldes med skum forrest (nr. 7 af de 12 forslag). Den er væk, når første side er tegnet, dog tidligst efter 0,9 sekund, så den ikke bare blinker.
+- Den spærrer ikke for tryk, den fjerner sig selv efter 6 sekunder, hvis noget går galt, og den vises ikke for dem, der har bedt om mindre bevægelse.
+- **Den valgte baggrund** sættes nu, før siden bliver tegnet, så siden ikke først blinker i den mørkeblå.
+- **`tools/logo-ud.py`** sætter ét af de 200 logoer ind alle steder med én kommando: siden, Android-ikonerne (også det runde og det ensfarvede), Windows/Linux og fliserne til Microsoft Store. `--vis` viser resultatet uden at ændre noget. Der er ikke skiftet logo endnu.
+- **Test:** 1 nyt tjek i `test_site.py`.
+
 ### Aften (20:47–21:01): indstillinger med design og farver, og små effekter
 - **Indstillinger** er en ny side (`#indstillinger`, under Mere i menuen, i bunden af siden og fra Min profil). Alt på den gemmes kun på enheden.
 - **Design og farver:** Man kan vælge baggrund (Nat, Fjord, Skov, Aften, Stout, Kul), farver (Solnedgang, Hav, Skov, Bær, Guld) og mønster (Ingen, Bobler, Bølger, Stjerner), og man kan slå bobler til, der stiger op bag siden. Siden ser ud som før, indtil man selv vælger noget andet.

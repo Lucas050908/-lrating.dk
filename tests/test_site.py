@@ -213,6 +213,10 @@ def run(b,name,vw):
     T('beer buddies: Magnus er bedste match med samme procent som på hans side',pg.eval_on_selector_all('.bud','e=>e.length')==1 and '81 %' in bt and 'Bedste match' in bt and 'Magnus' in bt and '4 øl til fælles' in bt and 'Mest enige om' in bt and 'Du: ' in bt and pg.query_selector('.bud .budl a[href^="#beer-"]') is not None and not over(),bt[:220])
     was=pg.inner_text('.bud [data-follow]'); pg.click('.bud [data-follow]'); pg.wait_for_timeout(400); mid=pg.inner_text('.bud [data-follow]'); pg.click('.bud [data-follow]'); pg.wait_for_timeout(400)
     T('beer buddies: man kan følge og holde op igen fra kortet',was=='Følger ✓' and mid=='Følg' and pg.inner_text('.bud [data-follow]')=='Følger ✓' and 'Magnus' in ls(pg)['follow'],(was,mid))
+    # --- loading screen: vises med det samme, er væk igen når siden er klar, og spærrer ikke for tryk
+    pg.goto(URL+'#om'); pg.reload(wait_until='commit'); pg.wait_for_selector('#load .ldb',state='attached',timeout=4000); pe=pg.evaluate("getComputedStyle(document.getElementById('load')).pointerEvents")
+    pg.wait_for_selector('#load',state='detached',timeout=6000)
+    T('loading screen: vises ved start, spærrer ikke for tryk og fjerner sig selv',pe=='none' and pg.query_selector('#load') is None and pg.inner_text('h1')=='Om ølrating.dk' and not over(),pe)
     # --- design og farver: baggrund, farver og mønster skifter med det samme, gemmes på enheden og kan slås fra igen
     pg.goto(URL+'#indstillinger'); pg.wait_for_timeout(500)
     for v in ['bg:skov','acc:hav','pat:bobler']: pg.click(f'[data-look="{v}"]'); pg.wait_for_timeout(300)

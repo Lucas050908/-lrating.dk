@@ -151,6 +151,18 @@ Widget-data, som `syncApp()` sender:
 - `settingsView()` tegner siden. Knapperne bruger `data-look="bg:skov"`, `data-seas` og `data-setlang`. De hedder ikke `data-season` og `data-lang`, fordi de navne allerede bruges af stilarket og sprogmenuen.
 - `cuRun()` får tal med `data-cu` til at tælle op, når en side vises første gang. `burst(x, y, n)` kan nu lave et lille drys med få prikker.
 
+### Loading screen
+- `#load` står først i `<body>`, så den bliver vist, før scriptet er læst. `loadDone()` kaldes efter første `route()` og fjerner den, tidligst 0,9 sekund efter at siden blev åbnet.
+- Den har `pointer-events:none`, og en CSS-animation skjuler den efter 6 sekunder, hvis scriptet skulle fejle.
+- Et lille script lige efter stilarket læser `look` fra `localStorage` og sætter `data-bg`, `data-acc` og `data-pat`, før noget bliver tegnet. `applyLook()` sætter dem igen senere.
+- Skal en anden loading screen bruges, skiftes kun `#load`, klasserne `ld…` og de to keyframes `ldtap` og `ldud`.
+
+### Skift af logo (`tools/logo-ud.py`)
+- `python3 tools/logo-ud.py 56` tegner logo nr. 56 med `tools/logoer.py` og skriver `img/favicon.svg`, `img/logo.svg`, `img/icon-192.png`, `img/icon-512.png`, `img/icon-maskable.png`, `img/apple-touch-icon.png`, Androids `mipmap-*/ic_launcher*.png`, farven `icon_bg` i `values/styles.xml`, `desktop/build/icon.png` og fliserne i `desktop/build/appx/`.
+- `--vis` skriver det hele til `/tmp/logo-vis` og laver et samlet billede, `ark.png`, uden at røre repoet.
+- Det ensfarvede Android-ikon laves ved at tegne motivet i hvidt på sort og bruge lysstyrken som gennemsigtighed.
+- Bagefter skal versionen i `sw.js` hæves, og apps skal bygges igen.
+
 ### Besøgstæller
 - `sbVisit()` kalder `besoeg()` i databasen én gang, hver gang siden åbnes. Et sideskift inde på siden tæller ikke. Svaret ligger i `VIS` (i alt, i dag, første dag) og gemmes ikke på enheden.
 - `supabase/005-besoeg.sql` laver tabellen `site_visits` (én række pr. dag) og funktionerne `besoeg()` (læg 1 til og svar) og `besoeg_tal()` (kun læs). Tabellen kan ikke læses eller ændres direkte. Dagen regnes i dansk tid.
