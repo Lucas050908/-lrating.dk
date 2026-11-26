@@ -161,7 +161,7 @@ with sync_playwright() as p:
     # --- konto: login med kode på mail, samme konto på to enheder, mailvalg, log ud og slet
     kb=lambda i,n:{"beers":[{"id":i,"name":n,"brewery":"Testbryg","style":"Pilsner","abv":5,"size":"33 cl flaske","date":"2026-11-20","addedBy":"Lucas","img":""}],"reviews":[],"me":"Lucas"}
     sb=lambda pg:json.loads(pg.evaluate("localStorage.getItem('olrating-sb')"))
-    K1=ctx('Lucas',(390,844),kb('uk1','Kontoøl et'),quiet=True); K1.goto(URL+'#profil'); K1.wait_for_timeout(3000)
+    K1=ctx('Lucas',(390,844),{**kb('uk1','Kontoøl et'),'wish':['uk1'],'follow':['Sofie']},quiet=True); K1.goto(URL+'#profil'); K1.wait_for_timeout(3000)
     check('konto: skjult, indtil den er slået til',K1.query_selector('#acctBox') is None)
     K1.goto(URL+'#konto-test'); K1.wait_for_timeout(900); uid1=sb(K1)['user']['id']
     K1.fill('#acMail','Lucas@Example.dk'); K1.click('#acctForm button'); K1.wait_for_timeout(1000)
@@ -172,15 +172,24 @@ with sync_playwright() as p:
     check('konto: logget ind med samme bruger-id, og øllen er stadig min',se['user']['id']==uid1 and se['user'].get('email')=='lucas@example.dk' and 'lucas@example.dk' in K1.inner_text('#acctBox') and M.t['beers']['uk1']['owner']==uid1,se['user'])
     K1.check('#mp_my_beer'); K1.wait_for_timeout(800); K1.check('#mp_friends'); K1.wait_for_timeout(800); pr=M.prefs.get(uid1,{})
     check('konto: mailvalg gemmes med navn og sprog',pr.get('my_beer') is True and pr.get('friends') is True and pr.get('news') is False and pr.get('name')=='Lucas' and pr.get('lang')=='da',pr)
-    K2=ctx('Lucas',(390,844),kb('uk2','Kontoøl to'),quiet=True); K2.goto(URL+'#konto-test'); K2.wait_for_timeout(3500); uid2=sb(K2)['user']['id']
+    K1.evaluate("sbSync()"); K1.wait_for_timeout(1800); kd=M.kdata.get(uid1,{})
+    check('konto: navn, ønskeliste og dem, man følger, gemmes på kontoen',kd.get('me')=='Lucas' and kd.get('wish')==['uk1'] and kd.get('follow')==['Sofie'],kd)
+    K2=ctx('',(390,844),{**kb('uk2','Kontoøl to'),'me':'','wish':['uk2'],'follow':['Emil','sofie']},quiet=True); K2.goto(URL+'#konto-test'); K2.wait_for_timeout(3500); uid2=sb(K2)['user']['id']
     ok0=uid2!=uid1 and M.t['beers']['uk2']['owner']==uid2
     K2.fill('#acMail','lucas@example.dk'); K2.click('#acctForm button'); K2.wait_for_timeout(1200)
     check('konto: findes mailen i forvejen, sendes en login-kode',ok0 and M.mails[-1:]==[('lucas@example.dk','magiclink','654321')],M.mails[-1:])
     K2.fill('#acCode','654321'); K2.click('#acctCode button'); K2.wait_for_timeout(3000); se2=sb(K2)
     check('konto: samme konto på den anden enhed, og dens øl er flyttet over på kontoen',se2['user']['id']==uid1 and M.t['beers']['uk2']['owner']==uid1 and uid2 not in M.users,(se2['user'],M.t['beers']['uk2']['owner']))
+    K2.evaluate("sbSync()"); K2.wait_for_timeout(1800); l2=ls(K2); kd=M.kdata.get(uid1,{})
+    check('konto: ny enhed får navn, ønskeliste og følger fra kontoen, og dens egne lægges til',l2['me']=='Lucas' and sorted(l2['wish'])==['uk1','uk2'] and sorted(x.lower() for x in l2['follow'])==['emil','sofie'] and sorted(kd.get('wish',[]))==['uk1','uk2'],(l2['me'],l2['wish'],l2['follow'],kd))
+    K1.evaluate("sbSync()"); K1.wait_for_timeout(1800); l1=ls(K1)
+    check('konto: den første enhed får det med, som den anden havde',sorted(l1['wish'])==['uk1','uk2'] and sorted(x.lower() for x in l1['follow'])==['emil','sofie'],(l1['wish'],l1['follow']))
     K2.goto(URL+'#beer-uk1'); K2.wait_for_timeout(1500); e1=K2.query_selector('#editBeer') is not None
     K2.goto(URL+'#beer-uk2'); K2.wait_for_timeout(900); e2=K2.query_selector('#editBeer') is not None
     check('konto: begge øl kan rettes fra den anden enhed',e1 and e2,(e1,e2))
+    K2.goto(URL+'#beer-uk1'); K2.wait_for_timeout(900); K2.click('#wishBtn'); K2.wait_for_timeout(300); K2.evaluate("sbSync()"); K2.wait_for_timeout(1800)
+    K1.evaluate("sbSync()"); K1.wait_for_timeout(1800); l1=ls(K1)
+    check('konto: fjernes en øl fra ønskelisten på én enhed, forsvinder den også på den anden',ls(K2)['wish']==['uk2'] and l1['wish']==['uk2'] and M.kdata[uid1].get('wish')==['uk2'],(ls(K2)['wish'],l1['wish'],M.kdata[uid1]))
     K2.goto(URL+'#profil'); K2.wait_for_timeout(1800)
     check('konto: mailvalgene følger med kontoen',K2.is_checked('#mp_my_beer') and not K2.is_checked('#mp_news'))
     # afmeld-linket nederst i mails: virker uden login, men først når man trykker på knappen
@@ -202,7 +211,7 @@ with sync_playwright() as p:
     M.no_konto.add(uid1); K1.goto(URL+'#profil'); K1.reload(); K1.wait_for_timeout(2500)
     check('konto: mangler databasen tilføjelsen, står der at mails ikke er slået til','ikke slået til' in K1.inner_text('#acctBox') and K1.query_selector('#mp_news') is None,K1.inner_text('#acctBox')[:120]); M.no_konto.clear()
     K1.reload(); K1.wait_for_timeout(2500); K1.click('#acDel'); K1.wait_for_timeout(3000)
-    check('konto: slet konto fjerner login og mailvalg','lucas@example.dk' not in M.emails and uid1 not in M.prefs and K1.query_selector('#acMail') is not None and not sb(K1)['user'].get('email'),list(M.emails))
+    check('konto: slet konto fjerner login, mailvalg og det, der lå på kontoen','lucas@example.dk' not in M.emails and uid1 not in M.prefs and uid1 not in M.kdata and K1.query_selector('#acMail') is not None and not sb(K1)['user'].get('email'),list(M.emails))
     # --- enig eller uenig (swipe): stemmer på andres bedømmelser, tal hos den der har bedømt
     M2=Mock(); errs2=[]
     def ctx2(state):

@@ -26,6 +26,8 @@ Der er to trin. **Trin 1** giver login med kode på mail. **Trin 2** giver mails
 2. Markér alt, og kopiér.
 3. Supabase → **SQL Editor** → sæt ind → **Run**. Kommer der en advarsel om "Potential issues", så tryk Run alligevel.
 
+Filen blev udvidet den 26-11-2026 kl. 12:24 (ønskeliste og følger, der følger kontoen). Har du kørt den før det, så kør den igen. Den kan køres flere gange uden at gøre skade.
+
 ### 1.2 Opret Resend, og tilføj domænet
 1. Opret en konto på <https://resend.com>.
 2. **Domains → Add Domain**. Skriv `xn--lrating-p1a.dk` (det er ølrating.dk skrevet uden ø). Vælg region **EU (Ireland)**.
@@ -152,6 +154,7 @@ Det er det samme som 2.4: Ny række i `mail_news`, læs den igennem, og sæt `se
 | Hvad | Hvor |
 |---|---|
 | Mailadresser og valg | Supabase (EU), tabellen `mail_prefs` og Supabases egne login-tabeller |
+| Navn, ønskeliste og følger på kontoen | Supabase, tabellen `konto_data` (kun kontoen selv kan læse sin række) |
 | Køen med mails | Supabase, tabellen `mail_queue` (ryddes selv op) |
 | Udsendelsen | Supabase Edge Function `mails` (`supabase/functions/mails/index.ts`) |
 | Selve afsendelsen | Resend |

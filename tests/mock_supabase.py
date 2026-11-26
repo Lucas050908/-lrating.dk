@@ -9,7 +9,7 @@ class Mock:
     def __init__(s):
         s.n=0; s.tok={}; s.ref={}; s.t={'beers':{},'reviews':{},'tours':{},'tastings':{}}; s.members={}; s.votes={}; s.store={}; s.log=[]; s.down=False
         # konto: brugere, mails der "sendes" (koden er altid 123456 for ny konto og 654321 for login), mailvalg og flytning af data
-        s.users={}; s.emails={}; s.mails=[]; s.prefs={}; s.unsub={}; s.flyt={}; s.mail_limit=False; s.has_konto_sql=True; s.no_konto=set()   # no_konto: brugere, der skal opleve en database uden 003
+        s.users={}; s.emails={}; s.mails=[]; s.prefs={}; s.unsub={}; s.kdata={}; s.has_kdata=True; s.flyt={}; s.mail_limit=False; s.has_konto_sql=True; s.no_konto=set()   # no_konto: brugere, der skal opleve en database uden 003
         s.rvotes={}   # enig/uenig: (bedømmelse, bruger) -> 1 eller -1
     def user(s,uid):
         u=s.users.get(uid,{}); return {'id':uid,'is_anonymous':not u.get('email'),**({'email':u['email']} if u.get('email') else {})}
@@ -90,7 +90,7 @@ class Mock:
                         if (r,uid) not in s.rvotes and s.t['reviews'].get(r,{}).get('owner')!=uid: s.rvotes[(r,uid)]=v
                 s.users.pop(f,None); return out(200,n)
             if fn=='konto_slet':
-                em=s.users.get(uid,{}).get('email'); s.emails.pop(em,None); s.users.pop(uid,None); s.prefs.pop(uid,None); return out(204)
+                em=s.users.get(uid,{}).get('email'); s.emails.pop(em,None); s.users.pop(uid,None); s.prefs.pop(uid,None); s.kdata.pop(uid,None); return out(204)
             return out(404,{'message':'no function'})
         if path in('/rest/v1/review_votes','/rest/v1/review_vote_counts'):
             if not s.has_konto_sql or uid in s.no_konto: return out(404,{'code':'PGRST205','message':'Could not find the table'})
@@ -107,6 +107,12 @@ class Mock:
                 s.rvotes[(r,uid)]=body['v']; return out(201)
             if m=='DELETE':
                 s.rvotes.pop((q.get('review','')[3:],uid),None); return out(204)
+        if path=='/rest/v1/konto_data':
+            if not s.has_konto_sql or uid in s.no_konto or not s.has_kdata: return out(404,{'code':'PGRST205','message':'Could not find the table'})
+            if m=='GET': return out(200,[{'data':s.kdata[uid]}] if uid in s.kdata else [])
+            if m=='POST':
+                if not uid or not s.users.get(uid,{}).get('email'): return out(403,{'code':'42501','message':'rls'})
+                s.kdata[uid]=body.get('data') or {}; return out(201)
         if path=='/rest/v1/mail_prefs':
             if not s.has_konto_sql or uid in s.no_konto: return out(404,{'code':'PGRST205','message':'Could not find the table'})
             if m=='GET': return out(200,[s.prefs[uid]] if uid in s.prefs else [])

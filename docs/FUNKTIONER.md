@@ -123,6 +123,7 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 - Siden virker som altid uden konto: man skriver bare sit fornavn. En konto er et tilvalg på Min profil.
 - **Login med kode:** Man skriver sin mail og får en kode på 6 tal. Der er ingen adgangskode.
 - **Samme konto på flere enheder:** Første gang bliver enhedens anonyme bruger til kontoen, så alt, der er lavet på enheden, følger med. Logger man ind på en anden enhed, flyttes den enheds øl og bedømmelser over på kontoen.
+- **Det følger med kontoen:** ens navn, ønskeliste og dem, man følger. Fjerner man en øl fra ønskelisten på én enhed, forsvinder den også på de andre. Genstand-tælleren bliver på enheden og gemmes ikke på kontoen.
 - **Mails, man selv slår til:** nyheder om siden, når nogen bedømmer en øl, man har tilføjet, når en, man følger, bedømmer en øl (højst én mail om dagen), og når nogen melder sig til ens byttur eller stemmer i ens smagning.
 - **Mailene samler op:** Man får højst én mail i timen. Er der sket flere ting, står de i samme mail med link til øllen, turen eller smagningen. Mailen er på dansk eller engelsk efter det sprog, man bruger på siden.
 - **Afmeld:** Nederst i hver mail er der et link til siden "Afmeld mails". Et tryk på knappen slår alle mails fra, også uden login. Man kan slå dem til igen på Min profil.

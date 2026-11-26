@@ -97,6 +97,26 @@ grant execute on function public.konto_flyt_slut(uuid) to authenticated;
 grant execute on function public.konto_slet() to authenticated;
 
 -- ---------------------------------------------------------------------------
+-- 2b) Personlige ting, der følger kontoen: navn, ønskeliste og hvem man følger.
+--     Én række pr. konto, som kun kontoen selv kan læse og rette. Slettes sammen med kontoen.
+-- ---------------------------------------------------------------------------
+create table if not exists public.konto_data (
+  user_id uuid primary key default auth.uid() references auth.users(id) on delete cascade,
+  data jsonb not null default '{}'::jsonb check (jsonb_typeof(data) = 'object' and length(data::text) < 60000),
+  updated_at timestamptz not null default now()
+);
+alter table public.konto_data enable row level security;
+drop policy if exists "egne kan laeses" on public.konto_data;
+create policy "egne kan laeses" on public.konto_data for select to authenticated using (user_id = auth.uid());
+drop policy if exists "egne kan oprettes" on public.konto_data;
+create policy "egne kan oprettes" on public.konto_data for insert to authenticated
+  with check (user_id = auth.uid() and coalesce((auth.jwt()->>'is_anonymous')::boolean, false) is not true);
+drop policy if exists "egne kan rettes" on public.konto_data;
+create policy "egne kan rettes" on public.konto_data for update to authenticated using (user_id = auth.uid()) with check (user_id = auth.uid());
+drop policy if exists "egne kan slettes" on public.konto_data;
+create policy "egne kan slettes" on public.konto_data for delete to authenticated using (user_id = auth.uid());
+
+-- ---------------------------------------------------------------------------
 -- 3) Mailvalg på kontoen
 -- ---------------------------------------------------------------------------
 create table if not exists public.mail_prefs (

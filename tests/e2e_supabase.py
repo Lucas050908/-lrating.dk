@@ -125,7 +125,8 @@ try:
 except Exception as e: print('STATUS database: kunne ikke læses',e)
 # Er tilføjelserne til konto og mails sat op? (Kun læsning. mail_afmeld med en nøgle, der ikke findes, ændrer ingenting.)
 try:
-    c,_=api('/rest/v1/review_vote_counts?select=review&limit=1'); print('STATUS supabase/003 (stemmer, konto, mailvalg):','kørt' if c==200 else 'IKKE kørt endnu (svar %s)'%c)
+    c,_=api('/rest/v1/review_vote_counts?select=review&limit=1'); ck,_=api('/rest/v1/konto_data?select=user_id&limit=1')
+    print('STATUS supabase/003 (stemmer, konto, mailvalg):','kørt' if c==200 and ck==200 else 'kørt i en ÆLDRE udgave, skal køres igen' if c==200 else 'IKKE kørt endnu (svar %s)'%c)
     c,_=api('/rest/v1/rpc/mail_afmeld',method='POST',body={'u':'00000000-0000-4000-8000-000000000000'}); print('STATUS supabase/004 (udsendelse af mails):','kørt' if c==200 else 'IKKE kørt endnu (svar %s)'%c)
     c,_=api('/functions/v1/mails',raw=True); print('STATUS funktionen mails:','oprettet' if c==200 else 'oprettet, men "Verify JWT" er slået til' if c==401 else 'IKKE oprettet endnu (svar %s)'%c)
 except Exception as e: print('STATUS konto og mails: kunne ikke læses',e)

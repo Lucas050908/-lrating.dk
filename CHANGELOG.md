@@ -4,6 +4,13 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Middag (12:12–12:24): navn, ønskeliste og følger følger med kontoen
+- **Kontoen har mere med:** Logger man ind på en ny telefon, kommer ens navn, ønskeliste og dem, man følger, med. Det, der lå på den nye enhed i forvejen, bliver lagt til. Fjerner man noget på én enhed, forsvinder det også på de andre. Genstand-tælleren bliver på enheden.
+- **Databasen:** `supabase/003-konto-mails-enig.sql` har fået tabellen `konto_data` (én række pr. konto, som kun kontoen selv kan læse). Er 003 kørt før kl. 12:24 i dag, skal den køres igen.
+- **Privatliv** og teksten i Konto-boksen fortæller, hvad der gemmes på kontoen.
+- **Test:** 4 nye tjek i `test_sync.py` med to enheder på samme konto og 7 nye i `test_sql.js` (78 i alt). Testen mod den rigtige database skriver nu også, hvis 003 er kørt i en ældre udgave.
+- **Drift:** `002-slet-billeder.sql` er kørt. Det er bekræftet af testen mod den rigtige database kl. 12:00 (23 af 23 tjek).
+
 ### Middag (12:00–12:08): småting efter mail-delen
 - **Afmeld-siden husker svaret,** hvis man fx skifter sprog, efter man har afmeldt.
 - **Flueben** ved lange tekster (mailvalg på Min profil) blev klemt og var ikke lige store. De har nu alle samme størrelse.

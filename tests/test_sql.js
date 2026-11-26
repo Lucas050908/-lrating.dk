@@ -44,6 +44,14 @@ const path=require('path');const os=require('os');const {pathToFileURL}=require(
  r=await as('b',`insert into mail_prefs(news) values(true)`);ok('anonyme kan ikke få mailvalg',!!r.err&&/row-level security/.test(r.err),r.err);
  r=await as('b',`select * from mail_prefs`);ok('andre kan ikke se mine mailvalg',r.rows&&r.rows.length===0,JSON.stringify(r));
  r=await as('b',`select * from mail_queue`);ok('ingen kan læse mail-køen',r.rows&&r.rows.length===0,JSON.stringify(r));
+ // det, der følger kontoen (navn, ønskeliste, følger)
+ r=await as('p',`insert into konto_data(data) values('{"me":"P","wish":["b1"],"follow":["Magnus"]}')`);ok('konto gemmer navn, ønskeliste og følger',!r.err,r.err);
+ r=await as('p',`insert into konto_data(data) values('{"wish":[]}') on conflict (user_id) do update set data=excluded.data,updated_at=now()`);ok('konto retter sine ting',!r.err,r.err);
+ r=await as('b',`insert into konto_data(data) values('{}')`);ok('anonyme kan ikke gemme på en konto',!!r.err&&/row-level security/.test(r.err),r.err);
+ r=await as('b',`select * from konto_data`);ok('andre kan ikke se det, der ligger på min konto',r.rows&&r.rows.length===0,JSON.stringify(r));
+ r=await as('b',`update konto_data set data='{"hack":1}'`);ok('...og ikke rette det',!r.err&&r.affectedRows===0&&(await adm(`select data from konto_data`)).rows[0].data.hack===undefined,JSON.stringify(r));
+ r=await as('p',`update konto_data set data=jsonb_build_object('x',repeat('a',70000))`);ok('en alt for stor klump afvises',!!r.err,JSON.stringify(r).slice(0,80));
+ r=await as('p',`update konto_data set data='[1,2]'`);ok('kun et objekt er gyldigt',!!r.err,JSON.stringify(r).slice(0,80));
  // triggere: P ejer en øl og en tur, C (Magnus) bedømmer og melder sig til
  await as('p',`insert into beers(id,name,data) values('bp','Kontoøl','{}')`);await as('p',`insert into tours(id,data) values('t1','{"name":"Julefrokost"}')`);await as('p',`insert into tastings(id,data) values('s1','{"name":"Smagning"}')`);
  r=await as('c',`insert into reviews(id,beer,who,data) values('r3','bp','magnus','{"s":{"look":5}}')`);ok('C bedømmer kontoens øl',!r.err,r.err);
@@ -144,6 +152,6 @@ const path=require('path');const os=require('os');const {pathToFileURL}=require(
  r=await as('p',`update beers set name='Rettet' where id='b1'`);ok('kontoen kan nu rette øllen',!r.err&&r.affectedRows===1,JSON.stringify(r));
  // slet konto
  r=await as('p',`select konto_slet()`);ok('slet konto',!r.err,r.err);
- r=await adm(`select (select count(*)::int from auth.users where id='${U.p}') u,(select count(*)::int from mail_prefs) p,(select count(*)::int from mail_queue) q,(select count(*)::int from beers where owner='${U.p}') b`);
- ok('login, mailvalg og kø er væk, øllene står tilbage',r.rows[0].u===0&&r.rows[0].p===0&&r.rows[0].q===0&&r.rows[0].b===2,JSON.stringify(r.rows));
+ r=await adm(`select (select count(*)::int from auth.users where id='${U.p}') u,(select count(*)::int from mail_prefs) p,(select count(*)::int from mail_queue) q,(select count(*)::int from konto_data) k,(select count(*)::int from beers where owner='${U.p}') b`);
+ ok('login, mailvalg, kø og kontoens egne ting er væk, øllene står tilbage',r.rows[0].u===0&&r.rows[0].p===0&&r.rows[0].q===0&&r.rows[0].k===0&&r.rows[0].b===2,JSON.stringify(r.rows));
  console.log(fail?`${fail} FEJL af ${pass+fail}`:`ALT OK (${pass})`);process.exit(fail?1:0)})().catch(e=>{console.log('CRASH',e.message);process.exit(1)});
