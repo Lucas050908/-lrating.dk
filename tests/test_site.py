@@ -276,6 +276,19 @@ def run(b,name,vw):
 with sync_playwright() as p:
     b=getattr(p,os.environ.get('BROWSER','chromium')).launch(); make_photo(b)
     run(b,'pc',(1280,900)); run(b,'mobil',(390,844))
+    # mindre bevægelse: lykkehjulet vælger med det samme, og der er hverken loading screen eller drys
+    c=b.new_context(viewport={'width':390,'height':844},service_workers='block',reduced_motion='reduce'); c.route(f'https://{HOST}/**',Mock().handle); pg=c.new_page()
+    pg.goto(URL+'#hjul'); pg.wait_for_timeout(900); ld=pg.evaluate("getComputedStyle(document.getElementById('load')||document.body).display")
+    if pg.query_selector('#hjSpin'): pg.click('#hjSpin'); pg.wait_for_timeout(250)
+    check('mindre bevægelse: ingen loading screen, hjulet viser resultatet med det samme og uden drys',(pg.query_selector('#load') is None or ld=='none') and (pg.query_selector('#hjSpin') is None or pg.query_selector('#hjRes .hjr') is not None) and pg.query_selector('.dot') is None,ld)
+    c.close()
+    # widgets uden billeder: en øl uden billede sendes ikke, og widget-data virker stadig, også uden besøgstæller
+    M0=Mock(); M0.has_besoeg=False; c=b.new_context(viewport={'width':390,'height':844},service_workers='block'); c.route(f'https://{HOST}/**',M0.handle); pg=c.new_page()
+    pg.add_init_script("window.__w=[];window.__wi=[];window.OlratingApp={updateWidget:j=>window.__w.push(j),updateImages:j=>window.__wi.push(j)};")
+    pg.goto(URL); pg.wait_for_timeout(2500); w0=json.loads(pg.evaluate("window.__w.at(-1)||'{}'")); wi0=pg.evaluate("window.__wi.length?JSON.parse(window.__wi.at(-1)):{}")
+    pg.goto(URL+'#om'); pg.wait_for_timeout(500)
+    check('uden besøgstæller og billeder: widget-data har ingen besøgstal, og Om viser tre tal',w0.get('site',{}).get('visits') is None and isinstance(wi0,dict) and pg.eval_on_selector_all('#omTal .ex-t','e=>e.length')==3,(w0.get('site'),wi0))
+    c.close()
     # offline via service worker
     # Her skal service workeren være med. Kald fra en side med service worker kan gå uden om den efterlignede database (set i WebKit),
     # så siden får at vide, at den er offline, og prøver slet ikke at synkronisere. Så rører testen aldrig den rigtige database.

@@ -4,6 +4,10 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Aften (22:45–22:46): flere tjek af det, der sker, når noget mangler
+- **Test:** 2 nye tjek i `test_site.py`. Med "mindre bevægelse" slået til er der ingen loading screen og intet drys, og lykkehjulet viser resultatet med det samme. Uden besøgstæller i databasen sender siden ingen besøgstal til widgets, og Om viser tre tal i stedet for fem.
+- De engelske tekster til Beer buddies, Lykkehjulet, Indstillinger og Siden i tal er læst igennem. Der var ikke noget at rette.
+
 ### Aften (22:37–22:39): widgets gennemgået, tjekliste og Store-tekster
 - **Android-widgets gennemgået linje for linje.** Rettet: Billedet i *Ugens øl med billede* kunne blive op til 480 × 480 punkter. Android afviser en widget-opdatering på over ca. 1 MB, og så ville widgetten ikke blive opdateret. Billederne er nu højst 288 × 288, som er den størrelse, siden sender. Hjørnerne skaleres med.
 - Billederne gemmes nu først i en midlertidig fil og omdøbes bagefter, så en widget aldrig kan læse et halvt skrevet billede.
