@@ -5,9 +5,10 @@ Alt, der skal bruges for at få ølrating i Microsoft Store. Teksterne kan kopie
 ## Status
 - [x] Udviklerkonto hos Microsoft (Lucas)
 - [x] Tekster og skærmbilleder (denne fil og mappen `store/`)
+- [x] Bygning af pakken er sat op på GitHub (`desktop/store-build.js`), med ikoner til Store i `desktop/build/appx/`
 - [ ] Navnet reserveret i Partner Center
-- [ ] De tre værdier fra *Produktidentitet* lagt ind i `desktop/package.json`
-- [ ] Pakke (.msix) bygget og uploadet
+- [ ] De tre værdier fra *Produktidentitet* lagt ind i `desktop/store.json`
+- [ ] Pakke (`olrating-store.appx`) uploadet
 - [ ] Indsendt til godkendelse
 
 ## Trin for trin
@@ -17,12 +18,21 @@ Alt, der skal bruges for at få ølrating i Microsoft Store. Teksterne kan kopie
    - `Package/Identity/Name`
    - `Package/Identity/Publisher` (starter med `CN=`)
    - `Package/Properties/PublisherDisplayName`
-4. Udvikleren lægger værdierne i `desktop/package.json`. Så bygger GitHub en `.msix`-pakke, som kan hentes under udgivelsen `desktop-app`.
-5. **Pakker:** Upload `.msix`-filen.
+4. Udvikleren lægger værdierne i `desktop/store.json`. Så bygger GitHub pakken `olrating-store.appx`, som kan hentes under udgivelsen `desktop-app`.
+5. **Pakker:** Upload `olrating-store.appx`. Pakken skal ikke signeres. Det gør Microsoft selv, når den bliver indsendt.
+   - Bliver du spurgt om tilladelsen `runFullTrust`, så skriv: "Appen er en Electron-app, der er pakket som skrivebordsprogram, og den kræver derfor runFullTrust."
+
 6. **Egenskaber:** Kategori *Mad og spisning* (eller *Livsstil*). Privatlivspolitik: `https://ølrating.dk/#privatliv`. Support: `https://ølrating.dk/#om`.
 7. **Aldersklassificering:** Udfyld spørgeskemaet. Appen handler om alkohol og har indhold, som brugerne selv skriver, så svar ja til begge. Det giver en høj aldersgrænse, og det er meningen.
 8. **Butiksside:** Indsæt teksterne og skærmbillederne herunder.
 9. **Indsend.** Microsoft gennemgår typisk appen på 1 til 3 hverdage.
+
+## Sådan bygges pakken
+- `desktop/store.json` indeholder de tre værdier fra Partner Center og appens navn i Store (`displayName`). Navnet skal være præcis det, der er reserveret. Værdierne er ikke hemmelige.
+- Workflowet *Desktop-app* kører `npm run dist:store` på Windows. Det bygger en `.appx`-pakke med electron-builder.
+- Er `store.json` ikke udfyldt, bygges i stedet prøvepakken `olrating-store-TEST.appx` med testværdier. Den viser kun, at bygningen virker, og den bliver ikke lagt ud til download.
+- **Ny version til Store:** Hæv `version` i `desktop/package.json` (fx fra 1.0.0 til 1.0.1). Store afviser en pakke med samme versionsnummer som den forrige.
+- Ikonerne til Store ligger i `desktop/build/appx/` og er lavet ud fra app-ikonet.
 
 ## Tekster til butikssiden (dansk)
 

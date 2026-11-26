@@ -90,6 +90,7 @@ Widget-data, som `syncApp()` sender:
 - **Byg:** `.github/workflows/desktop.yml` kører ved push til `desktop/**`.
   - Den bygger `olrating-windows.exe` (portable) på Windows og `olrating-linux.AppImage` på Ubuntu.
   - Begge lægges på udgivelsen `desktop-app`.
+  - **Microsoft Store:** `npm run dist:store` (`store-build.js`) bygger en `.appx`-pakke ud fra `store.json`. Uden værdier bygges en prøvepakke. Se `docs/STORE.md`.
 
 ## Udgivelser
 - Links peger altid på et fast tag (`releases/download/android-app/…` og `releases/download/desktop-app/…`), aldrig på `latest`. Ellers ville den ene app overskrive linket til den anden.

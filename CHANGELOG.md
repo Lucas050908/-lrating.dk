@@ -4,6 +4,11 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Formiddag (08:35–08:37): klar til Microsoft Store
+- **Pakke til Microsoft Store:** GitHub bygger nu også en `.appx`-pakke af Windows-programmet. Den mangler kun de tre værdier fra Partner Center, som skal stå i `desktop/store.json`. Indtil da bygges en prøvepakke, der viser, at bygningen virker.
+- **Ikoner til Store** i de størrelser, Microsoft kræver, ligger i `desktop/build/appx/`.
+- `docs/STORE.md` er opdateret med, hvordan pakken bygges, og hvad der skal svares om `runFullTrust`.
+
 ### Formiddag (08:26–08:30): byttur som minde
 - **Minder:** Når en byttur er slut, bliver den til et minde. Siden for turen viser "Sådan gik turen" med ruten, hvem der var med, og de øl, holdet bedømte den dag, med turens bedste øl øverst.
 - **Del mindet som billede:** Et billede med dato, rute, hold og turens bedste øl.

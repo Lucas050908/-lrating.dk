@@ -9,7 +9,8 @@
   "scripts": {
     "start": "electron .",
     "dist:win": "electron-builder --win portable --publish never",
-    "dist:linux": "electron-builder --linux AppImage --publish never"
+    "dist:linux": "electron-builder --linux AppImage --publish never",
+    "dist:store": "node store-build.js"
   },
   "devDependencies": {
     "electron": "^33.2.0",

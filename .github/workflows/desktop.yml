@@ -9,6 +9,7 @@ permissions:
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         include:
           - os: windows-latest
@@ -17,7 +18,14 @@ jobs:
           - os: ubuntu-latest
             cmd: dist:linux
             file: olrating-linux.AppImage
+          - os: windows-latest
+            cmd: dist:store
+            file: olrating-store*.appx
+            name: olrating-store
+            optional: true
     runs-on: ${{ matrix.os }}
+    # Store-pakken må gerne fejle, uden at de almindelige programmer bliver forsinket
+    continue-on-error: ${{ matrix.optional == true }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -32,8 +40,9 @@ jobs:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.file }}
+          name: ${{ matrix.name || matrix.file }}
           path: desktop/dist/${{ matrix.file }}
+          if-no-files-found: error
   release:
     needs: build
     runs-on: ubuntu-latest
@@ -49,3 +58,5 @@ jobs:
           ls -la out
           gh release view desktop-app -R "$GITHUB_REPOSITORY" >/dev/null 2>&1 || gh release create desktop-app -R "$GITHUB_REPOSITORY" --title "ølrating til Windows og Linux" --notes "Download ølrating til din computer. Windows: olrating-windows.exe. Linux: olrating-linux.AppImage (gør filen kørbar og dobbeltklik)."
           gh release upload desktop-app out/olrating-windows.exe out/olrating-linux.AppImage -R "$GITHUB_REPOSITORY" --clobber
+          # Pakken til Microsoft Store udgives kun, når de rigtige værdier står i desktop/store.json. Prøvepakken bliver kun liggende under selve kørslen.
+          if [ -f out/olrating-store.appx ]; then gh release upload desktop-app out/olrating-store.appx -R "$GITHUB_REPOSITORY" --clobber; else echo "Ingen Store-pakke: store.json er ikke udfyldt endnu"; fi
