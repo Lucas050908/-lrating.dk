@@ -36,7 +36,7 @@ Workflowet **Tjek domæne** (`.github/workflows/domaene.yml`) kan startes under 
   2. Authentication → Sign In / Providers → slå **Allow anonymous sign-ins** til.
 - **Mangler at blive kørt:** `supabase/002-slet-billeder.sql` (SQL Editor → New query → Run). Uden den bliver billedet liggende i lageret, når en øl slettes.
 - **Tjek at det virker:** Åbn ølrating.dk → Min profil. Nederst skal der stå "● Forbundet". Tilføj en øl på én enhed, og se den dukke op på en anden inden for et halvt minut.
-- **Moderation:** Alle kan tilføje øl. Upassende indhold slettes i Supabase → Table Editor (`beers`, `reviews`) eller Storage (`billeder`).
+- **Moderation:** Alle kan tilføje øl. Brugere kan trykke "Anmeld" på andres øl og bedømmelser. Det sender en mail til fejlrapport-adressen med et id. Upassende indhold slettes i Supabase → Table Editor (`beers`, `reviews`, søg på id) eller Storage (`billeder`).
 - Gratis-planen holder til 500 MB database og 1 GB billeder. Et projekt uden aktivitet i 7 dage bliver sat på pause og skal vækkes i dashboardet.
 
 ## Android-signering

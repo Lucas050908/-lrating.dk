@@ -4,7 +4,10 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
-### Nat (03:20–03:45): tilgængelighed
+### Nat (03:22–03:28): anmeld indhold
+- **Anmeld:** Øl og bedømmelser, som andre har lavet, har nu et "Anmeld"-link. Det åbner en mail til ejerne med link og id, så upassende indhold kan blive slettet.
+
+### Nat (03:05–03:22): tilgængelighed
 - **Automatisk tjek af tilgængelighed** (axe, WCAG 2 A og AA) på 18 sider i begge temaer og på pc og mobil. Antallet af fund faldt fra 341 til 43, og de sidste ligger lige under grænsen for kontrast.
 - **Rettet:**
   - Menuen i det lyse tema var grå og svær at læse øverst på siden. Den er nu mørk.
@@ -13,15 +16,15 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
   - Grå hjælpetekst, datoer på bedømmelser og låste mærker er blevet tydeligere.
   - Billedlinks på Sammenlign har fået navn til skærmlæsere, og kortet over bryggerier kan bruges med tastatur.
 
-### Nat (03:10–03:20): lyst tema
+### Nat (03:00–03:05): lyst tema
 - **Bedre læsbarhed i det lyse tema:** Gule tal og links på hvid baggrund var svære at læse. De er nu mørk rav i det lyse tema (karakterer, toplisten, nedtælling, links). På mørke flader som forsidebilledet, menuen og karakter-mærket på øl-kortene er farven stadig gul.
 - "✓ Du er med" på en byttur og "● Forbundet" på Min profil er nu mørkegrønne i det lyse tema.
 
-### Nat (03:00–03:10): design
+### Nat (02:50–03:00): design
 - **Øl-siden:** Knapperne er ryddet op. "Bedøm den" er nu den tydelige orange knap sammen med "Vil smage" og "+ Genstand". Del, Del som billede, Sammenlign, Ret oplysninger og Slet øl står som mindre knapper nedenunder.
 - **Øl-kort på mobil:** Bunden af kortet viser "2 bed." i stedet for "2 bedømmelser", så teksten ikke knækker over to linjer.
 
-### Nat (02:30–03:00)
+### Nat (02:30–02:50)
 - **Kort over bryggerier:** Stilguiden har fået et forenklet Danmarkskort med en prik for hver by med et bryggeri. Prikken er gul, hvis du har bedømt en øl derfra. Tryk på en prik for at se bryggeriet eller byens øl. Kortet kender ca. 70 danske byer. Bryggerier i andre byer står på en liste under kortet.
 - **Ny Android-widget "Noget for dig":** Viser et forslag til en øl, du ikke har bedømt, og nedtælling til næste øl-dag. Tryk åbner øllen i appen.
 - **Desktop-widget:** Fanen "Mig" viser nu også et forslag ("Prøv: …").

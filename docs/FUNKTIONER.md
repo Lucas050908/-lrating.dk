@@ -35,6 +35,7 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 - Kun den enhed, der har lavet en øl eller bedømmelse, kan rette og slette den. Knapperne vises ikke hos andre.
 - Sletning har stadig fortryd. Øllen og dens billede fjernes først fra databasen efter ca. 10 sekunder.
 - Backup-filen indeholder også billederne. Indlæses den igen, bliver øl, bedømmelser og billeder lagt op på ny.
+- **Anmeld:** På øl og bedømmelser, som andre har lavet, er der et "Anmeld"-link. Det åbner en mail til ejerne med link til indholdet.
 - Uden net virker alt som før. Ændringer sendes, når forbindelsen er tilbage. Status ses under Min profil ("Forbundet" eller "Ikke forbundet").
 - Genstand-tæller, ønskeliste, hvem du følger, og indstillinger deles **ikke**. De bliver på enheden.
 

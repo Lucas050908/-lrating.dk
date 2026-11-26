@@ -39,6 +39,8 @@ with sync_playwright() as p:
     check('B: sees the beer',Bp.eval_on_selector_all('#grid .card','e=>e.length')==1)
     check('B: image loads from storage',Bp.evaluate("(()=>{const i=document.querySelector('#grid .card img');return !!i&&i.src.includes('/storage/v1/object/public/')&&i.naturalWidth>0})()"))
     Bp.goto(URL+'#beer-ub1'); Bp.wait_for_timeout(800)
+    rh=Bp.get_attribute('#reportBtn','href') or ''
+    check('B: kan anmelde andres øl og bedømmelser pr. mail',rh.startswith('mailto:') and '@' in rh and 'subject=' in rh and 'ub1' in rh and Bp.eval_on_selector_all('.rv a[href^="mailto:"]','e=>e.length')==1,rh[:60])
     check('B: cannot delete or edit others',Bp.query_selector('#delBeer') is None and Bp.query_selector('#editBeer') is None and Bp.query_selector('[data-delrev]') is None)
     # B adds a review and tries to tamper with A's beer
     mut(Bp,"S.me='Magnus';S.reviews.push({id:'rm1',beer:'ub1',who:'Magnus',date:'2026-11-25',s:{look:3,aroma:3,taste:4,feel:3,overall:4},text:'Fin'});S.beers[0].name='HACKET'")
