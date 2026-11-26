@@ -4,6 +4,12 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Aften (20:06–20:20): 200 logoer i fem stilarter
+- **Logoer:** `img/logoer/200/` har 200 forslag: 40 motiver, hver tegnet i fem stilarter (nat, solnedgang, lys, guld og fjord). Filerne hedder `001` til `200`, og fem numre i træk er det samme motiv.
+- Motiverne er tegnet om, så de bruger de samme få farver, og skummet har en mørk kant på lys og gul baggrund, så det kan ses.
+- `tools/logoer.py` tegner alle 200 filer igen: `python3 tools/logoer.py img/logoer/200`.
+- De 50 første forslag ligger stadig i `img/logoer/`. Ingen af logoerne er taget i brug endnu.
+
 ### Aften (19:57–20:10): 40 forslag mere til logo, 50 i alt
 - **Logoer:** `img/logoer/` har nu 50 forslag, nummereret `01` til `50`. De nye er blandt andet flaske, krone, skjold, medalje, tønde, hane, byg, krans, måler, taleboble, lup, dåse, kompas, bølge, drikkehorn, smagebræt, stjernebillede, maskot og stempel.
 - Nr. 10, 49 og 50 har tekst i sig. De viser teksten med den skrifttype, enheden har, så de skal laves om til streger, hvis ét af dem bliver valgt.

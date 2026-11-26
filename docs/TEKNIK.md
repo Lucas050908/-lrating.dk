@@ -97,6 +97,8 @@
 
 ### Forslag til logo (`img/logoer/`)
 - Mappen har 50 forslag som SVG, nummereret `01` til `50`. Nr. 10, 49 og 50 bruger `<text>` og er derfor afhængige af enhedens skrifttyper. De bruger sidens farver: nat `#0f1d36`, sol `#ff7a3d`, aften `#f0566b` og guld `#ffc85a`.
+- `img/logoer/200/` har 200 forslag mere: 40 motiver i fem stilarter. Nummeret er `(motiv − 1) × 5 + stil`, hvor stil 1 er nat, 2 solnedgang, 3 lys, 4 guld og 5 fjord.
+- `tools/logoer.py` tegner dem. Hvert motiv er en funktion (`m01` til `m40`), der får en palet (`p.m` hovedfarve, `p.b` øl, `p.a` detalje, `p.c` udskæring, `p.f` skum med mere), og `build()` lægger baggrunden under. Scriptet skriver også `index.json` og `ark.html` i mappen, man peger på. De to filer ligger ikke i repoet.
 - Filerne bruges ikke af siden endnu. Når ét er valgt, skal det ind som `img/favicon.svg`, og `icon-192.png`, `icon-512.png`, `apple-touch-icon.png` og ikonerne i `android/` og `desktop/` skal laves ud fra det.
 
 ### Lange ord
