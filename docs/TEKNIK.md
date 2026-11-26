@@ -31,6 +31,7 @@
 - `forYou(n)`: forslag til øl, brugeren ikke har bedømt. Udgangspunktet er øllens gennemsnit. Der lægges til eller trækkes fra efter, hvor meget brugerens karakterer for samme stil (vægt 0,8) og samme smagsord (vægt 0,6) ligger over eller under brugerens eget gennemsnit.
 - `agree()`: enighed med andre i procent: 100 minus den gennemsnitlige forskel i karakter på fælles øl, hvor en forskel på 4 svarer til 0 %.
 - `S.follow`: navnene på dem, brugeren følger. Listen bliver på enheden og sendes ikke til databasen.
+- `brewMap(L)`: tegner kortet over bryggerier som SVG. `DKMAP` er kystlinjen som få punkter i længde- og breddegrad, og `DKC` er en tabel over byer og deres placering. Byens navn gøres til små bogstaver, og tal og et enkelt bogstav til sidst (som i "København K") fjernes, før der slås op.
 - `nextEvent()`: nærmeste af J-dag (første fredag i november), påskedag, sankthans, juleaften og nytårsaften.
 - `myCounts()`: tal til mærkerne, bl.a. forskellige øl, stilarter, bryggerier, lande og alkoholfri.
 
@@ -54,6 +55,7 @@ Widget-data, som `syncApp()` sender:
 {"week":{"name","brewery","score"},"top":[{"name","score"}],
  "latest":[{"name","who","score"}],
  "me":{"name","count","beers","avg","style"},
+ "rec":{"id","name","why","score"}, "next":{"n","date"},
  "units":{"today","week","todayN","weekN"},"beers":12,"reviews":31}
 ```
 
@@ -65,7 +67,7 @@ Widget-data, som `syncApp()` sender:
   - `onNewIntent` håndterer tryk fra widgets, når appen allerede kører.
 - **`Bridge`:** JavaScript-broen. Den gemmer data i SharedPreferences `olrating_widget` og opdaterer alle widgets.
 - **Ikon:** Adaptivt ikon i `res/mipmap-anydpi-v26/` med `ic_launcher_foreground.png` (motivet i fuld flade, 108 dp) og `ic_launcher_mono.png` til tema-ikoner. `ic_launcher.png` og `ic_launcher_round.png` er til Android 7.
-- **Widgets:** `TopWidget`, `QuickWidget`, `LatestWidget`, `StatsWidget` og `UnitsWidget`. +1 er en broadcast `dk.olrating.app.ADD_UNIT`, der lægger et tidsstempel i `pending_units`.
+- **Widgets:** `TopWidget`, `QuickWidget`, `LatestWidget`, `StatsWidget`, `SuggestWidget` og `UnitsWidget`. `SuggestWidget` regner selv dagene til `next.date` ud, så nedtællingen passer, selv om appen ikke har været åbnet. +1 er en broadcast `dk.olrating.app.ADD_UNIT`, der lægger et tidsstempel i `pending_units`.
 - **Byg:** `.github/workflows/android.yml` kører ved push til `android/**`.
   - Den bygger `assembleRelease` og lægger `olrating.apk` på udgivelsen `android-app`.
   - Den signerer med secrets, hvis de findes (se DRIFT.md). Ellers bruger den en midlertidig nøgle.

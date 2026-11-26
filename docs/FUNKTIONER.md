@@ -16,7 +16,7 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 | Smagning | `#smagning` | Se [Smagning med venner](#smagning-med-venner) |
 | Venner | `#venner` | Dem du følger, deres nyeste bedømmelser og forslag til andre smagere |
 | Smager | `#smager-<navn>` | En persons bedømmelser, gennemsnit, yndlingsstil, enighed med dig og knappen Følg |
-| Stilguide | `#stilguide` | Ølstile og alle bryggerier |
+| Stilguide | `#stilguide` | Ølstile, kort over bryggerier og alle bryggerier |
 | Bryggeri | `#bryggeri-<navn>` | Alle øl fra et bryggeri, gennemsnit og antal bedømmelser |
 | Min profil | `#profil` | Navn, statistik, mærker, ønskeliste, backup og gendannelse |
 | Øl-dagbog | `#dagbog` | Alt du har smagt og "Dit år i øl" |
@@ -48,6 +48,12 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 
 ### Mærker
 - Mærkerne belønner variation: forskellige øl, stilarter, bryggerier og lande, og at prøve en alkoholfri øl. Ingen mærker gives for at drikke meget.
+
+### Kort over bryggerier
+- Kortet ligger på Stilguiden. Det er et forenklet Danmarkskort, tegnet i selve siden, så der ikke hentes noget fra korttjenester.
+- Hver by med et bryggeri får en prik, og tallet viser, hvor mange bryggerier der er i byen.
+- En gul prik betyder, at du har bedømt en øl fra et bryggeri i byen. En orange prik betyder, at du ikke har prøvet noget derfra endnu.
+- Byen findes ud fra det, der er skrevet i feltet "By", da øllen blev tilføjet. Kendes byen ikke, står bryggeriet på en liste under kortet.
 
 ### Nedtælling
 - Forsiden viser, hvor mange dage der er til næste øl-dag: J-dag, påske, sankthans, jul eller nytår.
@@ -109,6 +115,7 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 | Seneste bedømmelser | De 4 nyeste med navn og karakter | Åbner appen |
 | Min statistik | Øl smagt, gennemsnit, yndlingsstil | Åbner Min profil |
 | Genstand-tæller | Genstande i dag og på 7 dage | **+1** lægger en genstand til uden at åbne appen. Ellers åbnes tælleren |
+| Noget for dig | Et forslag til en øl, du ikke har bedømt, med begrundelse, og nedtælling til næste øl-dag | Åbner øllen |
 
 ### Windows og Linux
 - Programmet (Electron) viser siden i et eget vindue og har et ikon ved uret med en menu.

@@ -44,7 +44,7 @@ function render(d){D=d;
   if(V===1){const L=(d&&d.latest)||[];$('top').replaceChildren(...(L.length?L.slice(0,5).map(r=>li(`${r.name} · ${r.who}`,r.score)):[li('Ingen bedømmelser endnu','')]));$('foot').textContent=d?`${d.reviews} bedømmelser i alt`:'';return}
   if(V===3){const u=(d&&d.units)||{},t=u.todayN||0,w=u.weekN||0,f=x=>String(Math.round(x*10)/10).replace('.',',');$('stat').style.display='';$('sc').textContent=f(t);$('sc').style.color=t>4?'#FF6B8A':'';$('sa').textContent=f(w);$('lc').textContent='genstande i dag';$('la').textContent='på 7 dage (højst 10)';$('top').replaceChildren(li(t>4?'Over 4 i dag – tag en pause':'Tryk +1 når du åbner en øl',''));$('foot').textContent='';$('add').textContent='+1 genstand';return}
   $('lc').textContent='øl smagt';$('la').textContent='gns. karakter';$('sc').style.color='';$('add').textContent='+ Bedøm øl';
-  if(V===2){const m=d&&d.me;$('top').replaceChildren(li(m&&m.name?(m.style?'Yndlingsstil: '+m.style:'Bedøm din første øl'):'Skriv dit navn på ølrating',''));$('sc').textContent=m&&m.name?m.beers:'–';$('sa').textContent=m&&m.avg?m.avg:'–';$('foot').textContent=m&&m.name?m.name:'';return}
+  if(V===2){const m=d&&d.me;$('top').replaceChildren(li(m&&m.name?(m.style?'Yndlingsstil: '+m.style:'Bedøm din første øl'):'Skriv dit navn på ølrating',''),...(d&&d.rec?[li('Prøv: '+d.rec.name,d.rec.score)]:[]));$('sc').textContent=m&&m.name?m.beers:'–';$('sa').textContent=m&&m.avg?m.avg:'–';$('foot').textContent=m&&m.name?m.name:'';return}
   const w=d&&d.week;
   $('name').textContent=w?w.name:'Ingen øl endnu';
   $('meta').textContent=w?(w.brewery||''):'Bliv den første til at bedømme en øl';

@@ -21,7 +21,7 @@ def run(b,name,vw):
     c=b.new_context(viewport={'width':vw[0],'height':vw[1]},accept_downloads=True,service_workers='block'); c.route(f'https://{HOST}/**',M.handle)
     pg=c.new_page(); pg.on('pageerror',lambda e:errs.append(str(e)))
     pg.on('console',lambda m:errs.append('console: '+m.text[:200]) if m.type=='error' else None)
-    pg.add_init_script("window.__sh=[];navigator.share=async d=>{window.__sh.push(d)};window.confirm=()=>true;")
+    pg.add_init_script("window.__sh=[];navigator.share=async d=>{window.__sh.push(d)};window.confirm=()=>true;window.__w=[];window.OlratingApp={updateWidget:j=>window.__w.push(j)};")
     T=lambda n,cnd,x='':check(f'[{name}] {n}',cnd,x)
     over=lambda: pg.evaluate('document.documentElement.scrollWidth>innerWidth+1')
     pg.goto(URL); pg.wait_for_timeout(1500)
@@ -121,6 +121,8 @@ def run(b,name,vw):
     T('enighed: Magnus 81 % på 4 fælles øl','Magnus' in pg.inner_text('.agr') and '81 %' in pg.inner_text('.agr') and '4 fælles' in pg.inner_text('.agr'),pg.inner_text('.agr'))
     T('mærke: Klart hoved er optjent, Globetrotter ikke',pg.evaluate("[...document.querySelectorAll('.badge.got b')].map(x=>x.textContent)").count('Klart hoved')==1 and 'Globetrotter' not in pg.evaluate("[...document.querySelectorAll('.badge.got b')].map(x=>x.textContent)"))
     T('profil: ingen vandret scroll med nye bokse',not over())
+    w=json.loads(pg.evaluate("window.__w.at(-1)"))
+    T('widget-data: forslag, nedtælling, seneste, mig og genstande',w['rec']['name']=='Kaj Pilsner' and w['rec']['id']=='ux2' and re.match(r'^\d{4}-\d\d-\d\d$',w['next']['date']) and len(w['latest'])==4 and w['me']['name']=='Lucas' and 'todayN' in w['units'] and len(w['top'])==3,w)
     pg.goto(URL); pg.wait_for_timeout(700)
     T('forside: nedtælling og Noget for dig',pg.query_selector('.nextev') is not None and ('dage' in pg.inner_text('.nextev') or 'I dag' in pg.inner_text('.nextev') or 'I morgen' in pg.inner_text('.nextev')) and pg.query_selector('.fy.home') is not None and not over(),pg.inner_text('.nextev') if pg.query_selector('.nextev') else None)
     pg.goto(URL+'#alle'); pg.wait_for_timeout(500); pg.evaluate("document.getElementById('fAf').closest('details').open=true"); pg.check('#fAf'); pg.wait_for_timeout(300)
@@ -132,6 +134,14 @@ def run(b,name,vw):
     pg.goto(URL+'#beer-ux1'); pg.wait_for_timeout(500)
     T('alkoholfri: ingen +Genstand på 0 %, men på almindelig øl',a and pg.query_selector('[data-unit]') is not None)
     pg.goto(URL+'#tilfoej'); pg.wait_for_timeout(400); pg.fill('#bAbv','0,3'); T('tilføj: alkoholfri-felt og hint',pg.query_selector('#bAf') is not None and pg.inner_text('#abvHint')=='Alkoholfri',pg.inner_text('#abvHint'))
+    # --- kort over bryggerier
+    pg.goto(URL+'#stilguide'); pg.wait_for_timeout(500)
+    T('kort: to byer på kortet, Aalborg med 5 bryggerier',pg.eval_on_selector_all('.bmap svg circle','e=>e.length')==2 and pg.text_content('.bmap svg text')=='5' and 'Aalborg' in pg.inner_text('.bml') and not over(),pg.inner_text('.bmap')[:200] if pg.query_selector('.bmap') else None)
+    T('kort: besøgte bryggerier er markeret',pg.eval_on_selector_all('.bml a.v','e=>e.length')==4,pg.eval_on_selector_all('.bml a.v','e=>e.map(x=>x.textContent)'))
+    pg.click('.bmap svg a[data-mapq]'); pg.wait_for_timeout(600)
+    T('kort: tryk på en by viser byens øl',pg.evaluate('location.hash')=='#alle' and pg.eval_on_selector_all('#grid .card','e=>e.length')==5,pg.evaluate('location.hash'))
+    pg.fill('#q',''); pg.goto(URL+'#stilguide'); pg.wait_for_timeout(400); pg.click('.bmap svg a:not([data-mapq])'); pg.wait_for_timeout(500)
+    T('kort: tryk på et enkelt bryggeri åbner dets side',pg.evaluate('location.hash').startswith('#bryggeri-'))
     # --- menuen "Mere"
     pg.goto(URL); pg.wait_for_timeout(500)
     if vw[0]>1100:

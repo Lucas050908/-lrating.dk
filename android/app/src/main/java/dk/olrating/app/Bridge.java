@@ -28,6 +28,7 @@ public class Bridge {
         LatestWidget.refreshAll(ctx);
         StatsWidget.refreshAll(ctx);
         UnitsWidget.refreshAll(ctx);
+        SuggestWidget.refreshAll(ctx);
     }
 
     /** Gemmer et delekort (data-URL med JPEG) i telefonens Billeder. */

@@ -10,4 +10,6 @@
     <string name="widget_stats_label">ølrating: Min statistik</string>
     <string name="widget_units_desc">Tæl dine genstande med ét tryk</string>
     <string name="widget_units_label">ølrating: Genstand-tæller</string>
+    <string name="widget_suggest_desc">Et forslag til en øl, du nok kan lide, og nedtælling til næste øl-dag</string>
+    <string name="widget_suggest_label">ølrating: Noget for dig</string>
 </resources>

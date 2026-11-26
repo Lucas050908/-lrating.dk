@@ -60,5 +60,12 @@
             </intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_units_info" />
         </receiver>
+
+        <receiver android:name=".SuggestWidget" android:exported="false" android:label="@string/widget_suggest_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_suggest_info" />
+        </receiver>
     </application>
 </manifest>
