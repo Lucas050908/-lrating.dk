@@ -1,5 +1,6 @@
 """Prøver siden mod den RIGTIGE database (køres i GitHub Actions, ikke lokalt).
-Opretter en test-øl, en test-bedømmelse og en test-tur med tydelige TEST-navne og sletter dem igen til sidst."""
+Opretter en test-øl, en test-bedømmelse, en test-tur og en test-smagning med tydelige TEST-navne og sletter dem igen til sidst.
+Startes ved at skrive [database-test] i en commit-besked, der ændrer noget i tests/ eller på siden."""
 import json,os,sys,time,urllib.request,urllib.error,datetime
 from playwright.sync_api import sync_playwright
 sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
