@@ -128,22 +128,43 @@ def main():
                 t=t.replace("\\'","'")
                 if t.startswith(' '): t='7'+t     # tekst, der sættes efter et navn
                 if re.search(r'[a-zæøå]{3,}',t) and ' ' in t and t not in lits: lits.append(t)
-        c2=b.new_context(service_workers='block'); c2.route(f'https://{HOST}/**',M0.handle); p2=c2.new_page(); p2.goto(URL); p2.wait_for_timeout(1500)   # ventetiden lader første synkronisering blive færdig
-        p2.evaluate("localStorage.setItem('olrating-v1',JSON.stringify({...JSON.parse(localStorage.getItem('olrating-v1')||'{}'),lang:'en'}))"); p2.reload(); p2.wait_for_timeout(2000)
+        # --- sprogvælgeren: skift uden at siden hentes igen, og tilbage til præcis den samme danske tekst
+        c2=b.new_context(service_workers='block',viewport={'width':1280,'height':900},locale='en-GB'); c2.route(f'https://{HOST}/**',M0.handle); p2=c2.new_page(); p2.clock.set_fixed_time(NOW); p2.goto(URL); p2.wait_for_timeout(1500)
+        hint=p2.inner_text('#langCode')=='English?' and p2.evaluate("document.getElementById('langBtn').classList.contains('hint')") and p2.evaluate("document.documentElement.lang")=='da'
+        p2.evaluate(SEED.replace('ME',json.dumps('Lucas')).replace('LANG',json.dumps('da'))); p2.reload(); p2.wait_for_timeout(1500)
+        GR="()=>{document.getElementById('toast').textContent='';return ("+GRAB+")()}"; JSCLICK="q=>document.querySelector(q).click()"
+        trip=[]; inplace=[]
+        for h in ['','#toplisten','#aarets','#profil','#byttur-pasttour1','#smagning-tastdone1','#genstande','#stilguide','#kalender','#om','#privatliv','#tilfoej','#beer-a1']:
+            p2.goto(URL+h); p2.wait_for_timeout(1900 if h.startswith('#beer-') else 500); p2.evaluate("window.__mark=1;scrollTo(0,300)"); before=p2.evaluate(GR); y0=p2.evaluate('scrollY')
+            # klik sendes direkte til knappen: Playwrights eget klik ruller siden, når knappen sidder i den faste topmenu
+            p2.evaluate(JSCLICK,'#langBtn'); vis=p2.is_visible('#langdd [data-lang="en"]'); p2.evaluate(JSCLICK,'#langdd [data-lang="en"]'); p2.wait_for_timeout(700); mid=p2.evaluate(GR)
+            ok_en=vis and p2.evaluate("document.documentElement.lang")=='en' and p2.inner_text('#nav a >> nth=0')=='All beers' and p2.evaluate('window.__mark')==1 and abs(p2.evaluate('scrollY')-y0)<3 and not p2.is_visible('#langdd') and p2.inner_text('#langCode')=='EN'
+            p2.evaluate(JSCLICK,'#langBtn'); p2.evaluate(JSCLICK,'#langdd [data-lang="da"]'); p2.wait_for_timeout(700); after=p2.evaluate(GR)
+            if not ok_en or mid==before: inplace.append(h)
+            if after!=before: trip.append((h,[x for x in after if x not in before][:4],[x for x in before if x not in after][:4]))
+        # mens man skriver i en formular, bliver siden ikke tegnet forfra, så det skrevne bliver stående
+        p2.goto(URL+'#tilfoej'); p2.wait_for_timeout(400); p2.fill('#bName','Min nye øl'); p2.evaluate(JSCLICK,'#langBtn'); p2.evaluate(JSCLICK,'#langdd [data-lang="en"]'); p2.wait_for_timeout(700)
+        keep=p2.input_value('#bName')=='Min nye øl' and p2.get_attribute('#bName','placeholder')=='E.g. Limfjordsporter'
+        p2.wait_for_timeout(600)
         untr=[t for t in lits if p2.evaluate("t=>window.__tr.s(t)===t",t)]
         # brede engelske tekster må ikke give vandret scroll på mobil
         p2.set_viewport_size({'width':390,'height':800}); wide=[]
         for h in ['','#toplisten','#aarets','#byttur','#smagning','#venner','#stilguide','#profil','#tilfoej','#kalender','#mad','#genstande','#privatliv','#om','#nyt','#sammenlign']:
             p2.goto(URL+h); p2.wait_for_timeout(300)
             if p2.evaluate('document.documentElement.scrollWidth>innerWidth+1'): wide.append(h)
-        lang_ok=p2.evaluate("document.documentElement.lang")=='en' and p2.evaluate("document.getElementById('langSel').value")=='en'
-        p2.select_option('#langSel','da'); p2.wait_for_timeout(1500)
-        back=p2.evaluate("document.documentElement.lang")=='da' and p2.inner_text('#nav a >> nth=0')=='Alle øl'
+        p2.reload(); p2.wait_for_timeout(1500)
+        lang_ok=p2.evaluate("document.documentElement.lang")=='en' and p2.evaluate("document.getElementById('langSel').value")=='en' and p2.is_visible('#langBtn')
+        p2.select_option('#langSel','da'); p2.wait_for_timeout(800)
+        back=p2.evaluate("document.documentElement.lang")=='da' and p2.inner_text('#nav a >> nth=0',timeout=3000)=='Alle øl' if p2.viewport_size['width']>1100 else p2.evaluate("document.documentElement.lang")=='da' and p2.evaluate("document.querySelector('#nav a').textContent")=='Alle øl'
         c2.close()
         c.close(); b.close()
     check(f'[en] alle beskeder i koden er oversat ({len(lits)} stk.)',not untr and len(lits)>40,untr[:8])
     check('[en] ingen vandret scroll på mobil på engelsk',not wide,wide)
-    check('[en] sprogvalget virker begge veje',lang_ok and back,(lang_ok,back))
+    check('[en] sprogvalget huskes efter genindlæsning og kan skiftes i sidefoden',lang_ok and back,(lang_ok,back))
+    check('[en] sprogmenuen skifter med det samme uden genindlæsning og beholder stedet på siden',not inplace,inplace)
+    check('[en] tilbage til dansk giver præcis den samme tekst som før',not trip,trip[:3])
+    check('[en] tekst i en formular bliver stående, når sproget skiftes',keep)
+    check('[en] browsere på andre sprog får et vink om engelsk',hint)
     check('[en] ingen fejl i konsollen på dansk eller engelsk',not e1 and not e2,(e1[:2],e2[:2]))
     check('[en] de samme sider er gennemgået i begge sprog',set(da)==set(en) and len(da)>80,len(da))
     check('[en] ordbogen er gyldig og uden kæder',not info['bad'],info['bad'][:5])

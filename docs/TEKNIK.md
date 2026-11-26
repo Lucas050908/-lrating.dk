@@ -44,7 +44,9 @@
 - `myCounts()`: tal til mærkerne, bl.a. forskellige øl, stilarter, bryggerier, lande og alkoholfri.
 
 ### Sprog (dansk og engelsk)
-- Al tekst i `index.html` er dansk. Valget gemmes i `S.lang` (`da` eller `en`) og skiftes med knappen EN/DA i topmenuen eller "Sprog · Language" i sidefoden. Siden genindlæses ved skift.
+- Al tekst i `index.html` er dansk. Valget gemmes i `S.lang` (`da` eller `en`) og skiftes i sprogvælgeren i topmenuen (`#langBtn`, `#langdd`) eller under "Sprog · Language" i sidefoden. Begge kalder `setLang()`.
+- **Skift uden genindlæsning (`setLang`):** Til engelsk hentes ordbogen, siden tegnes forfra (`softRoute`, så tal og datoer følger sproget) og oversættes. Til dansk lægger `trBack()` den danske tekst tilbage. Den blev gemt på hvert element, da det blev oversat (`__o` for tekst, `__oa` for attributter, `__sk` for sætninger). Er brugeren ved at skrive i en formular, tegnes siden ikke forfra, så det skrevne bliver stående. Hvor browseren kan (`document.startViewTransition`), sker skiftet med en blød overgang.
+- `langUI()` sætter flag, kode og markering i menuen. Har browseren et andet sprog end dansk, norsk eller svensk, og er der ikke valgt sprog (`S.langSet`), viser knappen "English?".
 - Ved engelsk hentes `js/en.js` (ligger også i service workerens cache). Den sætter `window.EN_DATA = {x, r}`:
   - `x`: faste tekster, dansk → engelsk.
   - `r`: mønstre (regulære udtryk) til tekster med tal og navne, fx "3 bedømmelser" eller "Bedøm Limfjordsporter".

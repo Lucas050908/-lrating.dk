@@ -4,6 +4,17 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Formiddag (10:27–10:38): bedre sprogskift
+- **Ny sprogvælger:** Knappen i topmenuen viser nu et flag og DA eller EN og åbner en lille menu med Dansk og English.
+- **Skiftet sker med det samme.** Før blev hele siden hentet igen, og man røg op til toppen. Nu skifter teksten på stedet med en blød overgang, og man bliver stående, hvor man var. Tekst, man er ved at skrive i en formular, bliver stående.
+- **Vink til udlændinge:** Har browseren et andet sprog end dansk, norsk eller svensk, viser knappen det engelske flag og "English?".
+- **Test:** Sprogskiftet bliver nu prøvet på 13 sider: uden genindlæsning, samme sted på siden, og tilbage til præcis den samme danske tekst.
+
+### Formiddag (10:22–10:27): tre små ting
+- **Smagning som billede:** Når resultatet er afsløret, kan det deles som et billede med aftenens vinder og resten af ranglisten.
+- **Smagning ud fra ønskelisten:** Knappen "Brug min ønskeliste" fylder dine ønskede øl ind, når du opretter en smagning.
+- **Min profil:** Egne bedømmelser vises 15 ad gangen med "Vis flere", så siden ikke bliver uendelig lang.
+
 ### Formiddag (10:21–10:22): Microsoft Store på engelsk
 - **Tekster til Store på engelsk** står nu i `docs/STORE.md`, og de danske tekster nævner Årets øl, minder og de to sprog.
 - **Nye skærmbilleder** på dansk (`store/`) og engelsk (`store/en/`), nu 7 af hver, med Årets øl og sprogknappen. De laves af `store/lav-skaermbilleder.py` og kan laves om, når siden ændrer sig. Eksemplerne er stadig opdigtede.

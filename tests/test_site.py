@@ -18,7 +18,7 @@ def ls(pg): return json.loads(pg.evaluate("localStorage.getItem('olrating-v1')")
 VIEWS=['','#alle','#toplisten','#aarets','#galleri','#sammenlign','#byttur','#smagning','#venner','#nyt','#stilguide','#profil','#tilfoej','#kalender','#dagbog','#mad','#genstande','#privatliv','#om']
 def run(b,name,vw):
     M=Mock(); errs=[]
-    c=b.new_context(viewport={'width':vw[0],'height':vw[1]},accept_downloads=True,service_workers='block'); c.route(f'https://{HOST}/**',M.handle)
+    c=b.new_context(viewport={'width':vw[0],'height':vw[1]},accept_downloads=True,service_workers='block',locale='da-DK'); c.route(f'https://{HOST}/**',M.handle)
     pg=c.new_page(); pg.on('pageerror',lambda e:errs.append(str(e)))
     pg.on('console',lambda m:errs.append('console: '+m.text[:200]) if m.type=='error' else None)
     pg.add_init_script("window.__sh=[];navigator.share=async d=>{window.__sh.push(d)};window.confirm=()=>true;window.__w=[];window.OlratingApp={updateWidget:j=>window.__w.push(j)};")
@@ -26,7 +26,7 @@ def run(b,name,vw):
     over=lambda: pg.evaluate('document.documentElement.scrollWidth>innerWidth+1')
     pg.goto(URL); pg.wait_for_timeout(1500)
     T('empty site loads',pg.inner_text('h1')!='' and not errs,errs[:3])
-    T('sprog: dansk er standard, og knappen EN og sprogvalget i sidefoden findes',pg.evaluate('document.documentElement.lang')=='da' and pg.inner_text('#langBtn')=='EN' and pg.is_visible('#langBtn') and pg.evaluate("document.getElementById('langSel').value")=='da' and pg.inner_text('#nav a >> nth=0')=='Alle øl' and not over())
+    T('sprog: dansk er standard, og sprogvælgeren og valget i sidefoden findes',pg.evaluate('document.documentElement.lang')=='da' and pg.inner_text('#langCode')=='DA' and pg.is_visible('#langBtn') and pg.evaluate("document.getElementById('langSel').value")=='da' and pg.inner_text('#nav a >> nth=0')=='Alle øl' and not over())
     # --- add a beer through the form
     pg.goto(URL+'#tilfoej'); pg.wait_for_timeout(500)
     pg.click('#addBtn'); pg.wait_for_timeout(300)
@@ -197,12 +197,22 @@ def run(b,name,vw):
     pg.evaluate("""(()=>{const S=JSON.parse(localStorage.getItem('olrating-v1')),W='Etmegetlangtordudenmellemrumsomaldrigvilstoppe';
       S.beers.forEach((b,i)=>{if(i%2===0){b.name=W+b.name;b.brewery=W+'bryggeriet';b.city=W}});S.reviews.forEach((r,i)=>{if(i%3===0)r.text=W+W});
       S.tours.push({id:'langtur01',name:W+'tur',date:'2026-11-20T19:00',meet:W,note:W,host:'Lucas',stops:[{name:W+'bar',time:'19:00',addr:W+' 12'}],members:[{name:'Lucas'},{name:W.slice(0,38)}]});
-      S.tast=[{id:'langsmag1',name:W,host:'Lucas',blind:false,revealed:true,beers:[W,'B'],votes:{Lucas:[5,4]}}];localStorage.setItem('olrating-v1',JSON.stringify(S))})()""")
+      S.tast=[{id:'langsmag1',name:W,host:'Lucas',blind:false,revealed:true,beers:[W,'B'],votes:{Lucas:[5,4]}}];S.vq=[{t:'langsmag1',who:'Lucas',v:[5,4]}];localStorage.setItem('olrating-v1',JSON.stringify(S))})()""")
     pg.goto(URL+'#profil'); pg.reload(); pg.wait_for_timeout(1500); bad=[]
     for v in VIEWS+['#beer-ux1','#beer-ux2','#byttur-langtur01','#smagning-langsmag1','#smager-Lucas','#bryggeri-Etmegetlangtordudenmellemrumsomaldrigvilstoppebryggeriet']:
         pg.goto(URL+v); pg.wait_for_timeout(300)
         if over(): bad.append(v)
     T('lange ord uden mellemrum giver ikke vandret scroll',not bad,bad)
+    # --- smagning som billede, smagning ud fra ønskelisten og "Vis flere" på profilen
+    pg.goto(URL+'#smagning-langsmag1'); pg.wait_for_timeout(400); pg.evaluate("navigator.canShare=undefined")
+    with pg.expect_download(timeout=10000) as dl: pg.click('#tastCard')
+    T('smagning: del resultatet som billede (jpg > 40 kB)',dl.value.suggested_filename.endswith('-smagning-olrating.jpg') and os.path.getsize(dl.value.path())>40000,dl.value.suggested_filename)
+    pg.evaluate("""(()=>{const S=JSON.parse(localStorage.getItem('olrating-v1'));S.wish=['ux2','ux4','findesikke'];for(let i=0;i<20;i++)S.reviews.push({id:'many'+i,beer:'ux2',who:'Lucas',date:'2026-11-2'+(i%5),s:{look:3,aroma:3,taste:3,feel:3,overall:3},tags:[],again:1,text:''});localStorage.setItem('olrating-v1',JSON.stringify(S))})()""")
+    pg.goto(URL+'#smagning'); pg.reload(); pg.wait_for_timeout(1500); lab=pg.inner_text('#wishTast'); pg.click('#wishTast'); pg.wait_for_timeout(200)
+    T('smagning: ønskelisten fylder øllene ind','2 øl' in lab and pg.input_value('#sgBeers').count('\n')==1 and 'Havn Stout' in pg.input_value('#sgBeers'),(lab,pg.input_value('#sgBeers')[:80]))
+    pg.goto(URL+'#profil'); pg.wait_for_timeout(500); n1=pg.eval_on_selector_all('.cols .box >> nth=1 >> .rv','e=>e.length'); more=pg.inner_text('#moreRev'); pg.click('#moreRev'); pg.wait_for_timeout(400)
+    n2=pg.eval_on_selector_all('.cols .box >> nth=1 >> .rv','e=>e.length')
+    T('profil: 15 bedømmelser ad gangen og Vis flere',n1==15 and 'mere' in more and n2>n1 and pg.query_selector('#moreRev') is None and not over(),(n1,more,n2))
     T('no JS or console errors',not errs,errs[:4])
     c.close()
 with sync_playwright() as p:

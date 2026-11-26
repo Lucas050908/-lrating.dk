@@ -19,7 +19,7 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 | Smager | `#smager-<navn>` | En persons bedømmelser, gennemsnit, yndlingsstil, enighed med dig og knappen Følg |
 | Stilguide | `#stilguide` | Ølstile, kort over bryggerier og alle bryggerier |
 | Bryggeri | `#bryggeri-<navn>` | Alle øl fra et bryggeri, gennemsnit og antal bedømmelser |
-| Min profil | `#profil` | Navn, statistik, mærker, ønskeliste, backup og gendannelse |
+| Min profil | `#profil` | Navn, statistik, mærker, ønskeliste, backup og gendannelse. Egne bedømmelser vises 15 ad gangen med "Vis flere" |
 | Øl-dagbog | `#dagbog` | Alt du har smagt og "Dit år i øl" |
 | Ølkalender | `#kalender` | Juleøl, J-dag, påskebryg osv. |
 | Øl til maden | `#mad` | Forslag til øl til forskellige retter |
@@ -28,14 +28,16 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 | Privatliv / Om | `#privatliv`, `#om` | Privatlivspolitik, ejere og fejlrapport |
 
 ### Dansk og engelsk
-- Siden er dansk som standard. Knappen **EN** i topmenuen skifter til engelsk, og **DA** skifter tilbage. Valget kan også ændres under "Sprog · Language" i sidefoden, og det huskes på enheden.
+- Siden er dansk som standard. **Sprogvælgeren** i topmenuen viser et flag og DA eller EN. Tryk på den, og vælg Dansk eller English i den lille menu. Valget kan også ændres under "Sprog · Language" i sidefoden, og det huskes på enheden.
+- **Skiftet sker med det samme.** Siden bliver ikke hentet igen, du bliver stående samme sted på siden, og overgangen er blød. Skriver du i en formular, bliver det, du har skrevet, stående.
+- Har browseren et andet sprog end dansk, norsk eller svensk, viser knappen det engelske flag og "English?", indtil der er valgt et sprog.
 - Hele siden er oversat: menuer, alle sider, formularer, beskeder, mærker, stilguide, privatlivspolitik og delebillederne.
 - På engelsk skrives tal med punktum (4.5), datoer på engelsk, og priser som DKK.
 - Det, brugerne selv har skrevet (navne på øl, anmeldelser, byture), bliver ikke oversat.
 - Widgets i apps er stadig kun på dansk.
 
 ### Menuen
-- Topmenuen viser Alle øl, Toplisten, Galleri, Sammenlign, Byttur, Mere, Min profil, Tilføj øl og sprogknappen EN/DA.
+- Topmenuen viser Alle øl, Toplisten, Galleri, Sammenlign, Byttur, Mere, Min profil, Tilføj øl og sprogvælgeren.
 - Under **Mere** ligger Smagning med venner, Venner, Genstand-tæller, Årets øl, Stilguide og bryggerier, Ølkalender, Øl til maden og Min øl-dagbog.
 - Under 1100 px bredde bliver menuen til en knap, der viser alle sider i én liste.
 
@@ -113,7 +115,8 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 - **Vær med:** Gæster åbner linket, scanner QR-koden eller skriver koden. De giver hver øl 1 til 5 stjerner. Flere kan stemme på samme telefon ved at skrive et nyt navn.
 - **Blindsmagning:** Øllene vises som "Øl A, B, C", indtil resultatet er afsløret.
 - **Afsløring:** Kun værten kan afsløre. Ranglisten vises hos alle inden for få sekunder, nedefra og op, med vinderen til sidst. Hver øl viser gennemsnit, antal stemmer og din egen karakter.
-- **Bagefter:** Værten kan åbne for flere stemmer eller slette smagningen for alle.
+- **Bagefter:** Værten kan åbne for flere stemmer eller slette smagningen for alle. "Del resultatet som billede" laver et billede med aftenens vinder og resten af ranglisten.
+- **Ud fra ønskelisten:** Har du mindst to øl på din ønskeliste, kan knappen "Brug min ønskeliste" fylde dem ind, når du opretter en smagning.
 - Siden minder om, at små smagsprøver er nok, og at man ikke kører bil bagefter.
 
 ### Andet

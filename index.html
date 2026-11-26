@@ -83,9 +83,19 @@ footer .fbot{padding-bottom:max(18px,env(safe-area-inset-bottom))}
 .navdd{display:none;position:absolute;right:0;top:calc(100% + 12px);min-width:240px;flex-direction:column;gap:2px;background:rgba(15,29,54,.97);border:1px solid var(--ln);border-radius:18px;padding:8px;box-shadow:0 18px 40px rgba(0,0,0,.4)}.navmore.open .navdd{display:flex}.navdd a{border-radius:12px}
 .nav a.cta:hover,.nav a.cta[aria-current=page]{background:var(--sun);filter:brightness(1.06)}
 .cta{background:var(--sun);color:var(--ink)!important;border-radius:99px;padding:11px 20px;text-decoration:none;font-weight:700;white-space:nowrap}
-.bar .langb{font:600 13px Inter,sans-serif;min-width:40px;height:40px;padding:0 8px;border-radius:99px;border:1px solid rgba(255,255,255,.32);background:none;color:#fff;cursor:pointer;margin-left:-12px}.bar .langb:hover{background:rgba(255,255,255,.14)}
+.langw{position:relative;margin-left:-12px;flex:none}
+.bar .langb{display:inline-flex;align-items:center;gap:7px;height:40px;min-height:0;padding:0 11px 0 9px;border-radius:99px;border:1px solid rgba(255,255,255,.32);background:none;color:#fff;font:600 13px Inter,sans-serif;cursor:pointer}
+.bar .langb:hover,.langw.open .langb{background:rgba(255,255,255,.14)}.langb.busy{opacity:.6}
+.fl{width:22px;height:16px;border-radius:3px;overflow:hidden;display:inline-block;flex:none;box-shadow:0 0 0 1px rgba(255,255,255,.3)}.fl svg{width:100%;height:100%;display:block}
+.langb.hint{border-color:#ffc85a;animation:lpulse 2.4s ease-in-out 3}@keyframes lpulse{50%{box-shadow:0 0 0 6px rgba(255,200,90,.28)}}
+.langdd{display:none;position:absolute;right:0;top:48px;min-width:180px;background:rgba(15,29,54,.98);border:1px solid rgba(143,182,227,.25);border-radius:16px;padding:6px;box-shadow:0 14px 34px rgba(0,0,0,.45);z-index:6}
+.langw.open .langdd{display:grid;gap:2px}
+.langdd button{display:flex;align-items:center;justify-content:flex-start;gap:10px;width:100%;min-height:44px;padding:8px 12px;border-radius:10px;background:none;color:#fff;font:600 15px Inter,sans-serif}
+.langdd button:hover{background:rgba(255,255,255,.1);transform:none;filter:none}.langdd button[aria-checked=true]{background:rgba(255,255,255,.13)}
+.langdd button[aria-checked=true]::after{content:"✓";margin-left:auto;color:#ffc85a;font-weight:700}
+@media(max-width:480px){.langb.hint #langCode{display:none}}
 .bar .menu{display:none;padding:0;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.16);color:#fff;align-items:center;justify-content:center;cursor:pointer}
-@media(max-width:1100px){.navmore{display:block}#navMore{display:none}.navdd{display:flex;position:static;min-width:0;background:none;border:0;padding:0;box-shadow:none;border-top:1px solid var(--ln);margin-top:4px;padding-top:4px}.navdd a{border-radius:99px}.nav{max-height:calc(100vh - 90px);overflow:auto}.nav{position:absolute;top:66px;left:12px;right:12px;flex-direction:column;background:rgba(15,29,54,.97);border:1px solid var(--ln);border-radius:22px;padding:8px;display:none}.nav.open{display:flex}.bar .menu{display:flex;order:3}.bar .langb{margin-left:auto;order:2;height:44px;min-width:44px}.bar>.cta{display:none}}
+@media(max-width:1100px){.navmore{display:block}#navMore{display:none}.navdd{display:flex;position:static;min-width:0;background:none;border:0;padding:0;box-shadow:none;border-top:1px solid var(--ln);margin-top:4px;padding-top:4px}.navdd a{border-radius:99px}.nav{max-height:calc(100vh - 90px);overflow:auto}.nav{position:absolute;top:66px;left:12px;right:12px;flex-direction:column;background:rgba(15,29,54,.97);border:1px solid var(--ln);border-radius:22px;padding:8px;display:none}.nav.open{display:flex}.bar .menu{display:flex;order:3}.langw{margin-left:auto;order:2}.bar .langb{height:44px}.bar>.cta{display:none}}
 /* buttons + inputs */
 button,.btn{font:inherit;font-weight:700;cursor:pointer;min-height:46px;border-radius:99px;border:0;padding:11px 24px;background:var(--sun);color:var(--ink);text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;transition:transform .2s cubic-bezier(.2,.8,.3,1.5),filter .2s}
 button:hover,.btn:hover{transform:translateY(-2px);filter:brightness(1.08)}
@@ -420,7 +430,7 @@ footer .wrap{position:relative;z-index:2}
 <div class="top" id="top"><div class="bar">
   <a class="logo" href="#" aria-label="ølrating.dk forside"><img src="img/favicon.svg" width="36" height="36" alt="" class="badge-ic"><span>ølrating<b>.dk</b></span></a>
   <button class="menu" id="menuBtn" aria-label="Åbn menu" aria-expanded="false"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-  <nav class="nav" id="nav"><a href="#" data-nav="">Alle øl</a><a href="#toplisten" data-nav="toplisten">Toplisten</a><a href="#galleri" data-nav="galleri">Galleri</a><a href="#sammenlign" data-nav="sammenlign">Sammenlign</a><a href="#byttur" data-nav="byttur">Byttur</a><div class="navmore"><button type="button" id="navMore" aria-expanded="false" aria-haspopup="true" aria-controls="navdd">Mere<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="navdd" id="navdd"><a href="#smagning" data-nav="smagning">Smagning med venner</a><a href="#venner" data-nav="venner">Venner</a><a href="#genstande" data-nav="genstande">Genstand-tæller</a><a href="#aarets" data-nav="aarets">Årets øl</a><a href="#stilguide" data-nav="stilguide">Stilguide og bryggerier</a><a href="#kalender" data-nav="kalender">Ølkalender</a><a href="#mad" data-nav="mad">Øl til maden</a><a href="#dagbog" data-nav="dagbog">Min øl-dagbog</a></div></div><a href="#profil" data-nav="profil">Min profil</a><a href="#tilfoej" data-nav="tilfoej" class="cta">+ Tilføj øl</a></nav><button type="button" id="langBtn" class="langb" data-notr aria-label="Switch to English">EN</button>
+  <nav class="nav" id="nav"><a href="#" data-nav="">Alle øl</a><a href="#toplisten" data-nav="toplisten">Toplisten</a><a href="#galleri" data-nav="galleri">Galleri</a><a href="#sammenlign" data-nav="sammenlign">Sammenlign</a><a href="#byttur" data-nav="byttur">Byttur</a><div class="navmore"><button type="button" id="navMore" aria-expanded="false" aria-haspopup="true" aria-controls="navdd">Mere<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="navdd" id="navdd"><a href="#smagning" data-nav="smagning">Smagning med venner</a><a href="#venner" data-nav="venner">Venner</a><a href="#genstande" data-nav="genstande">Genstand-tæller</a><a href="#aarets" data-nav="aarets">Årets øl</a><a href="#stilguide" data-nav="stilguide">Stilguide og bryggerier</a><a href="#kalender" data-nav="kalender">Ølkalender</a><a href="#mad" data-nav="mad">Øl til maden</a><a href="#dagbog" data-nav="dagbog">Min øl-dagbog</a></div></div><a href="#profil" data-nav="profil">Min profil</a><a href="#tilfoej" data-nav="tilfoej" class="cta">+ Tilføj øl</a></nav><div class="langw" data-notr><button type="button" id="langBtn" class="langb" aria-haspopup="true" aria-expanded="false" aria-controls="langdd" aria-label="Sprog · Language"><span class="fl" id="langFl"></span><span id="langCode">DA</span></button><div class="langdd" id="langdd" role="menu" aria-label="Sprog · Language"><button type="button" role="menuitemradio" data-lang="da" aria-checked="true"><span class="fl"></span>Dansk</button><button type="button" role="menuitemradio" data-lang="en" aria-checked="false"><span class="fl"></span>English</button></div></div>
 </div></div>
 <main id="app"></main>
 <footer>
@@ -486,29 +496,52 @@ function trS(t){if(!EN||typeof t!=='string'||!t)return t;const m=/^([\s·]*)([\s
   return o==null?t:m[1]+o+m[3]}
 /* En sætning med fed skrift eller links i bliver oversat samlet: de små elementer skrives som <1>…</1>, <2>…</2> i nøglen og i oversættelsen. */
 function trSkel(n){let has=false,txt=false,i=0,k='';for(let c=n.firstChild;c;c=c.nextSibling){if(c.nodeType===3){if(c.nodeValue.trim())txt=true;k+=c.nodeValue}
-  else if(c.nodeType===1){if(c.nodeName==='BR'){k+='<br>';continue}if(c.firstElementChild||c.hasAttribute('data-notr')||/^(SELECT|TEXTAREA|SCRIPT|STYLE)$/.test(c.nodeName))return null;i++;const t=c.textContent;if(t.trim())has=true;k+='<'+i+'>'+t+'</'+i+'>'}}
+  else if(c.nodeType===1){if(c.nodeName==='BR'){k+='<br>';continue}if(c.firstElementChild||c.hasAttribute('data-notr')||/^(SELECT|TEXTAREA|SCRIPT|STYLE)$/.test(c.nodeName))return null;i++;const t=c.textContent,q=c.__i||i;if(t.trim())has=true;k+='<'+q+'>'+t+'</'+q+'>'}}
   return has&&txt?k.replace(/\s+/g,' ').trim():null}
 const trN=new WeakMap();   /* værn mod løkker: en sætning bliver højst oversat 4 gange i samme element */
 function trFill(n,v){const els=[],brs=[];for(const c of [...n.childNodes]){if(c.nodeType===3)c.remove();else if(c.nodeType===1)(c.nodeName==='BR'?brs:els).push(c)}
+  if(els.some(e=>e.__i))els.sort((a,b)=>(a.__i||0)-(b.__i||0));else els.forEach((e,i)=>e.__i=i+1);
   for(const tk of v.split(/(<\d+>[\s\S]*?<\/\d+>|<br>)/)){if(!tk)continue;const m=/^<(\d+)>([\s\S]*)<\/\d+>$/.exec(tk);
    if(tk==='<br>')n.appendChild(brs.shift()||document.createElement('br'));
    else if(m){const e=els[m[1]-1];if(!e)continue;els[m[1]-1]=null;if(e.firstChild)e.firstChild.nodeValue=m[2];else if(m[2])e.textContent=m[2];n.appendChild(e)}
    else n.appendChild(document.createTextNode(tk))}
   els.forEach(e=>{if(e)n.appendChild(e)})}
-function trEl(n){if(n.nodeType===3){const o=trS(n.nodeValue);if(o!==n.nodeValue)n.nodeValue=o;return}
+/* Den danske tekst gemmes på selve elementet (__o, __oa, __sk), så siden kan skifte tilbage til dansk uden at blive hentet igen. */
+function trAttr(n){for(const a of TRA){const v=n.getAttribute(a);if(v){const o=trS(v);if(o!==v){(n.__oa=n.__oa||{})[a]=v;(n.__ta=n.__ta||{})[a]=o;n.setAttribute(a,o)}}}}
+function trEl(n){if(n.nodeType===3){const v=n.nodeValue,o=trS(v);if(o!==v){n.__o=v;n.__t=o;n.nodeValue=o}return}
   if(n.nodeType!==1||n.nodeName==='SCRIPT'||n.nodeName==='STYLE'||n.hasAttribute('data-notr'))return;
-  for(const a of TRA){const v=n.getAttribute(a);if(v){const o=trS(v);if(o!==v)n.setAttribute(a,o)}}
-  if(n.nodeName==='TEXTAREA')return;
-  if(n.firstElementChild){const k=trSkel(n);if(k){const v=trK(k);if(v!=null&&v!==k&&(trN.get(n)||0)<4){trN.set(n,(trN.get(n)||0)+1);for(let c=n.firstElementChild;c;c=c.nextElementSibling)for(const a of TRA){const x=c.getAttribute(a);if(x){const o=trS(x);if(o!==x)c.setAttribute(a,o)}}trFill(n,v);return}}}
+  trAttr(n);if(n.nodeName==='TEXTAREA')return;
+  if(n.firstElementChild){const k=trSkel(n);if(k){const v=trK(k);if(v!=null&&v!==k&&(trN.get(n)||0)<4){trN.set(n,(trN.get(n)||0)+1);for(let c=n.firstElementChild;c;c=c.nextElementSibling)trAttr(c);if(!n.__sk)n.__sk=k;n.__st=v.replace(/\s+/g,' ').trim();trFill(n,v);return}}}
   for(let c=n.firstChild;c;c=c.nextSibling)trEl(c)}
+function trBack(n){if(n.nodeType===3){if(n.__o!=null){if(n.nodeValue===n.__t)n.nodeValue=n.__o;n.__o=n.__t=null}return}
+  if(n.nodeType!==1)return;
+  if(n.__oa){for(const a in n.__oa)if(n.getAttribute(a)===n.__ta[a])n.setAttribute(a,n.__oa[a]);n.__oa=n.__ta=null}
+  if(n.__sk){if(trSkel(n)===n.__st)trFill(n,n.__sk);n.__sk=n.__st=null;trN.delete(n)}
+  for(let c=n.firstChild;c;c=c.nextSibling)trBack(c)}
 function trNode(n){const e=n.nodeType===1?n:n.parentElement;if(!e||e.closest('[data-notr],script,style'))return;trEl(n.nodeType===1?n:e)}
-const trObs=new MutationObserver(ms=>{if(!EN)return;const seen=new Set();for(const m of ms){if(m.type==='attributes'){const e=m.target;if(!e.closest('[data-notr]')){const v=e.getAttribute(m.attributeName);if(v){const o=trS(v);if(o!==v)e.setAttribute(m.attributeName,o)}}continue}
+const trObs=new MutationObserver(ms=>{if(!EN)return;const seen=new Set();for(const m of ms){if(m.type==='attributes'){const e=m.target;if(!e.closest('[data-notr]'))trAttr(e);continue}
   if(m.type==='childList'&&m.target===document.body){m.addedNodes.forEach(x=>{if(x.nodeType===1)trNode(x)});continue}
   const e=m.type==='childList'?m.target:m.target.parentElement;if(e&&!seen.has(e)&&e.isConnected){seen.add(e);trNode(e)}}});
 window.__tr={skel:trSkel,s:trS};
-function loadEN(){return new Promise(ok=>{if(window.EN_DATA)return ok(true);const sc=document.createElement('script');sc.src='js/en.js';sc.onload=()=>ok(!!window.EN_DATA);sc.onerror=()=>ok(false);document.head.appendChild(sc)})}
-async function langBoot(){$('langSel').value=S.lang;if(S.lang!=='en')return;$('langBtn').textContent='DA';$('langBtn').setAttribute('aria-label','Skift til dansk');const ok=await Promise.race([loadEN(),new Promise(r=>setTimeout(()=>r(false),5000))]);
-  if(ok){EN=window.EN_DATA;document.documentElement.lang='en';trEl(document.body);trObs.observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:TRA})}
+function loadEN(){return new Promise(ok=>{if(window.EN_DATA)return ok(true);const sc=document.createElement('script');sc.src='js/en.js';sc.onload=()=>ok(!!window.EN_DATA);sc.onerror=()=>{sc.remove();ok(false)};document.head.appendChild(sc)})}
+/* Sprogvælgeren i topmenuen: flag, kode og en lille menu. Skiftet sker uden at siden hentes igen. */
+const flag=(l,id)=>l==='en'?`<svg viewBox="0 0 60 30" aria-hidden="true"><clipPath id="uk${id}"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><path fill="#012169" d="M0,0 v30 h60 v-30 z"/><path stroke="#fff" stroke-width="6" d="M0,0 L60,30 M60,0 L0,30"/><path stroke="#c8102e" stroke-width="4" clip-path="url(#uk${id})" d="M0,0 L60,30 M60,0 L0,30"/><path stroke="#fff" stroke-width="10" d="M30,0 v30 M0,15 h60"/><path stroke="#c8102e" stroke-width="6" d="M30,0 v30 M0,15 h60"/></svg>`:'<svg viewBox="0 0 37 28" aria-hidden="true"><path fill="#c8102e" d="M0 0h37v28H0z"/><path fill="#fff" d="M12 0h4v28h-4zM0 12h37v4H0z"/></svg>';
+function langUI(){const l=S.lang,hint=!S.langSet&&l==='da'&&!/^(da|nb|nn|no|sv|fo|kl)\b/i.test(navigator.language||'da');
+  $('langFl').innerHTML=flag(hint?'en':l,'b');$('langCode').textContent=hint?'English?':l.toUpperCase();$('langBtn').classList.toggle('hint',hint);
+  document.querySelectorAll('#langdd [data-lang]').forEach(b=>{b.setAttribute('aria-checked',b.dataset.lang===l);const f=b.querySelector('.fl');if(!f.firstChild)f.innerHTML=flag(b.dataset.lang,'m')});$('langSel').value=l}
+function langClose(){document.querySelector('.langw').classList.remove('open');$('langBtn').setAttribute('aria-expanded','false')}
+const TROPT={childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:TRA};
+async function setLang(l){l=l==='en'?'en':'da';langClose();S.langSet=1;if(l===S.lang){save();langUI();return}
+  if(l==='en'&&!window.EN_DATA){$('langBtn').classList.add('busy');const ok=await Promise.race([loadEN(),new Promise(r=>setTimeout(()=>r(false),8000))]);$('langBtn').classList.remove('busy');if(!ok){toast('Engelsk kunne ikke hentes. Tjek forbindelsen. (English could not be loaded.)');return}}
+  const y=scrollY,typing=dirty;S.lang=l;save();
+  const go=()=>{if(l==='en'){EN=window.EN_DATA;document.documentElement.lang='en';if(!typing)softRoute();trEl(document.body);trObs.observe(document.body,TROPT)}
+   else{trObs.disconnect();trBack(document.body);EN=null;trC.clear();document.documentElement.lang='da';if(!typing)softRoute()}
+   langUI();scrollTo({top:y,behavior:'instant'})};
+  /* Blød overgang, hvor browseren kan det. Ellers skiftes der bare med det samme. */
+  if(document.startViewTransition&&!RM){try{await document.startViewTransition(go).updateCallbackDone}catch(e){if(S.lang!==(EN?'en':'da'))go()}}else go();
+  toast(l==='en'?'Sproget er skiftet til engelsk':'Sproget er skiftet til dansk')}
+async function langBoot(){langUI();if(S.lang!=='en')return;const ok=await Promise.race([loadEN(),new Promise(r=>setTimeout(()=>r(false),5000))]);
+  if(ok){EN=window.EN_DATA;document.documentElement.lang='en';trEl(document.body);trObs.observe(document.body,TROPT)}
   document.documentElement.classList.remove('trw')}
 if(S.lang==='en')document.documentElement.classList.add('trw');
 {const c=window.confirm,p=window.prompt;window.confirm=m=>c.call(window,trS(m));window.prompt=(m,d)=>p.call(window,trS(m),d)}
@@ -966,7 +999,7 @@ function profileView(){const L=enrich(),me=S.me.trim(),mine=reviews().filter(r=>
   ${me?`<div class="pstats"><div><b>${mine.length}</b><small>bedømmelser</small></div><div><b>${added.length}</b><small>øl tilføjet</small></div><div><b>${mine.length?fmt(avg):'–'}</b><small>din gennemsnitlige karakter</small></div><div><b style="font-size:20px">${fav?esc(fav[0]):'–'}</b><small>yndlingsstil</small></div><div><b style="font-size:20px">${ft?esc(ft[0]):'–'}</b><small>smager du oftest</small></div></div>`:'<p class="meta" style="margin-top:16px">Skriv dit navn for at se dine bedømmelser. Det er det samme navn, du bruger, når du bedømmer en øl.</p>'}
   <div class="cols" style="margin-top:12px">
    <div class="box"><h3>Vil smage (${wish.length})</h3>${wish.map(row).join('')||'<p class="meta">Tryk på "Vil smage" på en øl for at gemme den her.</p>'}</div>
-   <div class="box"><h3>Mine bedømmelser (${mine.length})</h3>${mine.map(r=>revRow(r,true)).join('')||'<p class="meta">Du har ikke bedømt nogen øl endnu.</p>'}</div></div>
+   <div class="box"><h3>Mine bedømmelser (${mine.length})</h3>${mine.slice(0,profileView.lim||15).map(r=>revRow(r,true)).join('')||'<p class="meta">Du har ikke bedømt nogen øl endnu.</p>'}${mine.length>(profileView.lim||15)?`<p style="margin:12px 0 0"><button type="button" class="ghost" id="moreRev">Vis flere (${mine.length-(profileView.lim||15)} mere)</button></p>`:''}</div></div>
   ${fyBox(4)?`<div style="margin-top:24px">${fyBox(4)}</div>`:''}
   ${(a=>a.length?`<div class="box" style="margin-top:24px"><h3>Du er mest enig med</h3><p class="meta" style="margin:4px 0 10px">Regnet ud fra de øl, I begge har bedømt.</p><div class="agr">${a.map(x=>`<div>${avatar(x.name)}<a href="${esc(tLink(x.name))}" class="who"><b>${esc(x.name)}</b></a><span class="meta">${x.n} fælles øl</span><b class="big" style="font-size:22px">${x.pct} %</b></div>`).join('')}</div></div>`:'')(agree())}
   ${me?`<div class="box" style="margin-top:24px"><h3>Mærker (${BADGES.filter(b=>b[4](myCounts())).length} af ${BADGES.length})</h3><div class="badges">${(c=>BADGES.map(([id,n,dsc,p,t])=>`<div class="badge${t(c)?' got':''}">${medal(p,t(c))}<b>${n}</b><small>${dsc}</small></div>`).join(''))(myCounts())}</div></div>`:''}
@@ -1102,6 +1135,15 @@ async function makeTourCard(t){const W=1080,H=1350,{c,x}=await cardBg(W,H),m=tou
   if(best){const by=H-286;x.fillStyle='rgba(255,200,90,.17)';rr(x,56,by,W-112,160,28);x.fill();x.font='700 26px Inter';x.fillStyle='#FF9A5A';x.fillText('TURENS BEDSTE ØL',88,by+48);x.textAlign='right';x.font='700 60px Sora';x.fillStyle='#FFC85A';const sc=fmt(best.avg);x.fillText(sc,W-88,by+84);const mw=W-88-x.measureText(sc).width-30-88;x.textAlign='left';x.font='700 44px Sora';x.fillStyle='#fff';x.fillText(fitTxt(x,best.name,mw),88,by+108)}
   x.textAlign='center';x.font='400 28px Inter';x.fillStyle='rgba(234,241,251,.7)';x.fillText('Planlæg jeres egen tur på ølrating.dk',W/2,H-60);return cardOut(c)}
 async function shareTour(t){toast('Laver billedet…');await shareBlob(await makeTourCard(t),fileSafe(t.name)+'-byttur-olrating.jpg',t.name,`${t.name} på ølrating.dk`)}
+async function makeTastCard(t){const W=1080,H=1350,{c,x}=await cardBg(W,H),R=tastRes(t).filter(r=>r.k),n=Object.keys(t.votes).length,w=R[0],rest=R.slice(1,6);
+  x.textAlign='left';x.font='700 28px Inter';x.fillStyle='#FF9A5A';x.fillText(('Smagning · '+n+' '+(n===1?'smager':'smagere')).toUpperCase(),72,214);
+  x.font='700 68px Sora';x.fillStyle='#fff';let y=292;for(const l of wrapTxt(x,t.name,W-144,2)){x.fillText(l,72,y);y+=80}y+=10;
+  if(w){x.fillStyle='rgba(255,200,90,.17)';rr(x,56,y,W-112,190,28);x.fill();x.font='700 26px Inter';x.fillStyle='#FF9A5A';x.fillText('AFTENENS VINDER',88,y+52);
+   x.textAlign='right';x.font='700 76px Sora';x.fillStyle='#FFC85A';const sc=fmt(w.avg);x.fillText(sc,W-88,y+104);const mw=W-88-x.measureText(sc).width-30-88;x.textAlign='left';x.font='700 50px Sora';x.fillStyle='#fff';x.fillText(fitTxt(x,w.n,mw),88,y+122);y+=220}
+  rest.forEach((r,i)=>{x.fillStyle='rgba(255,255,255,.07)';rr(x,56,y,W-112,96,24);x.fill();x.textAlign='center';x.font='700 40px Sora';x.fillStyle='#EAF1FB';x.fillText(String(i+2),112,y+50);
+   x.textAlign='right';x.font='700 44px Sora';x.fillStyle='#FFC85A';const sc=fmt(r.avg);x.fillText(sc,W-88,y+50);const mw=W-88-x.measureText(sc).width-30-160;x.textAlign='left';x.font='700 36px Sora';x.fillStyle='#fff';x.fillText(fitTxt(x,r.n,mw),160,y+50);y+=110});
+  x.textAlign='center';x.font='400 28px Inter';x.fillStyle='rgba(234,241,251,.7)';x.fillText('Hold jeres egen smagning på ølrating.dk',W/2,H-60);return cardOut(c)}
+async function shareTast(t){toast('Laver billedet…');await shareBlob(await makeTastCard(t),fileSafe(t.name)+'-smagning-olrating.jpg',t.name,`${t.name} på ølrating.dk`)}
 async function shareYear(y){const list=yearData(y).top.slice(0,5);if(!list.length)return;toast('Laver billedet…');await shareBlob(await makeListCard('Årets øl '+y,'De bedste øl i '+y,list),`aarets-oel-${y}-olrating.jpg`,'Årets øl '+y,`Årets øl ${y} på ølrating.dk`)}
 async function makeCard(b){try{await Promise.all(['700 10px Sora','400 10px Inter','600 10px Inter'].map(f=>document.fonts.load(f)))}catch(e){}
   const W=1080,H=1350,c=document.createElement('canvas');c.width=W;c.height=H;const x=trCtx(c.getContext('2d'));
@@ -1232,6 +1274,7 @@ function tastList(){return `<section class="band" style="padding-top:120px"><div
   <form id="tastForm" class="box tform" style="margin-top:26px;display:grid;gap:14px"><h3 style="margin:0">Opret en smagning</h3>
    <label>Navn<input id="sgName" required maxlength="80" placeholder="Fx Julefrokost 2026"></label>
    <label>Øllene, én pr. linje <span class="meta" style="font-weight:400">(2 til 12)</span><textarea id="sgBeers" required rows="5" placeholder="Julebryg&#10;Pilsner&#10;IPA"></textarea></label>
+   ${S.wish.filter(id=>beers().some(b=>b.id===id)).length>=2?`<button type="button" class="ghost" id="wishTast" style="justify-self:start">Brug min ønskeliste (${Math.min(12,S.wish.filter(id=>beers().some(b=>b.id===id)).length)} øl)</button>`:''}
    <span class="ck"><input type="checkbox" id="sgBlind" checked style="width:22px;min-height:22px;height:22px;padding:0"><label for="sgBlind" style="font-weight:600">Blindsmagning: navnene skjules som Øl A, B, C</label></span>
    ${S.me?'':`<label>Dit navn<input id="sgHost" required maxlength="40"></label>`}
    <button class="btn" style="justify-self:start">Opret smagning</button></form></div></section>`}
@@ -1242,7 +1285,7 @@ function tastView(id){const t=tastById(id);if(!t)return `<section class="band" s
   const foot=`<div class="box safe"><b>Små smagsprøver er nok.</b> Et par slurke af hver øl er rigeligt til at give karakter. Drik vand imellem, og kør ikke bil bagefter.</div><p style="margin-top:18px"><button type="button" class="ghost" id="tastDel" data-id="${esc(t.id)}">${host?'Slet smagningen':'Fjern smagningen fra min liste'}</button></p>`;
   if(t.revealed){const R=tastRes(t);return `<section class="band" style="padding-top:120px"><div class="wrap" style="max-width:880px">${head}
    <h3 style="margin:26px 0 4px">Aftenens vinder er …</h3><ol class="podium" data-n="${R.length}">${R.map((r,k)=>`<li class="${k===0&&r.k?'win':''}" style="--d:${((R.length-1-k)*.55).toFixed(2)}s"><span class="pl">${k+1}</span><div><b>${esc(r.n)}</b><span class="meta">${[t.blind?'var Øl '+letter(r.i):'',mine&&mine[r.i]?'du gav '+mine[r.i]:'',r.k+(r.k===1?' stemme':' stemmer')].filter(Boolean).join(' · ')}</span></div><b class="big">${r.k?fmt(r.avg):'–'}</b></li>`).join('')}</ol>
-   ${who}${host?`<p style="margin-top:14px"><button type="button" class="ghost" id="tastReopen" data-id="${esc(t.id)}">Åbn for flere stemmer</button></p>`:''}${foot}</div></section>`}
+   ${who}<p style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">${R[0]&&R[0].k?`<button type="button" class="ghost" id="tastCard" data-id="${esc(t.id)}">Del resultatet som billede</button>`:''}${host?`<button type="button" class="ghost" id="tastReopen" data-id="${esc(t.id)}">Åbn for flere stemmer</button>`:''}</p>${foot}</div></section>`}
   return `<section class="band" style="padding-top:120px"><div class="wrap" style="max-width:880px">${head}
    <div class="tgrid"><form id="voteForm" data-id="${esc(t.id)}" class="tform" style="display:grid;gap:12px;align-content:start"><label>Dit navn<input id="vWho" required maxlength="40" value="${esc(me)}" autocomplete="name"></label>
     <div>${t.beers.map((n,i)=>starsRow('t'+i,lab(i),mine?+mine[i]||0:0)).join('')}</div>
@@ -1300,7 +1343,7 @@ function route(){EC=null;dirty=false;const h=location.hash.slice(1);let v;
   const pd=document.querySelector('.podium .win');if(pd&&!softR)setTimeout(()=>{if(pd.isConnected)burstAt(pd)},(+pd.parentElement.dataset.n-1)*550+500);
   if(h==='alle')$('alle')?.scrollIntoView();else scrollTo({top:0,behavior:'instant'});
   document.title=trS(h.startsWith('bryggeri-')?`${decodeURIComponent(h.slice(9))} – ølrating.dk`:h.startsWith('beer-')?`${enrich().find(x=>x.id===h.slice(5))?.name||'Øl'} – ølrating.dk`:'ølrating.dk – danske øl, bedømt af dig')}
-document.addEventListener('click',e=>{if(!e.target.closest('.navmore')){document.querySelector('.navmore')?.classList.remove('open');$('navMore')?.setAttribute('aria-expanded','false')}});document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelector('.navmore')?.classList.remove('open')});
+document.addEventListener('click',e=>{if(!e.target.closest('.langw'))langClose();if(!e.target.closest('.navmore')){document.querySelector('.navmore')?.classList.remove('open');$('navMore')?.setAttribute('aria-expanded','false')}});document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelector('.navmore')?.classList.remove('open');langClose()}});
 addEventListener('hashchange',()=>{if(location.hash!=='#tilfoej')F.editBeer='';if(!$('scan').hidden)stopScan();route()});
 addEventListener('scroll',()=>$('top').classList.toggle('scrolled',scrollY>40),{passive:true});
 
@@ -1323,7 +1366,8 @@ function readReview(form){const s={};let ok=true;form.querySelectorAll('.rate').
 
 /* ---------- events ---------- */
 document.addEventListener('click',e=>{const t=e.target.closest('button,a');if(!t)return;
-  if(t.id==='langBtn'){S.lang=S.lang==='en'?'da':'en';save();location.reload();return}
+  if(t.id==='langBtn'){const o=t.parentElement.classList.toggle('open');t.setAttribute('aria-expanded',o);return}
+  if(t.dataset.lang){setLang(t.dataset.lang);return}
   if(t.id==='navMore'){const o=t.parentElement.classList.toggle('open');t.setAttribute('aria-expanded',o);return}
   if(t.id==='menuBtn'){const o=$('nav').classList.toggle('open');t.setAttribute('aria-expanded',o);return}
   if(t.dataset.star){const r=t.closest('.rate'),v=+t.dataset.star;r.dataset.v=v;r.querySelectorAll('[data-star]').forEach(b=>{b.classList.remove('on');if(+b.dataset.star<=v){void b.offsetWidth;b.classList.add('on')}b.setAttribute('aria-checked',+b.dataset.star===v)})}
@@ -1334,6 +1378,9 @@ document.addEventListener('click',e=>{const t=e.target.closest('button,a');if(!t
   else if('tab' in t.dataset){topView.t=+t.dataset.tab;route()}
   else if('year' in t.dataset){yearView.y=t.dataset.year;route()}
   else if(t.id==='tourCard'){const tr=tourById(t.dataset.id);if(tr)shareTour(tr)}
+  else if(t.id==='tastCard'){const tr=tastById(t.dataset.id);if(tr)shareTast(tr)}
+  else if(t.id==='wishTast'){const L=enrich(),n=S.wish.map(id=>L.find(b=>b.id===id)).filter(Boolean).slice(0,12).map(b=>b.name.slice(0,60));if(n.length){$('sgBeers').value=n.join('\n');if(!$('sgName').value)$('sgName').focus()}}
+  else if(t.id==='moreRev'){profileView.lim=(profileView.lim||15)+30;softRoute()}
   else if(t.id==='topCard')shareTop(topView.t||0);else if(t.id==='yearCard')shareYear(t.dataset.y)
   else if('gi' in t.dataset){openLb(+t.dataset.gi)}
   else if('lbclose' in t.dataset||t.id==='lbX'){closeLb()}
@@ -1387,7 +1434,7 @@ document.addEventListener('click',e=>{const t=e.target.closest('button,a');if(!t
   else if(t.id==='wipeBtn'){if(t.dataset.sure){S.beers.forEach(b=>delImg(b.img));S.reviews.forEach(r=>delImg(r.img));S={...S,beers:[],reviews:[],wish:[]};save();toast('Dine data er slettet');route()}else{t.dataset.sure=1;t.textContent='Klik igen: alt slettes'}}});
 document.addEventListener('input',e=>{if(e.target.id==='bName'||e.target.id==='bBrew'||e.target.id==='bCode'){clearTimeout(dupT);dupT=setTimeout(dupCheck,250)}if(e.target.id==='bAbv'){$('abvHint').textContent=abvLabel(parseFloat(e.target.value.replace(',','.'))||0);return}if(e.target.id==='bIbu'){$('ibuHint').textContent=ibuLabel(+e.target.value)||'står tit på etiketten';return}if(e.target.id==='fPrice'){F.maxPrice=+e.target.value;$('fPriceO').textContent=F.maxPrice?`op til ${F.maxPrice} kr`:'alle priser';renderGrid();return}if(e.target.id==='fAbv'){F.maxAbv=+e.target.value;$('fAbvO').textContent=F.maxAbv?`op til ${F.maxAbv} %`:'alle';renderGrid();return}if(e.target.id==='fMinAbv'){F.minAbv=+e.target.value;$('fMinAbvO').textContent=F.minAbv?`mindst ${F.minAbv} %`:'alle';renderGrid();return}if(e.target.dataset.p){const k=e.target.dataset.p;$('o_'+k).textContent=e.target.value;e.target.closest('#profBox').dataset.touched='1';return}if(e.target.id==='q'){F.q=e.target.value.trim();renderGrid()}});
 document.addEventListener('change',e=>{if(e.target.dataset.cmp){CMP[+e.target.dataset.cmp]=e.target.value;route();return}if(e.target.id==='fUntried'){F.untried=e.target.checked;renderGrid();return}if(e.target.id==='fImg'){F.withImg=e.target.checked;renderGrid();return}if(e.target.id==='fAf'){F.af=e.target.checked;renderGrid();return}if(e.target.id==='importFile'){const f=e.target.files[0];if(!f)return;f.text().then(txt=>{const x=JSON.parse(txt);if(x.app!=='olrating'||!Array.isArray(x.beers)||!Array.isArray(x.reviews))throw 0;const ib=new Set(S.beers.map(b=>b.id)),ir=new Set(S.reviews.map(r=>r.id));const own=({owner,...o})=>o;S.beers=S.beers.concat(x.beers.map(cleanBeer).filter(b=>b&&!ib.has(b.id)).map(own));S.reviews=S.reviews.concat(x.reviews.map(cleanRev).filter(r=>r&&!ir.has(r.id)).map(own));S.wish=[...new Set([...S.wish,...(x.wish||[])])];if(!S.me&&x.me)S.me=x.me;if(save()){migrateImgs().then(()=>{toast('Backup indlæst');route()})}}).catch(()=>toast('Filen er ikke en ølrating-backup'));return}
-  if(e.target.id==='sort'){F.sort=e.target.value;renderGrid()}else if(e.target.id==='seasonSel'){S.season=e.target.value;save();applySeason();route()}else if(e.target.id==='langSel'){S.lang=e.target.value==='en'?'en':'da';save();location.reload()}});
+  if(e.target.id==='sort'){F.sort=e.target.value;renderGrid()}else if(e.target.id==='seasonSel'){S.season=e.target.value;save();applySeason();route()}else if(e.target.id==='langSel'){setLang(e.target.value)}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('scan').hidden){stopScan();return}if($('lb').hidden)return;if(e.key==='Escape')closeLb();else if(e.key==='ArrowRight')lbGo(1);else if(e.key==='ArrowLeft')lbGo(-1)});
 $('lbs').addEventListener('scroll',lbCount,{passive:true});
 document.addEventListener('submit',async e=>{const f=e.target;e.preventDefault();

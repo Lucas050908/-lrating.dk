@@ -20,7 +20,7 @@ def mut(pg,js,wait=3000):
 with sync_playwright() as p:
     b=p.chromium.launch(); M=Mock(); errs=[]
     def ctx(name,vw,state=None):
-        c=b.new_context(viewport={'width':vw[0],'height':vw[1]}); c.route(f'https://{HOST}/**',M.handle)
+        c=b.new_context(viewport={'width':vw[0],'height':vw[1]},locale='da-DK'); c.route(f'https://{HOST}/**',M.handle)
         pg=c.new_page(); pg.on('pageerror',lambda e:errs.append(name+': '+str(e)))
         pg.on('console',lambda m:errs.append(name+' console: '+m.text) if m.type=='error' and 'Synk' not in m.text and 'ERR_FAILED' not in m.text else None)
         init="window.__sh=[];navigator.share=async d=>{window.__sh.push(d)};window.confirm=()=>true;window.prompt=()=>'%s';"%name
