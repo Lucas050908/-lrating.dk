@@ -4,6 +4,9 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Middag (12:25–12:25): svar-adresse på mails
+- **Funktionen `mails`** kan få en valgfri svar-adresse (`MAIL_REPLY_TO` under Secrets i Supabase), så svar på en mail havner i en indbakke, nogen læser. Guiden er opdateret, og `test_sql.js` tjekker det (79 tjek).
+
 ### Middag (12:12–12:24): navn, ønskeliste og følger følger med kontoen
 - **Kontoen har mere med:** Logger man ind på en ny telefon, kommer ens navn, ønskeliste og dem, man følger, med. Det, der lå på den nye enhed i forvejen, bliver lagt til. Fjerner man noget på én enhed, forsvinder det også på de andre. Genstand-tælleren bliver på enheden.
 - **Databasen:** `supabase/003-konto-mails-enig.sql` har fået tabellen `konto_data` (én række pr. konto, som kun kontoen selv kan læse). Er 003 kørt før kl. 12:24 i dag, skal den køres igen.

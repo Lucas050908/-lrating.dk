@@ -117,8 +117,9 @@ når en man følger bedømmer en øl, og når nogen melder sig til ens byttur el
    - Værdi: nøglen
 3. Gem. Nøglen skal ikke gemmes andre steder.
 
-Skal mails komme fra en anden adresse end `hej@xn--lrating-p1a.dk`, så lav også en hemmelighed, der hedder `MAIL_FROM`,
-fx `ølrating.dk <nyt@xn--lrating-p1a.dk>`.
+To valgfri hemmeligheder samme sted:
+- `MAIL_REPLY_TO`: en mailadresse, som svar på mailene skal havne i. Uden den ender svar hos `hej@…`, som ingen læser, medmindre I laver den postkasse hos one.com.
+- `MAIL_FROM`: hvis mails skal komme fra en anden adresse, fx `ølrating.dk <nyt@xn--lrating-p1a.dk>`.
 
 ### 2.3 Kør database-filen 004
 1. Åbn filen: <https://raw.githubusercontent.com/Lucas050908/-lrating.dk/main/supabase/004-mails.sql>

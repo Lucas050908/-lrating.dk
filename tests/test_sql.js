@@ -86,8 +86,9 @@ const path=require('path');const os=require('os');const {pathToFileURL}=require(
  r=await run(U.a);ok('med forkert nøgle: afvist, og intet er sendt',r.status===403&&outbox.length===0,JSON.stringify(r));
  r=await adm(`select count(*)::int n from mail_queue where taken_at is not null or sent_at is not null`);ok('forkert nøgle rører ikke køen',r.rows[0].n===0,r.rows[0].n);
  delete ENV.RESEND_API_KEY;r=await run();ok('uden nøgle til mailtjenesten: fejl, og køen er urørt',r.status===500&&outbox.length===0&&(await adm(`select count(*)::int n from mail_queue where taken_at is not null`)).rows[0].n===0,JSON.stringify(r));ENV.RESEND_API_KEY='re_test';
- r=await run();let m=outbox[0]||{};const PU=(await adm(`select unsub from mail_prefs where user_id='${U.p}'`)).rows[0].unsub;
+ ENV.MAIL_REPLY_TO='svar@example.dk';r=await run();delete ENV.MAIL_REPLY_TO;let m=outbox[0]||{};const PU=(await adm(`select unsub from mail_prefs where user_id='${U.p}'`)).rows[0].unsub;
  ok('første kørsel: én samlet mail til kontoen',r.status===200&&r.sent===1&&outbox.length===1&&m.to[0]==='p@example.dk'&&m.auth==='Bearer re_test',JSON.stringify(r));
+ ok('afsender er sidens adresse, og svar kan sendes til en valgfri indbakke',m.from==='ølrating.dk <hej@xn--lrating-p1a.dk>'&&m.reply_to==='svar@example.dk',JSON.stringify([m.from,m.reply_to]));
  ok('databasen blev kaldt med den nye slags nøgle',dbKeys.length>0&&dbKeys.every(k=>k==='sb_secret_test'),dbKeys.join());
  ok('emne og hilsen på dansk',m.subject==='Nyt fra ølrating.dk: 3 ting siden sidst'&&m.html.includes('Hej P')&&m.html.includes('lang="da"'),m.subject);
  ok('samme bedømmelse nævnes kun én gang, med link til øllen',(m.html.match(/Kontoøl/g)||[]).length===1&&m.html.includes('<b>magnus</b> har bedømt <a href="https://xn--lrating-p1a.dk/#beer-bp"')&&m.html.includes('som du har tilføjet'),m.html);
@@ -103,7 +104,7 @@ const path=require('path');const os=require('os');const {pathToFileURL}=require(
  ok('en time efter: "min øl" sendes, og emnet er selve hændelsen',r.sent===1&&m.subject==='magnus har bedømt Kontoøl, som du har tilføjet',m.subject);
  r=await adm(`select kind from mail_queue where sent_at is null`);ok('"ven" venter til i morgen (højst én om dagen)',r.rows.length===1&&r.rows[0].kind==='friends',JSON.stringify(r.rows));
  await old('p');await old('p','friends_sent');r=await run();m=outbox[2]||{};
- ok('dagen efter: mailen om vennen',r.sent===1&&m.subject==='magnus, som du følger, har bedømt Kontoøl',m.subject);
+ ok('dagen efter: mailen om vennen (uden svar-adresse, når den ikke er sat)',r.sent===1&&m.subject==='magnus, som du følger, har bedømt Kontoøl'&&!('reply_to' in m),m.subject);
  // fravalg efter at noget er lagt i kø
  await as('b',`insert into tour_members(tour,name) values('t1','Ole')`);await as('p',`update mail_prefs set events=false`);await old('p');
  r=await run();ok('slået fra siden sidst: sendes ikke og fjernes fra køen',r.sent===0&&(await adm(`select count(*)::int n from mail_queue where sent_at is null`)).rows[0].n===0,JSON.stringify(r));

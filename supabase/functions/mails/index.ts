@@ -8,7 +8,8 @@
 //   GET  ?unsub=<nøgle>   → sender videre til afmeld-siden på ølrating.dk.
 //
 // Opsætning (se docs/KONTO.md): "Verify JWT" skal være slået FRA, og hemmeligheden RESEND_API_KEY skal være sat
-// under Edge Functions → Secrets. Nøglen må aldrig stå her i filen. MAIL_FROM kan sættes, hvis afsenderen skal være en anden.
+// under Edge Functions → Secrets. Nøglen må aldrig stå her i filen. MAIL_FROM kan sættes, hvis afsenderen skal være en anden,
+// og MAIL_REPLY_TO, hvis svar på mailen skal havne i en bestemt indbakke.
 // Filen bruger ingen pakker, så den kan kopieres direkte ind i Supabase.
 
 const SITE = 'https://xn--lrating-p1a.dk';
@@ -137,6 +138,7 @@ function build(m, fnUrl) {
   return {
     from: env('MAIL_FROM') || 'ølrating.dk <hej@xn--lrating-p1a.dk>',
     to: [m.email], subject, html, text,
+    ...(env('MAIL_REPLY_TO') ? { reply_to: env('MAIL_REPLY_TO') } : {}),   // hvor svar på mailen skal havne (valgfri)
     headers: { 'List-Unsubscribe': '<' + fnUrl + '?unsub=' + m.unsub + '>', 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' },
   };
 }
