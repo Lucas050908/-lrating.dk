@@ -107,6 +107,7 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 ### Android (`olrating.apk`)
 - Viser siden i fuld skærm. Kamera og billedvalg virker, og stregkodescanneren virker.
 - Delekort gemmes i Billeder.
+- **Genveje:** Hold fingeren på app-ikonet for at gå direkte til Bedøm en øl, Genstand-tæller, Smagning med venner eller Planlæg en bytur (Android 7.1 og nyere).
 - **Widgets:**
 
 | Widget | Indhold | Tryk |

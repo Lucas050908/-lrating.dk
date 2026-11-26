@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Genveje, der vises, når man holder fingeren på app-ikonet (Android 7.1 og nyere) -->
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut android:shortcutId="bedoem" android:enabled="true" android:icon="@mipmap/ic_launcher"
+        android:shortcutShortLabel="@string/sc_rate_short" android:shortcutLongLabel="@string/sc_rate_long">
+        <intent android:action="android.intent.action.VIEW" android:targetPackage="dk.olrating.app"
+            android:targetClass="dk.olrating.app.MainActivity" android:data="https://xn--lrating-p1a.dk/#tilfoej" />
+    </shortcut>
+    <shortcut android:shortcutId="genstand" android:enabled="true" android:icon="@mipmap/ic_launcher"
+        android:shortcutShortLabel="@string/sc_units_short" android:shortcutLongLabel="@string/sc_units_long">
+        <intent android:action="android.intent.action.VIEW" android:targetPackage="dk.olrating.app"
+            android:targetClass="dk.olrating.app.MainActivity" android:data="https://xn--lrating-p1a.dk/#genstande" />
+    </shortcut>
+    <shortcut android:shortcutId="smagning" android:enabled="true" android:icon="@mipmap/ic_launcher"
+        android:shortcutShortLabel="@string/sc_tast_short" android:shortcutLongLabel="@string/sc_tast_long">
+        <intent android:action="android.intent.action.VIEW" android:targetPackage="dk.olrating.app"
+            android:targetClass="dk.olrating.app.MainActivity" android:data="https://xn--lrating-p1a.dk/#smagning" />
+    </shortcut>
+    <shortcut android:shortcutId="byttur" android:enabled="true" android:icon="@mipmap/ic_launcher"
+        android:shortcutShortLabel="@string/sc_tour_short" android:shortcutLongLabel="@string/sc_tour_long">
+        <intent android:action="android.intent.action.VIEW" android:targetPackage="dk.olrating.app"
+            android:targetClass="dk.olrating.app.MainActivity" android:data="https://xn--lrating-p1a.dk/#byttur" />
+    </shortcut>
+</shortcuts>

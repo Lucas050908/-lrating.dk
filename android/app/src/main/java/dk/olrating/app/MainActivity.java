@@ -55,10 +55,7 @@ public class MainActivity extends Activity {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest req) {
                 Uri u = req.getUrl();
-                String h = u.getHost();
-                boolean own = "xn--lrating-p1a.dk".equals(h) || "www.xn--lrating-p1a.dk".equals(h) || "ølrating.dk".equals(h)
-                        || (SITE_HOST.equals(h) && u.getPath() != null && u.getPath().startsWith(SITE_PATH));
-                if (own) return false;
+                if (isOwn(u)) return false;
                 // Andre links (fx GitHub, mail) åbnes i telefonens browser
                 try { startActivity(new Intent(Intent.ACTION_VIEW, u)); } catch (Exception ignored) { }
                 return true;
@@ -98,7 +95,7 @@ public class MainActivity extends Activity {
             web.restoreState(savedInstanceState);
         } else {
             Uri data = getIntent() != null ? getIntent().getData() : null;
-            web.loadUrl(data != null ? data.toString() : SITE);
+            web.loadUrl(isOwn(data) ? data.toString() : SITE);
         }
         web.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
     }
@@ -106,8 +103,19 @@ public class MainActivity extends Activity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        // Åbnet fra en widget mens appen allerede kører
-        if (intent != null && intent.getData() != null) web.loadUrl(intent.getData().toString());
+        // Åbnet fra en widget eller en genvej, mens appen allerede kører
+        if (intent != null && isOwn(intent.getData())) web.loadUrl(intent.getData().toString());
+    }
+
+    /**
+     * Kun ølrating.dk må vises i appen. Andre apps kan sende en adresse til appen,
+     * og en fremmed side må ikke få adgang til broen til widgets og billeder.
+     */
+    static boolean isOwn(Uri u) {
+        if (u == null || !"https".equals(u.getScheme())) return false;
+        String h = u.getHost(), p = u.getPath();
+        return "xn--lrating-p1a.dk".equals(h) || "www.xn--lrating-p1a.dk".equals(h) || "ølrating.dk".equals(h)
+                || (SITE_HOST.equals(h) && p != null && (p.equals(SITE_PATH) || p.startsWith(SITE_PATH + "/")));
     }
 
     @Override

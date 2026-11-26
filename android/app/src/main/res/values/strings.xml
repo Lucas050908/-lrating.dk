@@ -12,4 +12,12 @@
     <string name="widget_units_label">ølrating: Genstand-tæller</string>
     <string name="widget_suggest_desc">Et forslag til en øl, du nok kan lide, og nedtælling til næste øl-dag</string>
     <string name="widget_suggest_label">ølrating: Noget for dig</string>
+    <string name="sc_rate_short">Bedøm øl</string>
+    <string name="sc_rate_long">Bedøm en øl</string>
+    <string name="sc_units_short">Genstande</string>
+    <string name="sc_units_long">Genstand-tæller</string>
+    <string name="sc_tast_short">Smagning</string>
+    <string name="sc_tast_long">Smagning med venner</string>
+    <string name="sc_tour_short">Byttur</string>
+    <string name="sc_tour_long">Planlæg en bytur</string>
 </resources>

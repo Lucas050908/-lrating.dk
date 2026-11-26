@@ -4,6 +4,10 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Nat (04:30–04:40): Android-appen
+- **Genveje på app-ikonet:** Hold fingeren på ølrating-ikonet for at gå direkte til Bedøm en øl, Genstand-tæller, Smagning med venner eller Planlæg en bytur.
+- **Sikkerhed:** Appen åbner nu kun adresser på ølrating.dk. Før kunne en anden app på telefonen bede ølrating-appen om at vise en fremmed side, som så ville få adgang til appens widgets og til at gemme billeder.
+
 ### Nat (03:22–03:28): anmeld indhold
 - **Anmeld:** Øl og bedømmelser, som andre har lavet, har nu et "Anmeld"-link. Det åbner en mail til ejerne med link og id, så upassende indhold kan blive slettet.
 

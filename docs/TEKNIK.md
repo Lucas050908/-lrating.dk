@@ -65,7 +65,9 @@ Widget-data, som `syncApp()` sender:
 - **`MainActivity`:**
   - WebView med DOM storage, filvælger, kamera-tilladelse og tilbage-knap.
   - Links til andre sider åbnes i browseren. Egne værter er `xn--lrating-p1a.dk`, `www.` og den gamle github.io-sti.
-  - `onNewIntent` håndterer tryk fra widgets, når appen allerede kører.
+  - `onNewIntent` håndterer tryk fra widgets og genveje, når appen allerede kører.
+  - `isOwn(Uri)` afgør, om en adresse må vises i appen: kun https på ølrating.dk (og den gamle github.io-sti). Det gælder også adresser, der kommer udefra i en intent, så en fremmed side aldrig får adgang til `OlratingApp`-broen.
+  - Genvejene på app-ikonet står i `res/xml/shortcuts.xml`.
 - **`Bridge`:** JavaScript-broen. Den gemmer data i SharedPreferences `olrating_widget` og opdaterer alle widgets.
 - **Ikon:** Adaptivt ikon i `res/mipmap-anydpi-v26/` med `ic_launcher_foreground.png` (motivet i fuld flade, 108 dp) og `ic_launcher_mono.png` til tema-ikoner. `ic_launcher.png` og `ic_launcher_round.png` er til Android 7.
 - **Widgets:** `TopWidget`, `QuickWidget`, `LatestWidget`, `StatsWidget`, `SuggestWidget` og `UnitsWidget`. `SuggestWidget` regner selv dagene til `next.date` ud, så nedtællingen passer, selv om appen ikke har været åbnet. +1 er en broadcast `dk.olrating.app.ADD_UNIT`, der lægger et tidsstempel i `pending_units`.
