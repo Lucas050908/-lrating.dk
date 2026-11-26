@@ -4,6 +4,12 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Formiddag (10:05–10:02): tilgængelighed i temaerne
+- **Juletemaet var svært at læse:** Mørk tekst på de røde knapper og rød tekst på mørk baggrund havde for lav kontrast. Den røde farve er gjort lysere, så teksten kan læses. Det samme er rettet i en enkelt farve i temaerne J-dag, fastelavn og halloween og i ølkalenderens bjælke for juleøl.
+- **Automatisk tjek af tilgængelighed** (axe, WCAG 2 A og AA) er kørt igen på 22 sider på dansk og engelsk, pc og mobil, og på 11 sider i alle 7 sæsontemaer. Der er ingen fund tilbage.
+- **Forsiden:** Årets øl har fået sin egen flise under "Mere at udforske".
+- **Test:** Den engelske test fejlede på GitHub, fordi ét browser-vindue i testen nåede den rigtige database. Nu bruger alle vinduer i de tre test den efterlignede database.
+
 ### Formiddag (09:25–09:42): lange ord og finpudsning af engelsk
 - **Lange ord uden mellemrum** (fx et ølnavn på 45 tegn, som en anden bruger har skrevet) kunne gøre 14 af siderne bredere end skærmen på mobil. Nu bliver ordet delt, og overskrifter får en rigtig bindestreg, hvor telefonen kan.
 - **Ugens øl på mobil:** Billedet og karakteren er lidt mindre, så lange navne som "Limfjordsporter" kan stå på én linje.

@@ -45,13 +45,13 @@
 [data-mode=light] .card,[data-mode=light] .box,[data-mode=light] .panel,[data-mode=light] .gcard,[data-mode=light] .scorebox{box-shadow:0 10px 30px -18px rgba(15,29,54,.35)}
 [data-mode=light] input::placeholder,[data-mode=light] textarea::placeholder{color:rgba(19,32,58,.45)}
 [data-mode=light] .chip,[data-mode=light] .ghost{border-color:rgba(15,29,54,.25)}
-[data-season=jul]{--sun:#e8304a;--pk:#c8102e;--gl:#ffd76a}
-[data-season=jdag]{--sun:#5aa0ff;--pk:#3b6fe0;--gl:#cfe4ff}
+[data-season=jul]{--sun:#ff6b6b;--pk:#ee4f66;--gl:#ffd76a}
+[data-season=jdag]{--sun:#5aa0ff;--pk:#5584f0;--gl:#cfe4ff}
 [data-season=nytaar]{--sun:#ffd76a;--pk:#b78cff;--gl:#fff1b8}
 [data-season=paaske]{--sun:#ffd23f;--pk:#ff8fbd;--gl:#b8f08f}
-[data-season=fastelavn]{--sun:#ff6fa8;--pk:#a45cff;--gl:#ffe07a}
+[data-season=fastelavn]{--sun:#ff6fa8;--pk:#a962ff;--gl:#ffe07a}
 [data-season=sankthans]{--sun:#ff8a1f;--pk:#ff4a1f;--gl:#ffd36b}
-[data-season=halloween]{--sun:#ff7518;--pk:#9b4dff;--gl:#ffb066}
+[data-season=halloween]{--sun:#ff7518;--pk:#a866ff;--gl:#ffb066}
 *{box-sizing:border-box;min-width:0}
 html{scroll-padding-top:90px}
 body{margin:0;background:var(--nv);color:var(--tx);font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip}
@@ -828,7 +828,7 @@ function home(){const L=enrich(),Rv=reviews().slice().sort((a,b)=>b.date.localeC
     <div class="box" id="reviews"><h3>Seneste anmeldelser</h3>${Rv.slice(0,4).map(r=>revRow(r,true)).join('')||'<p class="meta">Ingen endnu.</p>'}</div>
    </aside></div></section>
   <section class="band" style="padding-top:0"><div class="wrap"><h2 style="font-size:clamp(28px,3.4vw,42px);margin-bottom:20px">Mere at udforske</h2><div class="explore">
-   ${[['#sammenlign','Sammenlign to øl','Side om side, når du står i butikken og skal vælge.','M4 5h7v14H4zM13 5h7v14h-7z'],['#kalender','Ølkalender','Hvornår juleøl, påskebryg og sommerøl kommer.','M4 6h16v14H4zM4 10h16M8 3v5M16 3v5'],['#mad','Øl til maden','Find den øl, der passer til aftensmaden.','M7 3v8a2 2 0 0 0 4 0V3M9 11v10M17 3c-2 2-2 6 0 8v10'],['#dagbog','Min øl-dagbog','Alt du har smagt, og dit år i øl.','M6 3h11a2 2 0 0 1 2 2v16H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zM8 8h7M8 12h7'],['#smagning','Smagning med venner','Blindsmag sammen, og find aftenens vinder.','M7 3h4l-1 18H8zM14 3h4l-1 18h-2zM5 9h14'],['#byttur','Byttur','Planlæg ruten, og se hvem der er med.','M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11zM12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z'],['#genstande','Genstand-tæller','Hold øje med, hvor meget du har fået.','M5 20h14M8 20V10M12 20V4M16 20v-7']].map(([h,t,d,p])=>`<a class="ex-t" href="${h}"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gl)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${p}"/></svg><b style="font-size:18px">${t}</b><span class="meta">${d}</span></a>`).join('')}</div></div></section>
+   ${[['#sammenlign','Sammenlign to øl','Side om side, når du står i butikken og skal vælge.','M4 5h7v14H4zM13 5h7v14h-7z'],['#kalender','Ølkalender','Hvornår juleøl, påskebryg og sommerøl kommer.','M4 6h16v14H4zM4 10h16M8 3v5M16 3v5'],['#mad','Øl til maden','Find den øl, der passer til aftensmaden.','M7 3v8a2 2 0 0 0 4 0V3M9 11v10M17 3c-2 2-2 6 0 8v10'],['#dagbog','Min øl-dagbog','Alt du har smagt, og dit år i øl.','M6 3h11a2 2 0 0 1 2 2v16H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zM8 8h7M8 12h7'],['#smagning','Smagning med venner','Blindsmag sammen, og find aftenens vinder.','M7 3h4l-1 18H8zM14 3h4l-1 18h-2zM5 9h14'],['#byttur','Byttur','Planlæg ruten, og se hvem der er med.','M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11zM12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z'],['#genstande','Genstand-tæller','Hold øje med, hvor meget du har fået.','M5 20h14M8 20V10M12 20V4M16 20v-7'],['#aarets','Årets øl','Årets vinder, årets bryggeri og årets stil.','M8 4h8v5a4 4 0 0 1-8 0zM8 6H5v1a3 3 0 0 0 3 3M16 6h3v1a3 3 0 0 1-3 3M12 13v4M8 20h8']].map(([h,t,d,p])=>`<a class="ex-t" href="${h}"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gl)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${p}"/></svg><b style="font-size:18px">${t}</b><span class="meta">${d}</span></a>`).join('')}</div></div></section>
   <section class="how"><picture><source media="(max-width:700px)" srcset="img/fjord3-m.jpg"><img src="img/fjord3.jpg" alt="Havnepromenade med lamper og solnedgang over fjorden" loading="lazy"></picture>
    <div class="txt"><span class="kick">Sådan gør du</span><h2>En øl, et billede,<br>en karakter.</h2>
    ${[['Tag et billede','Flasken på kajen, glasset på bordet. Det hele tæller.','var(--gl)'],['Giv karakter','1 til 5 for udseende, duft, smag, fylde og helhed.','var(--sun)'],['Del det','Din øl dukker op på forsiden og i galleriet med det samme.','var(--pk)']].map(([h,p,c],i)=>`<div class="step"><span style="background:${c}">${i+1}</span><div><b style="font-size:19px">${h}</b><p>${p}</p></div></div>`).join('')}
@@ -1147,7 +1147,7 @@ function calView(){const y=new Date().getFullYear(),E=easter(y),day=x=>Math.floo
    ['Påskebryg','I butikkerne i ugerne op til påske','Påskebryg',new Date(E-42*DAY),new Date(+E+DAY),'#ffd23f'],
    ['Sommerøl','Lyse, friske øl, hvede og sour','Hvede',new Date(y,5,1),new Date(y,7,31),'#8bd17c'],
    ['Høst og Oktoberfest','Maltede lagerøl og høstøl','Lager',new Date(y,8,1),new Date(y,9,31),'#ff8a1f'],
-   ['Juleøl','Fra J-dag til jul','Juleøl',jd,new Date(y,11,26),'#e8304a']];
+   ['Juleøl','Fra J-dag til jul','Juleøl',jd,new Date(y,11,26),'#ee4f66']];
   const now=new Date(),td=day(now);
   const nxt=[['J-dag',jd,'kl. 20.59 kommer årets første juleøl'],['Påskedag',E,'påskebryggen er på sit højeste'],['Nytårsaften',new Date(y,11,31),'skål for et nyt ølår']].map(([n,dt,t])=>{let d=dt;if(d<new Date(now.getFullYear(),now.getMonth(),now.getDate())){d=n==='J-dag'?(()=>{const a=new Date(y+1,10,1);return new Date(y+1,10,1+((5-a.getDay()+7)%7))})():n==='Påskedag'?easter(y+1):new Date(y+1,11,31)}return[n,d,t]}).sort((a,b)=>a[1]-b[1]);
   const left=d=>Math.ceil((new Date(d.getFullYear(),d.getMonth(),d.getDate())-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/DAY);
