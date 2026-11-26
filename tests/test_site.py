@@ -15,7 +15,7 @@ def make_photo(b):
 def check(n,c,x=''):
     res.append(bool(c)); print(('PASS ' if c else 'FAIL ')+n,'' if c else x)
 def ls(pg): return json.loads(pg.evaluate("localStorage.getItem('olrating-v1')"))
-VIEWS=['','#alle','#toplisten','#galleri','#sammenlign','#byttur','#stilguide','#profil','#tilfoej','#kalender','#dagbog','#mad','#genstande','#privatliv','#om']
+VIEWS=['','#alle','#toplisten','#galleri','#sammenlign','#byttur','#smagning','#venner','#stilguide','#profil','#tilfoej','#kalender','#dagbog','#mad','#genstande','#privatliv','#om']
 def run(b,name,vw):
     M=Mock(); errs=[]
     c=b.new_context(viewport={'width':vw[0],'height':vw[1]},accept_downloads=True,service_workers='block'); c.route(f'https://{HOST}/**',M.handle)
@@ -132,6 +132,16 @@ def run(b,name,vw):
     pg.goto(URL+'#beer-ux1'); pg.wait_for_timeout(500)
     T('alkoholfri: ingen +Genstand på 0 %, men på almindelig øl',a and pg.query_selector('[data-unit]') is not None)
     pg.goto(URL+'#tilfoej'); pg.wait_for_timeout(400); pg.fill('#bAbv','0,3'); T('tilføj: alkoholfri-felt og hint',pg.query_selector('#bAf') is not None and pg.inner_text('#abvHint')=='Alkoholfri',pg.inner_text('#abvHint'))
+    # --- venner: smagerside, følg, feed
+    pg.goto(URL+'#smager-Magnus'); pg.wait_for_timeout(500)
+    T('smager: side med navn, antal og enighed',pg.inner_text('h1')=='Magnus' and '6 øl bedømt' in pg.inner_text('.thead') and '81 % enige' in pg.inner_text('.thead'),pg.inner_text('.thead'))
+    pg.click('[data-follow]'); pg.wait_for_timeout(400)
+    T('følg: gemt og knappen skifter',ls(pg)['follow']==['Magnus'] and 'Følger' in pg.inner_text('[data-follow]'))
+    pg.goto(URL+'#venner'); pg.wait_for_timeout(500)
+    T('venner: feed viser Magnus, og han foreslås ikke længere',pg.eval_on_selector_all('.cols .box >> nth=0 >> .rv','e=>e.length')==6 and pg.query_selector('.frow') is None and not over(),pg.inner_text('.cols')[:160])
+    T('venner: sendes ikke til databasen','follow' not in json.dumps(M.t))
+    pg.goto(URL+'#beer-ux1'); pg.wait_for_timeout(500); pg.click('.rv .who >> nth=0'); pg.wait_for_timeout(400)
+    T('navn i en bedømmelse fører til smagerens side',pg.evaluate('location.hash').startswith('#smager-'))
     T('no JS or console errors',not errs,errs[:4])
     c.close()
 with sync_playwright() as p:

@@ -14,6 +14,8 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 | Sammenlign | `#sammenlign` | To øl side om side |
 | Byttur | `#byttur` | Se [Byttur](#byttur) |
 | Smagning | `#smagning` | Se [Smagning med venner](#smagning-med-venner) |
+| Venner | `#venner` | Dem du følger, deres nyeste bedømmelser og forslag til andre smagere |
+| Smager | `#smager-<navn>` | En persons bedømmelser, gennemsnit, yndlingsstil, enighed med dig og knappen Følg |
 | Stilguide | `#stilguide` | Ølstile og alle bryggerier |
 | Bryggeri | `#bryggeri-<navn>` | Alle øl fra et bryggeri, gennemsnit og antal bedømmelser |
 | Min profil | `#profil` | Navn, statistik, mærker, ønskeliste, backup og gendannelse |
@@ -29,7 +31,7 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 - Sletning har stadig fortryd. Øllen og dens billede fjernes først fra databasen efter ca. 10 sekunder.
 - Backup-filen indeholder også billederne. Indlæses den igen, bliver øl, bedømmelser og billeder lagt op på ny.
 - Uden net virker alt som før. Ændringer sendes, når forbindelsen er tilbage. Status ses under Min profil ("Forbundet" eller "Ikke forbundet").
-- Genstand-tæller, ønskeliste og indstillinger deles **ikke**. De bliver på enheden.
+- Genstand-tæller, ønskeliste, hvem du følger, og indstillinger deles **ikke**. De bliver på enheden.
 
 ### Noget for dig og enighed
 - **Noget for dig** vises på forsiden og på Min profil, når du har bedømt mindst to øl. Den foreslår op til fire øl, du ikke har bedømt, med en begrundelse som "Du plejer at kunne lide pilsner".

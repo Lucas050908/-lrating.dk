@@ -4,7 +4,11 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
-### Nat (01:15–02:00)
+### Nat (00:55–01:10)
+- **Venner:** Ny side, hvor du følger andre smagere og ser deres nyeste bedømmelser samlet. "Find smagere" foreslår dem, du er mest enig med. Hvem du følger, gemmes kun på din egen enhed.
+- **Smagerside:** Hvert navn i en bedømmelse er nu et link til en side med personens bedømmelser, gennemsnit, yndlingsstil og jeres enighed i procent.
+
+### Nat (00:45–00:55)
 - **Smagning med venner:** Ny side, hvor værten skriver 2 til 12 øl, og alle giver karakter på deres egen telefon.
   - Med blindsmagning hedder øllene "Øl A, B, C", indtil værten afslører resultatet.
   - Gæster er med via link, QR-kode eller kode. Flere kan også stemme på samme telefon.
@@ -13,7 +17,7 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 - **Hurtigere opdatering:** På en byttur- eller smagningsside hentes nyt hvert 6. sekund i stedet for hvert 30.
 - **Forsiden:** "Mere at udforske" har fået genveje til Smagning med venner, Byttur og Genstand-tæller.
 
-### Nat (00:30–01:15)
+### Nat (00:30–00:45)
 - **Noget for dig:** Forsiden og Min profil foreslår øl, du ikke har bedømt, ud fra de stilarter og smagsord, du selv har givet høje karakterer. Hvert forslag har en kort begrundelse.
 - **Du er mest enig med:** Min profil viser, hvem du er mest enig med, i procent, ud fra de øl I begge har bedømt.
 - **Alkoholfri øl:** Nyt felt "Alkoholfri" når en øl tilføjes, mærkat på kortene, filteret "Kun alkoholfri" og en egen fane på toplisten. En alkoholfri øl på 0 % giver ingen genstand i tælleren.
