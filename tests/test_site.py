@@ -15,7 +15,7 @@ def make_photo(b):
 def check(n,c,x=''):
     res.append(bool(c)); print(('PASS ' if c else 'FAIL ')+n,'' if c else x)
 def ls(pg): return json.loads(pg.evaluate("localStorage.getItem('olrating-v1')"))
-VIEWS=['','#alle','#toplisten','#aarets','#swipe','#buddies','#galleri','#sammenlign','#byttur','#smagning','#venner','#nyt','#stilguide','#profil','#tilfoej','#kalender','#dagbog','#mad','#genstande','#privatliv','#om','#afmeld-00000000-0000-4000-a000-000000000001']
+VIEWS=['','#alle','#toplisten','#aarets','#swipe','#buddies','#hjul','#galleri','#sammenlign','#byttur','#smagning','#venner','#nyt','#stilguide','#profil','#tilfoej','#kalender','#dagbog','#mad','#genstande','#privatliv','#om','#afmeld-00000000-0000-4000-a000-000000000001']
 def run(b,name,vw):
     M=Mock(); errs=[]
     c=b.new_context(viewport={'width':vw[0],'height':vw[1]},accept_downloads=True,service_workers='block',locale='da-DK'); c.route(f'https://{HOST}/**',M.handle)
@@ -208,6 +208,14 @@ def run(b,name,vw):
     T('beer buddies: Magnus er bedste match med samme procent som på hans side',pg.eval_on_selector_all('.bud','e=>e.length')==1 and '81 %' in bt and 'Bedste match' in bt and 'Magnus' in bt and '4 øl til fælles' in bt and 'Mest enige om' in bt and 'Du: ' in bt and pg.query_selector('.bud .budl a[href^="#beer-"]') is not None and not over(),bt[:220])
     was=pg.inner_text('.bud [data-follow]'); pg.click('.bud [data-follow]'); pg.wait_for_timeout(400); mid=pg.inner_text('.bud [data-follow]'); pg.click('.bud [data-follow]'); pg.wait_for_timeout(400)
     T('beer buddies: man kan følge og holde op igen fra kortet',was=='Følger ✓' and mid=='Følg' and pg.inner_text('.bud [data-follow]')=='Følger ✓' and 'Magnus' in ls(pg)['follow'],(was,mid))
+    # --- lykkehjulet: hjulet vælger én øl, og resultatet er den øl, pilen peger på
+    pg.goto(URL+'#hjul'); pg.wait_for_timeout(500); nseg=pg.eval_on_selector_all('#hjG text','e=>e.length'); ht=pg.inner_text('#app')
+    T('lykkehjul: hjul med øl, fem grupper og en ansvarlig tekst',2<=nseg<=10 and pg.eval_on_selector_all('[data-hj]','e=>e.length')==5 and pg.eval_on_selector_all('[data-hj][aria-pressed=true]','e=>e.length')==1 and 'Alkolinjen' in ht and 'Sundhedsstyrelsen' in ht and pg.query_selector('.box a[href="#genstande"]') is not None and not over(),(nseg,ht[:120]))
+    pg.click('#hjSpin'); pg.wait_for_selector('#hjRes .hjr',timeout=9000)
+    hr=pg.evaluate("""(()=>{const g=document.getElementById('hjG'),rot=parseFloat(g.style.transform.match(/rotate\\(([-\\d.]+)deg/)[1]),L=[...g.querySelectorAll('text')].map(t=>t.textContent),n=L.length,i=Math.floor(((360-rot%360)%360)/(360/n))%n,nm=document.querySelector('#hjRes h2').textContent;return [nm,L[i],document.getElementById('hjSpin').textContent,document.querySelector('#hjRes a').getAttribute('href')]})()""")
+    T('lykkehjul: resultatet er den øl, pilen peger på',(hr[0] if len(hr[0])<=15 else hr[0][:14]+'…')==hr[1] and hr[2]=='Drej igen' and hr[3].startswith('#beer-') and not over(),hr)
+    wl=ls(pg).get('wish',[]); pg.click('[data-hj=wish]'); pg.wait_for_timeout(400); nw=pg.eval_on_selector_all('#hjG text','e=>e.length')
+    T('lykkehjul: ønskelisten som gruppe viser kun de øl, eller en forklaring når den er tom',(nw==min(10,len(wl)) and pg.query_selector('#hjRes .hjr') is None) if wl else (pg.query_selector('.empty') is not None and pg.query_selector('#hjSpin') is None and 'ønskelisten' in pg.inner_text('.empty')),(len(wl),nw))
     pg.goto(URL+'#beer-ux1'); pg.wait_for_timeout(500); pg.click('.rv .who >> nth=0'); pg.wait_for_timeout(400)
     T('navn i en bedømmelse fører til smagerens side',pg.evaluate('location.hash').startswith('#smager-'))
     # --- lange ord uden mellemrum (fx et ølnavn fra en anden bruger) må ikke give vandret scroll
@@ -224,8 +232,12 @@ def run(b,name,vw):
     pg.goto(URL+'#smagning-langsmag1'); pg.wait_for_timeout(400); pg.evaluate("navigator.canShare=undefined")
     with pg.expect_download(timeout=10000) as dl: pg.click('#tastCard')
     T('smagning: del resultatet som billede (jpg > 40 kB)',dl.value.suggested_filename.endswith('-smagning-olrating.jpg') and os.path.getsize(dl.value.path())>40000,dl.value.suggested_filename)
-    pg.evaluate("""(()=>{const S=JSON.parse(localStorage.getItem('olrating-v1'));S.wish=['ux2','ux4','findesikke'];for(let i=0;i<20;i++)S.reviews.push({id:'many'+i,beer:'ux2',who:'Lucas',date:'2026-11-2'+(i%5),s:{look:3,aroma:3,taste:3,feel:3,overall:3},tags:[],again:1,text:''});localStorage.setItem('olrating-v1',JSON.stringify(S))})()""")
-    pg.goto(URL+'#smagning'); pg.reload(); pg.wait_for_timeout(1500); lab=pg.inner_text('#wishTast'); pg.click('#wishTast'); pg.wait_for_timeout(200)
+    # En synkronisering, der er i gang, kan nå at gemme hen over det, testen skriver i lageret. Derfor prøves der igen.
+    for _ in range(5):
+        pg.evaluate("""(()=>{const S=JSON.parse(localStorage.getItem('olrating-v1'));S.wish=['ux2','ux4','findesikke'];S.reviews=S.reviews.filter(r=>!String(r.id).startsWith('many'));for(let i=0;i<20;i++)S.reviews.push({id:'many'+i,beer:'ux2',who:'Lucas',date:'2026-11-2'+(i%5),s:{look:3,aroma:3,taste:3,feel:3,overall:3},tags:[],again:1,text:''});localStorage.setItem('olrating-v1',JSON.stringify(S))})()""")
+        pg.goto(URL+'#smagning'); pg.reload(); pg.wait_for_timeout(1500)
+        if ls(pg).get('wish')==['ux2','ux4','findesikke']: break
+    lab=pg.inner_text('#wishTast'); pg.click('#wishTast'); pg.wait_for_timeout(200)
     T('smagning: ønskelisten fylder øllene ind','2 øl' in lab and pg.input_value('#sgBeers').count('\n')==1 and 'Havn Stout' in pg.input_value('#sgBeers'),(lab,pg.input_value('#sgBeers')[:80]))
     pg.goto(URL+'#profil'); pg.wait_for_timeout(500); n1=pg.eval_on_selector_all('.cols .box >> nth=1 >> .rv','e=>e.length'); more=pg.inner_text('#moreRev'); pg.click('#moreRev'); pg.wait_for_timeout(400)
     n2=pg.eval_on_selector_all('.cols .box >> nth=1 >> .rv','e=>e.length')

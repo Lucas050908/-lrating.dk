@@ -62,6 +62,12 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 - **Flere smagere** viser dem, du har under to øl til fælles med, og foreslår en øl, du kan bedømme, så matchet kan regnes ud.
 - Knappen **Følg** lægger personen i din liste over venner.
 
+### Lykkehjulet
+- Siden **Lykkehjulet** (under Mere i menuen) vælger én øl for dig, når du ikke kan vælge.
+- Du bestemmer, hvilke øl der er på hjulet: **Ikke smagt**, **Alle øl**, **Ønskelisten**, **Toppen** (4,0 og derover) eller **Alkoholfri**. Hjulet viser op til 10 øl. Er der flere i gruppen, kan du få nye øl på hjulet.
+- Tryk **Drej hjulet**. Når det stopper, står øllen under hjulet med link til dens side.
+- Hjulet vælger kun én øl ad gangen. Under hjulet står Sundhedsstyrelsens anbefalinger, et link til Genstand-tælleren og nummeret til Alkolinjen.
+
 ### Karakterer med kommatal
 - Hver kategori (udseende, duft, smag, fylde og helhed) får en karakter fra 1,0 til 5,0.
 - Et tryk på en stjerne giver et helt tal. Med − og + ved siden af retter man i trin på 0,1, fx fra 4,0 til 3,7. Tallet står mellem de to knapper, og den sidste stjerne bliver kun delvist fyldt.

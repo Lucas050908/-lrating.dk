@@ -4,7 +4,16 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
-### Aften (20:06–20:20): 200 logoer i fem stilarter
+### Aften (20:15–20:40): Lykkehjulet
+- **Lykkehjulet** er en ny side (`#hjul`): Kan man ikke vælge, drejer man hjulet, og det vælger én øl, man kan smage og bedømme.
+- Man vælger selv, hvilke øl der skal på hjulet: øl man ikke har smagt, alle øl, ønskelisten, toppen (4,0 og derover) eller de alkoholfri. Hjulet viser op til 10 øl ad gangen, og "Nye øl på hjulet" trækker 10 andre.
+- Siden starter på "Ikke smagt", så hjulet først og fremmest foreslår noget nyt.
+- **Ansvarligt:** Under hjulet står, at det er til at finde noget nyt at smage og ikke til at drikke mere, med Sundhedsstyrelsens anbefalinger, link til Genstand-tælleren og nummeret til Alkolinjen.
+- Har man slået bevægelse fra på sin enhed, vælger hjulet uden at dreje.
+- Siden ligger i menuen under Mere, i bunden af siden, på forsiden og under Nyt på siden.
+- **Test:** 6 nye tjek i `test_site.py`, og siden er med i tjekket af den engelske udgave.
+
+### Aften (20:06–20:14): 200 logoer i fem stilarter
 - **Logoer:** `img/logoer/200/` har 200 forslag: 40 motiver, hver tegnet i fem stilarter (nat, solnedgang, lys, guld og fjord). Filerne hedder `001` til `200`, og fem numre i træk er det samme motiv.
 - Motiverne er tegnet om, så de bruger de samme få farver, og skummet har en mørk kant på lys og gul baggrund, så det kan ses.
 - `tools/logoer.py` tegner alle 200 filer igen: `python3 tools/logoer.py img/logoer/200`.

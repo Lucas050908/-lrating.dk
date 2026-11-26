@@ -89,6 +89,13 @@
 - `buddyView()` tegner siden på ruten `#buddies`. Klasserne hedder `bud…` (`budtop`, `budh`, `budp`, `budn`, `budb`, `budl`, `budk`), fordi korte navne som `.top` og `.pill` allerede var brugt til andet i stilarket.
 - Alt regnes ud på enheden ud fra de bedømmelser, der allerede er hentet. Der er ingen nye tabeller i databasen.
 
+### Lykkehjulet
+- Tilstanden ligger i `HJ` (`src` gruppe, `ids` øllene på hjulet, `rot` grader, `win` vinderen). Den gemmes ikke, så hjulet starter forfra, når siden åbnes igen.
+- `hjPool(src)` finder øllene i en gruppe, og `hjFill()` blander dem og tager de første 10.
+- `hjWheel()` tegner hjulet som SVG. Felt nr. `i` går fra `i × 360/n` til `(i+1) × 360/n` grader med uret fra toppen, hvor pilen sidder.
+- `hjSpin()` trækker vinderen først og regner så ud, hvor langt hjulet skal dreje: fem hele omgange plus det, der skal til, for at vinderens felt ender under pilen. Selve drejningen er en CSS-overgang på `#hjG`. Når den er slut, tegnes siden igen med `softRoute()`, og resultatet står i `#hjRes`.
+- Med `prefers-reduced-motion` er der ingen overgang, og resultatet vises med det samme.
+
 ### Karakterer med kommatal
 - `rateRow(k, navn, værdi)` bygger én række: fem stjerneknapper (`data-star`, hele tal) og en gruppe med − og + (`data-step`, trin på 0,1) omkring et `<output class="rnv">`. Rækken bruges både i bedømmelsen af en øl og i smagninger.
 - `rateSet(række, værdi)` er det eneste sted, værdien ændres: den afrunder til én decimal, holder den mellem 1 og 5, sætter `data-v`, og markerer stjernerne. Hele stjerner får klassen `on`. Den stjerne, der kun er delvist fyldt, får `part` og `--f` (fx `70%`), og en CSS-maske tegner den fyldte del.
