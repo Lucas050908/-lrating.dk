@@ -83,6 +83,12 @@
 - **Afmelding:** Linket i mailen går til `#afmeld-<nøgle>` på siden (`unsubView`, svaret huskes i `UNS`, så det overlever en gentegning). Først når man trykker på knappen, kaldes `mail_afmeld(nøgle)`, som alle må kalde, fordi nøglen (`mail_prefs.unsub`) er tilfældig og kun står i brugerens egne mails. Mailprogrammers egen afmeld-knap (`List-Unsubscribe`) rammer funktionen med `POST ?unsub=`. En Edge Function kan ikke vise HTML, så `GET ?unsub=` sender bare videre til siden.
 - Opsætningen trin for trin står i `docs/KONTO.md`.
 
+### Beer buddies
+- `buddies()` samler alle bedømmelser pr. navn (uden forskel på store og små bogstaver) og sammenligner med brugerens egne (`S.me`). Den bruger `tot(r)`, altså den samlede karakter for en bedømmelse.
+- Match = `Math.round(100 - gennemsnitlig forskel / 4 * 100)`. Den returnerer `{match, rest}`: `match` er dem med mindst to fælles øl, sorteret efter procent, og `rest` er op til 12 andre.
+- `buddyView()` tegner siden på ruten `#buddies`. Klasserne hedder `bud…` (`budtop`, `budh`, `budp`, `budn`, `budb`, `budl`, `budk`), fordi korte navne som `.top` og `.pill` allerede var brugt til andet i stilarket.
+- Alt regnes ud på enheden ud fra de bedømmelser, der allerede er hentet. Der er ingen nye tabeller i databasen.
+
 ### Karakterer med kommatal
 - `rateRow(k, navn, værdi)` bygger én række: fem stjerneknapper (`data-star`, hele tal) og en gruppe med − og + (`data-step`, trin på 0,1) omkring et `<output class="rnv">`. Rækken bruges både i bedømmelsen af en øl og i smagninger.
 - `rateSet(række, værdi)` er det eneste sted, værdien ændres: den afrunder til én decimal, holder den mellem 1 og 5, sætter `data-v`, og markerer stjernerne. Hele stjerner får klassen `on`. Den stjerne, der kun er delvist fyldt, får `part` og `--f` (fx `70%`), og en CSS-maske tegner den fyldte del.

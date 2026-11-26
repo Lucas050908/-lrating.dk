@@ -15,7 +15,7 @@ def make_photo(b):
 def check(n,c,x=''):
     res.append(bool(c)); print(('PASS ' if c else 'FAIL ')+n,'' if c else x)
 def ls(pg): return json.loads(pg.evaluate("localStorage.getItem('olrating-v1')"))
-VIEWS=['','#alle','#toplisten','#aarets','#swipe','#galleri','#sammenlign','#byttur','#smagning','#venner','#nyt','#stilguide','#profil','#tilfoej','#kalender','#dagbog','#mad','#genstande','#privatliv','#om','#afmeld-00000000-0000-4000-a000-000000000001']
+VIEWS=['','#alle','#toplisten','#aarets','#swipe','#buddies','#galleri','#sammenlign','#byttur','#smagning','#venner','#nyt','#stilguide','#profil','#tilfoej','#kalender','#dagbog','#mad','#genstande','#privatliv','#om','#afmeld-00000000-0000-4000-a000-000000000001']
 def run(b,name,vw):
     M=Mock(); errs=[]
     c=b.new_context(viewport={'width':vw[0],'height':vw[1]},accept_downloads=True,service_workers='block',locale='da-DK'); c.route(f'https://{HOST}/**',M.handle)
@@ -203,6 +203,11 @@ def run(b,name,vw):
     pg.goto(URL+'#venner'); pg.wait_for_timeout(500)
     T('venner: feed viser Magnus, og han foreslås ikke længere',pg.eval_on_selector_all('.cols .box >> nth=0 >> .rv','e=>e.length')==6 and pg.query_selector('.frow') is None and not over(),pg.inner_text('.cols')[:160])
     T('venner: sendes ikke til databasen','follow' not in json.dumps(M.t))
+    # --- beer buddies: match i procent ud fra de øl, begge har bedømt
+    pg.goto(URL+'#buddies'); pg.wait_for_timeout(500); bt=pg.inner_text('.buds') if pg.query_selector('.buds') else ''
+    T('beer buddies: Magnus er bedste match med samme procent som på hans side',pg.eval_on_selector_all('.bud','e=>e.length')==1 and '81 %' in bt and 'Bedste match' in bt and 'Magnus' in bt and '4 øl til fælles' in bt and 'Mest enige om' in bt and 'Du: ' in bt and pg.query_selector('.bud .budl a[href^="#beer-"]') is not None and not over(),bt[:220])
+    was=pg.inner_text('.bud [data-follow]'); pg.click('.bud [data-follow]'); pg.wait_for_timeout(400); mid=pg.inner_text('.bud [data-follow]'); pg.click('.bud [data-follow]'); pg.wait_for_timeout(400)
+    T('beer buddies: man kan følge og holde op igen fra kortet',was=='Følger ✓' and mid=='Følg' and pg.inner_text('.bud [data-follow]')=='Følger ✓' and 'Magnus' in ls(pg)['follow'],(was,mid))
     pg.goto(URL+'#beer-ux1'); pg.wait_for_timeout(500); pg.click('.rv .who >> nth=0'); pg.wait_for_timeout(400)
     T('navn i en bedømmelse fører til smagerens side',pg.evaluate('location.hash').startswith('#smager-'))
     # --- lange ord uden mellemrum (fx et ølnavn fra en anden bruger) må ikke give vandret scroll

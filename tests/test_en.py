@@ -68,7 +68,7 @@ def crawl(b,lang):
     for i,k in enumerate([k for k,r in M.t['reviews'].items() if r['who']=='Lucas'][:3]):
         M.rvotes[(k,'u1')]=1; M.rvotes[(k,'u2')]=1 if i else -1
     pg.evaluate("sbSync()"); pg.wait_for_timeout(1800)
-    for h in ['','#swipe','#toplisten','#aarets','#galleri','#sammenlign','#byttur','#byttur-pasttour1','#byttur-futtour01','#byttur-nowtour01','#byttur-emptytour','#byttur-findesikke','#smagning','#smagning-tastopen1','#smagning-tastdone1','#smagning-tastgues1','#smagning-tastgues2',
+    for h in ['','#swipe','#buddies','#toplisten','#aarets','#galleri','#sammenlign','#byttur','#byttur-pasttour1','#byttur-futtour01','#byttur-nowtour01','#byttur-emptytour','#byttur-findesikke','#smagning','#smagning-tastopen1','#smagning-tastdone1','#smagning-tastgues1','#smagning-tastgues2',
               '#venner','#smager-Magnus','#smager-Sofie','#nyt','#stilguide','#bryggeri-Thisted%20Bryghus','#bryggeri-Findes%20Ikke','#profil','#tilfoej','#kalender','#dagbog','#mad','#genstande','#privatliv','#om','#beer-a1','#beer-a2','#beer-a3','#beer-a4','#beer-a5','#beer-a7','#beer-findesikke']: go(h)
     # filtre, tom søgning og sortering
     pg.goto(URL+'#alle'); pg.wait_for_timeout(400); pg.evaluate("document.querySelectorAll('details').forEach(d=>d.open=true)"); grab('#alle+filtre')
@@ -108,7 +108,7 @@ def crawl(b,lang):
     c.close(); M=Mock(); c=b.new_context(viewport={'width':1280,'height':900},service_workers='block',locale='da-DK'); c.route(f'https://{HOST}/**',M.handle)
     pg=c.new_page(); pg.on('pageerror',lambda e:errs.append(str(e))); pg.clock.set_fixed_time(NOW)
     seed('',empty=True)
-    for h in ['','#swipe','#toplisten','#aarets','#galleri','#sammenlign','#stilguide','#profil','#dagbog','#venner','#byttur','#smagning','#genstande','#tilfoej','#kalender']: go(h,h+'+tom')
+    for h in ['','#swipe','#buddies','#toplisten','#aarets','#galleri','#sammenlign','#stilguide','#profil','#dagbog','#venner','#byttur','#smagning','#genstande','#tilfoej','#kalender']: go(h,h+'+tom')
     c.close()
     return out,errs
 def segs(strings):
@@ -121,7 +121,7 @@ def segs(strings):
 SAME=set('''IPA Stout Porter Sour Lager Pale Ale Brown Ale Bock Pilsner Bitter Citrus Malt Normal Halloween USA Mexico Japan England Android Windows Linux iPhone iPad Safari Chrome OK Web Share GitHub Supabase Google Maps QR Top Min Max IBU cl % ABV
 ølrating ølrating.dk .dk Lucas Valentin Ottesen Magnus Birkgaard Froberg Limfjorden Start Info Tema Dansk English Sprog · Language Sprog Language'''.replace('\n',' ').split(' '))
 SAME|={'Pale Ale','Brown Ale','J-dag','Web Share','Google Maps','Lucas Valentin Ottesen','Magnus Birkgaard Froberg'}
-SAME|={'Swipe','Scan','Linux:','Windows:','Downloads','TOP 3','+ Stop','Download backup','Snifter','Pizza','Burger','Mild','ølrating.dk logo','olrating.apk','olrating-windows.exe','olrating-linux.AppImage','andersenlucas84@gmail.com','Findes Ikke','cl','Fx mfx3k2abcd','Globetrotter','ølrating<1>.dk</1>','1 stop'}
+SAME|={'Beer buddies','Swipe','Scan','Linux:','Windows:','Downloads','TOP 3','+ Stop','Download backup','Snifter','Pizza','Burger','Mild','ølrating.dk logo','olrating.apk','olrating-windows.exe','olrating-linux.AppImage','andersenlucas84@gmail.com','Findes Ikke','cl','Fx mfx3k2abcd','Globetrotter','ølrating<1>.dk</1>','1 stop'}
 # Mønstre for tekster, der er ens på begge sprog: mål, koder og navne med tal
 SAME_RE=re.compile(r'^(\d+ cl|\d+ IBU|© \d{4} .*|[\d.,]+ ?%|[A-ZÆØÅ]|✓ .+|\d\. .+|“.*”|.+ ↗|■ .+|[^\s@]+@[^\s@]+)$')
 def letters(t): return re.search(r'[A-Za-zÆØÅæøå]{2,}',t) is not None
@@ -170,7 +170,7 @@ def main():
         untr=[t for t in lits if p2.evaluate("t=>window.__tr.s(t)===t",t)]
         # brede engelske tekster må ikke give vandret scroll på mobil
         p2.set_viewport_size({'width':390,'height':800}); wide=[]
-        MOB=['','#toplisten','#aarets','#swipe','#byttur','#smagning','#venner','#stilguide','#profil','#tilfoej','#kalender','#mad','#genstande','#privatliv','#om','#nyt','#sammenlign','#afmeld-00000000-0000-4000-a000-000000000001']
+        MOB=['','#toplisten','#aarets','#swipe','#buddies','#byttur','#smagning','#venner','#stilguide','#profil','#tilfoej','#kalender','#mad','#genstande','#privatliv','#om','#nyt','#sammenlign','#afmeld-00000000-0000-4000-a000-000000000001']
         def smal(w,ud):   # også de smalleste telefoner: 360 px er den mest almindelige Android-bredde, 320 px den mindste
             p2.set_viewport_size({'width':w,'height':740})
             for h in MOB:

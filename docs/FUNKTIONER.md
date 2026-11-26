@@ -55,6 +55,13 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 - **Noget for dig** vises på forsiden og på Min profil, når du har bedømt mindst to øl. Den foreslår op til fire øl, du ikke har bedømt, med en begrundelse som "Du plejer at kunne lide pilsner".
 - **Du er mest enig med** vises på Min profil. Den sammenligner dine karakterer med andres på de øl, I begge har bedømt (mindst to fælles øl), og viser enigheden i procent.
 
+### Beer buddies
+- Siden **Beer buddies** (under Mere i menuen) finder dem, der smager som dig. Den kræver, at du har skrevet dit navn og bedømt mindst to øl, som en anden også har bedømt.
+- **Match i procent:** Vi tager forskellen mellem jeres samlede karakterer på hver fælles øl. Ingen forskel giver 100 %, og den størst mulige forskel (1 mod 5) giver 0 %. Matchet er gennemsnittet over jeres fælles øl.
+- Hvert kort viser antal fælles øl, den øl I er **mest enige om**, den I er **mest uenige om**, og et **tip**: den øl, din buddy har givet højest (mindst 3,5), som du ikke har bedømt.
+- **Flere smagere** viser dem, du har under to øl til fælles med, og foreslår en øl, du kan bedømme, så matchet kan regnes ud.
+- Knappen **Følg** lægger personen i din liste over venner.
+
 ### Karakterer med kommatal
 - Hver kategori (udseende, duft, smag, fylde og helhed) får en karakter fra 1,0 til 5,0.
 - Et tryk på en stjerne giver et helt tal. Med − og + ved siden af retter man i trin på 0,1, fx fra 4,0 til 3,7. Tallet står mellem de to knapper, og den sidste stjerne bliver kun delvist fyldt.

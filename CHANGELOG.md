@@ -4,6 +4,13 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Aften (19:30–19:56): Beer buddies
+- **Beer buddies** er en ny side (`#buddies`), der finder dem, der smager som dig. Den sammenligner dine karakterer med de andres på de øl, I begge har bedømt, og viser jeres match i procent.
+- Hvert match viser, hvor mange øl I har til fælles, hvilken øl I er mest enige om, hvilken I er mest uenige om, og et tip: en øl, din buddy kan lide, som du ikke har bedømt.
+- Der skal mindst to fælles øl til et match. Dem, du ikke har nok til fælles med endnu, står under "Flere smagere" med et forslag til, hvilken øl du kan bedømme.
+- Man kan følge en buddy direkte fra siden. Siden ligger i menuen under Mere, i bunden af siden, på forsiden og som link fra Venner.
+- **Test:** 4 nye tjek i `test_site.py`, og siden er med i tjekket af den engelske udgave.
+
 ### Aften (19:26–19:44): karakterer med kommatal
 - **Kommatal:** Man kan nu give fx 3,7 i en kategori. Et tryk på en stjerne giver et helt tal, og med − og + retter man i trin på 0,1. Den sidste stjerne bliver delvist fyldt, og tallet står ved siden af.
 - Det virker i bedømmelsen af en øl, når man retter en bedømmelse, og når man stemmer i en smagning.
