@@ -4,6 +4,10 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Eftermiddag (13:56–14:05): de smalleste telefoner
+- **320 px:** To knapper gjorde siden for bred på de smalleste telefoner: "Swipe på andres bedømmelser" på Min profil og knappen på Afmeld mails på engelsk. De knækker nu over to linjer.
+- **Test:** `test_en.py` tjekker nu alle hovedsider for vandret scroll ved 390, 360 og 320 px på engelsk og ved 320 px på dansk (14 tjek).
+
 ### Eftermiddag (13:25–13:55): fejl fundet i Safaris motor og småting på små skærme
 - **Tilføj øl kunne få vandret scroll i Safari:** Det skjulte filfelt til billedet lå for enden af hjælpeteksten, og Safari regnede dets indhold med i sidens bredde. Nu ligger det i hjørnet af billedfeltet og fylder 1 px. Fejlen blev fundet af den nye test i WebKit og kunne ikke ses i Chrome.
 - **Billedfeltet viser nu en ramme,** når man kommer til det med tastaturet.

@@ -170,7 +170,14 @@ def main():
         untr=[t for t in lits if p2.evaluate("t=>window.__tr.s(t)===t",t)]
         # brede engelske tekster må ikke give vandret scroll på mobil
         p2.set_viewport_size({'width':390,'height':800}); wide=[]
-        for h in ['','#toplisten','#aarets','#byttur','#smagning','#venner','#stilguide','#profil','#tilfoej','#kalender','#mad','#genstande','#privatliv','#om','#nyt','#sammenlign']:
+        MOB=['','#toplisten','#aarets','#swipe','#byttur','#smagning','#venner','#stilguide','#profil','#tilfoej','#kalender','#mad','#genstande','#privatliv','#om','#nyt','#sammenlign','#afmeld-00000000-0000-4000-a000-000000000001']
+        def smal(w,ud):   # også de smalleste telefoner: 360 px er den mest almindelige Android-bredde, 320 px den mindste
+            p2.set_viewport_size({'width':w,'height':740})
+            for h in MOB:
+                p2.goto(URL+h); p2.wait_for_timeout(250)
+                if p2.evaluate('document.documentElement.scrollWidth>innerWidth+1'): ud.append(f'{h} ved {w} px')
+        smal(360,wide); smal(320,wide); p2.set_viewport_size({'width':390,'height':800})
+        for h in MOB:
             p2.goto(URL+h); p2.wait_for_timeout(300)
             if p2.evaluate('document.documentElement.scrollWidth>innerWidth+1'):   # skriv også, hvad der stikker ud: elementer, tekst og mål
                 wide.append(h+' '+str(p2.evaluate("""(()=>{const W=innerWidth,d=e=>e.tagName+(e.id?'#'+e.id:'')+'.'+String(e.className&&e.className.baseVal!==undefined?e.className.baseVal:e.className).slice(0,30);
@@ -182,10 +189,12 @@ def main():
         lang_ok=p2.evaluate("document.documentElement.lang")=='en' and p2.evaluate("document.getElementById('langSel').value")=='en' and p2.is_visible('#langBtn')
         p2.select_option('#langSel','da'); p2.wait_for_timeout(800)
         back=p2.evaluate("document.documentElement.lang")=='da' and p2.inner_text('#nav a >> nth=0',timeout=3000)=='Alle øl' if p2.viewport_size['width']>1100 else p2.evaluate("document.documentElement.lang")=='da' and p2.evaluate("document.querySelector('#nav a').textContent")=='Alle øl'
+        wide_da=[]; smal(320,wide_da)
         c2.close()
         c.close(); b.close()
     check(f'[en] alle beskeder i koden er oversat ({len(lits)} stk.)',not untr and len(lits)>40,untr[:8])
-    check('[en] ingen vandret scroll på mobil på engelsk',not wide,wide)
+    check('[en] ingen vandret scroll på mobil på engelsk (390, 360 og 320 px)',not wide,wide)
+    check('[da] ingen vandret scroll på de smalleste telefoner (320 px)',not wide_da,wide_da)
     check('[en] sprogvalget huskes efter genindlæsning og kan skiftes i sidefoden',lang_ok and back,(lang_ok,back))
     check('[en] sprogmenuen skifter med det samme uden genindlæsning og beholder stedet på siden',not inplace,inplace)
     check('[en] tilbage til dansk giver præcis den samme tekst som før',not trip,trip[:3])
