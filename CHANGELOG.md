@@ -4,6 +4,10 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Nat (04:40–04:42): sikkerhed
+- **Data udefra bliver renset:** Alle kan skrive til den fælles database, så siden stoler ikke længere på det, den henter. Øl og bedømmelser fra databasen og fra backup-filer får nu tjekket typer, længder og felter, før de bruges. Ugyldige id'er bliver droppet, og billeder må kun komme fra sidens eget billedlager.
+- **Ny test med fjendtlige data:** Testen lægger øl, bedømmelser, byture og smagninger med indlejret kode og forkerte typer i databasen og går 17 sider igennem. Ingen kode bliver kørt, ingen side går ned, og almindelige øl vises stadig.
+
 ### Nat (04:30–04:40): Android-appen
 - **Genveje på app-ikonet:** Hold fingeren på ølrating-ikonet for at gå direkte til Bedøm en øl, Genstand-tæller, Smagning med venner eller Planlæg en bytur.
 - **Sikkerhed:** Appen åbner nu kun adresser på ølrating.dk. Før kunne en anden app på telefonen bede ølrating-appen om at vise en fremmed side, som så ville få adgang til appens widgets og til at gemme billeder.

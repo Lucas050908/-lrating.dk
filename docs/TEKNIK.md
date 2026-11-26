@@ -7,6 +7,7 @@
 - **Sikkerhed:**
   - Content-Security-Policy i `<meta>`: `script-src 'self' 'unsafe-inline'`. `connect-src` og `img-src` tillader kun siden selv og `https://bbcegrufmzgfgzxazldr.supabase.co`.
   - Al brugertekst sendes gennem `esc()`.
+  - Data udefra renses, før de gemmes lokalt: `cleanBeer()` og `cleanRev()` for øl og bedømmelser fra databasen og fra backup-filer, `cleanTour()` og `cleanTast()` for byture og smagninger. De tvinger typer (tal er tal, tekst er tekst), begrænser længder, smider ukendte felter væk og dropper rækker med ugyldigt id. Billedadresser accepteres kun, hvis de peger på sidens eget billedlager.
 - **Farver:** `--gl` (gul) og `--sun` (orange) er accentfarver til flader og ikoner. `--glt` og `--sunt` bruges til farvet *tekst*. I det mørke tema er de ens. I det lyse tema er de mørkere (`#855000` og `#b93a08`), så tekst kan læses på hvid baggrund. Elementer, der altid er mørke (forsidebillede, menu, sidefod, `.sc` m.fl.), sætter `--glt` tilbage til gul.
 - **Skrifttyper:** Inter og Sora ligger lokalt i `fonts/`, så der ikke sendes noget til Google.
 
@@ -120,7 +121,7 @@ Alle test bruger Playwright og en lokal server: `python3 -m http.server 8811 &`.
 | Fil | Hvad | Rører den rigtige database? |
 |---|---|---|
 | `test_site.py` | Hele siden klikket igennem på pc (1280 px) og mobil (390 px): tilføj øl med foto, bedøm, ret, søg, del, delekort, genstande, temaer, backup, slet med fortryd, ryd alt, gendan, offline, filer og links | Nej |
-| `test_sync.py` | To enheder deler data: øl, billeder, afvist redigering af andres øl, offline-kø, ingen gentegning mens man skriver, sletning med fortryd, byttur | Nej |
+| `test_sync.py` | To enheder deler data: øl, billeder, afvist redigering af andres øl, offline-kø, ingen gentegning mens man skriver, sletning med fortryd, byttur, smagning og fjendtlige data i databasen (indlejret kode og forkerte typer) | Nej |
 | `mock_supabase.py` | Efterligning af Supabase i hukommelsen, som de to test ovenfor bruger | Nej |
 | `e2e_supabase.py` | Det samme forløb mod den rigtige database, inkl. forsøg på at rette andres data direkte gennem API'et. Opretter data med TEST i navnet og sletter dem igen | **Ja** |
 

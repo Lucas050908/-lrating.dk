@@ -1,6 +1,6 @@
 """To enheder (Lucas og Magnus) mod en efterligning af databasen: deling, billeder, rettigheder, offline, sletning og byttur.
 Kør: python3 -m http.server 8811 &  og derefter  python3 tests/test_sync.py"""
-import json,base64
+import json,base64,re
 import os,sys
 ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)));sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
 URL=os.environ.get('SITE','http://localhost:8811/')
@@ -128,6 +128,36 @@ with sync_playwright() as p:
     check('smagning: vært sletter for alle',sid not in M.t['tastings'] and not [k for k in M.votes if k[0]==sid])
     Bp.wait_for_timeout(7500)
     check('smagning: forsvinder hos gæsten',not ls(Bp)['tast'])
+    # fjendtlige data: en anden klient har lagt kode og forkerte typer i databasen
+    X='<img src=x onerror="window.__xss=1">'; Q='"><script>window.__xss=1</script><svg onload=window.__xss=1>'
+    M.t['beers']['xss1']={'id':'xss1','owner':'ond','created_at':'9','name':X,'brewery':X,'img':'javascript:window.__xss=1','data':{'style':Q,'abv':X,'ibu':{'a':1},'color':'" onmouseover="window.__xss=1','size':[1,2],'price':'abc','city':Q,'country':X,'date':Q,'addedBy':X,'desc':Q,'code':'<x>12','af':'ja'}}
+    M.t['beers']['x" onmouseover="window.__xss=1']={'id':'x" onmouseover="window.__xss=1','owner':'ond','created_at':'9','name':'Ugyldigt id','brewery':'x','data':{}}
+    M.t['beers']['ok1']={'id':'ok1','owner':'ond','created_at':'9','name':'Helt almindelig øl','brewery':'Pænt Bryggeri','img':None,'data':{'style':'Pilsner','abv':4.6,'city':'Aalborg','date':'2026-11-20','addedBy':'Sofie'}}
+    M.t['reviews']['rxss1']={'id':'rxss1','beer':'xss1','owner':'ond','created_at':'9','who':X,'img':'https://evil.example/x.png','data':{'s':{'look':X,'aroma':99,'taste':None},'tags':[X,{'a':1},5],'text':Q,'prof':'x','again':X,'date':'i går'}}
+    M.t['reviews']['rxss2']={'id':'rxss2','beer':'ok1','owner':'ond','created_at':'9','who':'Sofie','data':'ikke et objekt'}
+    M.t['tours']['xsstour1']={'id':'xsstour1','owner':'ond','data':{'name':X,'date':Q,'meet':X,'note':Q,'host':X,'stops':[{'name':X,'time':Q,'addr':X},'tekst',None]}}
+    M.members[('xsstour1',X)]='ond'
+    M.t['tastings']['xsstast1']={'id':'xsstast1','owner':'ond','data':{'name':X,'host':X,'blind':'x','revealed':True,'beers':[X,Q,{'a':1}]}}
+    M.votes[('xsstast1',X)]={'owner':'ond','data':{'v':[X,99,None]}}; M.votes[('xsstast1','__proto__')]={'owner':'ond','data':{'v':[5,5,5]}}
+    H=ctx('Offer',(390,844)); H.goto(URL); H.wait_for_timeout(3500)
+    sH=ls(H); ids=sorted(b['id'] for b in sH['beers'])
+    xb=[b for b in sH['beers'] if b['id']=='xss1'][0]
+    check('fjendtlig: ugyldigt id droppes, resten renses',ids==['ok1','xss1'] and isinstance(xb['abv'],(int,float)) and xb['style']=='Andet' and xb['img']=='' and xb['size']=='' and xb['af'] is False and re.match(r'^\d{4}-\d\d-\d\d$',xb['date']),(ids,xb))
+    rx=[r for r in sH['reviews'] if r['id']=='rxss1'][0]
+    check('fjendtlig: bedømmelse renset',rx['s']=={'look':1,'aroma':5,'taste':1,'feel':1,'overall':1} and rx['img']=='' and rx['prof'] is None and rx['again']==1 and len(rx['tags'])==1,rx)
+    H.goto(URL+'#byttur'); H.wait_for_timeout(300); H.fill('#tCode','xsstour1'); H.click('#codeForm button'); H.wait_for_timeout(2000)
+    H.goto(URL+'#smagning-xsstast1'); H.wait_for_timeout(4500)
+    pages=['','#alle','#beer-xss1','#beer-ok1','#toplisten','#galleri','#stilguide','#venner','#smager-'+X.replace('"','%22').replace(' ','%20'),'#bryggeri-'+X.replace('"','%22').replace(' ','%20'),'#byttur','#byttur-xsstour1','#smagning','#smagning-xsstast1','#profil','#dagbog','#sammenlign']
+    bad=[]
+    for h in pages:
+        H.goto(URL+h); H.wait_for_timeout(450)
+        if H.evaluate('window.__xss') or len(H.inner_text('#app'))<30: bad.append(h)
+    H.goto(URL+'#alle'); H.wait_for_timeout(500); H.fill('#q','img'); H.wait_for_timeout(300)
+    check('fjendtlig: ingen kode bliver kørt på nogen side',not bad and not H.evaluate('window.__xss') and H.evaluate("document.querySelectorAll('#app script, #app [onerror], #app [onload], #app [onmouseover]').length")==0,bad)
+    H.fill('#q','almindelig'); H.wait_for_timeout(300)
+    check('fjendtlig: almindelige øl vises stadig',H.eval_on_selector_all('#grid .card','e=>e.length')==1)
+    for k in ['xss1','x" onmouseover="window.__xss=1','ok1']: M.t['beers'].pop(k,None)
+    for k in ['rxss1','rxss2']: M.t['reviews'].pop(k,None)
     check('no JS errors',not errs,errs[:5])
     b.close()
 print('ALL PASS' if ok else 'SOME FAILED')
