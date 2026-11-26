@@ -36,9 +36,10 @@
 @font-face{font-family:Inter;font-style:normal;font-weight:600;font-display:swap;src:url(fonts/inter-600.woff2) format("woff2")}
 @font-face{font-family:Inter;font-style:normal;font-weight:700;font-display:swap;src:url(fonts/inter-700.woff2) format("woff2")}
 @font-face{font-family:Sora;font-style:normal;font-weight:700;font-display:swap;src:url(fonts/sora-700.woff2) format("woff2")}
-:root{--ink:#0f1d36;--nv:#0f1d36;--nv2:#16294a;--nv3:#1d3557;--sky:#8fb6e3;--sun:#ff7a3d;--pk:#f0566b;--gl:#ffc85a;--tx:#eaf1fb;--ln:rgba(143,182,227,.18);--grad:linear-gradient(90deg,var(--pk),var(--sun),var(--gl));color-scheme:dark}
-[data-mode=light]{--nv:#f3f6fb;--nv2:#ffffff;--nv3:#e3ebf6;--tx:#13203a;--ln:rgba(15,29,54,.13);--sky:#3767a8;color-scheme:light}
+:root{--glt:var(--gl);--ink:#0f1d36;--nv:#0f1d36;--nv2:#16294a;--nv3:#1d3557;--sky:#8fb6e3;--sun:#ff7a3d;--pk:#f0566b;--gl:#ffc85a;--tx:#eaf1fb;--ln:rgba(143,182,227,.18);--grad:linear-gradient(90deg,var(--pk),var(--sun),var(--gl));color-scheme:dark}
+[data-mode=light]{--glt:#a15f00;--nv:#f3f6fb;--nv2:#ffffff;--nv3:#e3ebf6;--tx:#13203a;--ln:rgba(15,29,54,.13);--sky:#3767a8;color-scheme:light}
 [data-mode=light] body{background:#f3f6fb}
+.hero,.bar,.nav,.lbox,.scan,.week,.phone,footer,.now,.podium .win,.undo,.toast,.sc{--glt:#ffc85a}
 .hero,.bar,.nav,.lbox,.scan,.week,.phone{--nv:#0f1d36;--nv2:#16294a;--nv3:#1d3557;--tx:#eaf1fb;--ln:rgba(143,182,227,.18);--sky:#8fb6e3;color:var(--tx)}
 [data-mode=light] .card,[data-mode=light] .box,[data-mode=light] .panel,[data-mode=light] .gcard,[data-mode=light] .scorebox{box-shadow:0 10px 30px -18px rgba(15,29,54,.35)}
 [data-mode=light] input::placeholder,[data-mode=light] textarea::placeholder{color:rgba(19,32,58,.45)}
@@ -118,7 +119,7 @@ label{font-weight:600;display:grid;gap:6px}
 .wk{display:grid;grid-template-columns:84px minmax(0,1fr) auto;gap:16px;align-items:center;margin:12px 0 16px}
 .thumb{border-radius:16px;overflow:hidden;background:var(--nv3)}
 .thumb img,.thumb svg{width:100%;height:100%;object-fit:cover}
-.big{font-family:Sora,sans-serif;font-weight:700;color:var(--gl);line-height:1;letter-spacing:-.03em}
+.big{font-family:Sora,sans-serif;font-weight:700;color:var(--glt);line-height:1;letter-spacing:-.03em}
 .mb{display:grid;grid-template-columns:70px minmax(0,1fr) 28px;gap:8px;align-items:center;font-size:13px;margin:5px 0}
 .mb span:first-child{opacity:.75}
 .mb .t{height:6px;background:rgba(143,182,227,.2);border-radius:3px;overflow:hidden}
@@ -149,7 +150,7 @@ label{font-weight:600;display:grid;gap:6px}
 .ph img,.ph svg{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
 .card:hover .ph img,.card:hover .ph svg{transform:scale(1.06)}
 .pill{position:absolute;top:12px;left:12px;background:rgba(15,29,54,.78);color:#eaf1fb;border-radius:99px;padding:3px 10px;font-size:12px;font-weight:600}
-.sc{position:absolute;top:10px;right:10px;background:var(--ink);color:var(--gl);border-radius:12px;padding:5px 11px;font-family:Sora,sans-serif;font-weight:700;font-size:20px;border:1px solid rgba(255,200,90,.35)}
+.sc{position:absolute;top:10px;right:10px;background:var(--ink);color:var(--glt);border-radius:12px;padding:5px 11px;font-family:Sora,sans-serif;font-weight:700;font-size:20px;border:1px solid rgba(255,200,90,.35)}
 .ex{position:absolute;bottom:10px;left:12px;background:var(--gl);color:var(--ink);border-radius:99px;padding:1px 9px;font-size:12px;font-weight:700}
 .cb{padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
 .cb h3{font-size:19px;line-height:1.15}
@@ -157,7 +158,7 @@ label{font-weight:600;display:grid;gap:6px}
 .tags{display:flex;gap:6px;flex-wrap:wrap}
 .tag{font-size:12px;font-weight:600;border:1px solid var(--ln);border-radius:99px;padding:2px 9px}
 .cf{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;border-top:1px solid var(--ln);padding-top:10px}
-.cf b{color:var(--gl)}
+.cf b{color:var(--glt)}
 .av{width:34px;height:34px;flex:none;border-radius:50%;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
 .side{display:flex;flex-direction:column;gap:20px;position:sticky;top:96px}
 .box{background:var(--nv2);border:1px solid var(--ln);border-radius:22px;padding:20px}
@@ -167,7 +168,7 @@ label{font-weight:600;display:grid;gap:6px}
 .rk b.s{font-family:Sora,sans-serif;font-size:18px}
 .rv{display:grid;grid-template-columns:34px minmax(0,1fr);gap:10px;padding:12px 0;border-bottom:1px solid var(--ln);font-size:14px}
 .rv:last-child,.rk:last-of-type{border-bottom:0}
-.rv .s{color:var(--gl);font-weight:700}
+.rv .s{color:var(--glt);font-weight:700}
 .rv p{margin:2px 0 0;opacity:.88}
 .rv img{border-radius:12px;margin-top:8px;max-height:200px;object-fit:cover}
 .empty{border:2px dashed rgba(143,182,227,.35);border-radius:24px;padding:48px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px;background:repeating-linear-gradient(45deg,rgba(143,182,227,.04) 0 12px,transparent 12px 24px)}
@@ -189,7 +190,7 @@ label{font-weight:600;display:grid;gap:6px}
 .phone{width:230px;height:470px;border-radius:36px;background:var(--nv);border:8px solid #22304d;overflow:hidden;box-shadow:0 30px 60px rgba(0,0,0,.45);animation:float 6s ease-in-out infinite}
 @keyframes float{50%{transform:translateY(-10px)}}
 .wid{width:190px;background:var(--nv2);border:1px solid var(--ln);border-radius:22px;padding:12px;font-size:12px}
-.wid b.k{display:block;font-size:11px;color:var(--gl);letter-spacing:.04em}
+.wid b.k{display:block;font-size:11px;color:var(--glt);letter-spacing:.04em}
 @media(max-width:860px){.app{grid-template-columns:minmax(0,1fr)}.phone{width:200px;height:410px}}
 /* beer page */
 .detail{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:clamp(24px,4vw,56px);align-items:start;padding-top:110px}
@@ -217,7 +218,7 @@ label{font-weight:600;display:grid;gap:6px}
 .st{display:flex;gap:2px}
 .st button{width:44px;min-height:44px;padding:0;background:transparent;border-radius:50%;color:rgba(143,182,227,.35)}
 .st button svg{width:30px;height:30px}
-.st button.on{color:var(--gl);animation:pop .4s cubic-bezier(.2,.8,.3,1.6)}
+.st button.on{color:var(--glt);animation:pop .4s cubic-bezier(.2,.8,.3,1.6)}
 @keyframes pop{40%{transform:scale(1.35)}}
 .prof{display:grid;gap:10px}
 .sl{display:grid;grid-template-columns:90px minmax(0,1fr) 24px;gap:12px;align-items:center}
@@ -234,7 +235,7 @@ label{font-weight:600;display:grid;gap:6px}
 /* top + gallery */
 .toplist{list-style:none;margin:0;padding:0;display:grid;gap:10px;counter-reset:n}
 .toplist li{counter-increment:n;display:grid;grid-template-columns:40px 64px minmax(0,1fr) auto;gap:14px;align-items:center;background:var(--nv2);border:1px solid var(--ln);border-radius:18px;padding:10px 16px;animation:in .5s both;animation-delay:calc(var(--i,0)*50ms)}
-.toplist li::before{content:counter(n);font-family:Sora,sans-serif;font-size:24px;color:var(--gl)}
+.toplist li::before{content:counter(n);font-family:Sora,sans-serif;font-size:24px;color:var(--glt)}
 .toplist .thumb{width:64px;height:64px}
 .toplist b.s{font-family:Sora,sans-serif;font-size:24px}
 @media(max-width:520px){.toplist li{grid-template-columns:28px 48px minmax(0,1fr) auto;gap:10px;padding:8px 12px}.toplist .thumb{width:48px;height:48px}}
@@ -252,20 +253,21 @@ label{font-weight:600;display:grid;gap:6px}
 .stopf{display:grid;grid-template-columns:1.3fr 110px 1.3fr auto;gap:8px;margin-top:14px}.mem{display:grid;grid-template-columns:36px 1fr;gap:8px 10px;align-items:center}.mem .av{width:36px;height:36px;border-radius:50%;background:var(--gl);color:var(--ink);display:grid;place-items:center;font-weight:800}
 .qrbox{background:#fff;border-radius:18px;padding:10px;width:200px;max-width:100%;margin:20px 0 8px}.qrbox svg{display:block;width:100%;height:auto}.safe{margin-top:28px}.sbtns{display:flex;gap:10px;flex-wrap:wrap}
 @media(max-width:760px){.tgrid,.g2{grid-template-columns:1fr}.stopf{grid-template-columns:1fr 110px}.stopf input:nth-child(3){grid-column:1/-1}.stopf .btn{grid-column:1/-1}}
-.nextev{display:block;margin:18px 0 0;padding:12px 18px;border-radius:16px;background:var(--nv2);border:1px solid var(--ln);text-decoration:none;color:inherit}.nextev b{color:var(--gl)}.nextev:hover{border-color:var(--gl)}
+.nextev{display:block;margin:18px 0 0;padding:12px 18px;border-radius:16px;background:var(--nv2);border:1px solid var(--ln);text-decoration:none;color:inherit}.nextev b{color:var(--glt)}.nextev:hover{border-color:var(--gl)}
 .fy.home{margin-top:18px}.fyl{display:grid;grid-template-columns:1fr 1fr;gap:0 28px}.fyl .mini:last-child,.fyl .mini:nth-last-child(2):nth-child(odd){border-bottom:0}
 .agr{display:grid;gap:10px}.agr>div{display:grid;grid-template-columns:40px 1fr auto auto;gap:12px;align-items:center}
 @media(max-width:760px){.fyl{grid-template-columns:1fr}.fyl .mini:nth-last-child(2):nth-child(odd){border-bottom:1px solid var(--ln)}}
 .who{color:inherit;text-decoration:none}.who:hover{text-decoration:underline}.frow{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--ln)}.frow:last-child{border-bottom:0}.frow button{padding:8px 16px;min-height:38px}.fchip{display:inline-flex;align-items:center;gap:8px;text-decoration:none;border-radius:99px}.fchip .av{width:24px;height:24px;font-size:11px}
 .bmap{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:26px;align-items:center;background:var(--nv2);border:1px solid var(--ln);border-radius:22px;padding:22px;margin-bottom:22px}.bmap svg{width:100%;height:auto;display:block}.bmap path{fill:rgba(143,182,227,.13);stroke:rgba(143,182,227,.5);stroke-width:1.2;stroke-linejoin:round}
 .bmap circle{fill:var(--sun);stroke:var(--nv2);stroke-width:2;transition:r .2s}.bmap a.v circle{fill:var(--gl)}.bmap svg a:hover circle,.bmap svg a:focus circle{stroke:#fff}.bmap text{font:700 9px Inter,sans-serif;fill:var(--ink);pointer-events:none}
-.bml{display:grid;gap:8px;max-height:260px;overflow:auto}.bml>div{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}.bml a{font-size:14px;color:var(--tx);text-decoration:underline;text-decoration-color:var(--ln)}.bml a.v{color:var(--gl)}.mdot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--sun);vertical-align:middle;margin-right:4px}.mdot.v{background:var(--gl)}
+.bml{display:grid;gap:8px;max-height:260px;overflow:auto}.bml>div{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}.bml a{font-size:14px;color:var(--tx);text-decoration:underline;text-decoration-color:var(--ln)}.bml a.v{color:var(--glt)}.mdot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--sun);vertical-align:middle;margin-right:4px}.mdot.v{background:var(--gl)}
 @media(max-width:760px){.bmap{grid-template-columns:1fr;padding:16px}}
 .acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}.acts.sm{gap:8px;margin-top:12px}.acts.sm .ghost{min-height:38px;padding:7px 15px;font-size:14px;font-weight:600}
 .cf .sm{display:none}.cf b{white-space:nowrap}@media(max-width:600px){.cf .lg{display:none}.cf .sm{display:inline}}
+.okc{color:#7be3a0}[data-mode=light] .okc{color:#1c7a45}[data-mode=light] .pill.ok{color:#1c7a45;background:rgba(40,160,90,.14)}
 .podium{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:10px}.podium li{display:grid;grid-template-columns:44px 1fr auto;gap:14px;align-items:center;background:var(--nv2);border:1px solid var(--ln);border-radius:18px;padding:14px 18px;opacity:0;animation:rise .6s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:var(--d)}
 .podium .pl{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:800;background:var(--nv);border:2px solid var(--ln)}.podium li>div{display:flex;flex-direction:column;min-width:0}.podium li>div b{font-size:19px;overflow-wrap:anywhere}.podium .big{font-size:28px}
-.podium .win{background:linear-gradient(135deg,var(--sun),var(--gl));color:var(--ink);border-color:transparent}.podium .win .pl{background:var(--ink);color:var(--gl);border-color:var(--ink)}.podium .win .meta,.podium .win .big{color:var(--ink);opacity:1}
+.podium .win{background:linear-gradient(135deg,var(--sun),var(--gl));color:var(--ink);border-color:transparent}.podium .win .pl{background:var(--ink);color:var(--glt);border-color:var(--ink)}.podium .win .meta,.podium .win .big{color:var(--ink);opacity:1}
 @keyframes rise{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}.view.still .podium li{opacity:1}@media(prefers-reduced-motion:reduce){.podium li{opacity:1;animation:none}}
 .gwrap{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}.gbig{background:var(--nv2);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:4px}.gbig .big{font-size:64px;line-height:1}
 .gbar{height:10px;border-radius:9px;background:rgba(255,255,255,.12);overflow:hidden;margin:8px 0 2px}.gbar i{display:block;height:100%;background:var(--gl);border-radius:9px}.gbar.near i{background:var(--sun)}.gbar.over i{background:var(--pk)}
@@ -290,14 +292,14 @@ footer::before{content:"";position:absolute;inset:0;background:linear-gradient(1
 footer .wrap{position:relative;z-index:2}
 .fcols{display:grid;grid-template-columns:minmax(0,2fr) repeat(3,minmax(0,1fr));gap:32px;padding-block:56px 36px}
 .fcols a{display:block;opacity:.85;text-decoration:none;padding:4px 0}
-.fcols a:hover{opacity:1;color:var(--gl)}
+.fcols a:hover{opacity:1;color:var(--glt)}
 .fbot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding-block:18px 28px;border-top:1px solid var(--ln);font-size:14px;align-items:center}
 .fbot select{width:auto;min-height:40px;padding:6px 12px}
 @media(max-width:760px){.fcols{grid-template-columns:repeat(2,minmax(0,1fr))}.fcols>div:first-child{grid-column:1/-1}}
 /* profile, guide */
 .pstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:22px 0}
 .pstats div{background:var(--nv2);border:1px solid var(--ln);border-radius:18px;padding:14px 16px}
-.pstats b{font-family:Sora,sans-serif;font-size:28px;display:block;color:var(--gl)}
+.pstats b{font-family:Sora,sans-serif;font-size:28px;display:block;color:var(--glt)}
 .pstats small{opacity:.75}
 .mini{display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--ln);text-decoration:none}
 .mini .thumb{width:56px;height:56px}
@@ -331,7 +333,7 @@ footer .wrap{position:relative;z-index:2}
 .cmp{width:100%;border-collapse:collapse;table-layout:fixed}
 .cmp th,.cmp td{padding:12px 10px;border-bottom:1px solid var(--ln);text-align:center;vertical-align:middle}
 .cmp th{text-align:left;font-weight:600;opacity:.75;width:24%}
-.cmp td.win{color:var(--gl);font-weight:700}
+.cmp td.win{color:var(--glt);font-weight:700}
 .cmp .thumb{width:100%;max-width:220px;aspect-ratio:4/3;margin:0 auto}
 @media(max-width:600px){.cmp th{width:30%;font-size:13px}.cmp td{font-size:14px;padding:10px 4px}}
 .cal{position:relative;display:grid;gap:10px}
@@ -363,7 +365,7 @@ footer .wrap{position:relative;z-index:2}
 .ex-t svg{width:40px;height:40px}
 .month{margin-top:28px}
 .month h3{font-size:20px;margin-bottom:6px;text-transform:capitalize}
-.fh{font-size:19px;margin:6px 0 -4px;color:var(--gl)}
+.fh{font-size:19px;margin:6px 0 -4px;color:var(--glt)}
 .swatches{display:flex;flex-wrap:wrap;gap:8px}
 .sw{min-height:40px;padding:6px 14px 6px 8px;font-weight:600;font-size:14px;background:transparent;color:var(--tx);border:1px solid var(--ln);gap:8px}
 .sw i{width:22px;height:22px;border-radius:50%;border:2px solid rgba(255,255,255,.5)}
@@ -550,7 +552,7 @@ async function sbRun(){if(!navigator.onLine){sbOk=false;return}sbBusy=true;const
   try{await sbAuth();await sbPush();await sbPull();await sbTours();await sbTast();sbOk=true}catch(e){sbOk=false;console.warn('Synk fejlede',e)}
   finally{sbBusy=false;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}if(JSON.stringify([S.beers,S.reviews,S.tours,S.tast])!==before){syncApp();if(sbFull&&location.hash==='#smagning-'+sbFull){sbFull='';route();return}sbFull='';const a=document.activeElement,open=document.querySelector('.lbox:not([hidden]),#scan:not([hidden])');const typing=a&&/INPUT|TEXTAREA/.test(a.tagName)&&a.value!=='';if(!dirty&&!open&&!typing)softRoute()}
    document.querySelectorAll('.sbst').forEach(el=>el.innerHTML=sbStatus());if(Object.keys(S.gone).length)sbSoon(9500)}}
-const sbStatus=()=>sbOk?'<span style="color:#7be3a0">● Forbundet</span> – dine øl og bedømmelser deles med alle':'<span style="color:var(--sun)">● Ikke forbundet</span> – dine data gemmes på enheden og deles, når der er forbindelse';
+const sbStatus=()=>sbOk?'<span class="okc">● Forbundet</span> – dine øl og bedømmelser deles med alle':'<span style="color:var(--sun)">● Ikke forbundet</span> – dine data gemmes på enheden og deles, når der er forbindelse';
 function sbSoon(ms=1500){clearTimeout(sbTimer);sbTimer=setTimeout(sbSync,ms)}
 /* ---------- byttur ---------- */
 const b64e=o=>btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
@@ -751,7 +753,7 @@ function home(){const L=enrich(),Rv=reviews().slice().sort((a,b)=>b.date.localeC
    <aside class="side">
     <div class="box"><h3>Toplisten</h3><div style="font-size:13px;opacity:.7;margin-bottom:4px">Gennemsnit af alle bedømmelser</div>
      ${top.map((b,i)=>`<a class="rk" href="#beer-${esc(b.id)}"><span class="n" style="color:${['var(--gl)','var(--sun)','var(--pk)','var(--sky)','var(--sky)'][i]}">${i+1}</span><span><b style="font-size:15px">${esc(b.name)}</b><br><span class="meta" style="font-size:13px">${esc(b.brewery)}</span></span><b class="s">${fmt(b.avg)}</b></a>`).join('')||'<p class="meta">Ingen bedømte øl endnu.</p>'}
-     <a href="#toplisten" style="display:block;margin-top:12px;font-weight:600;font-size:14px;color:var(--gl)">Se hele toplisten →</a></div>
+     <a href="#toplisten" style="display:block;margin-top:12px;font-weight:600;font-size:14px;color:var(--glt)">Se hele toplisten →</a></div>
     <div class="box" id="reviews"><h3>Seneste anmeldelser</h3>${Rv.slice(0,4).map(r=>revRow(r,true)).join('')||'<p class="meta">Ingen endnu.</p>'}</div>
    </aside></div></section>
   <section class="band" style="padding-top:0"><div class="wrap"><h2 style="font-size:clamp(28px,3.4vw,42px);margin-bottom:20px">Mere at udforske</h2><div class="explore">
@@ -761,7 +763,7 @@ function home(){const L=enrich(),Rv=reviews().slice().sort((a,b)=>b.date.localeC
    ${[['Tag et billede','Flasken på kajen, glasset på bordet. Det hele tæller.','var(--gl)'],['Giv karakter','1 til 5 for udseende, duft, smag, fylde og helhed.','var(--sun)'],['Del det','Din øl dukker op på forsiden og i galleriet med det samme.','var(--pk)']].map(([h,p,c],i)=>`<div class="step"><span style="background:${c}">${i+1}</span><div><b style="font-size:19px">${h}</b><p>${p}</p></div></div>`).join('')}
    <a class="btn" href="#tilfoej" style="align-self:flex-start">Tilføj din første øl</a></div></section>
   <section class="band"><div class="wrap app">
-   <div><span class="kick" style="color:var(--gl)">Apps til telefon og computer</span><h2 style="margin-top:10px">ølrating i lommen</h2>
+   <div><span class="kick" style="color:var(--glt)">Apps til telefon og computer</span><h2 style="margin-top:10px">ølrating i lommen</h2>
     <p style="font-size:18px;opacity:.9;margin:16px 0 18px;max-width:30em">Hent ølrating som app på din Android-telefon, eller som program til Windows og Linux. Appen åbner i fuld skærm, og du får widgets med ugens øl og toplisten.</p>
     <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px"><a class="btn" href="https://github.com/Lucas050908/-lrating.dk/releases/download/android-app/olrating.apk" rel="noopener"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M17.6 9.48l1.84-3.18a.4.4 0 0 0-.69-.4l-1.87 3.22a11.5 11.5 0 0 0-9.76 0L5.25 5.9a.4.4 0 0 0-.69.4L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg>Hent appen til Android</a><a class="btn ghost" href="#app-hjaelp" data-go="apphelp">Sådan installerer du</a></div>
     <div class="dlrow"><a class="btn ghost" href="https://github.com/Lucas050908/-lrating.dk/releases/download/desktop-app/olrating-windows.exe" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M3 5.5l7.5-1v7H3zM11.5 4.4L21 3v8.5h-9.5zM3 12.5h7.5v7L3 18.5zM11.5 12.5H21V21l-9.5-1.4z"/></svg>Windows</a><a class="btn ghost" href="https://github.com/Lucas050908/-lrating.dk/releases/download/desktop-app/olrating-linux.AppImage" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Linux</a><a class="btn ghost" href="#app-ios" data-go="ioshelp"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>iPhone</a></div>
@@ -770,12 +772,12 @@ function home(){const L=enrich(),Rv=reviews().slice().sort((a,b)=>b.date.localeC
     <details class="more" id="app-ios" style="margin:10px 0 0"><summary>Sådan får du ølrating på iPhone og iPad</summary><ol style="margin:0;padding:0 16px 16px 36px;line-height:1.7"><li>Åbn ølrating.dk i <b>Safari</b>.</li><li>Tryk på <b>Del</b>-knappen (firkanten med pilen op).</li><li>Vælg <b>Føj til hjemmeskærm</b> og tryk <b>Tilføj</b>.</li><li>Nu ligger ølrating på hjemmeskærmen og åbner i fuld skærm som en app.</li></ol></details>
     <div style="margin-top:12px">${installBtn()}</div></div>
    <div class="phonewrap"><div class="phone"><div style="height:140px;position:relative;overflow:hidden"><img src="img/fjord2-m.jpg" alt="" style="width:100%;height:100%;object-fit:cover"><div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,29,54,.2),#0f1d36)"></div><b style="position:absolute;left:14px;bottom:10px;font-family:Sora,sans-serif;font-size:17px">ølrating.dk</b></div>
-    <div style="padding:10px 12px;display:grid;gap:8px">${top.length?'':`<p style="font-size:12px;opacity:.75;margin:8px 4px">Toplisten fyldes op, når de første øl bliver bedømt.</p>`}${top.slice(0,5).map(b=>`<div style="display:flex;gap:8px;align-items:center;background:var(--nv2);border-radius:12px;padding:8px"><span style="width:30px;height:30px;border-radius:8px;background:${col(b.style)}"></span><span style="flex:1;font-size:12px;font-weight:600;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${esc(b.name)}</span><b style="color:var(--gl);font-size:13px">${fmt(b.avg)}</b></div>`).join('')}</div></div>
+    <div style="padding:10px 12px;display:grid;gap:8px">${top.length?'':`<p style="font-size:12px;opacity:.75;margin:8px 4px">Toplisten fyldes op, når de første øl bliver bedømt.</p>`}${top.slice(0,5).map(b=>`<div style="display:flex;gap:8px;align-items:center;background:var(--nv2);border-radius:12px;padding:8px"><span style="width:30px;height:30px;border-radius:8px;background:${col(b.style)}"></span><span style="flex:1;font-size:12px;font-weight:600;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${esc(b.name)}</span><b style="color:var(--glt);font-size:13px">${fmt(b.avg)}</b></div>`).join('')}</div></div>
     <div style="display:grid;gap:14px">${wb?`<div class="wid"><b class="k">UGENS ØL</b><b style="display:block;font-size:13px;margin-top:6px">${esc(wb.name)}</b><span class="big" style="font-size:24px">${fmt(wb.avg)}</span></div>`:''}
-     <div class="wid"><b class="k">TOP 3</b>${top.length?'':'<div style="margin-top:6px;opacity:.75">Kommer snart</div>'}${top.slice(0,3).map((b,i)=>`<div style="display:flex;justify-content:space-between;gap:6px;margin-top:5px"><span style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${i+1}. ${esc(b.name)}</span><b style="color:var(--gl)">${fmt(b.avg)}</b></div>`).join('')}</div>
+     <div class="wid"><b class="k">TOP 3</b>${top.length?'':'<div style="margin-top:6px;opacity:.75">Kommer snart</div>'}${top.slice(0,3).map((b,i)=>`<div style="display:flex;justify-content:space-between;gap:6px;margin-top:5px"><span style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${i+1}. ${esc(b.name)}</span><b style="color:var(--glt)">${fmt(b.avg)}</b></div>`).join('')}</div>
      <div style="width:86px;height:86px;border-radius:22px;background:var(--sun);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--ink);font-size:11px;font-weight:700">${CAM('#0f1d36')}Bedøm</div></div></div></div></section>
   <section class="band" style="border-top:1px solid var(--ln)"><div class="wrap">
-   <div class="head"><h2>Galleri</h2><a href="#galleri" style="font-weight:600;color:var(--gl)">Se hele galleriet →</a></div>
+   <div class="head"><h2>Galleri</h2><a href="#galleri" style="font-weight:600;color:var(--glt)">Se hele galleriet →</a></div>
    ${userImgs.length?`<div class="gal">${userImgs.slice(0,8).map((x,i)=>galBtn(x,i)).join('')}</div>`:galEmpty()}</div></section>`}
 function galEmpty(){return `<div class="empty"><span class="ic">${CAM('var(--gl)')}</span><h3 style="font-size:24px">Galleriet venter på dit billede</h3><span style="opacity:.8;max-width:30em">Når du tilføjer en øl med et foto, kommer det til at stå her, så andre kan se hvad du drak.</span><a class="btn" href="#tilfoej" style="margin-top:6px">Upload det første billede</a></div>`}
 function renderGrid(){const g=$('grid');if(!g)return;const q=F.q.toLowerCase();
@@ -883,7 +885,7 @@ function profileView(){const L=enrich(),me=S.me.trim(),mine=reviews().filter(r=>
   const wish=L.filter(b=>S.wish.includes(b.id));
   const row=b=>`<a class="mini" href="#beer-${esc(b.id)}"><div class="thumb">${photo(b)}</div><span><b>${esc(b.name)}</b><br><span class="meta" style="font-size:13px">${esc(b.brewery)} · ${esc(b.style)}</span></span><b class="big" style="font-size:20px">${b.rs.length?fmt(b.avg):'–'}</b></a>`;
   return `<section class="band" style="padding-top:120px"><div class="wrap" style="max-width:1000px">
-  <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center">${me?`<span class="av" style="width:72px;height:72px;font-size:30px;background:hsl(${hue(me)} 55% 42%)">${esc(me[0].toUpperCase())}</span>`:''}<div><h1 style="font-size:clamp(34px,5vw,56px)">${me?esc(me):'Min profil'}</h1><p class="meta" style="margin:6px 0 0">Dine bedømmelser og din ønskeliste · <a href="#dagbog" style="color:var(--gl)">Se din øl-dagbog</a> · <a href="#venner" style="color:var(--gl)">Venner</a></p></div></div>
+  <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center">${me?`<span class="av" style="width:72px;height:72px;font-size:30px;background:hsl(${hue(me)} 55% 42%)">${esc(me[0].toUpperCase())}</span>`:''}<div><h1 style="font-size:clamp(34px,5vw,56px)">${me?esc(me):'Min profil'}</h1><p class="meta" style="margin:6px 0 0">Dine bedømmelser og din ønskeliste · <a href="#dagbog" style="color:var(--glt)">Se din øl-dagbog</a> · <a href="#venner" style="color:var(--glt)">Venner</a></p></div></div>
   <form id="meForm" style="display:flex;gap:10px;max-width:480px;margin-top:20px"><label for="meName" class="sr">Dit navn</label><input id="meName" value="${esc(me)}" maxlength="30" placeholder="Skriv dit navn"><button>Gem navn</button></form>
   ${me?`<div class="pstats"><div><b>${mine.length}</b><small>bedømmelser</small></div><div><b>${added.length}</b><small>øl tilføjet</small></div><div><b>${mine.length?fmt(avg):'–'}</b><small>din gennemsnitlige karakter</small></div><div><b style="font-size:20px">${fav?esc(fav[0]):'–'}</b><small>yndlingsstil</small></div><div><b style="font-size:20px">${ft?esc(ft[0]):'–'}</b><small>smager du oftest</small></div></div>`:'<p class="meta" style="margin-top:16px">Skriv dit navn for at se dine bedømmelser. Det er det samme navn, du bruger, når du bedømmer en øl.</p>'}
   <div class="cols" style="margin-top:12px">
@@ -950,7 +952,7 @@ async function scanSearch(){const code=await scanCode();if(!code)return;const b=
   if(b){toast(`Fundet: ${b.name}`);location.hash='beer-'+b.id}else{F.code=code;toast('Ukendt øl. Tilføj den!');location.hash='tilfoej'}}
 let installEvt=null;
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=e;document.querySelectorAll('[data-install]').forEach(x=>x.outerHTML=installBtn())});
-function installBtn(){if(matchMedia('(display-mode: standalone)').matches)return '<p style="color:var(--gl);font-weight:700;margin:0">ølrating er installeret på denne enhed.</p>';
+function installBtn(){if(matchMedia('(display-mode: standalone)').matches)return '<p style="color:var(--glt);font-weight:700;margin:0">ølrating er installeret på denne enhed.</p>';
   return installEvt?'<button type="button" id="installBtn" data-install>Installer på hjemmeskærmen</button>':'<p class="meta" data-install style="margin:0">Åbn ølrating.dk i Chrome på din telefon, tryk på menuen (⋮) og vælg "Føj til startskærm". På iPhone: Del-knappen og "Føj til hjemmeskærm".</p>'}
 /* ---------- kort over bryggerier: et forenklet Danmarkskort tegnet ud fra længde- og breddegrader ---------- */
 const DKMAP=[[[10.6,57.74],[10.55,57.45],[10.52,57.2],[10.3,56.98],[10.35,56.62],[10.92,56.45],[10.7,56.13],[10.25,56.13],[10.2,55.86],[9.95,55.7],[9.78,55.55],[9.6,55.45],[9.55,55.2],[9.45,55.02],[9.85,54.88],[9.45,54.82],[8.65,54.91],[8.62,55.12],[8.42,55.45],[8.08,55.56],[8.13,56],[8.12,56.55],[8.25,56.78],[8.6,57.11],[9.4,57.17],[9.95,57.59]],
@@ -1050,7 +1052,7 @@ function diaryView(){const me=S.me.trim().toLowerCase(),L=enrich(),bs=r=>L.find(
   ${years.length>1?`<div class="chips" style="margin:16px 0">${years.map(v=>`<button type="button" class="chip" data-year="${v}" aria-pressed="${v===y}">${v}</button>`).join('')}</div>`:''}
   ${yr.length?`<div class="box" style="margin-top:20px;background:linear-gradient(135deg,var(--nv2),var(--nv3))"><span class="kick">Dit år i øl ${y}</span>
    <div class="pstats" style="margin:14px 0 0"><div><b>${yr.length}</b><small>øl smagt</small></div><div><b>${brews}</b><small>bryggerier</small></div><div><b>${fmt(yr.reduce((a,r)=>a+tot(r),0)/yr.length)}</b><small>gennemsnit</small></div><div><b style="font-size:19px">${favSt?esc(favSt[0]):'–'}</b><small>mest drukne stil</small></div><div><b style="font-size:19px;text-transform:capitalize">${topM?mname(topM[0]).split(' ')[0]:'–'}</b><small>travleste måned</small></div></div>
-   ${best?`<p style="margin:16px 0 0">Årets bedste: <a href="#beer-${esc(best.beer)}"><b>${esc(bs(best).name)}</b></a> fra ${esc(bs(best).brewery)} med <b style="color:var(--gl)">${fmt(tot(best))}</b>.${Object.keys(tg).length?` Du smagte oftest ${Object.entries(tg).sort((a,b)=>b[1]-a[1]).slice(0,3).map(x=>esc(x[0].toLowerCase())).join(', ')}.`:''}</p>`:''}</div>`
+   ${best?`<p style="margin:16px 0 0">Årets bedste: <a href="#beer-${esc(best.beer)}"><b>${esc(bs(best).name)}</b></a> fra ${esc(bs(best).brewery)} med <b style="color:var(--glt)">${fmt(tot(best))}</b>.${Object.keys(tg).length?` Du smagte oftest ${Object.entries(tg).sort((a,b)=>b[1]-a[1]).slice(0,3).map(x=>esc(x[0].toLowerCase())).join(', ')}.`:''}</p>`:''}</div>`
    :`<div class="empty" style="margin-top:22px"><h3>Ingen øl i ${y} endnu</h3><a class="btn" href="#tilfoej">Tilføj en øl</a></div>`}
   ${Object.entries(groups).map(([k,rs])=>`<div class="month"><h3>${mname(k)}</h3>${rs.map(r=>{const b=bs(r);return `<a class="mini" href="#beer-${esc(b.id)}"><div class="thumb">${r.img?`<img src="${esc(src(r.img))}" alt="">`:photo(b)}</div><span><b>${esc(b.name)}</b><br><span class="meta" style="font-size:13px">${esc(b.brewery)} · ${new Date(r.date+'T12:00').toLocaleDateString('da-DK',{day:'numeric',month:'short'})}${r.text?' · “'+esc(r.text.slice(0,60))+(r.text.length>60?'…':'')+'”':''}</span></span><b class="big" style="font-size:20px">${fmt(tot(r))}</b></a>`}).join('')}</div>`).join('')}
   </div></section>`}
@@ -1060,7 +1062,7 @@ function foodView(){const d=foodView.d||'Pizza',sts=DISHES[d],L=enrich();
   return `<section class="band" style="padding-top:120px"><div class="wrap" style="max-width:1100px"><h1 style="font-size:clamp(34px,5vw,60px)">Hvilken øl til maden?</h1><p class="meta" style="margin:10px 0 0">Vælg hvad du skal spise. Forslagene er klassiske kombinationer, ikke regler.</p>
   <div class="dishes">${Object.keys(DISHES).map(x=>`<button type="button" class="chip" data-dish="${esc(x)}" aria-pressed="${x===d}">${esc(x)}</button>`).join('')}</div>
   <div class="guide">${sts.map(st=>{const g=GUIDE[st],top=L.filter(b=>b.style===st&&b.rs.length).sort((a,b)=>b.avg-a.avg).slice(0,3);return `<div class="gcard" style="cursor:default">${glassIcon(g[1],col(st))}<div><h3 style="font-size:21px">${esc(st)}</h3><p style="margin:6px 0 8px;font-size:15px">${g[0]}</p><div class="meta" style="font-size:13px">Servér ved ${g[2]} i ${GNAME[g[1]].toLowerCase()}</div>
-   ${top.length?`<div style="margin-top:10px">${top.map(b=>`<a class="rk" href="#beer-${esc(b.id)}" style="grid-template-columns:minmax(0,1fr) auto"><span><b style="font-size:14px">${esc(b.name)}</b><br><span class="meta" style="font-size:12px">${esc(b.brewery)}</span></span><b class="s" style="color:var(--gl)">${fmt(b.avg)}</b></a>`).join('')}</div>`:`<p class="meta" style="font-size:13px;margin:10px 0 0">Ingen ${esc(st.toLowerCase())} bedømt endnu.</p>`}
+   ${top.length?`<div style="margin-top:10px">${top.map(b=>`<a class="rk" href="#beer-${esc(b.id)}" style="grid-template-columns:minmax(0,1fr) auto"><span><b style="font-size:14px">${esc(b.name)}</b><br><span class="meta" style="font-size:12px">${esc(b.brewery)}</span></span><b class="s" style="color:var(--glt)">${fmt(b.avg)}</b></a>`).join('')}</div>`:`<p class="meta" style="font-size:13px;margin:10px 0 0">Ingen ${esc(st.toLowerCase())} bedømt endnu.</p>`}
    <button type="button" class="chip" data-style="${esc(st)}" style="margin-top:10px">Se alle ${esc(st.toLowerCase())}</button></div></div>`}).join('')}</div></div></section>`}
 
 function genView(){const t=gSum(uToday()),w=gSum(uWeek()),T=uToday().slice().sort((a,b)=>b.t-a.t),pct=Math.min(100,w*10),lvl=w>10?'over':w>=8?'near':'ok';
@@ -1089,7 +1091,7 @@ function tourView(id){const t=tourById(id);if(!t)return `<section class="band" s
   const cd=when&&ms>0?(ms>DAY?`om ${Math.ceil(ms/DAY)} dage`:`om ${Math.floor(ms/3600e3)} t ${Math.floor(ms%3600e3/60e3)} min`):'';
   return `<section class="band" style="padding-top:120px"><div class="wrap" style="max-width:880px"><a href="#byttur" class="meta">← Alle ture</a>
   <div class="thead"><div><span class="kick">Byttur${isHost?' · du er vært':''}</span><h1 style="font-size:clamp(32px,5vw,52px);margin:6px 0">${esc(t.name)}</h1>
-   <div class="meta">${when?when.toLocaleString('da-DK',{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}):''}${cd?` · <b style="color:var(--gl)">${cd}</b>`:''}</div>
+   <div class="meta">${when?when.toLocaleString('da-DK',{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}):''}${cd?` · <b style="color:var(--glt)">${cd}</b>`:''}</div>
    ${t.meet?`<div style="margin-top:6px">Mødested: <a href="${mapUrl(t.meet)}" target="_blank" rel="noopener">${esc(t.meet)}</a></div>`:''}${t.note?`<p style="margin:10px 0 0;font-style:italic">“${esc(t.note)}”</p>`:''}</div>
    <div class="tbtns">${joined?`<span class="pill ok">✓ Du er med</span>${isHost||sbOk?'':`<button type="button" class="ghost" id="tourAnswer" data-id="${esc(t.id)}">Send svar til ${esc(t.host)}</button>`}`:`<button type="button" class="btn" id="tourJoin" data-id="${esc(t.id)}">🍻 Jeg er med</button>`}<button type="button" class="ghost" id="tourShare" data-id="${esc(t.id)}">Del turen</button></div></div>
   ${c>=0?`<div class="now"><span class="kick">Vi er her nu</span><b>${esc(t.stops[c].name)}</b>${t.stops[c+1]?`<span>Næste: ${esc(t.stops[c+1].name)} kl. ${esc(t.stops[c+1].time)}</span>`:'<span>Sidste stop. Kom godt hjem!</span>'}</div>`:''}
@@ -1145,13 +1147,13 @@ function privacyView(){return `<section class="band" style="padding-top:120px"><
  
  <h3 style="margin-top:20px">Kamera</h3><p>Stregkodescanneren bruger kun kameraet, mens den er åben, og billedet forlader aldrig din telefon.</p>
  <h3 style="margin-top:20px">Skrifttyper og billeder</h3><p>Alle skrifttyper og billeder ligger på siden selv, så dit besøg ikke bliver sendt til tredjeparter som fx Google.</p>
- <h3 style="margin-top:20px">Slet dine data</h3><p>Du kan slette dine egne øl og bedømmelser én ad gangen, eller alt på én gang under <a href="#profil" style="color:var(--gl)">Min profil</a> → "Slet alle mine data". Så bliver de også slettet fra den fælles database. Har du skiftet telefon eller ryddet browseren, kan du skrive til andersenlucas84@gmail.com, så sletter vi dem for dig.</p></div></div></section>`}
+ <h3 style="margin-top:20px">Slet dine data</h3><p>Du kan slette dine egne øl og bedømmelser én ad gangen, eller alt på én gang under <a href="#profil" style="color:var(--glt)">Min profil</a> → "Slet alle mine data". Så bliver de også slettet fra den fælles database. Har du skiftet telefon eller ryddet browseren, kan du skrive til andersenlucas84@gmail.com, så sletter vi dem for dig.</p></div></div></section>`}
 
 function aboutView(){return `<section class="band" style="padding-top:120px"><div class="wrap" style="max-width:860px"><img src="img/logo.svg" width="120" height="120" alt="ølrating.dk logo" style="margin-bottom:18px"><h1 style="font-size:clamp(34px,5vw,56px)">Om ølrating.dk</h1>
  <p style="font-size:19px;line-height:1.6;margin:16px 0 26px;max-width:34em">ølrating.dk er et sted, hvor danske ølelskere kan tage et billede af den øl, de drikker, give den karakter og se hvad andre synes. Siden er lavet ved Limfjorden.</p>
  <h2 style="font-size:clamp(26px,3vw,36px);margin-bottom:16px">Ejere</h2>
  <div class="explore" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))">${[['Lucas Valentin Ottesen','Medejer'],['Magnus Birkgaard Froberg','Medejer']].map(([n,r])=>`<div class="ex-t" style="cursor:default"><span class="av" style="width:56px;height:56px;font-size:22px;background:hsl(${hue(n)} 55% 42%)">${esc(n[0])}</span><b style="font-size:19px">${esc(n)}</b><span class="meta">${r}</span></div>`).join('')}</div>
- <div class="box" style="margin-top:26px"><h3>Fundet en fejl?</h3><p style="margin:8px 0 14px">Virker noget ikke, som det skal, så skriv til <b>andersenlucas84@gmail.com</b>. Fortæl gerne hvad du gjorde, hvilken side du var på, og hvilken telefon eller browser du bruger.</p><a class="btn" href="mailto:andersenlucas84@gmail.com?subject=Fejl%20p%C3%A5%20%C3%B8lrating.dk&body=Hvad%20skete%20der%3F%0A%0AHvilken%20side%20var%20du%20p%C3%A5%3F%0A%0ATelefon%2Fbrowser%3A%0A">Rapportér en fejl</a><p class="meta" style="margin:14px 0 0">Spørgsmål, ris eller ros er også velkomne på samme mail. Læs også om <a href="#privatliv" style="color:var(--gl)">privatliv</a>.</p></div></div></section>`}
+ <div class="box" style="margin-top:26px"><h3>Fundet en fejl?</h3><p style="margin:8px 0 14px">Virker noget ikke, som det skal, så skriv til <b>andersenlucas84@gmail.com</b>. Fortæl gerne hvad du gjorde, hvilken side du var på, og hvilken telefon eller browser du bruger.</p><a class="btn" href="mailto:andersenlucas84@gmail.com?subject=Fejl%20p%C3%A5%20%C3%B8lrating.dk&body=Hvad%20skete%20der%3F%0A%0AHvilken%20side%20var%20du%20p%C3%A5%3F%0A%0ATelefon%2Fbrowser%3A%0A">Rapportér en fejl</a><p class="meta" style="margin:14px 0 0">Spørgsmål, ris eller ros er også velkomne på samme mail. Læs også om <a href="#privatliv" style="color:var(--glt)">privatliv</a>.</p></div></div></section>`}
 
 /* ---------- router ---------- */
 function route(){dirty=false;const h=location.hash.slice(1);let v;

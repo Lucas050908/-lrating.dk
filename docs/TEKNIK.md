@@ -7,6 +7,7 @@
 - **Sikkerhed:**
   - Content-Security-Policy i `<meta>`: `script-src 'self' 'unsafe-inline'`. `connect-src` og `img-src` tillader kun siden selv og `https://bbcegrufmzgfgzxazldr.supabase.co`.
   - Al brugertekst sendes gennem `esc()`.
+- **Farver:** `--gl` er den gule accentfarve til flader og ikoner. `--glt` bruges til gul *tekst*. I det mørke tema er de ens. I det lyse tema er `--glt` mørk rav (`#a15f00`), så tekst kan læses på hvid baggrund. Elementer, der altid er mørke (forsidebillede, menu, sidefod, `.sc` m.fl.), sætter `--glt` tilbage til gul.
 - **Skrifttyper:** Inter og Sora ligger lokalt i `fonts/`, så der ikke sendes noget til Google.
 
 ### Data på enheden
