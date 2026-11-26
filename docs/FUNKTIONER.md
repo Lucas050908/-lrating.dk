@@ -7,7 +7,7 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 | Side | Adresse | Hvad |
 |---|---|---|
 | Forside | `#` | Ugens øl, søgning (også med stregkodescanner), filtre, sortering, "Vis flere" (24 ad gangen), seneste bedømmelser, app-sektion |
-| Øl | `#beer-<id>` | Billede, oplysninger, karakterer i 5 kategorier, smagsprofil og anmeldelser. Knapperne er Del, Del som billede, Sammenlign, + Genstand, Bedøm, Ret oplysninger og Slet med fortryd |
+| Øl | `#beer-<id>` | Billede, oplysninger, karakterer i 5 kategorier, smagsprofil og anmeldelser. Store knapper: Bedøm den, Vil smage og + Genstand. Små knapper: Del, Del som billede, Sammenlign, Ret oplysninger og Slet øl med fortryd |
 | Tilføj øl | `#tilfoej` | Navn, bryggeri, stil, land/by, alkohol, IBU, farve, størrelse, pris, købested, servering, stregkode, billede og bedømmelse |
 | Toplisten | `#toplisten` | Samlet, lyse og mørke øl |
 | Galleri | `#galleri` | Alle billeder med lysboks |

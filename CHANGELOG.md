@@ -4,6 +4,10 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Nat (03:00–03:10): design
+- **Øl-siden:** Knapperne er ryddet op. "Bedøm den" er nu den tydelige orange knap sammen med "Vil smage" og "+ Genstand". Del, Del som billede, Sammenlign, Ret oplysninger og Slet øl står som mindre knapper nedenunder.
+- **Øl-kort på mobil:** Bunden af kortet viser "2 bed." i stedet for "2 bedømmelser", så teksten ikke knækker over to linjer.
+
 ### Nat (02:30–03:00)
 - **Kort over bryggerier:** Stilguiden har fået et forenklet Danmarkskort med en prik for hver by med et bryggeri. Prikken er gul, hvis du har bedømt en øl derfra. Tryk på en prik for at se bryggeriet eller byens øl. Kortet kender ca. 70 danske byer. Bryggerier i andre byer står på en liste under kortet.
 - **Ny Android-widget "Noget for dig":** Viser et forslag til en øl, du ikke har bedømt, og nedtælling til næste øl-dag. Tryk åbner øllen i appen.
