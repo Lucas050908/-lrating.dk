@@ -4,6 +4,11 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+### Aften (19:57–20:10): 40 forslag mere til logo, 50 i alt
+- **Logoer:** `img/logoer/` har nu 50 forslag, nummereret `01` til `50`. De nye er blandt andet flaske, krone, skjold, medalje, tønde, hane, byg, krans, måler, taleboble, lup, dåse, kompas, bølge, drikkehorn, smagebræt, stjernebillede, maskot og stempel.
+- Nr. 10, 49 og 50 har tekst i sig. De viser teksten med den skrifttype, enheden har, så de skal laves om til streger, hvis ét af dem bliver valgt.
+- Ingen af dem er taget i brug endnu.
+
 ### Aften (19:49–20:00): 10 forslag til nyt logo
 - **Logoer:** Der ligger 10 forslag til logo som SVG i `img/logoer/` (stjernekapsel, Ø-mærke, krus, solnedgang i glasset, fem stjerner, humle, skål, ølnål, sekskant og ordmærke). De er tegnet i sidens egne farver.
 - Ingen af dem er taget i brug endnu. Siden og apps bruger stadig det nuværende logo, indtil ét er valgt.
