@@ -94,8 +94,8 @@ def run(b,name,vw):
     T('genstande: remove one and reset',n==2 and len(ls(pg)['units'])==0,n)
     T('genstande: never sent to database',not any('unit' in l.lower() for l in M.log) and 'units' not in json.dumps(M.t))
     # --- themes
-    pg.select_option('#seasonSel','jul'); pg.wait_for_timeout(300); pg.select_option('#modeSel','light'); pg.wait_for_timeout(300)
-    T('theme switches',ls(pg)['season']=='jul' and ls(pg)['mode']=='light'); pg.select_option('#seasonSel','auto'); pg.select_option('#modeSel','auto')
+    pg.select_option('#seasonSel','jul'); pg.wait_for_timeout(300)
+    T('tema: sæson kan skiftes, og der er intet valg af lyst tema',ls(pg)['season']=='jul' and pg.query_selector('#modeSel') is None); pg.select_option('#seasonSel','auto')
     # --- backup, wipe, restore
     pg.goto(URL+'#profil'); pg.wait_for_timeout(400)
     T('profile: shows connected','Forbundet' in pg.inner_text('.sbst') and 'Ikke' not in pg.inner_text('.sbst'),pg.inner_text('.sbst')[:30])
@@ -122,8 +122,9 @@ def run(b,name,vw):
       B('ux1','Fjord IPA','IPA');B('ux2','Kaj Pilsner','Pilsner');B('ux3','Nul Komma','Pilsner',{abv:0.4});B('ux4','Havn Stout','Stout',{country:'Belgien'});B('ux5','Fri Hvede','Hvede',{abv:0,af:true,country:'Tyskland'});
       const R=(id,beer,who,v,tags)=>S.reviews.push({id,beer,who,date:d,s:s(v),tags:tags||[],again:1,text:''});
       R('rx1','ux1','Lucas',5,['Citrus']);R('rx2','ux4','Lucas',2,['Ristet']);R('rx3','ux1','Magnus',5);R('rx4','ux4','Magnus',2);R('rx5','ux2','Magnus',4,['Citrus']);R('rx6','ux3','Magnus',3);R('rx7','ux5','Magnus',4);R('rx8','ux3','Lucas',4);
-      S.me='Lucas';localStorage.setItem('olrating-v1',JSON.stringify(S))})()""")
+      S.me='Lucas';S.mode='light';localStorage.setItem('olrating-v1',JSON.stringify(S))})()""")
     pg.goto(URL+'#profil'); pg.reload(); pg.wait_for_timeout(1500)
+    T('tema: altid mørkt, også når et lyst tema er gemt fra før',pg.evaluate("document.documentElement.dataset.mode===undefined&&document.querySelector('meta[name=theme-color]').content==='#0f1d36'") and pg.evaluate("getComputedStyle(document.body).backgroundColor")=='rgb(15, 29, 54)',pg.evaluate("getComputedStyle(document.body).backgroundColor"))
     T('for dig: bedste forslag er Kaj Pilsner med begrundelse',pg.inner_text('.fy .mini >> nth=0 >> b >> nth=0')=='Kaj Pilsner' and 'pilsner' in pg.inner_text('.fy .mini >> nth=0').lower() and 'Havn Stout' not in pg.inner_text('.fy'),pg.inner_text('.fy')[:200])
     T('enighed: Magnus 81 % på 4 fælles øl','Magnus' in pg.inner_text('.agr') and '81 %' in pg.inner_text('.agr') and '4 fælles' in pg.inner_text('.agr'),pg.inner_text('.agr'))
     T('mærke: Klart hoved er optjent, Globetrotter ikke',pg.evaluate("[...document.querySelectorAll('.badge.got b')].map(x=>x.textContent)").count('Klart hoved')==1 and 'Globetrotter' not in pg.evaluate("[...document.querySelectorAll('.badge.got b')].map(x=>x.textContent)"))

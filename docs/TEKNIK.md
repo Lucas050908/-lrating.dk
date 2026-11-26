@@ -8,6 +8,7 @@
   - Content-Security-Policy i `<meta>`: `script-src 'self' 'unsafe-inline'`. `connect-src` og `img-src` tillader kun siden selv og `https://bbcegrufmzgfgzxazldr.supabase.co`.
   - Al brugertekst sendes gennem `esc()`.
   - Data udefra renses, før de gemmes lokalt: `cleanBeer()` og `cleanRev()` for øl og bedømmelser fra databasen og fra backup-filer, `cleanTour()` og `cleanTast()` for byture og smagninger. De tvinger typer (tal er tal, tekst er tekst), begrænser længder, smider ukendte felter væk og dropper rækker med ugyldigt id. Billedadresser accepteres kun, hvis de peger på sidens eget billedlager.
+- **Tema:** Siden er altid mørk. `applyMode()` fjerner `data-mode` fra `<html>`, så reglerne under `[data-mode=light]` ikke bruges. De ligger stadig i koden, hvis et lyst tema skal tilbage som et valg.
 - **Farver:** `--gl` (gul) og `--sun` (orange) er accentfarver til flader og ikoner. `--glt` og `--sunt` bruges til farvet *tekst*. I det mørke tema er de ens. I det lyse tema er de mørkere (`#855000` og `#b93a08`), så tekst kan læses på hvid baggrund. Elementer, der altid er mørke (forsidebillede, menu, sidefod, `.sc` m.fl.), sætter `--glt` tilbage til gul.
 - **Skrifttyper:** Inter og Sora ligger lokalt i `fonts/`, så der ikke sendes noget til Google.
 

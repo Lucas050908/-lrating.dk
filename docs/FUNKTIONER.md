@@ -97,7 +97,7 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 
 ### Andet
 - Sæsontemaer med partikler: jul, J-dag, nytår, fastelavn, påske, sankthans og halloween.
-- Lyst og mørkt tema efter tid på dagen.
+- Siden er altid mørk.
 - Billeder gemmes i IndexedDB, så der er plads til mange.
 - Fortryd i 7 sekunder ved sletning.
 - Backup og gendannelse som fil, inkl. billeder.
