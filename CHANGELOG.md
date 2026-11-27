@@ -6,7 +6,7 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ### Middag (12:35–12:33): Safaris motor og Firefox på GitHub gennemgået
 - **Gennemgået:** Alle kørsler siden i morges, job for job. Udover fejlen med det delte billede (rettet 12.33) fejlede Safaris motor af og til på meldinger om forespørgsler, der blev afbrudt, fordi testen skiftede side midt i en synkronisering ("… due to access control checks"). Det er ikke en fejl på siden: Chromium og Firefox melder intet i samme situation. Testene ser nu bort fra netop den melding i Safaris motor.
-- **Ikke forklaret endnu:** Firefox fejlede én gang i den engelske test (sprogknappen var ikke tegnet endnu) og én gang i en konto-test. Begge bestod i de næste kørsler.
+- **Firefox:** Den engelske test fejlede én gang, fordi den trykkede på sprogknappen, før den var tegnet. Nu venter testen på knappen. En konto-test fejlede også én gang og bestod i de næste kørsler; den er ikke forklaret endnu.
 - **Lille rettelse:** Når et gammelt billede slettes fra lageret i baggrunden, og det fejler, giver det ikke længere en ubehandlet fejl i konsollen.
 - **Rettelse af tidligere status:** "Grøn i alle tre browsere" i morges passede ikke helt. Kørslen var grøn, men jobbet for Safaris motor var rødt flere gange. Fremover tjekker jeg hvert job, ikke kun kørslen.
 

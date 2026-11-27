@@ -155,19 +155,20 @@ def main():
         hint=p2.inner_text('#langCode')=='English?' and p2.evaluate("document.getElementById('langBtn').classList.contains('hint')") and p2.evaluate("document.documentElement.lang")=='da'
         p2.goto(URL+'robots.txt'); p2.evaluate(SEED.replace('ME',json.dumps('Lucas')).replace('LANG',json.dumps('da'))); p2.goto(URL); p2.wait_for_timeout(1500)   # se seed()
         GR="()=>{document.getElementById('toast').textContent='';return ("+GRAB+")()}"; JSCLICK="q=>document.querySelector(q).click()"
+        def jsclick(q): p2.wait_for_selector(q,state='attached',timeout=8000); p2.evaluate(JSCLICK,q)   # venter, til knappen findes (Firefox kan være et øjeblik bagefter)
         trip=[]; inplace=[]
         for h in ['','#toplisten','#aarets','#profil','#byttur-pasttour1','#smagning-tastdone1','#genstande','#stilguide','#kalender','#om','#privatliv','#tilfoej','#beer-a1']:
             p2.goto(URL+h); p2.wait_for_timeout(1900 if h.startswith('#beer-') else 500); p2.evaluate("window.__mark=1;scrollTo(0,300)"); before=p2.evaluate(GR); y0=p2.evaluate('scrollY')
             # klik sendes direkte til knappen: Playwrights eget klik ruller siden, når knappen sidder i den faste topmenu
-            p2.evaluate(JSCLICK,'#langBtn'); vis=p2.is_visible('#langdd [data-lang="en"]'); p2.evaluate(JSCLICK,'#langdd [data-lang="en"]'); p2.wait_for_timeout(700); mid=p2.evaluate(GR)
+            jsclick('#langBtn'); vis=p2.is_visible('#langdd [data-lang="en"]'); jsclick('#langdd [data-lang="en"]'); p2.wait_for_timeout(700); mid=p2.evaluate(GR)
             ok_en=vis and p2.evaluate("document.documentElement.lang")=='en' and p2.inner_text('#nav a >> nth=0')=='All beers' and p2.evaluate('window.__mark')==1 and abs(p2.evaluate('scrollY')-y0)<3 and not p2.is_visible('#langdd') and p2.inner_text('#langCode')=='EN'
-            p2.evaluate(JSCLICK,'#langBtn'); p2.evaluate(JSCLICK,'#langdd [data-lang="da"]'); p2.wait_for_timeout(700); after=p2.evaluate(GR)
+            jsclick('#langBtn'); jsclick('#langdd [data-lang="da"]'); p2.wait_for_timeout(700); after=p2.evaluate(GR)
             if not ok_en or mid==before: inplace.append(h)
             if after!=before:
                 i=next((k for k,(x,y) in enumerate(zip(after,before)) if x!=y),min(len(after),len(before)))   # første sted, de er forskellige (også når kun rækkefølge eller antal er skiftet)
                 trip.append((h,[x for x in after if x not in before][:4],[x for x in before if x not in after][:4],len(before),len(after),before[i:i+2],after[i:i+2]))
         # mens man skriver i en formular, bliver siden ikke tegnet forfra, så det skrevne bliver stående
-        p2.goto(URL+'#tilfoej'); p2.wait_for_timeout(400); p2.fill('#bName','Min nye øl'); p2.evaluate(JSCLICK,'#langBtn'); p2.evaluate(JSCLICK,'#langdd [data-lang="en"]'); p2.wait_for_timeout(700)
+        p2.goto(URL+'#tilfoej'); p2.wait_for_timeout(400); p2.fill('#bName','Min nye øl'); jsclick('#langBtn'); jsclick('#langdd [data-lang="en"]'); p2.wait_for_timeout(700)
         keep=p2.input_value('#bName')=='Min nye øl' and p2.get_attribute('#bName','placeholder')=='E.g. Limfjordsporter'
         p2.wait_for_timeout(600)
         untr=[t for t in lits if p2.evaluate("t=>window.__tr.s(t)===t",t)]
