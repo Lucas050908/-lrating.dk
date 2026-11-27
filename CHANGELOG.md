@@ -4,6 +4,11 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-27
 
+### Formiddag (11:35–11:30): scanneren hjælper, når den ikke kan læse koden
+- Har scanneren ikke fundet en kode efter 12 sekunder, skifter teksten til et råd: hold telefonen lidt længere væk, eller luk og skriv tallene under stregkoden.
+- Når en kode er læst, vibrerer telefonen kort (hvis den kan).
+- **Test:** `test_site.py` tjekker rådet med et falsk ur og at Luk lukker kameraet uden at udfylde noget.
+
 ### Formiddag (11:15–11:24): ny test, der trykker på alle knapper
 - **`tests/klik.py`:** 23 knapper blev ikke trykket på af nogen test (bl.a. filtrene, Sammenlign, lysboksen, Overrask mig, Vis flere, del en tur og genåbn en smagning). Den nye test åbner 27 sider med eksempeldata og trykker på hver slags knap én gang, hver gang på en frisk side, og melder fejl i JavaScript og i konsollen. Første kørsel: 72 tryk, ingen fejl.
 - Den kører på GitHub ved hver ændring, sammen med tilgængelighed og layout.

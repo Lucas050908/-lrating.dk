@@ -350,6 +350,12 @@ with sync_playwright() as p:
         c.add_init_script("window.BarcodeDetector=class{static async getSupportedFormats(){return['ean_13','ean_8']}constructor(){this.n=0}async detect(){return ++this.n>5?[{rawValue:'5701234567899'}]:[]}}")
         pg=c.new_page(); pg.goto(URL+'#tilfoej'); pg.wait_for_timeout(800); pg.click('#scanAdd'); pg.wait_for_timeout(2500)
         check('scanner: med browserens egen BarcodeDetector kommer koden i feltet',pg.input_value('#bCode')=='5701234567899' and pg.evaluate('!window.olScan'),(pg.input_value('#bCode'),pg.evaluate('!!window.olScan')))
+        c.close()
+        c=b2.new_context(viewport={'width':390,'height':844},service_workers='block',permissions=['camera']); c.route(f'https://{HOST}/**',Mock().handle)
+        c.add_init_script("window.BarcodeDetector=class{static async getSupportedFormats(){return['ean_13']}async detect(){return[]}}")
+        pg=c.new_page(); pg.clock.install(); pg.goto(URL+'#tilfoej'); pg.clock.run_for(1500); pg.click('#scanAdd'); pg.wait_for_selector('#scan:not([hidden])',timeout=8000); pg.wait_for_timeout(800); t0=pg.inner_text('#scanTip'); pg.clock.run_for(13000); t1=pg.inner_text('#scanTip')
+        pg.click('#scanX'); pg.clock.run_for(500)
+        check('scanner: efter 12 sekunder uden kode kommer et råd, og Luk lukker kameraet',t0=='Hold stregkoden inden for rammen' and 'Kan den ikke læses' in t1 and pg.is_hidden('#scan') and pg.input_value('#bCode')=='',(t0,t1))
         c.close(); b2.close()
     # siden må ikke hoppe, mens den indlæses (Cumulative Layout Shift under 0,1, som Google kalder god). Måles kun i Chromium.
     if os.environ.get('BROWSER','chromium')=='chromium':
