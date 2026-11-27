@@ -2,18 +2,21 @@
 
 Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
-## 2026-11-26
+## 2026-11-27
 
-## 27-11-2026
+### Formiddag (10:50–10:52): kredit til Open Food Facts, og ændringsloggen ryddet op
+- **Kredit:** Billeder fra Open Food Facts må bruges, når der står, hvor de kommer fra (licensen CC BY-SA). En øl, hvis billede er hentet derfra, viser nu "Billede: Open Food Facts (CC BY-SA)" med link til varen. Vælger man selv et andet billede, forsvinder linjen. Om-siden nævner Open Food Facts og licenserne.
+- **Ændringsloggen:** Fredagens punkter stod under en forkert dato ("27-11-2026"), og torsdag aftens punkter var havnet under fredag. Datoerne og rækkefølgen er rettet, og tidsrummene for formiddagens punkter passer nu med tidspunkterne for de tilhørende commits.
+- **Test:** `test_site.py` gemmer en øl med billede fra (efterlignet) Open Food Facts og tjekker, at linjen med kredit og link står på øllens side.
 
-### Formiddag (10:40–10:42): gamle bedømmelser under et andet navn, og docs gennemgået
+### Formiddag (10:08–10:49): gamle bedømmelser under et andet navn, og docs gennemgået
 - **Bedømmelser under et gammelt navn:** Har man skiftet navn, forsvandt de gamle bedømmelser fra Min profil, og de kunne ikke rettes. Nu viser Min profil alle bedømmelser, der er lavet på enheden (databasen ved, hvilke der er dine), også under et andet navn. Der står, hvor mange der har et andet navn, og de kan rettes og slettes som de andre.
 - **Ret og Slet** vises nu ved alle bedømmelser, der er lavet på enheden, også når to har bedømt på samme telefon. Det passer med reglen i dokumentationen: den enhed, der har lavet noget, kan rette og slette det. Andre enheder kan stadig ikke (tjekket i `test_sync.py`).
 - **Rettet:** At gemme en rettelse ændrede dit navn til navnet på bedømmelsen. Nu bliver dit navn stående.
 - **Docs læst mod koden:** `FUNKTIONER.md` manglede Beer buddies, Lykkehjulet og Indstillinger i tabellen og i menuen, og sagde, at besøgstælleren intet gemmer på enheden. `TEKNIK.md` havde en gammel liste over data i `S`, et forkert navn for smagsprofilen (`p` i stedet for `prof`) og manglede `olrating-vis404`, `olrating-konto` og Open Food Facts i CSP. Alt er rettet.
 - **Test:** `test_site.py` skifter navn og tjekker, at de gamle bedømmelser står der og kan rettes, og at navnet ikke skifter ved en rettelse. Tjekket af knapper på øllens side forventer nu begge bedømmelser fra samme telefon.
 
-### Formiddag (10:15–10:01): stregkoden henter selv oplysninger om øllen
+### Formiddag (09:57–10:07): stregkoden henter selv oplysninger om øllen
 - **Scan og få felterne udfyldt:** Når man scanner eller skriver en stregkode under Tilføj øl, slår siden nummeret op i **Open Food Facts**, en åben og gratis database over varer. Kendes øllen, udfyldes navn, bryggeri, alkohol %, stil, størrelse og billede, og alkoholfri bliver sat, hvis den er det. Kun tomme felter bliver udfyldt, så det, man selv har skrevet, bliver stående. Under feltet står, hvad der blev hentet, og at man skal tjekke det.
 - Det virker også, når man scanner fra forsiden og øllen ikke findes på ølrating.dk endnu.
 - Findes øllen allerede på siden, spørges der ikke. Så vises "Findes den allerede?" som før.
@@ -23,29 +26,29 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 - **Test:** `test_site.py` efterligner Open Food Facts og tjekker, at felterne bliver udfyldt, at et forkert nummer ikke bliver slået op, at et ukendt nummer siger det, at det man selv har skrevet bliver stående, og at konsollen er uden fejl. Testen rører aldrig den rigtige tjeneste.
 - **Ikke prøvet:** et rigtigt opslag hos Open Food Facts og en rigtig scanning med telefonen. Herfra kan jeg ikke nå den rigtige tjeneste.
 
-### Formiddag (10:05–09:56): foto, når man retter, og README
+### Formiddag (09:53–10:07): foto, når man retter, og README
 - **Foto i en rettet bedømmelse:** Når man retter en bedømmelse med foto, vises fotoet nu i feltet, og der er et link **Fjern foto**. Før var feltet tomt, så man kunne tro, at fotoet var væk, og det kunne ikke fjernes. Vælger man et nyt foto, erstatter det det gamle. Det gamle foto slettes også fra databasens lager.
 - **README:** Android-appen har 8 widgets (ikke 6). Mapperne `tools/` og `img/logoer/` og de nye tjek i `tests/` er nævnt.
 - **Test:** `test_site.py` lægger et foto på en bedømmelse, retter den, fjerner fotoet og tjekker, at det er væk både fra bedømmelsen og fra lageret.
 
-### Formiddag (09:55–09:49): øllens side husker din bedømmelse
+### Formiddag (09:47–09:52): øllens side husker din bedømmelse
 - **Har du bedømt øllen før,** står det nu over formularen på øllens side, med den karakter du gav, og et link: **Ret din bedømmelse**. Så kommer man ikke til at skrive en ny bedømmelse, når man bare ville rette den gamle. Man kan stadig skrive en ny.
 - Engelsk: "You have already rated it and gave it 4.5. Edit your rating or write a new one below."
 - **Test:** `test_site.py` tjekker, at linjen står der, og at linket åbner rettelsen.
 
-### Formiddag (09:40–09:42): blok 3 i planen – vægt, starttid og besøgstælleren
+### Formiddag (09:40–09:46): blok 3 i planen – vægt, starttid og besøgstælleren
 - **Besøgstælleren:** Indtil `supabase/005-besoeg.sql` er kørt, svarer databasen "404". Før kom den linje i konsollen ved hver eneste åbning. Nu husker siden svaret og prøver højst én gang i timen. Når filen er kørt, begynder tælleren at tælle senest en time efter på hver enhed.
 - **Målt (Chrome, telefonstørrelse, median af 7 åbninger, uden net til databasen):** Torsdag morgen (c4edea8): klar efter 65 ms, færdig efter 132 ms. Nu: klar efter 70 ms, færdig efter 106 ms. Siden er ikke blevet langsommere at starte.
 - **Vægt:** `index.html` er 97 KB pakket (torsdag morgen 67 KB). Forskellen er de nye funktioner (Beer buddies, Lykkehjulet, Indstillinger, loading screen, widgets). Der er ingen indlejrede billeder eller anden fyld. Engelsk (`js/en.js`) og QR-koder (`js/qr.js`) hentes stadig kun, når de bruges.
 - **To faner og uden net:** Allerede rettet og testet tidligere (se torsdag aften og fredag morgen).
 - **Test:** `test_sync.py` tjekker, at siden ikke spørger igen ved næste åbning, når tælleren mangler, og at den tæller, når den findes.
 
-### Formiddag (09:25–09:32): ret dine gamle bedømmelser fra profilen
+### Formiddag (09:25–09:39): ret dine gamle bedømmelser fra profilen
 - **Ret gamle bedømmelser:** Under Min profil → Mine bedømmelser har hver bedømmelse nu knapperne **Ret** og **Slet**. Ret åbner øllens side med alt udfyldt (karakterer, tekst, smagsnoter, smagsprofil og "køber igen"), så man bare retter og trykker Gem ændringer. Bedømmelsen beholder sin dato og får mærket "rettet".
 - **Fortryd ændringer:** Mens man retter, er der en knap til at droppe ændringerne igen.
 - Testen tjekker at Ret åbner den rigtige bedømmelse, at Fortryd ikke gemmer noget, og at en rettelse gemmes med samme id og dato.
 
-### Formiddag (09:20–09:19): konto, manifest og genveje
+### Formiddag (09:19–09:25): konto, manifest og genveje
 - **Konto (skjult indtil videre):** Koden til login er læst igennem. Én lille ting er sikret: Gav bekræftelsen af koden ingen ny session, og var der ingen i forvejen, gik det galt. Resten er dækket af testene.
 - **Webappens manifest** har fået et fast `id`, så en telefon kan kende appen igen, selv hvis adressen en dag ændrer sig.
 - **Genveje:** Holder man fingeren på ølrating-ikonet på en Android-telefon, er Lykkehjulet nu med blandt genvejene.
@@ -99,6 +102,8 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 - **GitHub:** Jobbene for WebKit og Firefox kører nu også `tests/layout.py` og `tests/kontrast.py`. Før blev de to tjek kun kørt i Chromium.
 - `tests/kontrast.py` kan nu køre i en anden browser med `BROWSER=webkit` eller `BROWSER=firefox`, ligesom de andre test.
 - Alle commits fra torsdag aften er grønne på GitHub i alle tre browsere.
+
+## 2026-11-26
 
 ### Aften (22:45–22:46): flere tjek af det, der sker, når noget mangler
 - **Test:** 2 nye tjek i `test_site.py`. Med "mindre bevægelse" slået til er der ingen loading screen og intet drys, og lykkehjulet viser resultatet med det samme. Uden besøgstæller i databasen sender siden ingen besøgstal til widgets, og Om viser tre tal i stedet for fem.

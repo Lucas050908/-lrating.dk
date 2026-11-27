@@ -402,6 +402,10 @@ with sync_playwright() as p:
     vals=pg.evaluate("['bName','bBrew','bAbv','bStyle','bSize'].map(i=>document.getElementById(i).value)")
     check('stregkode: navn, bryggeri, alkohol, stil, størrelse og billede bliver udfyldt',vals==['Fjordens IPA','Limfjordens Bryghus','6,2','IPA','33 cl dåse'] and pg.query_selector('#bImgPrev img') is not None and 'Hentet fra Open Food Facts' in pg.inner_text('#offHint'),(vals,pg.inner_text('#offHint')))
     check('stregkode: kun nummeret sendes',all(('5741000001233' in u and 'product' in u) or 'images.' in u for u in OFFQ) and len(OFFQ)==2,OFFQ)
+    for k in ['look','aroma','taste','feel','overall']: pg.click(f'#addForm .rate[data-k="{k}"] [data-star="4"]')
+    pg.fill('#addForm #rWho','Lucas'); pg.click('#addBtn'); pg.wait_for_timeout(2500)
+    nb=[x for x in ls(pg)['beers'] if x.get('code')=='5741000001233']
+    check('stregkode: øllen gemmes, og billedet krediteres Open Food Facts med link',nb and nb[0].get('imgBy')=='off' and pg.query_selector('#imgBy a[href="https://world.openfoodfacts.org/product/5741000001233"]') is not None,nb[:1])
     pg.goto(URL+'#'); pg.wait_for_timeout(300); pg.goto(URL+'#tilfoej'); pg.wait_for_timeout(600); pg.fill('#bName','Min egen'); pg.fill('#bCode','5701234567899'); pg.wait_for_timeout(2000)
     check('stregkode: ukendt nummer siger det, og det man selv har skrevet bliver stående',pg.input_value('#bName')=='Min egen' and 'findes ikke' in pg.inner_text('#offHint'),pg.inner_text('#offHint'))
     check('stregkode: ingen fejl i konsollen',not errs,errs[:3])

@@ -121,7 +121,7 @@ def segs(strings):
 SAME=set('''Fjord IPA Stout Porter Sour Lager Pale Ale Brown Ale Bock Pilsner Bitter Citrus Malt Normal Halloween USA Mexico Japan England Android Windows Linux iPhone iPad Safari Chrome OK Web Share GitHub Supabase Google Maps QR Top Min Max IBU cl % ABV
 ølrating ølrating.dk .dk Lucas Valentin Ottesen Magnus Birkgaard Froberg Limfjorden Start Info Tema Dansk English Sprog · Language Sprog Language'''.replace('\n',' ').split(' '))
 SAME|={'Pale Ale','Brown Ale','J-dag','Web Share','Google Maps','Lucas Valentin Ottesen','Magnus Birkgaard Froberg'}
-SAME|={'Beer buddies','Swipe','Scan','Linux:','Windows:','Downloads','TOP 3','+ Stop','Download backup','Snifter','Pizza','Burger','Mild','ølrating.dk logo','olrating.apk','olrating-windows.exe','olrating-linux.AppImage','andersenlucas84@gmail.com','Findes Ikke','cl','Fx mfx3k2abcd','Globetrotter','ølrating<1>.dk</1>','1 stop'}
+SAME|={'Beer buddies','Swipe','Scan','Linux:','Windows:','Downloads','TOP 3','+ Stop','Download backup','Snifter','Pizza','Burger','Mild','ølrating.dk logo','olrating.apk','olrating-windows.exe','olrating-linux.AppImage','andersenlucas84@gmail.com','Findes Ikke','cl','Fx mfx3k2abcd','Globetrotter','ølrating<1>.dk</1>','1 stop','Open Food Facts','CC BY-SA'}
 # Mønstre for tekster, der er ens på begge sprog: mål, koder og navne med tal
 SAME_RE=re.compile(r'^(\d+ cl|\d+ IBU|© \d{4} .*|[\d.,]+ ?%|[A-ZÆØÅ]|✓ .+|\d\. .+|“.*”|.+ ↗|■ .+|[^\s@]+@[^\s@]+)$')
 def letters(t): return re.search(r'[A-Za-zÆØÅæøå]{2,}',t) is not None
