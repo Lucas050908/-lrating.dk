@@ -115,6 +115,16 @@ def run(b,name,vw):
     with pg.expect_download(timeout=10000) as dl: pg.click('#exportBtn')
     bk=os.path.join(TMP,'backup-'+name+'.json'); dl.value.save_as(bk); B=json.load(open(bk))
     T('backup: has beers, reviews, embedded photo',len(B['beers'])==1 and len(B['reviews'])==2 and B['beers'][0]['img'].startswith('data:image/'),B['beers'][0]['img'][:30])
+    # --- ret en gammel bedømmelse fra profilen
+    pg.click('[data-goedit] >> nth=0'); pg.wait_for_timeout(900)
+    rid=pg.get_attribute('#revForm','data-edit') or ''; old=[r for r in ls(pg)['reviews'] if r['id']==rid]
+    T('profil: Ret åbner øllens side med bedømmelsen klar',pg.evaluate('location.hash').startswith('#beer-') and pg.inner_text('#rateTitle')=='Ret din anmeldelse' and old and pg.input_value('#rText')==(old[0].get('text') or ''),(pg.evaluate('location.hash'),pg.inner_text('#rateTitle'),rid))
+    pg.fill('#rText','Rettet fra profilen'); pg.click('#editX'); pg.wait_for_timeout(400)
+    T('profil: Fortryd ændringer gemmer ingenting',[r.get('text') for r in ls(pg)['reviews'] if r['id']==rid]==[old[0].get('text')] and pg.inner_text('#rateTitle')!='Ret din anmeldelse')
+    pg.goto(URL+'#profil'); pg.wait_for_timeout(400); pg.click('[data-goedit] >> nth=0'); pg.wait_for_timeout(900)
+    pg.fill('#rText','Rettet fra profilen'); pg.click('#revForm button[type=submit]'); pg.wait_for_timeout(1200)
+    nw=[r for r in ls(pg)['reviews'] if r['id']==rid]
+    T('profil: rettet bedømmelse er gemt med samme id og dato',nw and nw[0]['text']=='Rettet fra profilen' and nw[0].get('edited')==1 and nw[0]['date']==old[0]['date'] and len(ls(pg)['reviews'])==2,nw)
     # --- delete review + undo, delete beer + undo
     pg.goto(URL+'#beer-'+bid); pg.wait_for_timeout(600)
     T('review actions only on my own review',pg.eval_on_selector_all('[data-delrev]','e=>e.length')==1)

@@ -6,6 +6,11 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 27-11-2026
 
+### Formiddag (09:25–09:32): ret dine gamle bedømmelser fra profilen
+- **Ret gamle bedømmelser:** Under Min profil → Mine bedømmelser har hver bedømmelse nu knapperne **Ret** og **Slet**. Ret åbner øllens side med alt udfyldt (karakterer, tekst, smagsnoter, smagsprofil og "køber igen"), så man bare retter og trykker Gem ændringer. Bedømmelsen beholder sin dato og får mærket "rettet".
+- **Fortryd ændringer:** Mens man retter, er der en knap til at droppe ændringerne igen.
+- Testen tjekker at Ret åbner den rigtige bedømmelse, at Fortryd ikke gemmer noget, og at en rettelse gemmes med samme id og dato.
+
 ### Formiddag (09:20–09:19): konto, manifest og genveje
 - **Konto (skjult indtil videre):** Koden til login er læst igennem. Én lille ting er sikret: Gav bekræftelsen af koden ingen ny session, og var der ingen i forvejen, gik det galt. Resten er dækket af testene.
 - **Webappens manifest** har fået et fast `id`, så en telefon kan kende appen igen, selv hvis adressen en dag ændrer sig.
