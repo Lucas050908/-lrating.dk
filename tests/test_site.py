@@ -289,6 +289,16 @@ def run(b,name,vw):
 with sync_playwright() as p:
     b=getattr(p,os.environ.get('BROWSER','chromium')).launch(); make_photo(b)
     run(b,'pc',(1280,900)); run(b,'mobil',(390,844))
+    # siden må ikke hoppe, mens den indlæses (Cumulative Layout Shift under 0,1, som Google kalder god). Måles kun i Chromium.
+    if os.environ.get('BROWSER','chromium')=='chromium':
+        cls={}
+        for vw,h in [((390,844),''),((390,844),'#alle'),((1280,900),''),((1280,900),'#alle'),((390,844),'#om')]:
+            c=b.new_context(viewport={'width':vw[0],'height':vw[1]},service_workers='block'); c.route(f'https://{HOST}/**',Mock().handle); pg=c.new_page()
+            c.new_cdp_session(pg).send('Emulation.setCPUThrottlingRate',{'rate':4})
+            pg.goto(URL); pg.wait_for_timeout(600)
+            pg.add_init_script("window.__cls=0;new PerformanceObserver(l=>{for(const e of l.getEntries())if(!e.hadRecentInput)window.__cls+=e.value}).observe({type:'layout-shift',buffered:true})")
+            pg.goto(URL+h); pg.wait_for_timeout(200); pg.evaluate('scrollTo(0,1200)'); pg.reload(); pg.wait_for_timeout(2000); cls[f'{vw[0]}{h or "#"}']=round(pg.evaluate('__cls'),3); c.close()
+        check('siden hopper ikke, mens den indlæses (CLS under 0,1)',max(cls.values())<0.1,cls)
     # en ondsindet backup-fil må ikke ødelægge siden: forkerte typer, kode i navne, en ønskeliste, der ikke er en liste
     c=b.new_context(viewport={'width':390,'height':844},service_workers='block'); c.route(f'https://{HOST}/**',Mock().handle); pg=c.new_page(); perr=[]; pg.on('pageerror',lambda e:perr.append(str(e)))
     pg.goto(URL); pg.wait_for_timeout(1200); pg.evaluate("(()=>{const S=JSON.parse(localStorage.getItem('olrating-v1'));S.me='';S.wish=['x9'];localStorage.setItem('olrating-v1',JSON.stringify(S))})()"); pg.reload(); pg.wait_for_timeout(800)

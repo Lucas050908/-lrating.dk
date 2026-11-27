@@ -160,6 +160,11 @@ Widget-data, som `syncApp()` sender:
 - `settingsView()` tegner siden. Knapperne bruger `data-look="bg:skov"`, `data-seas` og `data-setlang`. De hedder ikke `data-season` og `data-lang`, fordi de navne allerede bruges af stilarket og sprogmenuen.
 - `cuRun()` får tal med `data-cu` til at tælle op, når en side vises første gang. `burst(x, y, n)` kan nu lave et lille drys med få prikker.
 
+### Ingen hop under indlæsning (CLS)
+- `#app` har `min-height:100svh`, så sidefoden ikke står øverst, før første side er tegnet.
+- `history.scrollRestoration="manual"` sættes i det lille script i `<head>`. `route()` scroller selv: til toppen, eller til `#alle` to billeder efter, at indholdet er tegnet.
+- `test_site.py` måler CLS på fem sider med en telefon, der er gjort 4 gange langsommere, og kræver under 0,1.
+
 ### Loading screen
 - `#load` står først i `<body>`, så den bliver vist, før scriptet er læst. `loadDone()` kaldes efter første `route()` og fjerner den, tidligst 0,9 sekund efter at siden blev åbnet.
 - Den har `pointer-events:none`, og en CSS-animation skjuler den efter 6 sekunder, hvis scriptet skulle fejle.

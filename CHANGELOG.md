@@ -6,6 +6,13 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 27-11-2026
 
+### Formiddag (08:52–09:19): siden hopper ikke længere, mens den indlæses
+- **Målt:** Forsiden og de fleste sider "hoppede" kraftigt, mens de blev indlæst. Google måler det som Cumulative Layout Shift (CLS), og det var 0,88 på telefon og 0,62 på pc. Google kalder alt over 0,25 dårligt, og det kan trække siden ned i søgeresultaterne.
+- **Grunden:** Sidefoden stod øverst, indtil indholdet var tegnet, og blev så skubbet ned. Ved genindlæsning prøvede browseren desuden at scrolle tilbage, før indholdet var der, og "Alle øl" scrollede ned i samme billede, som indholdet blev tegnet.
+- **Rettet:** Indholdet fylder mindst en hel skærm fra starten. Browserens egen scroll ved genindlæsning er slået fra, fordi siden alligevel selv scroller ved hvert sideskift. "Alle øl" scroller først, når indholdet er tegnet.
+- **Nu:** CLS er 0 på 10 sider på telefon og pc, også når man genindlæser midt nede på en side. Målt med en telefon, der er gjort 4 gange langsommere.
+- **Test:** Et nyt tjek i `test_site.py` måler CLS på fem sider og fejler over 0,1.
+
 ### Morgen (08:35–08:51): backup-filer renses, lykkehjulet og en slettet øl, og fejlsiden på engelsk
 - **Rettet:** Når man indlæste en backup-fil, blev ønskelisten og navnet fra filen ikke renset. Var navnet ikke tekst, blev det gemt og fik siden til at gå ned, hver gang den blev åbnet. Nu tages kun gyldige øl-id'er med på ønskelisten (højst 500), og navnet bruges kun, hvis det er tekst (højst 30 tegn).
 - **Test:** To nye tjek. Det ene indlæser en ondsindet backup-fil med forkerte typer og kode i et ølnavn og tjekker, at navn, ønskeliste og siden er i orden bagefter. Det andet tjekker, at et gyldigt navn og gyldige øl-id'er bliver taget med. Det sidste fejler på den gamle udgave af siden.
