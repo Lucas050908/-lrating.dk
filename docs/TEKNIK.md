@@ -246,6 +246,8 @@ Widget-data, som `syncApp()` sender:
 
 **Overskriftsniveauer:** `headLevels()` køres efter hver `route()`. Springer en side et niveau over (fx fra `h1` direkte til `h3`), får overskriften det rigtige niveau med `aria-level`. Bokse ved siden af hinanden får samme niveau.
 
+**Klik på alt (`tests/klik.py`):** Lægger samme eksempeldata ind som den engelske test og åbner 27 sider på telefon. På hver side trykkes én gang på hver slags knap (knapper med samme `id` eller samme `data-`felter tælles som én), hver gang på en frisk side. Giver et tryk en fejl i JavaScript eller i konsollen, står siden og knappen på listen. Fanger knapper, som ingen anden test trykker på (fx filtrene, Sammenlign, lysboksen og Overrask mig). Tager omkring fire minutter og kører på GitHub ved hver ændring.
+
 **Layout (`tests/layout.py`):** Køres, når noget på siderne flyttes. 25 sider i 320, 360, 390 og 1280 px, på dansk og engelsk: vandret scroll, knapper oven i hinanden (hver linje af et link for sig), knapper uden for skærmen og trykflader under 24 × 24 px på telefon. Undtaget er links midt i en sætning, felter med en større etiket og knapper i en række, der kan swipes til siden. Tager omkring tre minutter.
 
 **To faner:** `addEventListener('storage', …)` tager det, en anden fane gemmer, ind i `S`, så den næste `save()` ikke overskriver det. Skriver man i en formular (`dirty`), tegnes siden ikke igen før næste sideskift.

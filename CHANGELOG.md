@@ -4,6 +4,11 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-27
 
+### Formiddag (11:15–11:24): ny test, der trykker på alle knapper
+- **`tests/klik.py`:** 23 knapper blev ikke trykket på af nogen test (bl.a. filtrene, Sammenlign, lysboksen, Overrask mig, Vis flere, del en tur og genåbn en smagning). Den nye test åbner 27 sider med eksempeldata og trykker på hver slags knap én gang, hver gang på en frisk side, og melder fejl i JavaScript og i konsollen. Første kørsel: 72 tryk, ingen fejl.
+- Den kører på GitHub ved hver ændring, sammen med tilgængelighed og layout.
+- **`tests/test_en.py`:** Tjekket "tilbage til dansk giver præcis den samme tekst" fejlede én gang i formiddags uden at vise forskellen (samme tekster, kun en anden rækkefølge eller et andet antal). Det bestod de næste to gange. Testen skriver nu, hvor de to udgaver begynder at være forskellige, så årsagen kan findes, hvis det sker igen.
+
 ### Formiddag (11:00–11:09): scanneren virker nu, også på iPhone
 - **Alvorlig fejl rettet:** Scanneren har aldrig givet en stregkode tilbage. Når den fandt koden, lukkede den kameraet på en måde, der svarede "ingen kode", før koden nåede frem. Så skete der ingenting, hverken på forsiden eller under Tilføj øl. Fejlen har været der siden første udgave. Bevist: med den gamle kode og en efterlignet scanner forbliver feltet tomt. Med den nye kommer koden frem.
 - **Scanner på iPhone og i Firefox:** De browsere har ikke den indbyggede stregkodelæser (BarcodeDetector), så Scan-knappen var skjult. Nu hentes en lille læser (`js/scan.js`, 70 kB, 17 kB pakket), når man trykker Scan. Den læser billedet fra kameraet ca. 6 gange i sekundet. Den hentes kun på de enheder, der mangler den indbyggede, og den virker også uden net.

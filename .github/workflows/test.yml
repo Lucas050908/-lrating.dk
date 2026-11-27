@@ -33,6 +33,9 @@ jobs:
       - name: Layout i fire bredder
         if: always()
         run: python3 tests/layout.py
+      - name: Klik på alt (ingen fejl efter et tryk)
+        if: always()
+        run: python3 tests/klik.py
   andre:
     name: Siden i ${{ matrix.navn }}
     runs-on: ubuntu-latest
