@@ -4,6 +4,10 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-27
 
+### Eftermiddag (13:00–12:57): dine egne øl på Min profil
+- **Øl, du har tilføjet:** Min profil har en ny boks med de øl, du har tilføjet (de 20 nyeste), hver med en **Ret**-knap, der åbner øllens oplysninger. Før skulle man finde øllen først. Skærmlæsere hører, hvilken øl knappen retter.
+- **Test:** `test_site.py` tjekker boksen og at Ret åbner den rigtige øl.
+
 ### Middag (12:35–12:33): Safaris motor og Firefox på GitHub gennemgået
 - **Gennemgået:** Alle kørsler siden i morges, job for job. Udover fejlen med det delte billede (rettet 12.33) fejlede Safaris motor af og til på meldinger om forespørgsler, der blev afbrudt, fordi testen skiftede side midt i en synkronisering ("… due to access control checks"). Det er ikke en fejl på siden: Chromium og Firefox melder intet i samme situation. Testene ser nu bort fra netop den melding i Safaris motor.
 - **Firefox:** Den engelske test fejlede én gang, fordi den trykkede på sprogknappen, før den var tegnet. Nu venter testen på knappen. En konto-test fejlede også én gang: den ventede et fast sekund på svaret fra den efterlignede database. Nu venter den på, at feltet til koden kommer frem (højst 8 sekunder).

@@ -23,7 +23,7 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 | Smager | `#smager-<navn>` | En persons bedømmelser, gennemsnit, yndlingsstil, enighed med dig og knappen Følg |
 | Stilguide | `#stilguide` | Ølstile, kort over bryggerier og alle bryggerier |
 | Bryggeri | `#bryggeri-<navn>` | Alle øl fra et bryggeri, gennemsnit og antal bedømmelser |
-| Min profil | `#profil` | Navn, statistik, mærker, ønskeliste, backup og gendannelse. Egne bedømmelser vises 15 ad gangen med "Vis flere", hver med Ret og Slet |
+| Min profil | `#profil` | Navn, statistik, mærker, ønskeliste, backup og gendannelse. Egne bedømmelser vises 15 ad gangen med "Vis flere", hver med Ret og Slet. De øl, du har tilføjet, står i en boks for sig med Ret |
 | Øl-dagbog | `#dagbog` | Alt du har smagt og "Dit år i øl" |
 | Ølkalender | `#kalender` | Juleøl, J-dag, påskebryg osv. |
 | Øl til maden | `#mad` | Forslag til øl til forskellige retter |

@@ -161,6 +161,9 @@ def run(b,name,vw):
     pg.click('[data-goedit] >> nth=0'); pg.wait_for_timeout(900); pg.click('#revForm button[type=submit]'); pg.wait_for_timeout(900)
     T('ret: at gemme en rettelse skifter ikke dit navn',ls(pg)['me']=='Helt Andet Navn' and any(r['who']==me0 for r in ls(pg)['reviews']),ls(pg)['me'])
     pg.evaluate("n=>{const x=JSON.parse(localStorage.getItem('olrating-v1'));x.me=n;localStorage.setItem('olrating-v1',JSON.stringify(x))}",me0); pg.reload(); pg.wait_for_timeout(700)
+    pg.goto(URL+'#profil'); pg.wait_for_timeout(600); nb=pg.eval_on_selector_all('#myBeers [data-editbeer]','e=>e.length'); pg.click('#myBeers [data-editbeer]'); pg.wait_for_timeout(800)
+    T('profil: dine egne øl står på en liste, og Ret åbner øllens oplysninger',nb==1 and pg.evaluate('location.hash')=='#tilfoej' and pg.input_value('#bName')=='Skærgaard Pilsner',(nb,pg.evaluate('location.hash')))
+    pg.goto(URL+'#beer-'+bid); pg.wait_for_timeout(600)
     # --- delete review + undo, delete beer + undo
     pg.goto(URL+'#beer-'+bid); pg.wait_for_timeout(600)
     T('review actions on the reviews made on this device (Lucas and Magnus on the same phone)',pg.eval_on_selector_all('[data-delrev]','e=>e.length')==2)
