@@ -12,6 +12,8 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 - **Plakat med 10.000:** én plakat i A0, 100 × 100 logoer. Rækkerne står med deres første nummer og kolonnerne 1–100, så nummeret er rækkens tal + kolonnen − 1. Logoerne er tegnet i dobbelt opløsning, så de er skarpe i A0.
 - **Ret fra Min profil:** Når man retter en bedømmelse fra Min profil og gemmer eller fortryder, kommer man nu tilbage til Min profil i stedet for at blive stående på øllens side.
 - **Test:** `test_site.py` tjekker, at man kommer tilbage til Min profil efter både Gem og Fortryd.
+- **Test af logoerne:** `test_site.py` tjekker nu, at nr. 1, 200, 201, 1000, 1001 og 10000 peger på de rigtige motiver og stilarter, at filnavnene i `img/logoer/1000` passer med numrene, at alle fem former (også med ring) giver gyldig SVG, og at et nummer over 10000 afvises.
+- **Plakaten med 10.000:** Blokken med logoerne var blevet trukket over på A4-side 3 på lærredet, så A0-plakaten stod uden logoer. Den er lagt tilbage, og logoerne er nu låst på alle plakaterne, så de ikke kan trækkes væk ved et uheld. Plakaterne er også sendt som PDF.
 
 ### Eftermiddag (14:03–14:06): tilføj øllen direkte fra søgningen
 - **Søger man på en stregkode,** som ingen øl har, står der nu "Tilføj øl med stregkode …". Knappen åbner Tilføj øl med koden udfyldt, og siden henter navn og billede fra Open Food Facts.

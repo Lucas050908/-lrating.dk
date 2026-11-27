@@ -336,6 +336,19 @@ def run(b,name,vw):
     T('profil: 15 bedømmelser ad gangen og Vis flere',n1==15 and 'mere' in more and n2>n1 and pg.query_selector('#moreRev') is None and not over(),(n1,more,n2))
     T('no JS or console errors',not errs,errs[:4])
     c.close()
+# logoforslagene: numrene 1-10000 peger på de rigtige motiver og stilarter, og hver form giver gyldig SVG
+sys.path.insert(0,os.path.join(os.path.dirname(os.path.abspath(__file__)),'..','tools'))
+import logoer, xml.dom.minidom as _md
+_ok=[logoer.nr(1)[1][0]=='nat',logoer.nr(200)[0][0]=='skumkronen',logoer.nr(201)[1][0]==logoer.STIL2[0][0],logoer.nr(1000)[0][0]=='skumkronen',logoer.nr(1001)[1]==logoer.STIL3[0],logoer.nr(10000)[0][0]=='skumkronen']
+_files=sorted(os.listdir(os.path.join(os.path.dirname(os.path.abspath(__file__)),'..','img','logoer','1000')))
+_ok.append(all(f'-{logoer.nr(i+1)[0][0]}-{logoer.nr(i+1)[1][0]}.svg' in f for i,f in enumerate([x for x in _files if x.endswith('.svg')])))
+_shapes=set()
+for _n in (1,4,204,224,1001,1002,1100,1200,9999,10000):
+    (_ms,_mn,_mf),_st=logoer.nr(_n); _md.parseString(logoer.build(_mf,_st)); _shapes.add(_st[2])
+check('logoer: nr. 1-10000 peger på rigtige motiver, filerne i img/logoer/1000 passer, og alle former er gyldig SVG',all(_ok) and len(set(s[2] for s in logoer.STIL3))==10 and len(logoer.STIL3)==225,(_ok,sorted(_shapes)))
+try:
+    logoer.nr(10001); check('logoer: nr. over 10000 afvises',False)
+except ValueError: check('logoer: nr. over 10000 afvises',True)
 with sync_playwright() as p:
     b=getattr(p,os.environ.get('BROWSER','chromium')).launch(); make_photo(b)
     run(b,'pc',(1280,900)); run(b,'mobil',(390,844))
