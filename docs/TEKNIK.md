@@ -269,3 +269,6 @@ Alle test bruger Playwright og en lokal server: `python3 -m http.server 8811 &`.
 - **Andre browsere:** `BROWSER=webkit python3 tests/test_site.py` kører testen i Safaris motor (kræver `python -m playwright install webkit`). På GitHub kører alle tre test også i WebKit og i Firefox (`BROWSER=firefox`). De to job bliver røde, hvis noget fejler, men stopper ikke resten af kørslen, fordi browserne på Linux ikke er helt de samme som på en telefon. I Firefox springes tjekket uden net over, fordi testværktøjet dér afviser navigation uden net, før service workeren bliver spurgt.
 - **GitHub Actions (`test.yml`):** `test_site.py`, `test_sync.py` og `test_en.py` kører ved hver ændring af siden. `e2e_supabase.py` kører kun ved manuel start eller når commit-beskeden indeholder `[database-test]`.
 - Byggemiljøet, hvor koden skrives, kan ikke selv nå Supabase. Derfor køres testen mod den rigtige database på GitHub.
+
+## Manifest-id og genveje
+`manifest.webmanifest` har `"id": "./"`, så browseren kender den installerede app igen, selv hvis `start_url` ændres. Genvejene (hold fingeren på ikonet) er: Tilføj øl, Toplisten, Genstand-tæller og Lykkehjulet.

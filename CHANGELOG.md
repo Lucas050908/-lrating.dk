@@ -6,6 +6,11 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 27-11-2026
 
+### Formiddag (09:20–09:19): konto, manifest og genveje
+- **Konto (skjult indtil videre):** Koden til login er læst igennem. Én lille ting er sikret: Gav bekræftelsen af koden ingen ny session, og var der ingen i forvejen, gik det galt. Resten er dækket af testene.
+- **Webappens manifest** har fået et fast `id`, så en telefon kan kende appen igen, selv hvis adressen en dag ændrer sig.
+- **Genveje:** Holder man fingeren på ølrating-ikonet på en Android-telefon, er Lykkehjulet nu med blandt genvejene.
+
 ### Formiddag (08:52–09:19): siden hopper ikke længere, mens den indlæses
 - **Målt:** Forsiden og de fleste sider "hoppede" kraftigt, mens de blev indlæst. Google måler det som Cumulative Layout Shift (CLS), og det var 0,88 på telefon og 0,62 på pc. Google kalder alt over 0,25 dårligt, og det kan trække siden ned i søgeresultaterne.
 - **Grunden:** Sidefoden stod øverst, indtil indholdet var tegnet, og blev så skubbet ned. Ved genindlæsning prøvede browseren desuden at scrolle tilbage, før indholdet var der, og "Alle øl" scrollede ned i samme billede, som indholdet blev tegnet.

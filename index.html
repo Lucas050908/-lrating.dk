@@ -674,7 +674,7 @@ async function acctSend(email){await sbAuth();
 async function acctVerify(code){const old=myUid();let tk=null;
   if(AC.flow==='login'){try{tk=await sbFetch('/rest/v1/rpc/konto_flyt_start',{method:'POST',body:{}})}catch(e){}}
   const r=await sbFetch('/auth/v1/verify',{method:'POST',body:{type:AC.flow==='new'?'email_change':'email',email:AC.email,token:code},anon:true});
-  if(r&&r.access_token)setSess(r);else{sbSess.expires_at=0;await sbAuth()}
+  if(r&&r.access_token)setSess(r);else{if(sbSess)sbSess.expires_at=0;await sbAuth()}
   if(!isAcct())throw Object.assign(new Error('403 ikke bekræftet'),{status:403});
   if(AC.flow==='login'&&old&&old!==myUid()&&typeof tk==='string'){try{await sbFetch('/rest/v1/rpc/konto_flyt_slut',{method:'POST',body:{t:tk}});['beers','reviews','tours','tast'].forEach(k=>(S[k]||[]).forEach(o=>{if(o.owner===old)o.owner=myUid()}))}catch(e){}}
   AC=AC0();save()}
