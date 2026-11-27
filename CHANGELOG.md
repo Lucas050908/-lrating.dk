@@ -4,6 +4,11 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-27
 
+### Eftermiddag (13:28–13:29): billeder i browsere, der ikke kan gemme dem på den normale måde
+- **Problemet:** Nogle browsere (fx Safaris motor i et privat vindue, som i testene på GitHub) kan ikke gemme et billede som en "Blob" i browserens database (IndexedDB). Så blev billedet gemt som tekst i den lille lokale lagerplads (localStorage, ca. 5 MB), som hurtigt bliver fuld ("Lageret er fuldt").
+- **Rettet:** Billedet gemmes i stedet som rå data (ArrayBuffer) i IndexedDB, der har meget mere plads, og laves om til et billede igen, når det skal vises eller sendes. Bevist: med den gamle kode lander billedet som tekst i localStorage, med den nye i IndexedDB.
+- **Test:** `test_site.py` efterligner en browser, der afviser Blobs, tilføjer en øl med billede og tjekker, at billedet ligger i IndexedDB og vises efter genindlæsning.
+
 ### Eftermiddag (13:00–12:57): dine egne øl på Min profil
 - **Øl, du har tilføjet:** Min profil har en ny boks med de øl, du har tilføjet (de 20 nyeste), hver med en **Ret**-knap, der åbner øllens oplysninger. Før skulle man finde øllen først. Skærmlæsere hører, hvilken øl knappen retter.
 - **Test:** `test_site.py` tjekker boksen og at Ret åbner den rigtige øl.

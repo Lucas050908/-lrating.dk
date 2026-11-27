@@ -19,7 +19,7 @@
 | localStorage | `olrating-vis404` | Tidspunkt for sidste 404 fra besøgstælleren. Så spørges der højst én gang i timen, før fil 005 er kørt |
 | localStorage | `olrating-konto` | Sat af `#konto-test`, så kontoen kan prøves på én enhed |
 | localStorage | `olrating-sb` | Den anonyme Supabase-session |
-| IndexedDB | db `olrating`, store `img` | Billeder som Blob. I `S` står de som `idb:<nøgle>`, og `src()` laver dem om til object-URL'er |
+| IndexedDB | db `olrating`, store `img` | Billeder som Blob, eller som `{t, b: ArrayBuffer}`, hvis browseren ikke kan gemme Blobs (`asBlob()` læser begge). I `S` står de som `idb:<nøgle>`, og `src()` laver dem om til object-URL'er |
 
 - **Øl:** `{id, name, brewery, style, country, city, abv, ibu, color, size, price, place, desc, code, af, img, addedBy, date, edited?, owner?}`
 - **Bedømmelse:** `{id, beer, who, date, s:{look,aroma,taste,feel,overall}, prof:{…}|null, tags, again, text, img, edited?, owner?}`. `s` har én decimal (1,0–5,0). `edited` sættes, når den er rettet; datoen ændres ikke.

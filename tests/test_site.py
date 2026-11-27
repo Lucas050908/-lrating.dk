@@ -351,6 +351,16 @@ with sync_playwright() as p:
     pg.click(f'.revact [data-edit="{rid}"]'); pg.wait_for_timeout(700); pg.click('#rmRImg'); pg.click('#revForm button[type=submit]'); pg.wait_for_timeout(10000)
     check('uden IndexedDB: øl og bedømmelse med samme billede får hver sin fil, og at fjerne den ene sletter ikke den anden',n1==2 and len(M2.store)==1 and bk in M2.store,(n1,len(M2.store),bk in M2.store))
     c.close()
+    # browsere, der ikke kan gemme en Blob i IndexedDB (fx Safaris private vindue): billedet gemmes som ArrayBuffer og vises stadig efter genindlæsning
+    c=b.new_context(viewport={'width':390,'height':844},service_workers='block'); c.route(f'https://{HOST}/**',lambda r:r.abort())
+    c.add_init_script("const P=IDBObjectStore.prototype.put;IDBObjectStore.prototype.put=function(v,k){if(v instanceof Blob)throw new DOMException('Blob nej','DataCloneError');return P.call(this,v,k)}")
+    pg=c.new_page(); pg.goto(URL+'#tilfoej'); pg.wait_for_timeout(800)
+    pg.set_input_files('#bImg',PHOTO); pg.wait_for_timeout(700); pg.fill('#bName','Uden Blob'); pg.fill('#bBrew','Bryg')
+    for k in ['look','aroma','taste','feel','overall']: pg.click(f'#addForm .rate[data-k="{k}"] [data-star="4"]')
+    pg.fill('#addForm #rWho','Lucas'); pg.click('#addBtn'); pg.wait_for_timeout(2500); im=ls(pg)['beers'][0]['img']
+    pg.reload(); pg.wait_for_timeout(1500); shown=pg.evaluate("[...document.querySelectorAll('.ph img')].some(i=>i.src.startsWith('blob:')&&i.naturalWidth>0)")
+    check('uden Blob i IndexedDB: billedet gemmes alligevel i IndexedDB og vises efter genindlæsning',im.startswith('idb:') and shown,(im[:20],shown))
+    c.close()
     # widget i programmet til Windows og Linux (desktop/widget.html): dansk som standard, engelsk når siden er sat til engelsk
     c=b.new_context(viewport={'width':340,'height':300}); pg=c.new_page()
     pg.add_init_script("window.W={onData(f){window.__f=f},onImages(){},open(){},addUnit(){},close(){},pin(){}}")

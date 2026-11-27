@@ -535,12 +535,16 @@ const STAR='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.8
 const IMG=new Map();let idb=null;
 function idbOpen(){return new Promise(res=>{try{const r=indexedDB.open('olrating',1);r.onupgradeneeded=()=>r.result.createObjectStore('img');r.onsuccess=()=>res(r.result);r.onerror=()=>res(null);r.onblocked=()=>res(null)}catch(e){res(null)}})}
 function idbDo(mode,fn){return new Promise((ok,no)=>{try{const t=idb.transaction('img',mode),q=fn(t.objectStore('img'));t.oncomplete=()=>ok(q&&q.result);t.onerror=()=>no(t.error);t.onabort=()=>no(t.error)}catch(e){no(e)}})}
-async function loadImgs(){idb=await idbOpen();if(!idb)return;await new Promise(ok=>{try{const c=idb.transaction('img','readonly').objectStore('img').openCursor();c.onsuccess=()=>{const k=c.result;if(k){IMG.set(k.key,URL.createObjectURL(k.value));k.continue()}else ok()};c.onerror=()=>ok()}catch(e){ok()}})}
+async function loadImgs(){idb=await idbOpen();if(!idb)return;await new Promise(ok=>{try{const c=idb.transaction('img','readonly').objectStore('img').openCursor();c.onsuccess=()=>{const k=c.result;if(k){const b=asBlob(k.value);if(b)IMG.set(k.key,URL.createObjectURL(b));k.continue()}else ok()};c.onerror=()=>ok()}catch(e){ok()}})}
 function dataToBlob(d){const i=d.indexOf(','),mime=(/data:([^;,]+)/.exec(d)||[,'image/jpeg'])[1],bin=atob(d.slice(i+1)),u=new Uint8Array(bin.length);for(let j=0;j<bin.length;j++)u[j]=bin.charCodeAt(j);return new Blob([u],{type:mime})}
 const blobToData=b=>new Promise(ok=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=()=>ok('');r.readAsDataURL(b)});
-async function putImg(d){if(!idb||!d||!d.startsWith('data:'))return d;try{const key='i'+Date.now().toString(36)+Math.random().toString(36).slice(2,7),blob=dataToBlob(d);await idbDo('readwrite',st=>st.put(blob,key));IMG.set(key,URL.createObjectURL(blob));return 'idb:'+key}catch(e){return d}}
+/* Nogle browsere (fx Safaris motor i et privat vindue) kan ikke gemme en Blob i IndexedDB. Så gemmes billedet som {t: type, b: ArrayBuffer} i stedet. asBlob() laver begge dele om til en Blob. */
+const asBlob=v=>v instanceof Blob?v:(v&&v.b instanceof ArrayBuffer?new Blob([v.b],{type:typeof v.t==='string'&&v.t?v.t:'image/jpeg'}):null);
+async function putImg(d){if(!idb||!d||!d.startsWith('data:'))return d;try{const key='i'+Date.now().toString(36)+Math.random().toString(36).slice(2,7),blob=dataToBlob(d);
+  try{await idbDo('readwrite',st=>st.put(blob,key))}catch(e){const b=await blob.arrayBuffer();await idbDo('readwrite',st=>st.put({t:blob.type,b},key))}
+  IMG.set(key,URL.createObjectURL(blob));return 'idb:'+key}catch(e){return d}}
 function delImg(v){if(idb&&v&&v.startsWith('idb:')){const k=v.slice(4);idbDo('readwrite',st=>st.delete(k)).catch(()=>{});const u=IMG.get(k);if(u)URL.revokeObjectURL(u);IMG.delete(k)}}
-async function imgAsData(v){if(v&&v.startsWith(SB.url+'/storage/')){try{const r=await fetch(v);return r.ok?await blobToData(await r.blob()):''}catch(e){return v}}if(!v||!v.startsWith('idb:')||!idb)return v;try{const b=await idbDo('readonly',st=>st.get(v.slice(4)));return b?await blobToData(b):''}catch(e){return ''}}
+async function imgAsData(v){if(v&&v.startsWith(SB.url+'/storage/')){try{const r=await fetch(v);return r.ok?await blobToData(await r.blob()):''}catch(e){return v}}if(!v||!v.startsWith('idb:')||!idb)return v;try{const b=asBlob(await idbDo('readonly',st=>st.get(v.slice(4))));return b?await blobToData(b):''}catch(e){return ''}}
 const src=v=>v&&v.startsWith('idb:')?(IMG.get(v.slice(4))||''):(v||'');
 async function migrateImgs(){if(!idb)return;let ch=0;for(const b of S.beers)if(b.img&&b.img.startsWith('data:')){b.img=await putImg(b.img);ch++}for(const r of S.reviews)if(r.img&&r.img.startsWith('data:')){r.img=await putImg(r.img);ch++}if(ch)save()}
 
@@ -719,7 +723,7 @@ function acctBox(){if(!kontoOn())return '';
     <p class="meta" style="margin:12px 0 0;font-size:14px">Vi sender en kode på 6 tal til din mail. Du skal ikke lave en adgangskode. Har du en konto i forvejen, logger du ind på samme måde.</p>`}</div>`}
 /* oid: øllens eller bedømmelsens id. Det kommer med i filnavnet, så to ting med samme billede aldrig deler én fil i lageret (ellers kunne sletning af den ene fjerne billedet fra den anden). */
 async function sbImg(v,oid){if(!v)return v;let blob=null,k;
-  if(v.startsWith('idb:')){k=v.slice(4);try{blob=await idbDo('readonly',st=>st.get(k))}catch(e){}}
+  if(v.startsWith('idb:')){k=v.slice(4);try{blob=asBlob(await idbDo('readonly',st=>st.get(k)))}catch(e){}}
   else if(v.startsWith('data:image/')){try{blob=dataToBlob(v);k='d'+hsh({v})+v.length.toString(36)+(oid?'-'+String(oid).replace(/[^\w-]/g,'').slice(0,24):'')}catch(e){}}
   else return v;
   if(!blob||!/^[\w-]{1,60}$/.test(k))return '';const path=`${myUid()}/${k}.jpg`;
