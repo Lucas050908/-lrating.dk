@@ -6,6 +6,11 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 27-11-2026
 
+### Formiddag (09:55–09:49): øllens side husker din bedømmelse
+- **Har du bedømt øllen før,** står det nu over formularen på øllens side, med den karakter du gav, og et link: **Ret din bedømmelse**. Så kommer man ikke til at skrive en ny bedømmelse, når man bare ville rette den gamle. Man kan stadig skrive en ny.
+- Engelsk: "You have already rated it and gave it 4.5. Edit your rating or write a new one below."
+- **Test:** `test_site.py` tjekker, at linjen står der, og at linket åbner rettelsen.
+
 ### Formiddag (09:40–09:42): blok 3 i planen – vægt, starttid og besøgstælleren
 - **Besøgstælleren:** Indtil `supabase/005-besoeg.sql` er kørt, svarer databasen "404". Før kom den linje i konsollen ved hver eneste åbning. Nu husker siden svaret og prøver højst én gang i timen. Når filen er kørt, begynder tælleren at tælle senest en time efter på hver enhed.
 - **Målt (Chrome, telefonstørrelse, median af 7 åbninger, uden net til databasen):** Torsdag morgen (c4edea8): klar efter 65 ms, færdig efter 132 ms. Nu: klar efter 70 ms, færdig efter 106 ms. Siden er ikke blevet langsommere at starte.

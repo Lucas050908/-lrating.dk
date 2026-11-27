@@ -125,6 +125,10 @@ def run(b,name,vw):
     pg.fill('#rText','Rettet fra profilen'); pg.click('#revForm button[type=submit]'); pg.wait_for_timeout(1200)
     nw=[r for r in ls(pg)['reviews'] if r['id']==rid]
     T('profil: rettet bedømmelse er gemt med samme id og dato',nw and nw[0]['text']=='Rettet fra profilen' and nw[0].get('edited')==1 and nw[0]['date']==old[0]['date'] and len(ls(pg)['reviews'])==2,nw)
+    pg.goto(URL+'#beer-'+bid); pg.wait_for_timeout(600)
+    nt=pg.inner_text('#myRevNote') if pg.query_selector('#myRevNote') else ''
+    pg.click('#myRevNote [data-edit]'); pg.wait_for_timeout(700)
+    T('øllens side: siger at du har bedømt den, og knappen åbner rettelsen','allerede bedømt' in nt and pg.inner_text('#rateTitle')=='Ret din anmeldelse' and pg.is_hidden('#myRevNote'),nt)
     # --- delete review + undo, delete beer + undo
     pg.goto(URL+'#beer-'+bid); pg.wait_for_timeout(600)
     T('review actions only on my own review',pg.eval_on_selector_all('[data-delrev]','e=>e.length')==1)
