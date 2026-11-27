@@ -393,6 +393,11 @@ with sync_playwright() as p:
         c.add_init_script("window.BarcodeDetector=class{static async getSupportedFormats(){return['ean_13','ean_8']}constructor(){this.n=0}async detect(){return ++this.n>5?[{rawValue:'5701234567899'}]:[]}}")
         pg=c.new_page(); pg.goto(URL+'#tilfoej'); pg.wait_for_timeout(800); pg.click('#scanAdd'); pg.wait_for_timeout(2500)
         check('scanner: med browserens egen BarcodeDetector kommer koden i feltet',pg.input_value('#bCode')=='5701234567899' and pg.evaluate('!window.olScan'),(pg.input_value('#bCode'),pg.evaluate('!!window.olScan')))
+        # en kendt øl scannet fra forsiden: øllens side åbner ved Bedøm
+        pg.goto(URL+'robots.txt'); pg.evaluate("()=>{const x=JSON.parse(localStorage.getItem('olrating-v1'));x.beers=[{id:'kend1',name:'Kendt Øl',brewery:'Bryg',style:'Pilsner',code:'5701234567899',addedBy:'A',date:'2026-11-01',img:''}];localStorage.setItem('olrating-v1',JSON.stringify(x))}")
+        pg.goto(URL); pg.wait_for_timeout(900); pg.click('#scanSearch'); pg.wait_for_timeout(2500)
+        top=pg.evaluate("Math.round(document.getElementById('rate').getBoundingClientRect().top)")
+        check('scanner: en kendt øl åbner øllens side ved Bedøm',pg.evaluate('location.hash')=='#beer-kend1' and -50<top<300,(pg.evaluate('location.hash'),top))
         c.close()
         c=b2.new_context(viewport={'width':390,'height':844},service_workers='block',permissions=['camera']); c.route(f'https://{HOST}/**',Mock().handle)
         c.add_init_script("window.BarcodeDetector=class{static async getSupportedFormats(){return['ean_13']}async detect(){return[]}}")

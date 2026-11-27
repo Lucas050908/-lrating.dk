@@ -1253,7 +1253,7 @@ async function scanCode(){if(!HAS_BD)return null;const box=$('scan'),v=$('scanV'
   catch(e){stopScan();toast('Kameraet kunne ikke åbnes');return null}}
 function stopScan(){const was=!$('scan').hidden;$('scan').hidden=true;if(was&&scanCode.prev?.isConnected)scanCode.prev.focus({preventScroll:true});scanCode.prev=null;scanStream?.getTracks().forEach(t=>t.stop());scanStream=null;if(scanDone){const d=scanDone;scanDone=null;d(null)}}
 async function scanSearch(){const code=await scanCode();if(!code)return;const b=beers().find(x=>x.code===code);
-  if(b){toast(`Fundet: ${b.name}`);location.hash='beer-'+b.id}else{F.code=code;toast('Ukendt øl. Tilføj den!');location.hash='tilfoej'}}
+  if(b){toast(`Fundet: ${b.name}`);F.goRate=1;if(location.hash==='#beer-'+b.id)route();else location.hash='beer-'+b.id}else{F.code=code;toast('Ukendt øl. Tilføj den!');location.hash='tilfoej'}}
 /* Stregkode → Open Food Facts (åben, gratis database over varer). Kun selve nummeret sendes. Udfylder kun tomme felter. */
 const OFF='https://world.openfoodfacts.org';let offLast='',offT=0;
 function eanOk(c){if(!/^(\d{8}|\d{12,14})$/.test(c))return false;const d=[...c].map(Number),k=d.pop();let x=0;d.reverse().forEach((n,i)=>x+=n*(i%2?1:3));return(10-x%10)%10===k}
@@ -1661,6 +1661,7 @@ function route(){EC=null;dirty=false;const h=location.hash.slice(1);let v;
   const pd=document.querySelector('.podium .win');if(pd&&!softR)setTimeout(()=>{if(pd.isConnected)burstAt(pd)},(+pd.parentElement.dataset.n-1)*550+500);
   if(h==='alle')requestAnimationFrame(()=>requestAnimationFrame(()=>$('alle')?.scrollIntoView()));else scrollTo({top:0,behavior:'instant'});
   if(h==='tilfoej'&&!F.editBeer&&$('bCode')?.value){offLast='';offLookup($('bCode').value)}
+  if(F.goRate){F.goRate=0;if($('rate'))requestAnimationFrame(()=>requestAnimationFrame(()=>{$('rate').scrollIntoView({behavior:RM?'auto':'smooth'});$('rate').querySelector('[data-star]')?.focus({preventScroll:true})}))}   /* scannet en kendt øl: gå direkte til Bedøm */
   if(F.goEdit){const id=F.goEdit;F.goEdit=null;if($('revForm'))requestAnimationFrame(()=>requestAnimationFrame(()=>editRev(id)))}   /* "Ret" på profilen åbner øllens side med bedømmelsen klar til at rette */   /* scrollet venter, til indholdet er tegnet én gang (to billeder), ellers tæller browseren det som et hop */
   document.title=trS(h.startsWith('bryggeri-')?`${decodeURIComponent(h.slice(9))} – ølrating.dk`:h.startsWith('beer-')?`${enrich().find(x=>x.id===h.slice(5))?.name||'Øl'} – ølrating.dk`:'ølrating.dk – danske øl, bedømt af dig')}
 document.addEventListener('click',e=>{if(!e.target.closest('.langw'))langClose();if(!e.target.closest('.navmore')){document.querySelector('.navmore')?.classList.remove('open');$('navMore')?.setAttribute('aria-expanded','false')}});document.addEventListener('keydown',e=>{if(location.hash==='#swipe'&&!e.target.closest('input,textarea,select')&&(e.key==='ArrowRight'||e.key==='ArrowLeft'||e.key==='ArrowDown')){e.preventDefault();swAct($('swc')?.dataset.id,e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0);return}if(e.key==='Escape'){document.querySelector('.navmore')?.classList.remove('open');langClose()}});

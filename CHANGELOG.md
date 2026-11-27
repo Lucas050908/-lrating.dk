@@ -4,6 +4,10 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-27
 
+### Eftermiddag (13:54–13:54): scan og bedøm med det samme
+- Scanner man en øl fra forsiden, som allerede findes på siden, åbner øllens side nu direkte ved **Bedøm**, med fokus på den første stjerne. Før landede man øverst og skulle rulle ned.
+- **Test:** `test_site.py` scanner (med efterlignet læser) en kendt øl og tjekker, at Bedøm står på skærmen.
+
 ### Eftermiddag (13:40–13:45): alkoholfri fra stregkoden, og målinger
 - **Alkoholfri:** Står en øl i Open Food Facts som alkoholfri (kategori), men uden alkoholtal, får den nu alligevel hak i "Alkoholfri". Under feltet står "alkoholfri" blandt det hentede.
 - **Kontrast målt igen** efter dagens nye knapper og bokse: alle 30 kombinationer af baggrund og farver er i orden på de 14 sider.
