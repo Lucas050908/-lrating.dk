@@ -56,6 +56,12 @@ jobs:
       - name: To enheder deler data
         if: always()
         run: BROWSER=${{ matrix.browser }} python3 tests/test_sync.py
+      - name: Layout i fire bredder
+        if: always()
+        run: BROWSER=${{ matrix.browser }} python3 tests/layout.py
+      - name: Kontrast i alle 30 kombinationer
+        if: always()
+        run: BROWSER=${{ matrix.browser }} python3 tests/kontrast.py
   database:
     name: Den rigtige database
     runs-on: ubuntu-latest

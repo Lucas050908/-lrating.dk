@@ -4,6 +4,13 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-26
 
+## 27-11-2026
+
+### Morgen (06:30–06:32): layout og kontrast også i Safaris motor og Firefox
+- **GitHub:** Jobbene for WebKit og Firefox kører nu også `tests/layout.py` og `tests/kontrast.py`. Før blev de to tjek kun kørt i Chromium.
+- `tests/kontrast.py` kan nu køre i en anden browser med `BROWSER=webkit` eller `BROWSER=firefox`, ligesom de andre test.
+- Alle commits fra torsdag aften er grønne på GitHub i alle tre browsere.
+
 ### Aften (22:45–22:46): flere tjek af det, der sker, når noget mangler
 - **Test:** 2 nye tjek i `test_site.py`. Med "mindre bevægelse" slået til er der ingen loading screen og intet drys, og lykkehjulet viser resultatet med det samme. Uden besøgstæller i databasen sender siden ingen besøgstal til widgets, og Om viser tre tal i stedet for fem.
 - De engelske tekster til Beer buddies, Lykkehjulet, Indstillinger og Siden i tal er læst igennem. Der var ikke noget at rette.

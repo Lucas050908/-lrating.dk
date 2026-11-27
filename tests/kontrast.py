@@ -45,7 +45,7 @@ def main():
     combos = [(b, a) for b in BG for a in ACC] if len(only) < 2 else [(only[0], only[1])]
     bad = {}
     with sync_playwright() as p:
-        br = p.chromium.launch(); M = Mock()
+        br = getattr(p, os.environ.get('BROWSER', 'chromium')).launch(); M = Mock()
         for vw in ((390, 844), (1280, 900)):
             c = br.new_context(viewport={'width': vw[0], 'height': vw[1]}, locale='da-DK', service_workers='block', reduced_motion='reduce'); c.route(f'https://{HOST}/**', M.handle); pg = c.new_page()
             pg.goto(URL); pg.wait_for_timeout(1200)

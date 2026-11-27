@@ -230,7 +230,7 @@ Widget-data, som `syncApp()` sender:
 
 **Fokus efter et valg:** `softRoute()` sætter fokus tilbage på den knap, der blev trykket på: efter `id`, ellers efter knappens første `data-`felt.
 
-**Kontrast (`tests/kontrast.py`):** Køres, når farver, baggrunde eller temaer ændres. Den går 14 sider igennem i 390 og 1280 px i alle 30 kombinationer af baggrund og farver og finder for hver tekst den nærmeste baggrundsfarve, også gennem gennemsigtige lag. Den ender med `ALT OK` eller en liste med `SVAG`. `python3 tests/kontrast.py nat std` måler kun én kombination. Den er ikke med i de tre faste test, fordi den tager omkring fem minutter.
+**Kontrast (`tests/kontrast.py`):** Køres, når farver, baggrunde eller temaer ændres. Den går 14 sider igennem i 390 og 1280 px i alle 30 kombinationer af baggrund og farver og finder for hver tekst den nærmeste baggrundsfarve, også gennem gennemsigtige lag. Den ender med `ALT OK` eller en liste med `SVAG`. `python3 tests/kontrast.py nat std` måler kun én kombination. Den er ikke med i de tre faste test, fordi den tager omkring fem minutter. På GitHub kører den sammen med `layout.py` i jobbene for WebKit og Firefox, og begge kan køres med `BROWSER=webkit` eller `BROWSER=firefox`.
 
 Tilgængelighed er tjekket med axe-core (WCAG 2 A og AA) på alle sider i begge temaer. Det tjek ligger ikke i repoet, fordi det kræver en ekstra pakke, men kan gentages med `npm install axe-core` og Playwrights `add_script_tag`.
 
