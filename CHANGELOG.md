@@ -4,6 +4,12 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-27
 
+### Eftermiddag (13:40–13:45): alkoholfri fra stregkoden, og målinger
+- **Alkoholfri:** Står en øl i Open Food Facts som alkoholfri (kategori), men uden alkoholtal, får den nu alligevel hak i "Alkoholfri". Under feltet står "alkoholfri" blandt det hentede.
+- **Kontrast målt igen** efter dagens nye knapper og bokse: alle 30 kombinationer af baggrund og farver er i orden på de 14 sider.
+- **Vægt og starttid (krav 9 i planen):** `index.html` er 101 KB pakket mod 96 KB fredag kl. 6.32. Stigningen er dagens nye funktioner: opslag i Open Food Facts, scanner med fokus og råd, rettelse af bedømmelser og billeder, egne øl på profilen. `js/scan.js` (17 KB pakket) hentes kun på enheder uden indbygget stregkodelæser. Starttiden er uændret: klar efter 61 ms mod 64 ms i morges (Chrome, telefonstørrelse, median af 7).
+- **Test:** `test_site.py` tjekker hakket i Alkoholfri med en efterlignet vare uden alkoholtal.
+
 ### Eftermiddag (13:28–13:29): billeder i browsere, der ikke kan gemme dem på den normale måde
 - **Problemet:** Nogle browsere (fx Safaris motor i et privat vindue, som i testene på GitHub) kan ikke gemme et billede som en "Blob" i browserens database (IndexedDB). Så blev billedet gemt som tekst i den lille lokale lagerplads (localStorage, ca. 5 MB), som hurtigt bliver fuld ("Lageret er fuldt").
 - **Rettet:** Billedet gemmes i stedet som rå data (ArrayBuffer) i IndexedDB, der har meget mere plads, og laves om til et billede igen, når det skal vises eller sendes. Bevist: med den gamle kode lander billedet som tekst i localStorage, med den nye i IndexedDB.

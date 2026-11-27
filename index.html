@@ -1269,8 +1269,8 @@ async function offLookup(code){code=String(code||'').replace(/\D/g,'');const f=$
     const got=[],str=(v,n)=>typeof v==='string'?v.replace(/\s+/g,' ').trim().slice(0,n):'',put=(id,v,lbl)=>{const el=$(id);if(el&&v&&!String(el.value).trim()){el.value=v;got.push(lbl);el.dispatchEvent(new Event('input',{bubbles:true}))}};
     put('bName',str(p.product_name_da,60)||str(p.product_name,60),'navn');put('bBrew',str(String(p.brands||'').split(',')[0],60),'bryggeri');
     const nu=p.nutriments&&typeof p.nutriments==='object'?p.nutriments:{},abv=parseFloat(nu.alcohol_100g??nu.alcohol_value??nu.alcohol);if(abv>=0&&abv<25&&!isNaN(abv))put('bAbv',String(Math.round(abv*10)/10).replace('.',','),'alkohol %');
-    if(abv>=0&&abv<=.5&&!isNaN(abv)&&!$('bAf').checked){$('bAf').checked=true;$('bAf').dispatchEvent(new Event('change',{bubbles:true}))}
     const tags=[...(Array.isArray(p.categories_tags)?p.categories_tags:[]),...(Array.isArray(p.packaging_tags)?p.packaging_tags:[])].map(String),sty=offStyle(tags);
+    if(((abv>=0&&abv<=.5&&!isNaN(abv))||tags.some(x=>/non-alcoholic|alcohol-free|alkoholfri/.test(x)))&&!$('bAf').checked){$('bAf').checked=true;$('bAf').dispatchEvent(new Event('change',{bubbles:true}));got.push('alkoholfri')}
     if(sty&&!f.dataset.styleTouched&&$('bStyle').value!==sty){$('bStyle').value=sty;got.push('stil')}
     const sz=offSize(p.quantity,tags.some(x=>/can|dåse|daase|canette/.test(x)));if(sz&&!$('bSize').value){$('bSize').value=sz;got.push('størrelse')}
     const iu=str(p.image_front_url,400);if(/^https:\/\/images\.openfoodfacts\.org\//.test(iu)&&!pending.bImg){try{const ir=await fetch(iu,{signal:AbortSignal.timeout?AbortSignal.timeout(8000):undefined}),bl=ir.ok?await ir.blob():null;if(bl&&$('bImgPrev')&&!pending.bImg){pending.bImg=await resize(new File([bl],'off.jpg',{type:bl.type||'image/jpeg'}));pending.bImgOff=1;$('bImgPrev').innerHTML=`<img src="${pending.bImg}" alt="">`;got.push('billede')}}catch(e){}}

@@ -1,7 +1,7 @@
 // ølrating.dk service worker: virker offline og indlæser hurtigt
 // De store forsidebilleder til pc (fjord1.jpg osv., i alt ca. 540 kB) er ikke med i pakken. Telefoner viser kun de små (-m),
 // og en pc gemmer de store første gang, de bliver vist (se 'fra cachen først' herunder).
-const V='olrating-v86';
+const V='olrating-v87';
 const SHELL=['js/qr.js','js/scan.js','js/en.js','./','./index.html','./manifest.webmanifest','./fonts/inter-400.woff2','./fonts/inter-600.woff2','./fonts/inter-700.woff2','./fonts/sora-700.woff2','./img/fjord1-m.jpg','./img/fjord2-m.jpg','./img/fjord3-m.jpg','./img/icon-192.png','./img/favicon.svg','./img/logo.svg'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==V).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});

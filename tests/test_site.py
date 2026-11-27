@@ -473,6 +473,7 @@ with sync_playwright() as p:
         if 'images.openfoodfacts.org' in u: return route.fulfill(status=200,content_type='image/jpeg',body=open(PHOTO,'rb').read(),headers={'Access-Control-Allow-Origin':'*'})
         code=u.split('/product/')[1].split('.json')[0]
         if code=='5741000001233': body={'status':1,'product':{'product_name':'Fjordens IPA','brands':'Limfjordens Bryghus, Coop','nutriments':{'alcohol_100g':6.2},'quantity':'33 cl','categories_tags':['en:beers','en:india-pale-ales'],'packaging_tags':['en:can'],'image_front_url':'https://images.openfoodfacts.org/images/products/574/100/000/1233/front_da.3.400.jpg'}}
+        elif code=='5700000000011': body={'status':1,'product':{'product_name':'Fri Pilsner','brands':'Svaneke','categories_tags':['en:beers','en:non-alcoholic-beers']}}
         else: body={'status':0}
         route.fulfill(status=200,content_type='application/json',body=json.dumps(body),headers={'Access-Control-Allow-Origin':'*'})
     c=b.new_context(viewport={'width':390,'height':844},service_workers='block'); c.route(f'https://{HOST}/**',Mock().handle); c.route('https://*.openfoodfacts.org/**',off); pg=c.new_page()
@@ -490,6 +491,8 @@ with sync_playwright() as p:
     check('stregkode: øllen gemmes, og billedet krediteres Open Food Facts med link',nb and nb[0].get('imgBy')=='off' and pg.query_selector('#imgBy a[href="https://world.openfoodfacts.org/product/5741000001233"]') is not None,nb[:1])
     pg.goto(URL+'#'); pg.wait_for_timeout(300); pg.goto(URL+'#tilfoej'); pg.wait_for_timeout(600); pg.fill('#bName','Min egen'); pg.fill('#bCode','5701234567899'); pg.wait_for_timeout(2000)
     check('stregkode: ukendt nummer siger det, og det man selv har skrevet bliver stående',pg.input_value('#bName')=='Min egen' and 'findes ikke' in pg.inner_text('#offHint'),pg.inner_text('#offHint'))
+    pg.goto(URL+'#'); pg.wait_for_timeout(300); pg.goto(URL+'#tilfoej'); pg.wait_for_timeout(600); pg.fill('#bCode','5700000000011'); pg.wait_for_timeout(2000)
+    check('stregkode: en alkoholfri øl uden alkoholtal får hak i Alkoholfri',pg.is_checked('#bAf') and pg.input_value('#bName')=='Fri Pilsner' and 'alkoholfri' in pg.inner_text('#offHint'),pg.inner_text('#offHint'))
     check('stregkode: ingen fejl i konsollen',not errs,errs[:3])
     c.close()
     # offline via service worker
