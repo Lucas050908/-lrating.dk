@@ -5,7 +5,7 @@
 - **Én fil:** `index.html` indeholder CSS, HTML-skabeloner og JavaScript. Der er intet byggetrin, så GitHub Pages serverer filerne direkte.
 - **Sider:** routes med hash (`location.hash`). `route()` vælger en visning (`home`, `beerView`, `addView`, `tourView`, `genView` …) og skriver den i `<main id="app">`.
 - **Sikkerhed:**
-  - Content-Security-Policy i `<meta>`: `script-src 'self' 'unsafe-inline'`. `connect-src` og `img-src` tillader kun siden selv og `https://bbcegrufmzgfgzxazldr.supabase.co`.
+  - Content-Security-Policy i `<meta>`: `script-src 'self' 'unsafe-inline'`. `img-src` tillader kun siden selv, `data:`/`blob:` og `https://bbcegrufmzgfgzxazldr.supabase.co`. `connect-src` tillader siden selv, databasen og de to adresser hos Open Food Facts (`world.openfoodfacts.org` og `images.openfoodfacts.org`) til stregkode-opslaget.
   - Al brugertekst sendes gennem `esc()`.
   - Data udefra renses, før de gemmes lokalt: `cleanBeer()` og `cleanRev()` for øl og bedømmelser fra databasen og fra backup-filer, `cleanTour()` og `cleanTast()` for byture og smagninger. De tvinger typer (tal er tal, tekst er tekst), begrænser længder, smider ukendte felter væk og dropper rækker med ugyldigt id. Billedadresser accepteres kun, hvis de peger på sidens eget billedlager.
 - **Tema:** Siden er altid mørk. `applyMode()` fjerner `data-mode` fra `<html>`, så reglerne under `[data-mode=light]` ikke bruges. De ligger stadig i koden, hvis et lyst tema skal tilbage som et valg.
@@ -15,12 +15,14 @@
 ### Data på enheden
 | Hvor | Nøgle | Indhold |
 |---|---|---|
-| localStorage | `olrating-v1` | `S = {beers, reviews, me, season, wish, mode, units, tours, sh, si, gone, joins, dq}` |
+| localStorage | `olrating-v1` | `S = {beers, reviews, me, season, lang, look, wish, units, tours, tast, sh, si, gone, joins, dq, rv, rvq, rvc, rvs, …}` |
+| localStorage | `olrating-vis404` | Tidspunkt for sidste 404 fra besøgstælleren. Så spørges der højst én gang i timen, før fil 005 er kørt |
+| localStorage | `olrating-konto` | Sat af `#konto-test`, så kontoen kan prøves på én enhed |
 | localStorage | `olrating-sb` | Den anonyme Supabase-session |
 | IndexedDB | db `olrating`, store `img` | Billeder som Blob. I `S` står de som `idb:<nøgle>`, og `src()` laver dem om til object-URL'er |
 
-- **Øl:** `{id, name, brewery, style, country, city, abv, ibu, color, size, price, place, serve, code, img, addedBy, date}`
-- **Bedømmelse:** `{id, beer, who, date, s:{look,aroma,taste,feel,overall}, p:{sweet,bitter,sour,body,roast}, tags, text, img}`
+- **Øl:** `{id, name, brewery, style, country, city, abv, ibu, color, size, price, place, desc, code, af, img, addedBy, date, edited?, owner?}`
+- **Bedømmelse:** `{id, beer, who, date, s:{look,aroma,taste,feel,overall}, prof:{…}|null, tags, again, text, img, edited?, owner?}`. `s` har én decimal (1,0–5,0). `edited` sættes, når den er rettet; datoen ændres ikke.
 - **Genstand:** `{t: tidsstempel, g: genstande, n: navn}`
 - **Byttur:** `{id, name, date, meet, note, host, stops:[{name,time,addr}], members:[{name}]}`
 - **Smagning:** `{id, name, host, blind, revealed, beers:[navne], votes:{navn:[karakterer]}}`
@@ -178,7 +180,7 @@ Widget-data, som `syncApp()` sender:
 - Bagefter skal versionen i `sw.js` hæves, og apps skal bygges igen.
 
 ### Besøgstæller
-- `sbVisit()` kalder `besoeg()` i databasen én gang, hver gang siden åbnes. Et sideskift inde på siden tæller ikke. Svaret ligger i `VIS` (i alt, i dag, første dag) og gemmes ikke på enheden.
+- `sbVisit()` kalder `besoeg()` i databasen én gang, hver gang siden åbnes. Et sideskift inde på siden tæller ikke. Svaret ligger i `VIS` (i alt, i dag, første dag) og gemmes ikke på enheden. Svarer databasen 404 (005 ikke kørt), gemmes tidspunktet i `olrating-vis404`, og der spørges ikke igen den næste time.
 - `supabase/005-besoeg.sql` laver tabellen `site_visits` (én række pr. dag) og funktionerne `besoeg()` (læg 1 til og svar) og `besoeg_tal()` (kun læs). Tabellen kan ikke læses eller ændres direkte. Dagen regnes i dansk tid.
 - Findes funktionen ikke, sker der ingenting: Om viser tre tal i stedet for fem, og widgets viser en streg.
 - Alle kan kalde `besoeg()`, så tallet kan pustes op. Det er et tal til pynt, ikke en måling.
@@ -275,3 +277,6 @@ Alle test bruger Playwright og en lokal server: `python3 -m http.server 8811 &`.
 
 ## Stregkode-opslag (Open Food Facts)
 `offLookup(code)` i `index.html` kører, når en stregkode scannes (`#scanAdd`), skrives i `#bCode` (600 ms efter sidste tast) eller kommer fra scanneren på forsiden (`F.code`). Den spørger kun, når kontrolcifret passer (`eanOk`), når øllen ikke allerede findes med den kode, og én gang pr. nummer. Kaldet er `GET https://world.openfoodfacts.org/api/v2/product/<kode>.json?fields=…`. Kun tomme felter udfyldes. Stil gættes ud fra `categories_tags` (`offStyle`), størrelse ud fra `quantity` og `packaging_tags` (`offSize`). Billedet hentes fra `images.openfoodfacts.org` og gøres mindre med `resize()` som et billede, man selv har valgt. CSP'ens `connect-src` tillader de to adresser. Alt fra svaret sættes som `value`/`textContent`, aldrig som HTML.
+
+## Hvem må rette en bedømmelse
+`myRev(r)` er sand, når bedømmelsen er lavet på enheden (`mineObj`: ingen `owner` endnu, eller `owner` er enhedens bruger-id) og enten står under dit navn eller har dit bruger-id som `owner`. Den styrer Ret/Slet i `revRow()`, linjen "Du har allerede bedømt den" på øllens side og listen på Min profil (`myList`). Databasen tillader stadig kun ændringer fra ejeren (RLS), så knapperne er kun en hjælp.

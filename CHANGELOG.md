@@ -6,6 +6,13 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 27-11-2026
 
+### Formiddag (10:40–10:42): gamle bedømmelser under et andet navn, og docs gennemgået
+- **Bedømmelser under et gammelt navn:** Har man skiftet navn, forsvandt de gamle bedømmelser fra Min profil, og de kunne ikke rettes. Nu viser Min profil alle bedømmelser, der er lavet på enheden (databasen ved, hvilke der er dine), også under et andet navn. Der står, hvor mange der har et andet navn, og de kan rettes og slettes som de andre.
+- **Ret og Slet** vises nu ved alle bedømmelser, der er lavet på enheden, også når to har bedømt på samme telefon. Det passer med reglen i dokumentationen: den enhed, der har lavet noget, kan rette og slette det. Andre enheder kan stadig ikke (tjekket i `test_sync.py`).
+- **Rettet:** At gemme en rettelse ændrede dit navn til navnet på bedømmelsen. Nu bliver dit navn stående.
+- **Docs læst mod koden:** `FUNKTIONER.md` manglede Beer buddies, Lykkehjulet og Indstillinger i tabellen og i menuen, og sagde, at besøgstælleren intet gemmer på enheden. `TEKNIK.md` havde en gammel liste over data i `S`, et forkert navn for smagsprofilen (`p` i stedet for `prof`) og manglede `olrating-vis404`, `olrating-konto` og Open Food Facts i CSP. Alt er rettet.
+- **Test:** `test_site.py` skifter navn og tjekker, at de gamle bedømmelser står der og kan rettes, og at navnet ikke skifter ved en rettelse. Tjekket af knapper på øllens side forventer nu begge bedømmelser fra samme telefon.
+
 ### Formiddag (10:15–10:01): stregkoden henter selv oplysninger om øllen
 - **Scan og få felterne udfyldt:** Når man scanner eller skriver en stregkode under Tilføj øl, slår siden nummeret op i **Open Food Facts**, en åben og gratis database over varer. Kendes øllen, udfyldes navn, bryggeri, alkohol %, stil, størrelse og billede, og alkoholfri bliver sat, hvis den er det. Kun tomme felter bliver udfyldt, så det, man selv har skrevet, bliver stående. Under feltet står, hvad der blev hentet, og at man skal tjekke det.
 - Det virker også, når man scanner fra forsiden og øllen ikke findes på ølrating.dk endnu.

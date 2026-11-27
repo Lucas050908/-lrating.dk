@@ -8,7 +8,7 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 |---|---|---|
 | Forside | `#` | Ugens øl, søgning (også med stregkodescanner), filtre, sortering, "Vis flere" (24 ad gangen), seneste bedømmelser, app-sektion |
 | Øl | `#beer-<id>` | Billede, oplysninger, karakterer i 5 kategorier, smagsprofil og anmeldelser. Store knapper: Bedøm den, Vil smage og + Genstand. Små knapper: Del, Del som billede, Sammenlign, Ret oplysninger og Slet øl med fortryd |
-| Tilføj øl | `#tilfoej` | Navn, bryggeri, stil, land/by, alkohol, IBU, farve, størrelse, pris, købested, servering, stregkode, billede og bedømmelse. Siden foreslår øl, der allerede findes, mens du skriver, så der ikke kommer dubletter |
+| Tilføj øl | `#tilfoej` | Navn, bryggeri, stil, land/by, alkohol, IBU, farve, størrelse, pris, købested, servering, stregkode, billede og bedømmelse. Siden foreslår øl, der allerede findes, mens du skriver, så der ikke kommer dubletter. En stregkode udfylder selv felterne fra Open Food Facts |
 | Toplisten | `#toplisten` | Samlet, lyse, mørke og alkoholfri øl. Knappen "Del toplisten som billede" laver et billede af de 5 bedste |
 | Årets øl | `#aarets` | Årets vinder, de næste på listen, årets bryggeri, stil, alkoholfri og nykommer. Se [Årets øl](#årets-øl) |
 | Galleri | `#galleri` | Alle billeder med lysboks |
@@ -17,10 +17,13 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 | Smagning | `#smagning` | Se [Smagning med venner](#smagning-med-venner) |
 | Enig eller uenig? | `#swipe` | Swipe på andres bedømmelser. Se [Enig eller uenig?](#enig-eller-uenig-swipe) |
 | Venner | `#venner` | Dem du følger, deres nyeste bedømmelser og forslag til andre smagere |
+| Beer buddies | `#buddies` | Dem, der smager som dig, med match i procent. Se [Beer buddies](#beer-buddies) |
+| Lykkehjulet | `#hjul` | Vælger én øl for dig. Se [Lykkehjulet](#lykkehjulet) |
+| Indstillinger | `#indstillinger` | Design, farver, tema og sprog. Se [Indstillinger](#indstillinger-design-og-farver) |
 | Smager | `#smager-<navn>` | En persons bedømmelser, gennemsnit, yndlingsstil, enighed med dig og knappen Følg |
 | Stilguide | `#stilguide` | Ølstile, kort over bryggerier og alle bryggerier |
 | Bryggeri | `#bryggeri-<navn>` | Alle øl fra et bryggeri, gennemsnit og antal bedømmelser |
-| Min profil | `#profil` | Navn, statistik, mærker, ønskeliste, backup og gendannelse. Egne bedømmelser vises 15 ad gangen med "Vis flere" |
+| Min profil | `#profil` | Navn, statistik, mærker, ønskeliste, backup og gendannelse. Egne bedømmelser vises 15 ad gangen med "Vis flere", hver med Ret og Slet |
 | Øl-dagbog | `#dagbog` | Alt du har smagt og "Dit år i øl" |
 | Ølkalender | `#kalender` | Juleøl, J-dag, påskebryg osv. |
 | Øl til maden | `#mad` | Forslag til øl til forskellige retter |
@@ -39,7 +42,7 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 
 ### Menuen
 - Topmenuen viser Alle øl, Toplisten, Galleri, Sammenlign, Byttur, Mere, Min profil, Tilføj øl og sprogvælgeren.
-- Under **Mere** ligger Smagning med venner, Venner, Enig eller uenig?, Genstand-tæller, Årets øl, Stilguide og bryggerier, Ølkalender, Øl til maden og Min øl-dagbog.
+- Under **Mere** ligger Smagning med venner, Venner, Beer buddies, Lykkehjulet, Enig eller uenig?, Genstand-tæller, Årets øl, Stilguide og bryggerier, Ølkalender, Øl til maden, Min øl-dagbog og Indstillinger.
 - Under 1100 px bredde bliver menuen til en knap, der viser alle sider i én liste.
 
 ### Fælles database
@@ -86,7 +89,7 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 
 ### Siden i tal og besøgstæller
 - På **Om** står *Siden i tal*: besøg i alt, besøg i dag, antal øl, bedømmelser og smagere.
-- Besøg er, hvor mange gange siden er åbnet. Det er ikke antal personer. Der gemmes kun ét tal pr. dag, og der gemmes ikke noget på den besøgendes enhed.
+- Besøg er, hvor mange gange siden er åbnet. Det er ikke antal personer. Der gemmes kun ét tal pr. dag. Svarer tælleren ikke (før fil 005 er kørt), husker enheden det i en time, så den ikke spørger ved hvert besøg.
 - Tælleren starter den dag, `supabase/005-besoeg.sql` bliver kørt. Besøg før den dag kan ikke findes frem. Indtil da viser Om kun øl, bedømmelser og smagere.
 
 ### Karakterer med kommatal
@@ -220,7 +223,7 @@ Billederne i widgets er små kopier af øllenes egne billeder. En øl uden bille
 - Rigtige iPhone-widgets kræver en App Store-app, og den kræver en Apple-udviklerkonto.
 
 ## Ret dine gamle bedømmelser
-Under **Min profil → Mine bedømmelser** har hver af dine bedømmelser knapperne **Ret** og **Slet**. Ret åbner øllens side med bedømmelsen udfyldt. Ret det, du vil, og tryk **Gem ændringer**, eller tryk **Fortryd ændringer**. En rettet bedømmelse beholder sin dato og viser "rettet". På øllens egen side kan du også trykke Ret ved din bedømmelse. Har du bedømt øllen før, står der over formularen, hvilken karakter du gav, med et link til at rette den. Har bedømmelsen et foto, vises det, når du retter, og du kan fjerne det eller vælge et nyt.
+Under **Min profil → Mine bedømmelser** har hver af dine bedømmelser knapperne **Ret** og **Slet**. Listen viser også de bedømmelser, du har lavet på enheden under et andet navn, fx hvis du har skiftet navn. At rette en bedømmelse ændrer ikke dit navn. Ret åbner øllens side med bedømmelsen udfyldt. Ret det, du vil, og tryk **Gem ændringer**, eller tryk **Fortryd ændringer**. En rettet bedømmelse beholder sin dato og viser "rettet". På øllens egen side kan du også trykke Ret ved din bedømmelse. Har du bedømt øllen før, står der over formularen, hvilken karakter du gav, med et link til at rette den. Har bedømmelsen et foto, vises det, når du retter, og du kan fjerne det eller vælge et nyt.
 
 ## Stregkoden udfylder selv
 Under **Tilføj øl** kan du scanne eller skrive stregkoden. Siden slår nummeret op i Open Food Facts (en åben, gratis database over varer) og udfylder navn, bryggeri, alkohol %, stil, størrelse og billede, hvis øllen findes der. Kun tomme felter udfyldes. Tjek altid, at det passer. Findes øllen allerede på ølrating.dk, viser siden den i stedet.
