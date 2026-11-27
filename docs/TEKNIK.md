@@ -280,3 +280,8 @@ Alle test bruger Playwright og en lokal server: `python3 -m http.server 8811 &`.
 
 ## Hvem må rette en bedømmelse
 `myRev(r)` er sand, når bedømmelsen er lavet på enheden (`mineObj`: ingen `owner` endnu, eller `owner` er enhedens bruger-id) og enten står under dit navn eller har dit bruger-id som `owner`. Den styrer Ret/Slet i `revRow()`, linjen "Du har allerede bedømt den" på øllens side og listen på Min profil (`myList`). Databasen tillader stadig kun ændringer fra ejeren (RLS), så knapperne er kun en hjælp.
+
+## Scanneren
+`scanCode()` åbner kameraet i `#scan`. Har browseren `BarcodeDetector` med `ean_13` (Android, Chrome på Mac), bruges den. Ellers hentes `js/scan.js` (`loadScanLib()`), som giver `window.olScan(imageData)`: hvert 150. ms tegnes et billede fra videoen (højst 800 px bredt) på et canvas og læses. Koden renses til cifre. `scanDone` nulstilles, før `stopScan()` kaldes, ellers svarer løftet `null` (det var fejlen, der gjorde, at scanneren aldrig virkede).
+
+`js/scan.js` bygges med `sh tools/byg-scanner.sh` (Node): esbuild samler læserne `MultiFormatUPCEANReader` og `Code128Reader` fra `@zxing/library` 0.23.0 (Apache-2.0). Kun de filer kommer med, så den er 70 kB i stedet for 360 kB. Testen bruger Chromiums falske kamera (`--use-file-for-fake-video-capture`) med en Y4M-video, som `ean_y4m()` i `test_site.py` laver.

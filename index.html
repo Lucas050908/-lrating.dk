@@ -1231,12 +1231,18 @@ function surprise(){const me=S.me.trim().toLowerCase(),L=enrich().filter(b=>b.rs
   let w=pool.map(b=>b.avg**2),sum=w.reduce((a,b)=>a+b,0),x=Math.random()*sum,pick=pool[0];for(let i=0;i<pool.length;i++){x-=w[i];if(x<=0){pick=pool[i];break}}
   toast(`Hvad med ${pick.name}?`);location.hash='beer-'+pick.id}
 /* stregkodescanner (Chrome på Android) */
-const HAS_BD='BarcodeDetector' in window&&!!navigator.mediaDevices?.getUserMedia;
+/* Scanneren: browserens egen BarcodeDetector, hvis den kan læse EAN-13 (Android, Chrome). Ellers læses billedet fra kameraet med js/scan.js (iPhone, Firefox). */
+const HAS_BD=!!navigator.mediaDevices?.getUserMedia;
+function loadScanLib(){return window.olScan?Promise.resolve():new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='js/scan.js';sc.onload=ok;sc.onerror=()=>{sc.remove();no()};document.head.appendChild(sc)})}
 let scanStream=null,scanDone=null;
 async function scanCode(){if(!HAS_BD)return null;const box=$('scan'),v=$('scanV');
-  try{const det=new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e','code_128']});
+  try{let det=null;if('BarcodeDetector' in window){try{const fm=await BarcodeDetector.getSupportedFormats();if(fm.includes('ean_13'))det=new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e','code_128'].filter(x=>fm.includes(x))})}catch(e){}}
+    if(!det)await loadScanLib();
     scanStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});v.srcObject=scanStream;box.hidden=false;await v.play();
-    return await new Promise(res=>{scanDone=res;const loop=async()=>{if(box.hidden)return;try{const c=await det.detect(v);if(c.length){stopScan();res(c[0].rawValue);return}}catch(e){}requestAnimationFrame(loop)};loop()})}
+    const cv=document.createElement('canvas'),cx=cv.getContext('2d',{willReadFrequently:true});let last=0;
+    return await new Promise(res=>{scanDone=res;const loop=async t=>{if(box.hidden)return;let code=null;
+      try{if(det){const c=await det.detect(v);if(c.length)code=c[0].rawValue}else if(v.videoWidth&&t-last>150){last=t;const k=Math.min(1,800/v.videoWidth);cv.width=Math.round(v.videoWidth*k);cv.height=Math.round(v.videoHeight*k);cx.drawImage(v,0,0,cv.width,cv.height);code=window.olScan(cx.getImageData(0,0,cv.width,cv.height))}}catch(e){}
+      if(code){scanDone=null;stopScan();res(String(code).replace(/\D/g,'').slice(0,20));return}requestAnimationFrame(loop)};requestAnimationFrame(loop)})}   /* scanDone nulstilles først, ellers svarer stopScan() "ingenting" før koden */
   catch(e){stopScan();toast('Kameraet kunne ikke åbnes');return null}}
 function stopScan(){$('scan').hidden=true;scanStream?.getTracks().forEach(t=>t.stop());scanStream=null;if(scanDone){const d=scanDone;scanDone=null;d(null)}}
 async function scanSearch(){const code=await scanCode();if(!code)return;const b=beers().find(x=>x.code===code);

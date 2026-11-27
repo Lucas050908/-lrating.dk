@@ -162,7 +162,9 @@ def main():
             ok_en=vis and p2.evaluate("document.documentElement.lang")=='en' and p2.inner_text('#nav a >> nth=0')=='All beers' and p2.evaluate('window.__mark')==1 and abs(p2.evaluate('scrollY')-y0)<3 and not p2.is_visible('#langdd') and p2.inner_text('#langCode')=='EN'
             p2.evaluate(JSCLICK,'#langBtn'); p2.evaluate(JSCLICK,'#langdd [data-lang="da"]'); p2.wait_for_timeout(700); after=p2.evaluate(GR)
             if not ok_en or mid==before: inplace.append(h)
-            if after!=before: trip.append((h,[x for x in after if x not in before][:4],[x for x in before if x not in after][:4]))
+            if after!=before:
+                i=next((k for k,(x,y) in enumerate(zip(after,before)) if x!=y),min(len(after),len(before)))   # første sted, de er forskellige (også når kun rækkefølge eller antal er skiftet)
+                trip.append((h,[x for x in after if x not in before][:4],[x for x in before if x not in after][:4],len(before),len(after),before[i:i+2],after[i:i+2]))
         # mens man skriver i en formular, bliver siden ikke tegnet forfra, så det skrevne bliver stående
         p2.goto(URL+'#tilfoej'); p2.wait_for_timeout(400); p2.fill('#bName','Min nye øl'); p2.evaluate(JSCLICK,'#langBtn'); p2.evaluate(JSCLICK,'#langdd [data-lang="en"]'); p2.wait_for_timeout(700)
         keep=p2.input_value('#bName')=='Min nye øl' and p2.get_attribute('#bName','placeholder')=='E.g. Limfjordsporter'

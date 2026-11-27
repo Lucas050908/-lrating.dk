@@ -10,6 +10,19 @@ from playwright.sync_api import sync_playwright
 res=[]
 # Et rigtigt foto (1600x1200) tegnes i browseren, så testen ikke kræver ekstra pakker
 PHOTO=os.path.join(TMP,'oel.jpg')
+def ean_y4m(code,w=640,h=480,frames=10):
+    """En lille video (Y4M) med en EAN-13-stregkode i midten, til Chromiums falske kamera."""
+    L=['0001101','0011001','0010011','0111101','0100011','0110001','0101111','0111011','0110111','0001011']
+    G=['0100111','0110011','0011011','0100001','0011101','0111001','0000101','0010001','0001001','0010111']
+    R=['1110010','1100110','1101100','1000010','1011100','1001110','1010000','1000100','1001000','1110100']
+    P=['LLLLLL','LLGLGG','LLGGLG','LLGGGL','LGLLGG','LGGLLG','LGGGLL','LGLGLG','LGLGGL','LGGLGL']
+    d=[int(x) for x in code]; bits='101'+''.join((L if P[d[0]][i]=='L' else G)[d[1+i]] for i in range(6))+'01010'+''.join(R[d[7+i]] for i in range(6))+'101'
+    m=4; x0=(w-len(bits)*m)//2; row=bytearray([235]*w)
+    for i,bt in enumerate(bits):
+        if bt=='1': row[x0+i*m:x0+i*m+m]=bytes([16])*m
+    Y=b''.join(bytes(row) if h//4<y<3*h//4 else bytes([235])*w for y in range(h)); UV=bytes([128])*(w*h//4)
+    return f'YUV4MPEG2 W{w} H{h} F10:1 Ip A1:1 C420jpeg\n'.encode()+b''.join(b'FRAME\n'+Y+UV+UV for _ in range(frames))
+
 def make_photo(b):
     pg=b.new_page();d=pg.evaluate("(()=>{const c=document.createElement('canvas');c.width=1600;c.height=1200;const x=c.getContext('2d');x.fillStyle='#284678';x.fillRect(0,0,1600,1200);x.fillStyle='#e6aa28';x.fillRect(600,200,400,900);for(let i=0;i<400;i++){x.fillStyle=`hsl(${i*7},60%,50%)`;x.fillRect((i*37)%1600,(i*53)%1200,30,30)}return c.toDataURL('image/jpeg',.92)})()");open(PHOTO,'wb').write(base64.b64decode(d.split(',')[1]));pg.close()
 def check(n,c,x=''):
@@ -319,6 +332,25 @@ def run(b,name,vw):
 with sync_playwright() as p:
     b=getattr(p,os.environ.get('BROWSER','chromium')).launch(); make_photo(b)
     run(b,'pc',(1280,900)); run(b,'mobil',(390,844))
+    # scanneren med et falsk kamera, der viser en stregkode. Chromium har ikke BarcodeDetector på Linux, så her prøves js/scan.js (det samme som på iPhone).
+    if os.environ.get('BROWSER','chromium')=='chromium':
+        y4m=os.path.join(TMP,'stregkode.y4m'); open(y4m,'wb').write(ean_y4m('5741000001233'))
+        b2=p.chromium.launch(args=['--use-fake-device-for-media-stream','--use-fake-ui-for-media-stream','--use-file-for-fake-video-capture='+y4m])
+        c=b2.new_context(viewport={'width':390,'height':844},service_workers='block',permissions=['camera']); c.route(f'https://{HOST}/**',Mock().handle)
+        c.route('https://*.openfoodfacts.org/**',lambda r:r.fulfill(status=200,content_type='application/json',headers={'Access-Control-Allow-Origin':'*'},body=json.dumps({'status':1,'product':{'product_name':'Fjordens IPA','brands':'Limfjordens Bryghus'}})))
+        pg=c.new_page(); errs=[]; pg.on('console',lambda m: errs.append(m.text) if m.type=='error' else None)
+        pg.goto(URL+'#tilfoej'); pg.wait_for_timeout(800); pg.click('#scanAdd'); pg.wait_for_timeout(5000)
+        check('scanner: kameraet læser stregkoden, og felterne bliver udfyldt',pg.input_value('#bCode')=='5741000001233' and pg.input_value('#bName')=='Fjordens IPA' and pg.is_hidden('#scan'),(pg.input_value('#bCode'),pg.input_value('#bName')))
+        pg.goto(URL); pg.wait_for_timeout(800); pg.click('#scanSearch'); pg.wait_for_timeout(5000)
+        check('scanner: en ukendt øl fra forsiden åbner Tilføj øl med koden og oplysningerne',pg.evaluate('location.hash')=='#tilfoej' and pg.input_value('#bCode')=='5741000001233' and pg.input_value('#bName')=='Fjordens IPA',(pg.evaluate('location.hash'),pg.input_value('#bName') if pg.query_selector('#bName') else ''))
+        check('scanner: ingen fejl i konsollen',not errs,errs[:3]);
+        c.close()
+        # telefoner med browserens egen BarcodeDetector (Android): efterlignet. Før denne rettelse gav scanneren aldrig en kode tilbage.
+        c=b2.new_context(viewport={'width':390,'height':844},service_workers='block',permissions=['camera']); c.route(f'https://{HOST}/**',Mock().handle); c.route('https://*.openfoodfacts.org/**',lambda r:r.abort())
+        c.add_init_script("window.BarcodeDetector=class{static async getSupportedFormats(){return['ean_13','ean_8']}constructor(){this.n=0}async detect(){return ++this.n>5?[{rawValue:'5701234567899'}]:[]}}")
+        pg=c.new_page(); pg.goto(URL+'#tilfoej'); pg.wait_for_timeout(800); pg.click('#scanAdd'); pg.wait_for_timeout(2500)
+        check('scanner: med browserens egen BarcodeDetector kommer koden i feltet',pg.input_value('#bCode')=='5701234567899' and pg.evaluate('!window.olScan'),(pg.input_value('#bCode'),pg.evaluate('!!window.olScan')))
+        c.close(); b2.close()
     # siden må ikke hoppe, mens den indlæses (Cumulative Layout Shift under 0,1, som Google kalder god). Måles kun i Chromium.
     if os.environ.get('BROWSER','chromium')=='chromium':
         cls={}

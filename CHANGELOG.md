@@ -4,6 +4,13 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-27
 
+### Formiddag (11:00–11:09): scanneren virker nu, også på iPhone
+- **Alvorlig fejl rettet:** Scanneren har aldrig givet en stregkode tilbage. Når den fandt koden, lukkede den kameraet på en måde, der svarede "ingen kode", før koden nåede frem. Så skete der ingenting, hverken på forsiden eller under Tilføj øl. Fejlen har været der siden første udgave. Bevist: med den gamle kode og en efterlignet scanner forbliver feltet tomt. Med den nye kommer koden frem.
+- **Scanner på iPhone og i Firefox:** De browsere har ikke den indbyggede stregkodelæser (BarcodeDetector), så Scan-knappen var skjult. Nu hentes en lille læser (`js/scan.js`, 70 kB, 17 kB pakket), når man trykker Scan. Den læser billedet fra kameraet ca. 6 gange i sekundet. Den hentes kun på de enheder, der mangler den indbyggede, og den virker også uden net.
+- **Læseren** er bygget af det åbne bibliotek ZXing (`@zxing/library`, Apache-2.0) med kun de dele, der læser stregkoder på varer (EAN, UPC og Code 128). `tools/byg-scanner.sh` bygger den igen fra `tools/scanner-entry.js`.
+- **Test:** `test_site.py` starter Chromium med et falsk kamera, der viser en stregkode (lavet i testen), og tjekker, at koden bliver læst, at felterne bliver udfyldt fra Open Food Facts (efterlignet), og at scanneren på forsiden åbner Tilføj øl med koden. En anden test efterligner den indbyggede læser på Android.
+- **Ikke prøvet:** en rigtig iPhone og en rigtig Android-telefon.
+
 ### Formiddag (10:50–10:52): kredit til Open Food Facts, og ændringsloggen ryddet op
 - **Kredit:** Billeder fra Open Food Facts må bruges, når der står, hvor de kommer fra (licensen CC BY-SA). En øl, hvis billede er hentet derfra, viser nu "Billede: Open Food Facts (CC BY-SA)" med link til varen. Vælger man selv et andet billede, forsvinder linjen. Om-siden nævner Open Food Facts og licenserne.
 - **Ændringsloggen:** Fredagens punkter stod under en forkert dato ("27-11-2026"), og torsdag aftens punkter var havnet under fredag. Datoerne og rækkefølgen er rettet, og tidsrummene for formiddagens punkter passer nu med tidspunkterne for de tilhørende commits.
