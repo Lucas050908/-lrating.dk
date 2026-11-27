@@ -6,6 +6,21 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 27-11-2026
 
+### Formiddag (10:15–10:01): stregkoden henter selv oplysninger om øllen
+- **Scan og få felterne udfyldt:** Når man scanner eller skriver en stregkode under Tilføj øl, slår siden nummeret op i **Open Food Facts**, en åben og gratis database over varer. Kendes øllen, udfyldes navn, bryggeri, alkohol %, stil, størrelse og billede, og alkoholfri bliver sat, hvis den er det. Kun tomme felter bliver udfyldt, så det, man selv har skrevet, bliver stående. Under feltet står, hvad der blev hentet, og at man skal tjekke det.
+- Det virker også, når man scanner fra forsiden og øllen ikke findes på ølrating.dk endnu.
+- Findes øllen allerede på siden, spørges der ikke. Så vises "Findes den allerede?" som før.
+- Kun selve nummeret bliver sendt, og kun hvis kontrolcifret passer. Privatlivssiden siger det nu.
+- **Privatliv rettet:** Siden sagde, at besøgstælleren ikke gemmer noget på enheden. Efter rettelsen i formiddags husker enheden i en time, hvis tælleren ikke svarer. Det står der nu.
+- **Sikkerhed:** Sidens sikkerhedsregel (CSP) tillader nu kun de to adresser hos Open Food Facts ud over databasen.
+- **Test:** `test_site.py` efterligner Open Food Facts og tjekker, at felterne bliver udfyldt, at et forkert nummer ikke bliver slået op, at et ukendt nummer siger det, at det man selv har skrevet bliver stående, og at konsollen er uden fejl. Testen rører aldrig den rigtige tjeneste.
+- **Ikke prøvet:** et rigtigt opslag hos Open Food Facts og en rigtig scanning med telefonen. Herfra kan jeg ikke nå den rigtige tjeneste.
+
+### Formiddag (10:05–09:56): foto, når man retter, og README
+- **Foto i en rettet bedømmelse:** Når man retter en bedømmelse med foto, vises fotoet nu i feltet, og der er et link **Fjern foto**. Før var feltet tomt, så man kunne tro, at fotoet var væk, og det kunne ikke fjernes. Vælger man et nyt foto, erstatter det det gamle. Det gamle foto slettes også fra databasens lager.
+- **README:** Android-appen har 8 widgets (ikke 6). Mapperne `tools/` og `img/logoer/` og de nye tjek i `tests/` er nævnt.
+- **Test:** `test_site.py` lægger et foto på en bedømmelse, retter den, fjerner fotoet og tjekker, at det er væk både fra bedømmelsen og fra lageret.
+
 ### Formiddag (09:55–09:49): øllens side husker din bedømmelse
 - **Har du bedømt øllen før,** står det nu over formularen på øllens side, med den karakter du gav, og et link: **Ret din bedømmelse**. Så kommer man ikke til at skrive en ny bedømmelse, når man bare ville rette den gamle. Man kan stadig skrive en ny.
 - Engelsk: "You have already rated it and gave it 4.5. Edit your rating or write a new one below."

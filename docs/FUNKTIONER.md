@@ -220,4 +220,7 @@ Billederne i widgets er små kopier af øllenes egne billeder. En øl uden bille
 - Rigtige iPhone-widgets kræver en App Store-app, og den kræver en Apple-udviklerkonto.
 
 ## Ret dine gamle bedømmelser
-Under **Min profil → Mine bedømmelser** har hver af dine bedømmelser knapperne **Ret** og **Slet**. Ret åbner øllens side med bedømmelsen udfyldt. Ret det, du vil, og tryk **Gem ændringer**, eller tryk **Fortryd ændringer**. En rettet bedømmelse beholder sin dato og viser "rettet". På øllens egen side kan du også trykke Ret ved din bedømmelse. Har du bedømt øllen før, står der over formularen, hvilken karakter du gav, med et link til at rette den.
+Under **Min profil → Mine bedømmelser** har hver af dine bedømmelser knapperne **Ret** og **Slet**. Ret åbner øllens side med bedømmelsen udfyldt. Ret det, du vil, og tryk **Gem ændringer**, eller tryk **Fortryd ændringer**. En rettet bedømmelse beholder sin dato og viser "rettet". På øllens egen side kan du også trykke Ret ved din bedømmelse. Har du bedømt øllen før, står der over formularen, hvilken karakter du gav, med et link til at rette den. Har bedømmelsen et foto, vises det, når du retter, og du kan fjerne det eller vælge et nyt.
+
+## Stregkoden udfylder selv
+Under **Tilføj øl** kan du scanne eller skrive stregkoden. Siden slår nummeret op i Open Food Facts (en åben, gratis database over varer) og udfylder navn, bryggeri, alkohol %, stil, størrelse og billede, hvis øllen findes der. Kun tomme felter udfyldes. Tjek altid, at det passer. Findes øllen allerede på ølrating.dk, viser siden den i stedet.

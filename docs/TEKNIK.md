@@ -272,3 +272,6 @@ Alle test bruger Playwright og en lokal server: `python3 -m http.server 8811 &`.
 
 ## Manifest-id og genveje
 `manifest.webmanifest` har `"id": "./"`, så browseren kender den installerede app igen, selv hvis `start_url` ændres. Genvejene (hold fingeren på ikonet) er: Tilføj øl, Toplisten, Genstand-tæller og Lykkehjulet.
+
+## Stregkode-opslag (Open Food Facts)
+`offLookup(code)` i `index.html` kører, når en stregkode scannes (`#scanAdd`), skrives i `#bCode` (600 ms efter sidste tast) eller kommer fra scanneren på forsiden (`F.code`). Den spørger kun, når kontrolcifret passer (`eanOk`), når øllen ikke allerede findes med den kode, og én gang pr. nummer. Kaldet er `GET https://world.openfoodfacts.org/api/v2/product/<kode>.json?fields=…`. Kun tomme felter udfyldes. Stil gættes ud fra `categories_tags` (`offStyle`), størrelse ud fra `quantity` og `packaging_tags` (`offSize`). Billedet hentes fra `images.openfoodfacts.org` og gøres mindre med `resize()` som et billede, man selv har valgt. CSP'ens `connect-src` tillader de to adresser. Alt fra svaret sættes som `value`/`textContent`, aldrig som HTML.

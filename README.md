@@ -22,9 +22,9 @@ Danske øl, bedømt af dem der drikker dem.
 
 ## Kort fortalt
 
-- **Hjemmeside:** én fil (`index.html`) uden server og byggetrin, hostet gratis på GitHub Pages. Dansk som standard, og engelsk med flaget øverst på siden.
+- **Hjemmeside:** én fil (`index.html`) uden server og byggetrin, hostet gratis på GitHub Pages. Dansk som standard, og engelsk med flaget øverst på siden. Design og farver vælges under Indstillinger.
 - **Apps:**
-  - Android-app (`android/`), med 6 widgets.
+  - Android-app (`android/`), med 8 widgets (to af dem med billeder af øllene, én med tal for hele siden).
   - Program til Windows og Linux (`desktop/`), med en widget der ligger øverst på skærmen.
   - På iPhone kan siden lægges på hjemmeskærmen.
 - **Data:** øl, bedømmelser, billeder og byture ligger i en fælles database (Supabase, EU), så alle ser det samme. Genstand-tæller og indstillinger bliver på enheden. Se [docs/DRIFT.md](docs/DRIFT.md#fælles-database-supabase).
@@ -40,12 +40,14 @@ Danske øl, bedømt af dem der drikker dem.
 | `index.html` | Hele hjemmesiden: design, sider og logik |
 | `sw.js`, `manifest.webmanifest` | Installerbar app (PWA) og offline |
 | `img/`, `fonts/`, `js/qr.js` | Billeder, ikoner, skrifttyper, QR-kode-bibliotek (MIT) |
+| `img/logoer/` | 200 logo-forslag (SVG). Det valgte sættes ind alle steder med `tools/logo-ud.py` |
+| `tools/` | `logoer.py` laver de 200 logoer, `logo-ud.py` skifter logo på siden og i apps |
 | `js/en.js` | Den engelske ordbog. Hentes kun, når man vælger English |
 | `404.html`, `CNAME`, `robots.txt`, `sitemap.xml` | Fejlside, domæne og søgemaskiner |
 | `android/` | Android-app og widgets |
 | `desktop/` | Windows/Linux-program (Electron) og desktop-widget |
 | `supabase/` | Database-tabeller og sikkerhedsregler, og funktionen der sender mails (`functions/mails`) |
-| `tests/` | Automatiske test af siden og databasen |
+| `tests/` | Automatiske test af siden og databasen, og tjek af layout, kontrast og tilgængelighed (`layout.py`, `kontrast.py`, `axe.py`) |
 | `.github/workflows/` | Automatisk bygning af Android- og desktop-app (også pakken til Microsoft Store) og automatiske test |
 | `docs/` | Dokumentation |
 | `store/` | Skærmbilleder til Microsoft Store (opdigtede eksempler) |

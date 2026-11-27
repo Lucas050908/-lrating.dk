@@ -129,6 +129,15 @@ def run(b,name,vw):
     nt=pg.inner_text('#myRevNote') if pg.query_selector('#myRevNote') else ''
     pg.click('#myRevNote [data-edit]'); pg.wait_for_timeout(700)
     T('øllens side: siger at du har bedømt den, og knappen åbner rettelsen','allerede bedømt' in nt and pg.inner_text('#rateTitle')=='Ret din anmeldelse' and pg.is_hidden('#myRevNote'),nt)
+    # foto på en rettet bedømmelse: vises, når man retter, og kan fjernes igen
+    pg.set_input_files('#rImg',PHOTO); pg.wait_for_timeout(700); pg.click('#revForm button[type=submit]'); pg.wait_for_timeout(1500)
+    rimg=[r.get('img') for r in ls(pg)['reviews'] if r['id']==rid]
+    pg.wait_for_timeout(9000); st1=len(M.store)
+    pg.goto(URL+'#beer-'+bid); pg.wait_for_timeout(700); pg.click('#myRevNote [data-edit]'); pg.wait_for_timeout(700)
+    T('ret: fotoet fra bedømmelsen vises, og kan fjernes',rimg and rimg[0] and pg.query_selector('#rImgPrev img') is not None and pg.query_selector('#rmRImg') is not None,rimg)
+    pg.click('#rmRImg'); pg.wait_for_timeout(300); pg.click('#revForm button[type=submit]'); pg.wait_for_timeout(1500)
+    pg.wait_for_timeout(9000)
+    T('ret: fjernet foto er væk fra bedømmelsen og fra databasens lager',[r.get('img') for r in ls(pg)['reviews'] if r['id']==rid]==[''] and st1==2 and len(M.store)==1,(st1,len(M.store)))
     # --- delete review + undo, delete beer + undo
     pg.goto(URL+'#beer-'+bid); pg.wait_for_timeout(600)
     T('review actions only on my own review',pg.eval_on_selector_all('[data-delrev]','e=>e.length')==1)
@@ -367,6 +376,28 @@ with sync_playwright() as p:
     pg.goto(URL); pg.wait_for_timeout(2500); w0=json.loads(pg.evaluate("window.__w.at(-1)||'{}'")); wi0=pg.evaluate("window.__wi.length?JSON.parse(window.__wi.at(-1)):{}")
     pg.goto(URL+'#om'); pg.wait_for_timeout(500)
     check('uden besøgstæller og billeder: widget-data har ingen besøgstal, og Om viser tre tal',w0.get('site',{}).get('visits') is None and isinstance(wi0,dict) and pg.eval_on_selector_all('#omTal .ex-t','e=>e.length')==3,(w0.get('site'),wi0))
+    c.close()
+    # stregkode → Open Food Facts (efterlignet; testen rører aldrig den rigtige tjeneste)
+    OFFQ=[]
+    def off(route):
+        u=route.request.url; OFFQ.append(u)
+        if 'images.openfoodfacts.org' in u: return route.fulfill(status=200,content_type='image/jpeg',body=open(PHOTO,'rb').read(),headers={'Access-Control-Allow-Origin':'*'})
+        code=u.split('/product/')[1].split('.json')[0]
+        if code=='5741000001233': body={'status':1,'product':{'product_name':'Fjordens IPA','brands':'Limfjordens Bryghus, Coop','nutriments':{'alcohol_100g':6.2},'quantity':'33 cl','categories_tags':['en:beers','en:india-pale-ales'],'packaging_tags':['en:can'],'image_front_url':'https://images.openfoodfacts.org/images/products/574/100/000/1233/front_da.3.400.jpg'}}
+        else: body={'status':0}
+        route.fulfill(status=200,content_type='application/json',body=json.dumps(body),headers={'Access-Control-Allow-Origin':'*'})
+    c=b.new_context(viewport={'width':390,'height':844},service_workers='block'); c.route(f'https://{HOST}/**',Mock().handle); c.route('https://*.openfoodfacts.org/**',off); pg=c.new_page()
+    errs=[]; pg.on('console',lambda m: errs.append(m.text) if m.type=='error' else None)
+    pg.goto(URL+'#tilfoej'); pg.wait_for_timeout(800)
+    pg.fill('#bCode','5741000001234'); pg.wait_for_timeout(1200)
+    check('stregkode: et nummer med forkert kontrolciffer slås ikke op',not OFFQ,OFFQ)
+    pg.fill('#bCode','5741000001233'); pg.wait_for_timeout(2500)
+    vals=pg.evaluate("['bName','bBrew','bAbv','bStyle','bSize'].map(i=>document.getElementById(i).value)")
+    check('stregkode: navn, bryggeri, alkohol, stil, størrelse og billede bliver udfyldt',vals==['Fjordens IPA','Limfjordens Bryghus','6,2','IPA','33 cl dåse'] and pg.query_selector('#bImgPrev img') is not None and 'Hentet fra Open Food Facts' in pg.inner_text('#offHint'),(vals,pg.inner_text('#offHint')))
+    check('stregkode: kun nummeret sendes',all(('5741000001233' in u and 'product' in u) or 'images.' in u for u in OFFQ) and len(OFFQ)==2,OFFQ)
+    pg.goto(URL+'#'); pg.wait_for_timeout(300); pg.goto(URL+'#tilfoej'); pg.wait_for_timeout(600); pg.fill('#bName','Min egen'); pg.fill('#bCode','5701234567899'); pg.wait_for_timeout(2000)
+    check('stregkode: ukendt nummer siger det, og det man selv har skrevet bliver stående',pg.input_value('#bName')=='Min egen' and 'findes ikke' in pg.inner_text('#offHint'),pg.inner_text('#offHint'))
+    check('stregkode: ingen fejl i konsollen',not errs,errs[:3])
     c.close()
     # offline via service worker
     # Her skal service workeren være med. Kald fra en side med service worker kan gå uden om den efterlignede database (set i WebKit),
