@@ -6,6 +6,13 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 27-11-2026
 
+### Formiddag (09:40–09:42): blok 3 i planen – vægt, starttid og besøgstælleren
+- **Besøgstælleren:** Indtil `supabase/005-besoeg.sql` er kørt, svarer databasen "404". Før kom den linje i konsollen ved hver eneste åbning. Nu husker siden svaret og prøver højst én gang i timen. Når filen er kørt, begynder tælleren at tælle senest en time efter på hver enhed.
+- **Målt (Chrome, telefonstørrelse, median af 7 åbninger, uden net til databasen):** Torsdag morgen (c4edea8): klar efter 65 ms, færdig efter 132 ms. Nu: klar efter 70 ms, færdig efter 106 ms. Siden er ikke blevet langsommere at starte.
+- **Vægt:** `index.html` er 97 KB pakket (torsdag morgen 67 KB). Forskellen er de nye funktioner (Beer buddies, Lykkehjulet, Indstillinger, loading screen, widgets). Der er ingen indlejrede billeder eller anden fyld. Engelsk (`js/en.js`) og QR-koder (`js/qr.js`) hentes stadig kun, når de bruges.
+- **To faner og uden net:** Allerede rettet og testet tidligere (se torsdag aften og fredag morgen).
+- **Test:** `test_sync.py` tjekker, at siden ikke spørger igen ved næste åbning, når tælleren mangler, og at den tæller, når den findes.
+
 ### Formiddag (09:25–09:32): ret dine gamle bedømmelser fra profilen
 - **Ret gamle bedømmelser:** Under Min profil → Mine bedømmelser har hver bedømmelse nu knapperne **Ret** og **Slet**. Ret åbner øllens side med alt udfyldt (karakterer, tekst, smagsnoter, smagsprofil og "køber igen"), så man bare retter og trykker Gem ændringer. Bedømmelsen beholder sin dato og får mærket "rettet".
 - **Fortryd ændringer:** Mens man retter, er der en knap til at droppe ændringerne igen.

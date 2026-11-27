@@ -73,3 +73,6 @@ Se [STORE.md](STORE.md) for trin for trin, tekster og skærmbilleder.
 - **Fejlrapporter:** andersenlucas84@gmail.com
 - **one.com:** chat i kontrolpanelet, døgnåben
 - **Simply.com:** ticket #862316 (gammel, kan lukkes)
+
+## Besøgstælleren før og efter 005
+Før `supabase/005-besoeg.sql` er kørt, prøver hver enhed højst én gang i timen (husket i `localStorage` under `olrating-vis404`). Efter kørslen begynder tællingen derfor senest en time efter på enheder, der har prøvet før. Vil du se det med det samme på din egen telefon, så slet sidens data eller vent en time.

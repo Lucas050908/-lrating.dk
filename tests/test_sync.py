@@ -249,6 +249,9 @@ with sync_playwright() as p:
     check('swipe: uden tabellen i databasen gemmes stemmen på enheden og venter',len(s3['rv'])==1 and len(s3['rvq'])==1 and not [k for k in M2.rvotes if k[1] not in (u2,)],s3.get('rvq'))
     W3.goto(URL+'#om'); W3.wait_for_timeout(500); v0=M2.visits
     check('besøg: uden tælleren i databasen viser Om kun øl, bedømmelser og smagere',W3.eval_on_selector_all('#omTal .ex-t','e=>e.length')==3 and 'besøg' not in W3.inner_text('#omTal'),W3.inner_text('#omTal'))
+    n404=M2.visit_calls; W3.reload(); W3.wait_for_timeout(2500)
+    check('besøg: uden tælleren prøves der ikke igen ved næste åbning (ingen 404 hver gang)',M2.visit_calls==n404 and W3.evaluate("+localStorage.getItem('olrating-vis404')>0"),(n404,M2.visit_calls))
+    W3.evaluate("localStorage.setItem('olrating-vis404',Date.now()-36e5-1000)")   # en time senere
     M2.has_besoeg=True; M2.has_konto_sql=True; W3.reload(); W3.wait_for_timeout(3500)
     check('besøg: når tælleren findes, tælles åbningen, og Om viser tallet, men et sideskift tæller ikke',M2.visits==v0+1 and W3.eval_on_selector_all('#omTal .ex-t','e=>e.length')==5 and f'{M2.visits:,}'.replace(',','.') in W3.inner_text('#omTal'),(v0,M2.visits,W3.inner_text('#omTal')))
     W3.goto(URL+'#swipe'); W3.wait_for_timeout(400); W3.goto(URL+'#om'); W3.wait_for_timeout(400)
