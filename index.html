@@ -716,9 +716,10 @@ function acctBox(){if(!kontoOn())return '';
     <p class="meta" style="margin:12px 0 0;font-size:14px">Koden gælder i en time. Kig også i spam. <button type="button" class="lnk" id="acAgain">Send koden igen</button> eller <button type="button" class="lnk" id="acBack">brug en anden mail</button></p>`
    :`<form id="acctForm" class="acf"><label for="acMail" class="sr">Din mail</label><input id="acMail" type="email" required autocomplete="email" maxlength="120" placeholder="Din mail"><button class="btn">Send kode</button></form>
     <p class="meta" style="margin:12px 0 0;font-size:14px">Vi sender en kode på 6 tal til din mail. Du skal ikke lave en adgangskode. Har du en konto i forvejen, logger du ind på samme måde.</p>`}</div>`}
-async function sbImg(v){if(!v)return v;let blob=null,k;
+/* oid: øllens eller bedømmelsens id. Det kommer med i filnavnet, så to ting med samme billede aldrig deler én fil i lageret (ellers kunne sletning af den ene fjerne billedet fra den anden). */
+async function sbImg(v,oid){if(!v)return v;let blob=null,k;
   if(v.startsWith('idb:')){k=v.slice(4);try{blob=await idbDo('readonly',st=>st.get(k))}catch(e){}}
-  else if(v.startsWith('data:image/')){try{blob=dataToBlob(v);k='d'+hsh({v})+v.length.toString(36)}catch(e){}}
+  else if(v.startsWith('data:image/')){try{blob=dataToBlob(v);k='d'+hsh({v})+v.length.toString(36)+(oid?'-'+String(oid).replace(/[^\w-]/g,'').slice(0,24):'')}catch(e){}}
   else return v;
   if(!blob||!/^[\w-]{1,60}$/.test(k))return '';const path=`${myUid()}/${k}.jpg`;
   try{await sbFetch('/storage/v1/object/billeder/'+path,{method:'POST',body:blob,headers:{'Content-Type':/^image\/(jpeg|png|webp)$/.test(blob.type)?blob.type:'image/jpeg','cache-control':'max-age=3600'}})}catch(e){if(e.status!==409&&!/Duplicate|already exists/i.test(String(e.message)))throw e}
@@ -741,7 +742,7 @@ async function sbPull(){const [B,R]=await Promise.all([sbFetch('/rest/v1/beers?s
 const sbBad=new Set();
 async function sbPush(){const uid=myUid(),now=Date.now();
   [...S.beers,...S.reviews].forEach(o=>{if(o.owner===uid&&S.sh[o.id]===hsh(o)){const p=imgPath(o.img);if(p)S.si[o.id]=p}});
-  const up=async(L,table,beer)=>{if(!mineObj(L)||S.sh[L.id]===hsh(L)||sbBad.has(L.id))return;const old=L.img||'',img=await sbImg(old);
+  const up=async(L,table,beer)=>{if(!mineObj(L)||S.sh[L.id]===hsh(L)||sbBad.has(L.id))return;const old=L.img||'',img=await sbImg(old,L.id);
     const d=strip(L);['id','img','name','brewery','beer','who'].forEach(k=>delete d[k]);const im=/^https:/.test(img)?img:null,ts=new Date().toISOString();
     const row=beer?{id:L.id,name:String(L.name||'Øl').slice(0,120),brewery:String(L.brewery||'').slice(0,120),data:d,img:im,updated_at:ts}:{id:L.id,beer:L.beer,who:String(L.who||'Ukendt').slice(0,40),data:d,img:im,updated_at:ts};
     try{await sbFetch('/rest/v1/'+table+'?on_conflict=id',{method:'POST',body:row,headers:{Prefer:'resolution=merge-duplicates,return=minimal'}});L.owner=L.owner||uid;if(img!==old){L.img=img;delImg(old)}S.sh[L.id]=hsh(L);const pth=imgPath(L.img);if(S.si[L.id]&&S.si[L.id]!==pth)sbDelImg(S.si[L.id]);if(pth)S.si[L.id]=pth;else delete S.si[L.id]}

@@ -228,6 +228,7 @@ Widget-data, som `syncApp()` sender:
 - **Login:** Anonymt. Hver enhed får sin egen usynlige bruger, så ingen skal oprette konto. Sessionen ligger i localStorage under `olrating-sb`.
 
 ### Synkronisering (`sb*`-funktionerne i `index.html`)
+- **Filnavne i lageret:** `sbImg(v, oid)` bruger nøglen fra IndexedDB (`i…`), når billedet ligger der. Ligger billedet som tekst (`data:`), fordi IndexedDB ikke virker, bygges navnet af billedets indhold plus `oid` (øllens eller bedømmelsens id). Uden id ville to ting med samme billede dele én fil, og sletning af den ene ville fjerne den andens billede.
 - Der bruges ikke noget bibliotek. `sbFetch()` kalder Supabase direkte: `/auth/v1/signup` og `/auth/v1/token`, `/rest/v1/<tabel>` og `/storage/v1/object/billeder/…`.
 - `sbSync()` kører ved start, 1,5 sekund efter hver `save()`, hvert 30. sekund og når siden bliver synlig igen. Rækkefølgen er `sbAuth` → `sbPush` → `sbPull` → `sbTours`.
 - **Push:** Egne objekter, der er ændret siden sidst, sendes som upsert. `S.sh[id]` gemmer en hash af det, der sidst blev synkroniseret. Billeder uploades først, og `img` skifter fra `idb:…` til den offentlige adresse, når rækken er gemt.

@@ -4,6 +4,12 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-27
 
+### Middag (12:15–12:24): et billede kunne slette et andet billede
+- **Fejl fundet i Safaris motor:** Siden 10.07 har ét tjek fejlet på GitHub i Safaris motor (WebKit). Jobbet må fejle uden at stoppe resten, så hele kørslen stod som grøn, og det overså jeg. Statussen om "grøn i alle tre browsere" har derfor ikke passet siden kl. 10.
+- **Årsagen var en rigtig fejl:** Kan browseren ikke gemme billeder i IndexedDB (fx Safaris private vindue), gemmes de som tekst. Så fik filen i lageret et navn ud fra selve billedet. Brugte en øl og en bedømmelse samme billede, delte de én fil. Fjernede man billedet fra bedømmelsen, forsvandt det også fra øllen. Bevist med den gamle kode: efter at fotoet er fjernet fra bedømmelsen, er øllens billede væk.
+- **Rettet:** Filnavnet indeholder nu også øllens eller bedømmelsens id, så to ting aldrig deler en fil.
+- **Test:** `test_site.py` slår IndexedDB fra, giver en øl og en bedømmelse samme billede, fjerner det ene og tjekker, at det andet er der endnu.
+
 ### Middag (12:00–12:01): widgets på engelsk
 - **Android:** Alle tekster i de 8 widgets og genvejene ligger nu i sprogfiler. Er telefonen sat til engelsk, står widgets og genveje på engelsk ("Beer of the week", "Latest ratings", "units today" osv.). Ellers dansk som før. Det står på listen over idéer som "engelske widgets", og er nu slettet derfra.
 - **Windows og Linux:** Widgetten følger sidens sprog. Vælger man English på siden, skifter widgetten også.

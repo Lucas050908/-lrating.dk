@@ -332,6 +332,19 @@ def run(b,name,vw):
 with sync_playwright() as p:
     b=getattr(p,os.environ.get('BROWSER','chromium')).launch(); make_photo(b)
     run(b,'pc',(1280,900)); run(b,'mobil',(390,844))
+    # uden IndexedDB (som i Safaris private vindue og i WebKit i testen) må to ting med samme billede ikke dele én fil i lageret
+    M2=Mock(); c=b.new_context(viewport={'width':390,'height':844},service_workers='block'); c.route(f'https://{HOST}/**',M2.handle)
+    c.add_init_script("Object.defineProperty(window,'indexedDB',{value:undefined})"); pg=c.new_page(); pg.goto(URL+'#tilfoej'); pg.wait_for_timeout(800)
+    pg.set_input_files('#bImg',PHOTO); pg.wait_for_timeout(700); pg.fill('#bName','Samme Billede'); pg.fill('#bBrew','Bryg')
+    for k in ['look','aroma','taste','feel','overall']: pg.click(f'#addForm .rate[data-k="{k}"] [data-star="4"]')
+    pg.fill('#addForm #rWho','Lucas'); pg.click('#addBtn'); pg.wait_for_timeout(4500)
+    pg.set_input_files('#rImg',PHOTO); pg.wait_for_timeout(700)
+    for k in ['look','aroma','taste','feel','overall']: pg.click(f'#revForm .rate[data-k="{k}"] [data-star="3"]')
+    pg.click('#revForm button[type=submit]'); pg.wait_for_timeout(10000); n1=len(M2.store); st=ls(pg)
+    rid=[r['id'] for r in st['reviews'] if r.get('img')][0]; bk=st['beers'][0]['img'].split('/billeder/')[-1]
+    pg.click(f'.revact [data-edit="{rid}"]'); pg.wait_for_timeout(700); pg.click('#rmRImg'); pg.click('#revForm button[type=submit]'); pg.wait_for_timeout(10000)
+    check('uden IndexedDB: øl og bedømmelse med samme billede får hver sin fil, og at fjerne den ene sletter ikke den anden',n1==2 and len(M2.store)==1 and bk in M2.store,(n1,len(M2.store),bk in M2.store))
+    c.close()
     # widget i programmet til Windows og Linux (desktop/widget.html): dansk som standard, engelsk når siden er sat til engelsk
     c=b.new_context(viewport={'width':340,'height':300}); pg=c.new_page()
     pg.add_init_script("window.W={onData(f){window.__f=f},onImages(){},open(){},addUnit(){},close(){},pin(){}}")
