@@ -49,8 +49,8 @@ public class TopWidget extends AppWidgetProvider {
                 WImg.into(ctx, v, R.id.week_img, w.optString("id"), 48, 12);
             } else {
                 v.setViewVisibility(R.id.week_img, android.view.View.GONE);
-                v.setTextViewText(R.id.week_name, "Ingen øl endnu");
-                v.setTextViewText(R.id.week_meta, "Tryk for at tilføje den første");
+                v.setTextViewText(R.id.week_name, ctx.getString(R.string.w_no_beer));
+                v.setTextViewText(R.id.week_meta, ctx.getString(R.string.w_add_first));
                 v.setTextViewText(R.id.week_score, "");
             }
             JSONArray top = d.optJSONArray("top");
@@ -62,7 +62,7 @@ public class TopWidget extends AppWidgetProvider {
                     v.setTextViewText(rows[i], "");
                 }
             }
-            v.setTextViewText(R.id.footer, d.optInt("beers") + " øl · " + d.optInt("reviews") + " bedømmelser");
+            v.setTextViewText(R.id.footer, ctx.getString(R.string.w_footer, d.optInt("beers"), d.optInt("reviews")));
         } catch (Exception e) {
             v.setTextViewText(R.id.week_name, "ølrating.dk");
         }

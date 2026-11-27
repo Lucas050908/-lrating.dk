@@ -332,6 +332,15 @@ def run(b,name,vw):
 with sync_playwright() as p:
     b=getattr(p,os.environ.get('BROWSER','chromium')).launch(); make_photo(b)
     run(b,'pc',(1280,900)); run(b,'mobil',(390,844))
+    # widget i programmet til Windows og Linux (desktop/widget.html): dansk som standard, engelsk når siden er sat til engelsk
+    c=b.new_context(viewport={'width':340,'height':300}); pg=c.new_page()
+    pg.add_init_script("window.W={onData(f){window.__f=f},onImages(){},open(){},addUnit(){},close(){},pin(){}}")
+    pg.goto(URL+'desktop/widget.html'); pg.wait_for_timeout(300)
+    d={'week':{'id':'a1','name':'Limfjordsporter','brewery':'Thisted Bryghus','score':'4,2'},'top':[],'latest':[],'beers':3,'reviews':5,'units':{'todayN':1,'weekN':3},'me':{'name':'Lucas','beers':2,'avg':'4,0','style':'Porter'},'site':{'visits':1234,'today':5,'tasters':2}}
+    pg.evaluate("d=>window.__f(d)",{**d,'lang':'da'}); da=pg.inner_text('body')
+    pg.evaluate("d=>window.__f(d)",{**d,'lang':'en'}); en=pg.inner_text('body'); pg.click('[data-v="3"]'); en3=pg.inner_text('body')
+    check('desktop-widget: dansk som standard og engelsk, når siden er på engelsk','3 øl · 5 bedømmelser' in da and 'nyt' in da.lower() and '3 beers · 5 ratings' in en and 'new' in en.lower() and 'units today' in en3 and '+1 unit' in en3,(da[:80],en[:80],en3[:80]))
+    c.close()
     # stregkodelæseren (js/scan.js) i den browser, testen kører i: på GitHub også Safaris motor (som på iPhone) og Firefox
     c=b.new_context(service_workers='block'); c.route(f'https://{HOST}/**',Mock().handle); pg=c.new_page(); pg.goto(URL); pg.wait_for_timeout(500)
     y=ean_y4m('5741000001233',frames=1); W,H=640,480; Yp=list(y[y.index(b'FRAME\n')+6:][:W*H])

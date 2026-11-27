@@ -3,11 +3,11 @@
     android:id="@+id/root" android:layout_width="match_parent" android:layout_height="match_parent"
     android:orientation="vertical" android:padding="14dp" android:background="@drawable/widget_bg">
     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:text="NOGET FOR DIG" android:textColor="#FF7A3D" android:textSize="11sp" android:textStyle="bold" />
+        android:text="@string/w_h_suggest" android:textColor="#FF7A3D" android:textSize="11sp" android:textStyle="bold" />
     <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"
         android:orientation="horizontal" android:gravity="center_vertical">
         <ImageView android:id="@+id/img" android:layout_width="52dp" android:layout_height="52dp" android:layout_marginEnd="10dp"
-            android:scaleType="fitCenter" android:visibility="gone" android:contentDescription="Billede af øllen" />
+            android:scaleType="fitCenter" android:visibility="gone" android:contentDescription="@string/w_cd_beer_img" />
         <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical">
             <TextView android:id="@+id/name" android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:textColor="#FFFFFF" android:textSize="17sp" android:textStyle="bold" android:maxLines="1" android:ellipsize="end" />

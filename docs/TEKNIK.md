@@ -287,3 +287,7 @@ Alle test bruger Playwright og en lokal server: `python3 -m http.server 8811 &`.
 `scanCode()` åbner kameraet i `#scan`. Har browseren `BarcodeDetector` med `ean_13` (Android, Chrome på Mac), bruges den. Ellers hentes `js/scan.js` (`loadScanLib()`), som giver `window.olScan(imageData)`: hvert 150. ms tegnes et billede fra videoen (højst 800 px bredt) på et canvas og læses. Koden renses til cifre. `scanDone` nulstilles, før `stopScan()` kaldes, ellers svarer løftet `null` (det var fejlen, der gjorde, at scanneren aldrig virkede).
 
 `js/scan.js` bygges med `sh tools/byg-scanner.sh` (Node): esbuild samler læserne `MultiFormatUPCEANReader` og `Code128Reader` fra `@zxing/library` 0.23.0 (Apache-2.0). Kun de filer kommer med, så den er 70 kB i stedet for 360 kB. Testen bruger Chromiums falske kamera (`--use-file-for-fake-video-capture`) med en Y4M-video, som `ean_y4m()` i `test_site.py` laver.
+
+## Sprog i widgets
+- **Android:** Alle tekster i widgets ligger i `res/values/strings.xml` (dansk) og `res/values-en/strings.xml` (engelsk), også teksterne i layoutfilerne. Android vælger selv efter telefonens sprog. Tekster med tal bruger pladsholdere (`%1$s`, `%1$d`), fx `w_footer`.
+- **Windows og Linux:** Siden sender `lang` med i widget-data. `desktop/widget.html` har en lille ordbog (`EN`) og `T()`, der bruges, når `lang` er `en`. Tal skrives med punktum på engelsk.

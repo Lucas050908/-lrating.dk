@@ -26,16 +26,16 @@ public class StatsWidget extends AppWidgetProvider {
         JSONObject me = null;
         try { if (raw != null) me = new JSONObject(raw).optJSONObject("me"); } catch (Exception ignored) {}
         if (me == null || me.optString("name").isEmpty()) {
-            v.setTextViewText(R.id.who, "Min statistik");
+            v.setTextViewText(R.id.who, ctx.getString(R.string.w_my_stats));
             v.setTextViewText(R.id.count, "–");
             v.setTextViewText(R.id.avg, "–");
-            v.setTextViewText(R.id.style, "Skriv dit navn i appen");
+            v.setTextViewText(R.id.style, ctx.getString(R.string.w_write_name));
         } else {
             v.setTextViewText(R.id.who, me.optString("name"));
             v.setTextViewText(R.id.count, String.valueOf(me.optInt("beers")));
             v.setTextViewText(R.id.avg, me.optString("avg").isEmpty() ? "–" : me.optString("avg"));
             String st = me.optString("style");
-            v.setTextViewText(R.id.style, st.isEmpty() ? "Bedøm din første øl" : "Yndlingsstil: " + st);
+            v.setTextViewText(R.id.style, st.isEmpty() ? ctx.getString(R.string.w_rate_first) : ctx.getString(R.string.w_fav_style, st));
         }
         v.setOnClickPendingIntent(R.id.root, TopWidget.open(ctx, "#profil", 6));
         return v;

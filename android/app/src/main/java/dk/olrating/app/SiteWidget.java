@@ -45,7 +45,7 @@ public class SiteWidget extends AppWidgetProvider {
             }
         } catch (Exception ignored) {}
         v.setTextViewText(R.id.visits, num(visits));
-        v.setTextViewText(R.id.today, visits < 0 ? "Åbn appen for at hente tallet" : num(today) + " i dag");
+        v.setTextViewText(R.id.today, visits < 0 ? ctx.getString(R.string.w_open_app) : ctx.getString(R.string.w_today_n, num(today)));
         v.setTextViewText(R.id.beers, num(beers));
         v.setTextViewText(R.id.reviews, num(reviews));
         v.setTextViewText(R.id.tasters, num(tasters));

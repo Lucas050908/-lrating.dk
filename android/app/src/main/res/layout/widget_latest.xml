@@ -5,28 +5,28 @@
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
         <ImageView android:layout_width="22dp" android:layout_height="22dp" android:src="@mipmap/ic_launcher" android:contentDescription="ølrating" />
         <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:layout_marginStart="8dp"
-            android:text="SENESTE BEDØMMELSER" android:textColor="#FF7A3D" android:textSize="11sp" android:textStyle="bold" />
+            android:text="@string/w_h_latest" android:textColor="#FF7A3D" android:textSize="11sp" android:textStyle="bold" />
         <TextView android:id="@+id/add" android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="+ Bedøm" android:textColor="#0F1D36" android:textSize="12sp" android:textStyle="bold" android:background="@drawable/widget_btn"
+            android:text="@string/w_btn_rate" android:textColor="#0F1D36" android:textSize="12sp" android:textStyle="bold" android:background="@drawable/widget_btn"
             android:paddingStart="10dp" android:paddingEnd="10dp" android:paddingTop="4dp" android:paddingBottom="4dp" />
     </LinearLayout>
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="10dp" android:gravity="center_vertical">
-        <ImageView android:id="@+id/i1" android:layout_width="22dp" android:layout_height="22dp" android:layout_marginEnd="8dp" android:scaleType="fitCenter" android:visibility="gone" android:contentDescription="Billede af øllen" />
+        <ImageView android:id="@+id/i1" android:layout_width="22dp" android:layout_height="22dp" android:layout_marginEnd="8dp" android:scaleType="fitCenter" android:visibility="gone" android:contentDescription="@string/w_cd_beer_img" />
         <TextView android:id="@+id/l1" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:textColor="#FFFFFF" android:textSize="13sp" android:maxLines="1" android:ellipsize="end" />
         <TextView android:id="@+id/s1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#FFC85A" android:textSize="13sp" android:textStyle="bold" />
     </LinearLayout>
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="6dp" android:gravity="center_vertical">
-        <ImageView android:id="@+id/i2" android:layout_width="22dp" android:layout_height="22dp" android:layout_marginEnd="8dp" android:scaleType="fitCenter" android:visibility="gone" android:contentDescription="Billede af øllen" />
+        <ImageView android:id="@+id/i2" android:layout_width="22dp" android:layout_height="22dp" android:layout_marginEnd="8dp" android:scaleType="fitCenter" android:visibility="gone" android:contentDescription="@string/w_cd_beer_img" />
         <TextView android:id="@+id/l2" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:textColor="#EAF1FB" android:textSize="13sp" android:maxLines="1" android:ellipsize="end" />
         <TextView android:id="@+id/s2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#FFC85A" android:textSize="13sp" android:textStyle="bold" />
     </LinearLayout>
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="6dp" android:gravity="center_vertical">
-        <ImageView android:id="@+id/i3" android:layout_width="22dp" android:layout_height="22dp" android:layout_marginEnd="8dp" android:scaleType="fitCenter" android:visibility="gone" android:contentDescription="Billede af øllen" />
+        <ImageView android:id="@+id/i3" android:layout_width="22dp" android:layout_height="22dp" android:layout_marginEnd="8dp" android:scaleType="fitCenter" android:visibility="gone" android:contentDescription="@string/w_cd_beer_img" />
         <TextView android:id="@+id/l3" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:textColor="#EAF1FB" android:textSize="13sp" android:maxLines="1" android:ellipsize="end" />
         <TextView android:id="@+id/s3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#FFC85A" android:textSize="13sp" android:textStyle="bold" />
     </LinearLayout>
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="6dp" android:gravity="center_vertical">
-        <ImageView android:id="@+id/i4" android:layout_width="22dp" android:layout_height="22dp" android:layout_marginEnd="8dp" android:scaleType="fitCenter" android:visibility="gone" android:contentDescription="Billede af øllen" />
+        <ImageView android:id="@+id/i4" android:layout_width="22dp" android:layout_height="22dp" android:layout_marginEnd="8dp" android:scaleType="fitCenter" android:visibility="gone" android:contentDescription="@string/w_cd_beer_img" />
         <TextView android:id="@+id/l4" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:textColor="#EAF1FB" android:textSize="13sp" android:maxLines="1" android:ellipsize="end" />
         <TextView android:id="@+id/s4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#FFC85A" android:textSize="13sp" android:textStyle="bold" />
     </LinearLayout>

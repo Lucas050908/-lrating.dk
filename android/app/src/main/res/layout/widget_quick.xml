@@ -9,5 +9,5 @@
     android:background="@drawable/widget_btn">
     <ImageView android:layout_width="34dp" android:layout_height="34dp" android:src="@mipmap/ic_launcher" android:contentDescription="ølrating" />
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp"
-        android:text="Bedøm øl" android:textColor="#0F1D36" android:textSize="12sp" android:textStyle="bold" />
+        android:text="@string/w_btn_rate_beer" android:textColor="#0F1D36" android:textSize="12sp" android:textStyle="bold" />
 </LinearLayout>

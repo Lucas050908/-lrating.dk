@@ -4,6 +4,11 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-27
 
+### Middag (12:00–12:01): widgets på engelsk
+- **Android:** Alle tekster i de 8 widgets og genvejene ligger nu i sprogfiler. Er telefonen sat til engelsk, står widgets og genveje på engelsk ("Beer of the week", "Latest ratings", "units today" osv.). Ellers dansk som før. Det står på listen over idéer som "engelske widgets", og er nu slettet derfra.
+- **Windows og Linux:** Widgetten følger sidens sprog. Vælger man English på siden, skifter widgetten også.
+- **Test:** `test_site.py` åbner desktop-widgetten med efterlignede data og tjekker dansk og engelsk. Android-appen bliver bygget på GitHub, men er **ikke prøvet på en telefon**.
+
 ### Formiddag og middag (11:39–11:55): scanneren og tastaturet
 - Når scanneren åbner, flytter fokus til **Luk**, så den kan lukkes med Enter eller Mellemrum (Esc virkede i forvejen). Når den lukker, kommer fokus tilbage til den knap, der åbnede den. Det hjælper dem, der bruger tastatur eller skærmlæser.
 - **Test:** `test_site.py` tjekker, hvor fokus står før og efter.

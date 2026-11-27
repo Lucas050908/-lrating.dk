@@ -38,7 +38,7 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 - Hele siden er oversat: menuer, alle sider, formularer, beskeder, mærker, stilguide, privatlivspolitik og delebillederne.
 - På engelsk skrives tal med punktum (4.5), datoer på engelsk, og priser som DKK.
 - Det, brugerne selv har skrevet (navne på øl, anmeldelser, byture), bliver ikke oversat.
-- Widgets i apps er stadig kun på dansk.
+- Widgets: I Android-appen følger de telefonens sprog (engelsk, når telefonen er sat til engelsk). Widgetten i programmet til Windows og Linux følger sidens sprog. Navne på øl, stilarter og højtider kommer fra siden og står på dansk.
 
 ### Menuen
 - Topmenuen viser Alle øl, Toplisten, Galleri, Sammenlign, Byttur, Mere, Min profil, Tilføj øl og sprogvælgeren.

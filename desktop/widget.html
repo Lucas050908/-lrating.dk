@@ -38,25 +38,28 @@ li b{color:#FFC85A;margin-left:auto}
 <script>
 const $=id=>document.getElementById(id);
 let D=null,V=0,IM={};
+/* Engelsk, når siden er sat til engelsk (feltet lang i data fra siden). Ellers dansk. */
+const EN={'Top':'Top','Nyt':'New','Mig':'Me','Genst.':'Units','Siden':'Site','Altid øverst':'Always on top','Skjul widget':'Hide widget','Åbn programmet for at hente data':'Open the program to get data','øl smagt':'beers tasted','gns. karakter':'avg. score','+ Bedøm øl':'+ Rate beer','Ingen bedømmelser endnu':'No ratings yet','genstande i dag':'units today','på 7 dage (højst 10)':'in 7 days (max 10)','Over 4 i dag – tag en pause':'Over 4 today – take a break','Tryk +1 når du åbner en øl':'Tap +1 when you open a beer','+1 genstand':'+1 unit','besøg i alt':'visits in total','besøg i dag':'visits today','Øl':'Beers','Bedømmelser':'Ratings','Smagere':'Tasters','Besøg tælles ikke endnu':'Visits are not counted yet','Bedøm din første øl':'Rate your first beer','Skriv dit navn på ølrating':'Write your name on ølrating','Ingen øl endnu':'No beers yet','Bliv den første til at bedømme en øl':'Be the first to rate a beer'};
+const en=()=>!!(D&&D.lang==='en'),T=t=>en()&&EN[t]||t;
 const ok=u=>typeof u==='string'&&u.startsWith('data:image/jpeg;base64,');
 function li(a,b,id){const l=document.createElement('li'),s=document.createElement('span'),x=document.createElement('b');s.textContent=a;x.textContent=b;l.append(s,x);if(id&&ok(IM[id])){const i=document.createElement('img');i.src=IM[id];i.alt='';l.prepend(i)}return l}
-const tal=n=>typeof n==='number'?n.toLocaleString('da-DK'):'–';
-function render(d){D=d;
+const tal=n=>typeof n==='number'?n.toLocaleString(en()?'en-GB':'da-DK'):'–';
+function render(d){D=d;document.documentElement.lang=en()?'en':'da';document.querySelectorAll('.t').forEach(t=>{t.dataset.da=t.dataset.da||t.textContent;t.textContent=T(t.dataset.da)});$('pin').title=T('Altid øverst');$('x').title=T('Skjul widget');
   document.querySelectorAll('.t').forEach(t=>t.classList.toggle('on',+t.dataset.v===V));
   $('wk').style.display=V===0?'':'none';$('stat').style.display=V>=2?'':'none';
-  if(V===1){const L=(d&&d.latest)||[];$('top').replaceChildren(...(L.length?L.slice(0,5).map(r=>li(`${r.name} · ${r.who}`,r.score,r.id)):[li('Ingen bedømmelser endnu','')]));$('foot').textContent=d?`${d.reviews} bedømmelser i alt`:'';return}
-  if(V===3){const u=(d&&d.units)||{},t=u.todayN||0,w=u.weekN||0,f=x=>String(Math.round(x*10)/10).replace('.',',');$('stat').style.display='';$('sc').textContent=f(t);$('sc').style.color=t>4?'#FF6B8A':'';$('sa').textContent=f(w);$('lc').textContent='genstande i dag';$('la').textContent='på 7 dage (højst 10)';$('top').replaceChildren(li(t>4?'Over 4 i dag – tag en pause':'Tryk +1 når du åbner en øl',''));$('foot').textContent='';$('add').textContent='+1 genstand';return}
-  $('sc').style.color='';$('add').textContent='+ Bedøm øl';
-  if(V===4){const s=(d&&d.site)||{};$('sc').textContent=tal(s.visits);$('sa').textContent=tal(s.today);$('lc').textContent='besøg i alt';$('la').textContent='besøg i dag';$('top').replaceChildren(li('Øl',tal(d&&d.beers)),li('Bedømmelser',tal(d&&d.reviews)),li('Smagere',tal(s.tasters)));$('foot').textContent=typeof s.visits==='number'?'':'Besøg tælles ikke endnu';return}
-  $('lc').textContent='øl smagt';$('la').textContent='gns. karakter';
-  if(V===2){const m=d&&d.me;$('top').replaceChildren(li(m&&m.name?(m.style?'Yndlingsstil: '+m.style:'Bedøm din første øl'):'Skriv dit navn på ølrating',''),...(d&&d.rec?[li('Prøv: '+d.rec.name,d.rec.score,d.rec.id)]:[]));$('sc').textContent=m&&m.name?m.beers:'–';$('sa').textContent=m&&m.avg?m.avg:'–';$('foot').textContent=m&&m.name?m.name:'';return}
+  if(V===1){const L=(d&&d.latest)||[];$('top').replaceChildren(...(L.length?L.slice(0,5).map(r=>li(`${r.name} · ${r.who}`,r.score,r.id)):[li(T('Ingen bedømmelser endnu'),'')]));$('foot').textContent=d?(en()?`${d.reviews} ratings in total`:`${d.reviews} bedømmelser i alt`):'';return}
+  if(V===3){const u=(d&&d.units)||{},t=u.todayN||0,w=u.weekN||0,f=x=>String(Math.round(x*10)/10).replace('.',en()?'.':',');$('stat').style.display='';$('sc').textContent=f(t);$('sc').style.color=t>4?'#FF6B8A':'';$('sa').textContent=f(w);$('lc').textContent=T('genstande i dag');$('la').textContent=T('på 7 dage (højst 10)');$('top').replaceChildren(li(T(t>4?'Over 4 i dag – tag en pause':'Tryk +1 når du åbner en øl'),''));$('foot').textContent='';$('add').textContent=T('+1 genstand');return}
+  $('sc').style.color='';$('add').textContent=T('+ Bedøm øl');
+  if(V===4){const s=(d&&d.site)||{};$('sc').textContent=tal(s.visits);$('sa').textContent=tal(s.today);$('lc').textContent=T('besøg i alt');$('la').textContent=T('besøg i dag');$('top').replaceChildren(li(T('Øl'),tal(d&&d.beers)),li(T('Bedømmelser'),tal(d&&d.reviews)),li(T('Smagere'),tal(s.tasters)));$('foot').textContent=typeof s.visits==='number'?'':T('Besøg tælles ikke endnu');return}
+  $('lc').textContent=T('øl smagt');$('la').textContent=T('gns. karakter');
+  if(V===2){const m=d&&d.me;$('top').replaceChildren(li(m&&m.name?(m.style?(en()?'Favourite style: ':'Yndlingsstil: ')+m.style:T('Bedøm din første øl')):T('Skriv dit navn på ølrating'),''),...(d&&d.rec?[li((en()?'Try: ':'Prøv: ')+d.rec.name,d.rec.score,d.rec.id)]:[]));$('sc').textContent=m&&m.name?m.beers:'–';$('sa').textContent=m&&m.avg?m.avg:'–';$('foot').textContent=m&&m.name?m.name:'';return}
   const w=d&&d.week;
-  $('name').textContent=w?w.name:'Ingen øl endnu';
-  $('meta').textContent=w?(w.brewery||''):'Bliv den første til at bedømme en øl';
+  $('name').textContent=w?w.name:T('Ingen øl endnu');
+  $('meta').textContent=w?(w.brewery||''):T('Bliv den første til at bedømme en øl');
   $('score').textContent=w?w.score:'';
   {const im=w&&IM[w.id];$('wimg').style.display=ok(im)?'':'none';if(ok(im))$('wimg').src=im}
   $('top').replaceChildren(...((d&&d.top)||[]).slice(0,3).map((t,i)=>li((i+1)+'. '+t.name,t.score,t.id)));
-  $('foot').textContent=d?`${d.beers} øl · ${d.reviews} bedømmelser`:'';
+  $('foot').textContent=d?(en()?`${d.beers} beers · ${d.reviews} ratings`:`${d.beers} øl · ${d.reviews} bedømmelser`):'';
 }
 W.onData(render);W.onImages(o=>{IM=o&&typeof o==='object'?o:{};render(D)});render(null);
 $('wk').onclick=()=>W.open('');

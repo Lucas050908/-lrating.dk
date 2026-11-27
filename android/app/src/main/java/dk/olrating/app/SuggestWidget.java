@@ -41,7 +41,7 @@ public class SuggestWidget extends AppWidgetProvider {
         RemoteViews v = new RemoteViews(ctx.getPackageName(), R.layout.widget_suggest);
         String raw = ctx.getSharedPreferences(TopWidget.PREFS, Context.MODE_PRIVATE).getString(TopWidget.KEY, null);
         String hash = "", img = "";
-        String name = "Bedøm et par øl", why = "Så foreslår vi nogle, du nok kan lide", score = "", next = "";
+        String name = ctx.getString(R.string.w_rate_some), why = ctx.getString(R.string.w_rate_some_why), score = "", next = "";
         try {
             JSONObject d = raw == null ? new JSONObject() : new JSONObject(raw);
             JSONObject r = d.optJSONObject("rec");
@@ -54,7 +54,7 @@ public class SuggestWidget extends AppWidgetProvider {
             JSONObject n = d.optJSONObject("next");
             if (n != null) {
                 long days = daysUntil(n.optString("date"));
-                if (days >= 0) next = (days == 0 ? "I dag" : days == 1 ? "I morgen" : "Om " + days + " dage") + " er det " + n.optString("n");
+                if (days >= 0) next = days == 0 ? ctx.getString(R.string.w_next_today, n.optString("n")) : days == 1 ? ctx.getString(R.string.w_next_tomorrow, n.optString("n")) : ctx.getString(R.string.w_next_days, days, n.optString("n"));
             }
         } catch (Exception ignored) {}
         v.setTextViewText(R.id.name, name);

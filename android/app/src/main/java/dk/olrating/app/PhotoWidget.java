@@ -24,7 +24,7 @@ public class PhotoWidget extends AppWidgetProvider {
     static RemoteViews build(Context ctx) {
         RemoteViews v = new RemoteViews(ctx.getPackageName(), R.layout.widget_photo);
         String raw = ctx.getSharedPreferences(TopWidget.PREFS, Context.MODE_PRIVATE).getString(TopWidget.KEY, null);
-        String name = "Ingen øl endnu", meta = "Tryk for at tilføje den første", score = "", hash = "", id = "";
+        String name = ctx.getString(R.string.w_no_beer), meta = ctx.getString(R.string.w_add_first), score = "", hash = "", id = "";
         try {
             JSONObject w = raw == null ? null : new JSONObject(raw).optJSONObject("week");
             if (w != null && !w.optString("name").isEmpty()) {

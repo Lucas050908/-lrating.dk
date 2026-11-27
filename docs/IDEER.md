@@ -15,13 +15,12 @@ En liste over det, der ikke er lavet endnu, og hvorfor. Flyt et punkt til `CHANG
 ## Større ting, der kræver en beslutning
 | Idé | Hvorfor den ikke bare er lavet |
 |---|---|
-| **Scan etiketten** (appen læser navn og alkoholprocent fra et billede) | Kræver tekstgenkendelse. Det bibliotek, der kan køre i browseren, fylder flere MB og skal ligge på siden. Alternativet er en betalt tjeneste. |
+| **Scan etiketten** (appen læser navn og alkoholprocent fra et billede) | Kræver tekstgenkendelse. Det bibliotek, der kan køre i browseren, fylder flere MB og skal ligge på siden. Alternativet er en betalt tjeneste. Stregkoden henter allerede navn, bryggeri og alkohol fra Open Food Facts, når øllen findes der. |
 | **Smartwatch** (genstand-tæller på uret) | Kræver en helt separat app til Wear OS, som skal bygges og testes på et rigtigt ur. |
 | **iPhone-app med widgets** | Kræver en Apple-udviklerkonto og en Mac til at bygge på. |
 | **Google Play** | Kræver en udviklerkonto hos Google (engangsbeløb) og en fast signeringsnøgle. |
 
 ## Mindre idéer
-- **Engelske widgets:** Siden er oversat til engelsk, men widgets i Android-appen og på skrivebordet er kun på dansk.
 - **Afstemning om Årets øl ("Folkets valg"):** Siden Årets øl kårer vinderen ud fra årets bedømmelser. En rigtig afstemning i december, hvor alle kan stemme på én af årets fem bedste, kunne være et tillæg. Kræver en lille tabel i databasen og en beslutning om, hvordan man undgår, at nogen stemmer flere gange.
 - **Prøv siden på en rigtig iPhone:** Testene kører nu i Safaris motor på GitHub, men det er ikke det samme som en iPhone i hånden. Især swipe, deling af billeder og installation på hjemmeskærmen bør prøves.
 - **Besked på telefonen når en ven bedømmer en øl** (notifikationer i appen). I dag kan man få det som mail, når kontoen er slået til.

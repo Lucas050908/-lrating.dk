@@ -90,9 +90,9 @@ public class UnitsWidget extends AppWidgetProvider {
             if (t >= weekStart) week += 1;
         }
         v.setTextViewText(R.id.today, fmt(today));
-        v.setTextViewText(R.id.week, fmt(week) + " af 10 på 7 dage");
+        v.setTextViewText(R.id.week, ctx.getString(R.string.w_units_week, fmt(week)));
         v.setTextColor(R.id.today, today > 4 ? 0xFFFF6B8A : 0xFFFFC85A);
-        v.setTextViewText(R.id.note, today > 4 ? "Over 4 i dag – tag en pause" : "genstande i dag");
+        v.setTextViewText(R.id.note, today > 4 ? ctx.getString(R.string.w_units_pause) : ctx.getString(R.string.w_units_today));
         Intent add = new Intent(ctx, UnitsWidget.class).setAction(ADD);
         v.setOnClickPendingIntent(R.id.plus, PendingIntent.getBroadcast(ctx, 7, add, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
         v.setOnClickPendingIntent(R.id.root, TopWidget.open(ctx, "#genstande", 8));

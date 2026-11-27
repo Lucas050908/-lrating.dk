@@ -38,7 +38,7 @@ public class LatestWidget extends AppWidgetProvider {
                 WImg.into(ctx, v, imgs[i], r.optString("id"), 22, 6);
             } else {
                 v.setViewVisibility(imgs[i], android.view.View.GONE);
-                v.setTextViewText(rows[i], i == 0 && n == 0 ? "Ingen bedømmelser endnu" : "");
+                v.setTextViewText(rows[i], i == 0 && n == 0 ? ctx.getString(R.string.w_no_reviews) : "");
                 v.setTextViewText(scores[i], "");
             }
         }

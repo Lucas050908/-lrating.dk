@@ -3,9 +3,9 @@
     android:id="@+id/root" android:layout_width="match_parent" android:layout_height="match_parent"
     android:orientation="vertical" android:padding="12dp" android:background="@drawable/widget_bg">
     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:text="UGENS ØL" android:textColor="#FF7A3D" android:textSize="11sp" android:textStyle="bold" />
+        android:text="@string/w_h_week" android:textColor="#FF7A3D" android:textSize="11sp" android:textStyle="bold" />
     <ImageView android:id="@+id/photo" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"
-        android:layout_marginTop="6dp" android:scaleType="fitCenter" android:src="@mipmap/ic_launcher" android:contentDescription="Billede af ugens øl" />
+        android:layout_marginTop="6dp" android:scaleType="fitCenter" android:src="@mipmap/ic_launcher" android:contentDescription="@string/w_cd_week_img" />
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
         android:layout_marginTop="6dp" android:gravity="center_vertical">
         <TextView android:id="@+id/name" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
