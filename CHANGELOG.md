@@ -4,6 +4,9 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-27
 
+### Eftermiddag (14:52): besøgstælleren er i gang
+- Lucas har kørt `supabase/005-besoeg.sql`. Testen mod den rigtige database (startet med hånden på GitHub) siger: "kørt, 5 besøg i alt". Fil 004 og funktionen `mails` er stadig ikke sat op.
+
 ### Eftermiddag (14:16–14:36): 1000 logoer, plakater, og tilbage til profilen efter en rettelse
 - **1000 logoer:** `tools/logoer.py` har 20 nye stilarter: 10 farvesæt (skov, bær, kobber, hav, kul, creme, rød, mint, lavendel, sort-hvid) i to former hver, nu også sekskant. Sammen med de 5 gamle giver de 40 motiver × 25 stilarter = 1000 logoer i `img/logoer/1000/` (`python3 tools/logoer.py img/logoer/1000 --1000`). Nr. 1–200 er de samme som før, så et nummer, man har valgt, gælder stadig. Nr. 201–1000 = 200 + (motiv − 1) × 20 + stil.
 - **`tools/logo-ud.py`** tager nu et nummer fra 1 til 1000 og kan tegne sekskanten.

@@ -75,6 +75,7 @@ Se [STORE.md](STORE.md) for trin for trin, tekster og skærmbilleder.
 - **Simply.com:** ticket #862316 (gammel, kan lukkes)
 
 ## Besøgstælleren før og efter 005
+005 blev kørt fredag 27-11-2026 kl. 14.50.
 Før `supabase/005-besoeg.sql` er kørt, prøver hver enhed højst én gang i timen (husket i `localStorage` under `olrating-vis404`). Efter kørslen begynder tællingen derfor senest en time efter på enheder, der har prøvet før. Vil du se det med det samme på din egen telefon, så slet sidens data eller vent en time.
 
 ## Test på GitHub: tjek hvert job
