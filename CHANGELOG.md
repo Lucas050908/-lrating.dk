@@ -6,6 +6,15 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 27-11-2026
 
+### Morgen (08:16–08:23): tilgængelighed tjekket med axe-core
+- **Nyt værktøj, `tests/axe.py`:** Det kører axe-core, et udbredt værktøj til at tjekke tilgængelighed, over 25 sider på telefon og pc, på dansk og engelsk, efter WCAG 2.2 AA. Kontrast tjekkes ikke dér, fordi `tests/kontrast.py` gør det.
+- **Det fandt tre ting, og de er rettet:**
+  - Sprogknappen øverst blev læst op som "Sprog · Language", men der står "DA" eller "English?" på den. Navnet indeholder nu det, der står.
+  - Mange sider springer fra den store overskrift direkte til mindre overskrifter i boksene. Skærmlæsere får nu det rigtige niveau gennem `aria-level`, så man kan hoppe rundt efter overskrifter. Udseendet er det samme.
+  - To tomme overskriftsceller i tabellen på Sammenlign har fået en usynlig tekst til skærmlæsere.
+- Nu finder axe ingen brud på nogen af siderne.
+- **GitHub:** Hovedjobbet kører nu også `tests/axe.py` og `tests/layout.py` ved hver ændring.
+
 ### Morgen (08:10–08:15): sikkerhedstest og nye skærmbilleder til Store
 - **Ny test:** Alle felter, som brugerne kan skrive i (navn, øl, bryggeri, stil, by, note, smagsord, tekst), får et forsøg på at køre et script. Derefter besøges 18 sider på dansk og engelsk, og lykkehjulet drejes. Intet bliver kørt. For at være sikker på, at testen virker, blev den også kørt mod en side, der med vilje satte teksten ind urenset, og der fejlede den som den skulle.
 - Mail-funktionen (`supabase/functions/mails/index.ts`) er læst igennem: Den renser al tekst, før den kommer i en mail.

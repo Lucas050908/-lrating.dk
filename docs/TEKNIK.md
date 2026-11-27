@@ -230,6 +230,10 @@ Widget-data, som `syncApp()` sender:
 
 ## Test (`tests/`)
 
+**Tilgængelighed (`tests/axe.py`):** Kører axe-core over 25 sider på telefon og pc, på dansk og engelsk, efter WCAG 2.2 AA og axe's egne gode råd. Kræver `npm install --no-save axe-core@4`. Kontrast er slået fra dér, fordi `kontrast.py` dækker den. Kører på GitHub ved hver ændring.
+
+**Overskriftsniveauer:** `headLevels()` køres efter hver `route()`. Springer en side et niveau over (fx fra `h1` direkte til `h3`), får overskriften det rigtige niveau med `aria-level`. Bokse ved siden af hinanden får samme niveau.
+
 **Layout (`tests/layout.py`):** Køres, når noget på siderne flyttes. 25 sider i 320, 360, 390 og 1280 px, på dansk og engelsk: vandret scroll, knapper oven i hinanden (hver linje af et link for sig), knapper uden for skærmen og trykflader under 24 × 24 px på telefon. Undtaget er links midt i en sætning, felter med en større etiket og knapper i en række, der kan swipes til siden. Tager omkring tre minutter.
 
 **To faner:** `addEventListener('storage', …)` tager det, en anden fane gemmer, ind i `S`, så den næste `save()` ikke overskriver det. Skriver man i en formular (`dirty`), tegnes siden ikke igen før næste sideskift.

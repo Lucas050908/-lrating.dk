@@ -27,6 +27,12 @@ jobs:
       - name: Databasens regler (konto, stemmer og mails)
         if: always()
         run: npm install --no-save @electric-sql/pglite && node tests/test_sql.js
+      - name: Tilgængelighed (axe-core)
+        if: always()
+        run: npm install --no-save axe-core@4 && python3 tests/axe.py
+      - name: Layout i fire bredder
+        if: always()
+        run: python3 tests/layout.py
   andre:
     name: Siden i ${{ matrix.navn }}
     runs-on: ubuntu-latest
