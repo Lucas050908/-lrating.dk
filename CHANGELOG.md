@@ -4,6 +4,12 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-27
 
+### Eftermiddag (14:03–14:06): tilføj øllen direkte fra søgningen
+- **Søger man på en stregkode,** som ingen øl har, står der nu "Tilføj øl med stregkode …". Knappen åbner Tilføj øl med koden udfyldt, og siden henter navn og billede fra Open Food Facts.
+- **Søger man på et navn,** der ikke findes, åbner "Tilføj øl" nu med navnet udfyldt, så man ikke skal skrive det igen.
+- **Klik på alt** (`tests/klik.py`) kørt igen efter dagens nye knapper: 73 tryk på 27 sider, ingen fejl. Tilgængelighed (axe) også uden fejl.
+- **Test:** `test_site.py` tjekker begge veje fra søgningen.
+
 ### Eftermiddag (13:54–13:54): scan og bedøm med det samme
 - Scanner man en øl fra forsiden, som allerede findes på siden, åbner øllens side nu direkte ved **Bedøm**, med fokus på den første stjerne. Før landede man øverst og skulle rulle ned.
 - **Test:** `test_site.py` scanner (med efterlignet læser) en kendt øl og tjekker, at Bedøm står på skærmen.

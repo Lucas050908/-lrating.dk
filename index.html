@@ -1073,7 +1073,7 @@ function renderGrid(){EC=null;const g=$('grid');if(!g)return;const q=F.q.toLower
   let L=enrich().filter(b=>(!F.maxPrice||(b.price&&b.price<=F.maxPrice))&&(!F.minAbv||b.abv>=F.minAbv)&&(!F.maxAbv||(b.abv&&b.abv<=F.maxAbv))&&(!F.untried||!tried.has(b.id))&&(!F.af||isAf(b))&&(!F.withImg||b.img)&&(!F.ftags.length||F.ftags.every(t=>b.rs.some(r=>(r.tags||[]).includes(t))))&&(!F.style||b.style===F.style)&&(!q||matches([b.name,b.brewery,b.style,b.city,b.addedBy,b.code||'',b.country||'',...b.rs.map(r=>r.who)].join(' '),q)));
   const so={new:(a,b)=>(b.date||'').localeCompare(a.date||''),score:(a,b)=>b.avg-a.avg||b.rs.length-a.rs.length,count:(a,b)=>b.rs.length-a.rs.length,abv:(a,b)=>b.abv-a.abv,name:(a,b)=>a.name.localeCompare(b.name,'da')};
   L.sort(so[F.sort]);$('sort').value=F.sort;const sig=JSON.stringify({...F,lim:0});if(sig!==renderGrid.sig){renderGrid.sig=sig;F.lim=24}const more=L.length-F.lim;
-  g.innerHTML=L.length?L.slice(0,F.lim).map(card).join('')+(more>0?`<div style="grid-column:1/-1;text-align:center"><button type="button" class="btn" id="moreBtn">Vis flere (${more} mere)</button></div>`:''):!beers().length?`<div class="empty" style="grid-column:1/-1"><span class="ic">${CAM('var(--gl)')}</span><h3>Ingen øl endnu</h3><span style="opacity:.8;max-width:30em">ølrating.dk er helt ny. Tag et billede af den øl, du drikker, giv den karakter, og bliv den første på listen.</span><a class="btn" href="#tilfoej">+ Tilføj den første øl</a></div>`:`<div class="empty" style="grid-column:1/-1"><h3>Ingen øl fundet</h3><span style="opacity:.8">Prøv en anden søgning, eller tilføj øllen selv.</span><a class="btn" href="#tilfoej">Tilføj øl</a></div>`}
+  g.innerHTML=L.length?L.slice(0,F.lim).map(card).join('')+(more>0?`<div style="grid-column:1/-1;text-align:center"><button type="button" class="btn" id="moreBtn">Vis flere (${more} mere)</button></div>`:''):!beers().length?`<div class="empty" style="grid-column:1/-1"><span class="ic">${CAM('var(--gl)')}</span><h3>Ingen øl endnu</h3><span style="opacity:.8;max-width:30em">ølrating.dk er helt ny. Tag et billede af den øl, du drikker, giv den karakter, og bliv den første på listen.</span><a class="btn" href="#tilfoej">+ Tilføj den første øl</a></div>`:`<div class="empty" style="grid-column:1/-1"><h3>Ingen øl fundet</h3>${(c=>c?`<span style="opacity:.8">Ingen øl på siden har den stregkode endnu. Tilføj den, så henter siden selv navn og billede, hvis den findes i Open Food Facts.</span><button type="button" class="btn" data-addcode="${c}">Tilføj øl med stregkode ${c}</button>`:`<span style="opacity:.8">Prøv en anden søgning, eller tilføj øllen selv.</span><button type="button" class="btn" data-addname="${esc(F.q.trim().slice(0,60))}">Tilføj øl</button>`)((q=>/^\d{8,14}$/.test(q)&&eanOk(q)?q:"")(F.q.replace(/\s/g,"")))}</div>`}
 
 function revFields(withImg){return `
  <label for="rWho">Dit navn *<input id="rWho" required maxlength="30" value="${esc(S.me)}" autocomplete="name"></label>
@@ -1098,7 +1098,7 @@ function addView(){const E=F.editBeer?beers().find(b=>b.id===F.editBeer):null,v=
   ${drop('bImg',E?'Nyt billede af øllen (valgfrit)':'Billede af øllen *')}
   <div id="dupHint" class="duph" hidden aria-live="polite"></div>
   <h3 class="fh">Øllen</h3>
-  <div class="two"><label for="bName">Øllens navn *<input id="bName" required maxlength="60" placeholder="Fx Limfjordsporter" value="${v('name')}"></label>
+  <div class="two"><label for="bName">Øllens navn *<input id="bName" required maxlength="60" placeholder="Fx Limfjordsporter" value="${E?v('name'):esc(F.newName||'')}"></label>
   <label for="bBrew">Bryggeri *<input id="bBrew" required maxlength="60" placeholder="Fx Thisted Bryghus" value="${v('brewery')}" list="brewList"><datalist id="brewList">${[...new Set(beers().map(b=>b.brewery))].map(x=>`<option value="${esc(x)}">`).join('')}</datalist></label>
   <label for="bStyle">Stil *<select id="bStyle">${Object.keys(STYLES).map(x=>`<option value="${esc(x)}"${sel(x,E?.style)}>${x}</option>`).join('')}</select></label>
   <label for="bCity">By<input id="bCity" maxlength="40" placeholder="Fx Thisted" value="${v('city')}"></label>
@@ -1661,11 +1661,12 @@ function route(){EC=null;dirty=false;const h=location.hash.slice(1);let v;
   const pd=document.querySelector('.podium .win');if(pd&&!softR)setTimeout(()=>{if(pd.isConnected)burstAt(pd)},(+pd.parentElement.dataset.n-1)*550+500);
   if(h==='alle')requestAnimationFrame(()=>requestAnimationFrame(()=>$('alle')?.scrollIntoView()));else scrollTo({top:0,behavior:'instant'});
   if(h==='tilfoej'&&!F.editBeer&&$('bCode')?.value){offLast='';offLookup($('bCode').value)}
+  if(h==='tilfoej'&&!F.editBeer&&F.newName)dupCheck();
   if(F.goRate){F.goRate=0;if($('rate'))requestAnimationFrame(()=>requestAnimationFrame(()=>{$('rate').scrollIntoView({behavior:RM?'auto':'smooth'});$('rate').querySelector('[data-star]')?.focus({preventScroll:true})}))}   /* scannet en kendt øl: gå direkte til Bedøm */
   if(F.goEdit){const id=F.goEdit;F.goEdit=null;if($('revForm'))requestAnimationFrame(()=>requestAnimationFrame(()=>editRev(id)))}   /* "Ret" på profilen åbner øllens side med bedømmelsen klar til at rette */   /* scrollet venter, til indholdet er tegnet én gang (to billeder), ellers tæller browseren det som et hop */
   document.title=trS(h.startsWith('bryggeri-')?`${decodeURIComponent(h.slice(9))} – ølrating.dk`:h.startsWith('beer-')?`${enrich().find(x=>x.id===h.slice(5))?.name||'Øl'} – ølrating.dk`:'ølrating.dk – danske øl, bedømt af dig')}
 document.addEventListener('click',e=>{if(!e.target.closest('.langw'))langClose();if(!e.target.closest('.navmore')){document.querySelector('.navmore')?.classList.remove('open');$('navMore')?.setAttribute('aria-expanded','false')}});document.addEventListener('keydown',e=>{if(location.hash==='#swipe'&&!e.target.closest('input,textarea,select')&&(e.key==='ArrowRight'||e.key==='ArrowLeft'||e.key==='ArrowDown')){e.preventDefault();swAct($('swc')?.dataset.id,e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0);return}if(e.key==='Escape'){document.querySelector('.navmore')?.classList.remove('open');langClose()}});
-addEventListener('hashchange',()=>{if(location.hash!=='#tilfoej')F.editBeer='';if(!$('scan').hidden)stopScan();route()});
+addEventListener('hashchange',()=>{if(location.hash!=='#tilfoej'){F.editBeer='';F.newName=''}if(!$('scan').hidden)stopScan();route()});
 addEventListener('scroll',()=>$('top').classList.toggle('scrolled',scrollY>40),{passive:true});
 
 /* ---------- images ---------- */
@@ -1724,6 +1725,8 @@ document.addEventListener('click',e=>{const t=e.target.closest('button,a');if(!t
   else if(t.dataset.go==='ioshelp'||t.dataset.go==='pchelp'){e.preventDefault();const d=$(t.dataset.go==='ioshelp'?'app-ios':'app-pc');if(d){d.open=true;d.scrollIntoView({behavior:RM?'auto':'smooth',block:'center'})}}
   else if(t.dataset.go==='apphelp'){e.preventDefault();const d=$('app-hjaelp');if(d){d.open=true;d.scrollIntoView({behavior:RM?'auto':'smooth',block:'center'})}}
   else if(t.id==='surpriseBtn'){surprise()}
+  else if(t.dataset.addcode!==undefined){F.code=t.dataset.addcode;F.newName='';location.hash='tilfoej'}
+  else if(t.dataset.addname!==undefined){F.newName=t.dataset.addname;F.code='';location.hash='tilfoej'}
   else if(t.dataset.editbeer){F.editBeer=t.dataset.editbeer;location.hash='tilfoej'}
   else if(t.id==='editBeer'){F.editBeer=t.dataset.id;if(location.hash==='#tilfoej')route();else location.hash='tilfoej'}
   else if(t.dataset.color){const on=t.getAttribute('aria-pressed')!=='true';t.parentElement.querySelectorAll('[data-color]').forEach(b=>b.setAttribute('aria-pressed',b===t&&on))}

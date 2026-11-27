@@ -498,6 +498,12 @@ with sync_playwright() as p:
     check('stregkode: ukendt nummer siger det, og det man selv har skrevet bliver stående',pg.input_value('#bName')=='Min egen' and 'findes ikke' in pg.inner_text('#offHint'),pg.inner_text('#offHint'))
     pg.goto(URL+'#'); pg.wait_for_timeout(300); pg.goto(URL+'#tilfoej'); pg.wait_for_timeout(600); pg.fill('#bCode','5700000000011'); pg.wait_for_timeout(2000)
     check('stregkode: en alkoholfri øl uden alkoholtal får hak i Alkoholfri',pg.is_checked('#bAf') and pg.input_value('#bName')=='Fri Pilsner' and 'alkoholfri' in pg.inner_text('#offHint'),pg.inner_text('#offHint'))
+    pg.goto(URL); pg.wait_for_timeout(700); pg.fill('#q','5741000001233'); pg.wait_for_timeout(700)
+    nb_known=pg.query_selector('[data-addcode]') is None   # øllen med den kode blev gemt ovenfor, så den findes
+    pg.fill('#q','5700000000028'); pg.wait_for_timeout(700); pg.click('[data-addcode]'); pg.wait_for_timeout(1500)
+    check('søgning: en ukendt stregkode tilbyder at tilføje øllen med koden',nb_known and pg.evaluate('location.hash')=='#tilfoej' and pg.input_value('#bCode')=='5700000000028',(nb_known,pg.evaluate('location.hash')))
+    pg.goto(URL); pg.wait_for_timeout(700); pg.fill('#q','Helt Ukendt Øl'); pg.wait_for_timeout(700); pg.click('[data-addname]'); pg.wait_for_timeout(900)
+    check('søgning: et ukendt navn tilbyder at tilføje øllen med navnet udfyldt',pg.input_value('#bName')=='Helt Ukendt Øl',pg.input_value('#bName'))
     check('stregkode: ingen fejl i konsollen',not errs,errs[:3])
     c.close()
     # offline via service worker

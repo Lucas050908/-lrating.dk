@@ -118,6 +118,7 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 - Søgningen tåler æ/ø/å skrevet som ae/oe/aa, så "fano" finder Fanø.
 - Den tåler også en stavefejl i ord på mindst 4 bogstaver, fx ét bogstav for meget eller for lidt, et forkert bogstav eller to bogstaver byttet om.
 - Der søges i navn, bryggeri, stil, by, land, stregkode og navne på dem, der har tilføjet eller bedømt.
+- Finder søgningen ingenting, kan øllen tilføjes direkte: med navnet udfyldt, eller med stregkoden, hvis man har søgt på en.
 
 ### Årets øl
 - Kun bedømmelser fra det valgte år tæller. Er der bedømmelser fra flere år, kan året vælges øverst.
