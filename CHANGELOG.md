@@ -6,6 +6,13 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 27-11-2026
 
+### Morgen (08:35–08:51): backup-filer renses, lykkehjulet og en slettet øl, og fejlsiden på engelsk
+- **Rettet:** Når man indlæste en backup-fil, blev ønskelisten og navnet fra filen ikke renset. Var navnet ikke tekst, blev det gemt og fik siden til at gå ned, hver gang den blev åbnet. Nu tages kun gyldige øl-id'er med på ønskelisten (højst 500), og navnet bruges kun, hvis det er tekst (højst 30 tegn).
+- **Test:** To nye tjek. Det ene indlæser en ondsindet backup-fil med forkerte typer og kode i et ølnavn og tjekker, at navn, ønskeliste og siden er i orden bagefter. Det andet tjekker, at et gyldigt navn og gyldige øl-id'er bliver taget med. Det sidste fejler på den gamle udgave af siden.
+- **Fejlsiden** (`404.html`, når en adresse ikke findes) har fået en linje på engelsk.
+- **Rettet: Lykkehjulet.** Blev den øl, hjulet valgte, slettet i en anden fane, mens hjulet drejede, viste siden intet resultat, og knappen hed stadig "Drej hjulet". Nu står der, at øllen lige er blevet slettet, og at man kan dreje igen. Fundet ved at køre testen 7 gange i træk, hvor den fejlede i 4.
+- **Test:** Lykkehjul-testen med to faner trykker igen, hvis trykket rammer knappen, lige mens siden tegnes om.
+
 ### Morgen (08:31–08:34): uden net kunne appen vise en fejlside
 - **Rettet:** Service workeren gemte enhver side, man åbnede på domænet, som den udgave af forsiden, der bruges uden net. Åbnede man en adresse, der ikke findes, blev fejlsiden ("404") gemt i stedet, og så viste appen fejlsiden næste gang, man var uden net. Nu gemmes kun selve forsiden, og kun når den er hentet uden fejl.
 - **Mindre at hente på telefonen:** Service workeren hentede også de tre store forsidebilleder til pc (ca. 540 kB) på telefoner, der aldrig viser dem. De er taget ud af pakken. En pc gemmer dem i stedet første gang, de bliver vist.

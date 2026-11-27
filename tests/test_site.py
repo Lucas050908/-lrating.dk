@@ -248,11 +248,15 @@ def run(b,name,vw):
     # mens hjulet drejer, sletter en anden fane en øl: vinderen skal stadig være den øl, pilen peger på
     pg.click('[data-hj=alle]'); pg.wait_for_timeout(300); ids0=pg.evaluate("[...document.querySelectorAll('#hjG text')].map(t=>t.textContent)")
     if len(ids0)>=3:
-        p2=c.new_page(); p2.goto(URL+'#om'); p2.wait_for_timeout(900); pg.click('#hjSpin'); pg.wait_for_timeout(400)
+        p2=c.new_page(); p2.goto(URL+'#om'); p2.wait_for_timeout(900); pg.wait_for_timeout(300)
+        # Når den anden fane starter, gemmer den, og hjulsiden tegnes igen. Rammer trykket den gamle knap, går det tabt, så der trykkes igen, til drejet er i gang.
+        for _ in range(5):
+            pg.click('#hjSpin'); pg.wait_for_timeout(250)
+            if pg.evaluate("!!document.getElementById('hjSpin')?.disabled"): break
         p2.evaluate("""(()=>{const S=JSON.parse(localStorage.getItem('olrating-v1'));const n=document.querySelectorAll('x').length;S.beers=S.beers.slice(1);localStorage.setItem('olrating-v1',JSON.stringify(S))})()""")
         pg.wait_for_selector('#hjRes .hjr',timeout=9000); p2.close()
-        hr2=pg.evaluate("""(()=>{const g=document.getElementById('hjG'),rot=parseFloat(g.style.transform.match(/rotate\\(([-\\d.]+)deg/)[1]),L=[...g.querySelectorAll('text')].map(t=>t.textContent),n=L.length,i=Math.floor(((360-rot%360)%360)/(360/n))%n,nm=document.querySelector('#hjRes h2').textContent;return [nm,L[i],n]})()""")
-        T('lykkehjul: en anden fane ændrer øllene midt i et drej, og vinderen er stadig den, pilen peger på',(hr2[0] if len(hr2[0])<=15 else hr2[0][:14]+'…')==hr2[1] and not over(),(len(ids0),hr2))
+        hr2=pg.evaluate("""(()=>{const g=document.getElementById('hjG'),rot=parseFloat(g.style.transform.match(/rotate\\(([-\\d.]+)deg/)[1]),L=[...g.querySelectorAll('text')].map(t=>t.textContent),n=L.length,i=Math.floor(((360-rot%360)%360)/(360/n))%n,h=document.querySelector('#hjRes h2'),nm=h?h.textContent:(document.getElementById('hjRes').textContent.includes('slettet')?'…':'(intet)');return [nm,L[i],n]})()""")
+        T('lykkehjul: en anden fane ændrer øllene midt i et drej, og vinderen er stadig den, pilen peger på (blev netop den slettet, står det i stedet)',(hr2[0] if len(hr2[0])<=15 else hr2[0][:14]+'…')==hr2[1] and not over(),(len(ids0),hr2))
         pg.click('[data-hj=ny]'); pg.wait_for_timeout(200)
     pg.goto(URL+'#beer-ux1'); pg.wait_for_timeout(500); pg.click('.rv .who >> nth=0'); pg.wait_for_timeout(400)
     T('navn i en bedømmelse fører til smagerens side',pg.evaluate('location.hash').startswith('#smager-'))
@@ -285,6 +289,19 @@ def run(b,name,vw):
 with sync_playwright() as p:
     b=getattr(p,os.environ.get('BROWSER','chromium')).launch(); make_photo(b)
     run(b,'pc',(1280,900)); run(b,'mobil',(390,844))
+    # en ondsindet backup-fil må ikke ødelægge siden: forkerte typer, kode i navne, en ønskeliste, der ikke er en liste
+    c=b.new_context(viewport={'width':390,'height':844},service_workers='block'); c.route(f'https://{HOST}/**',Mock().handle); pg=c.new_page(); perr=[]; pg.on('pageerror',lambda e:perr.append(str(e)))
+    pg.goto(URL); pg.wait_for_timeout(1200); pg.evaluate("(()=>{const S=JSON.parse(localStorage.getItem('olrating-v1'));S.me='';S.wish=['x9'];localStorage.setItem('olrating-v1',JSON.stringify(S))})()"); pg.reload(); pg.wait_for_timeout(800)
+    bad=os.path.join(tempfile.gettempdir(),'ond-backup.json')
+    json.dump({'app':'olrating','me':{'x':1},'wish':{'a':1},'beers':[{'id':'ond1','name':'<img src=x onerror=window.__ond=1>','brewery':7,'style':None,'abv':'x'},'ikke et objekt',None],'reviews':[{'id':'ondr','beer':'ond1','who':['x'],'s':'x'},7]},open(bad,'w'))
+    pg.goto(URL+'#profil'); pg.wait_for_timeout(400); pg.set_input_files('#importFile',bad); pg.wait_for_timeout(1500)
+    st=json.loads(pg.evaluate("localStorage.getItem('olrating-v1')"))
+    for h in ['','#profil','#alle','#buddies']: pg.goto(URL+h); pg.wait_for_timeout(300)
+    check('backup: en ondsindet fil ødelægger ikke navn, ønskeliste eller siden',st.get('me')=='' and st.get('wish')==['x9'] and all(isinstance(r.get('who'),str) for r in st['reviews']) and not pg.evaluate('window.__ond') and not perr and len(pg.inner_text('#app'))>100,(st.get('me'),st.get('wish'),perr[:2]))
+    json.dump({'app':'olrating','me':'  Sofie  ','wish':['x9','ok-2',{'x':1},'<script>'],'beers':[],'reviews':[]},open(bad,'w')); pg.goto(URL+'#profil'); pg.wait_for_timeout(300); pg.set_input_files('#importFile',bad); pg.wait_for_timeout(1200)
+    st=json.loads(pg.evaluate("localStorage.getItem('olrating-v1')"))
+    check('backup: et gyldigt navn og gyldige øl-id\'er bliver taget med',st.get('me')=='Sofie' and st.get('wish')==['x9','ok-2'],(st.get('me'),st.get('wish')))
+    c.close()
     # navne, der også er navne på indbyggede ting i JavaScript, må ikke få siden til at gå ned
     c=b.new_context(viewport={'width':390,'height':844},service_workers='block'); c.route(f'https://{HOST}/**',Mock().handle); pg=c.new_page(); perr=[]; pg.on('pageerror',lambda e:perr.append(str(e)))
     pg.goto(URL); pg.wait_for_timeout(1200)
