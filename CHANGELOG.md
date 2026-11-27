@@ -4,10 +4,14 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-27
 
-### Eftermiddag (14:52): besøgstælleren er i gang
+### Eftermiddag (15:31–15:32): blok 6 – docs og ændringslog kontrolleret
+- **Ændringsloggen:** 14 af dagens tidsrum passede ikke med tidspunkterne for de tilhørende commits (nogle sluttede før de begyndte). De er rettet.
+- **Docs læst mod koden:** `DRIFT.md` og `FUNKTIONER.md` sagde stadig, at 005 ikke var kørt. `IDEER.md` havde fil 003 på listen over det, der venter på Lucas, selv om den er kørt torsdag; nu står logo, loading screen, Ølspil og scanneren på telefonen der i stedet. `README.md` nævner nu `byg-scanner.sh`.
+
+### Eftermiddag (14:48–14:52): besøgstælleren er i gang
 - Lucas har kørt `supabase/005-besoeg.sql`. Testen mod den rigtige database (startet med hånden på GitHub) siger: "kørt, 5 besøg i alt". Fil 004 og funktionen `mails` er stadig ikke sat op.
 
-### Eftermiddag (14:16–14:36): 1000 logoer, plakater, og tilbage til profilen efter en rettelse
+### Eftermiddag (14:16–14:47): 1000 logoer, plakater, og tilbage til profilen efter en rettelse
 - **1000 logoer:** `tools/logoer.py` har 20 nye stilarter: 10 farvesæt (skov, bær, kobber, hav, kul, creme, rød, mint, lavendel, sort-hvid) i to former hver, nu også sekskant. Sammen med de 5 gamle giver de 40 motiver × 25 stilarter = 1000 logoer i `img/logoer/1000/` (`python3 tools/logoer.py img/logoer/1000 --1000`). Nr. 1–200 er de samme som før, så et nummer, man har valgt, gælder stadig. Nr. 201–1000 = 200 + (motiv − 1) × 20 + stil.
 - **`tools/logo-ud.py`** tager nu et nummer fra 1 til 1000 og kan tegne sekskanten.
 - **Plakat:** Et design med alle 1000 på én plakat i A1, og de samme logoer på fem A4-sider med 200 på hver. Logoerne ligger i plakaten som vektor, så de bliver skarpe, også når den printes stort.
@@ -18,58 +22,58 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 - **Test af logoerne:** `test_site.py` tjekker nu, at nr. 1, 200, 201, 1000, 1001 og 10000 peger på de rigtige motiver og stilarter, at filnavnene i `img/logoer/1000` passer med numrene, at alle fem former (også med ring) giver gyldig SVG, og at et nummer over 10000 afvises.
 - **Plakaten med 10.000:** Blokken med logoerne var blevet trukket over på A4-side 3 på lærredet, så A0-plakaten stod uden logoer. Den er lagt tilbage, og logoerne er nu låst på alle plakaterne, så de ikke kan trækkes væk ved et uheld. Plakaterne er også sendt som PDF.
 
-### Eftermiddag (14:03–14:06): tilføj øllen direkte fra søgningen
+### Eftermiddag (14:03–14:15): tilføj øllen direkte fra søgningen
 - **Søger man på en stregkode,** som ingen øl har, står der nu "Tilføj øl med stregkode …". Knappen åbner Tilføj øl med koden udfyldt, og siden henter navn og billede fra Open Food Facts.
 - **Søger man på et navn,** der ikke findes, åbner "Tilføj øl" nu med navnet udfyldt, så man ikke skal skrive det igen.
 - **Klik på alt** (`tests/klik.py`) kørt igen efter dagens nye knapper: 73 tryk på 27 sider, ingen fejl. Tilgængelighed (axe) også uden fejl.
 - **Test:** `test_site.py` tjekker begge veje fra søgningen.
 - **Microsoft Store:** Teksterne til butikssiden (`docs/STORE.md`) nævner nu scanneren, på dansk og engelsk. Funktionslisten har 9 punkter; Store tillader op til 20.
 
-### Eftermiddag (13:54–13:54): scan og bedøm med det samme
+### Eftermiddag (13:54–14:02): scan og bedøm med det samme
 - Scanner man en øl fra forsiden, som allerede findes på siden, åbner øllens side nu direkte ved **Bedøm**, med fokus på den første stjerne. Før landede man øverst og skulle rulle ned.
 - **Test:** `test_site.py` scanner (med efterlignet læser) en kendt øl og tjekker, at Bedøm står på skærmen.
 
-### Eftermiddag (13:40–13:45): alkoholfri fra stregkoden, og målinger
+### Eftermiddag (13:39–13:53): alkoholfri fra stregkoden, og målinger
 - **Alkoholfri:** Står en øl i Open Food Facts som alkoholfri (kategori), men uden alkoholtal, får den nu alligevel hak i "Alkoholfri". Under feltet står "alkoholfri" blandt det hentede.
 - **Kontrast målt igen** efter dagens nye knapper og bokse: alle 30 kombinationer af baggrund og farver er i orden på de 14 sider.
 - **Vægt og starttid (krav 9 i planen):** `index.html` er 101 KB pakket mod 96 KB fredag kl. 6.32. Stigningen er dagens nye funktioner: opslag i Open Food Facts, scanner med fokus og råd, rettelse af bedømmelser og billeder, egne øl på profilen. `js/scan.js` (17 KB pakket) hentes kun på enheder uden indbygget stregkodelæser. Starttiden er uændret: klar efter 61 ms mod 64 ms i morges (Chrome, telefonstørrelse, median af 7).
 - **Test:** `test_site.py` tjekker hakket i Alkoholfri med en efterlignet vare uden alkoholtal.
 
-### Eftermiddag (13:28–13:29): billeder i browsere, der ikke kan gemme dem på den normale måde
+### Eftermiddag (13:29–13:38): billeder i browsere, der ikke kan gemme dem på den normale måde
 - **Problemet:** Nogle browsere (fx Safaris motor i et privat vindue, som i testene på GitHub) kan ikke gemme et billede som en "Blob" i browserens database (IndexedDB). Så blev billedet gemt som tekst i den lille lokale lagerplads (localStorage, ca. 5 MB), som hurtigt bliver fuld ("Lageret er fuldt").
 - **Rettet:** Billedet gemmes i stedet som rå data (ArrayBuffer) i IndexedDB, der har meget mere plads, og laves om til et billede igen, når det skal vises eller sendes. Bevist: med den gamle kode lander billedet som tekst i localStorage, med den nye i IndexedDB.
 - **Test:** `test_site.py` efterligner en browser, der afviser Blobs, tilføjer en øl med billede og tjekker, at billedet ligger i IndexedDB og vises efter genindlæsning.
 
-### Eftermiddag (13:00–12:57): dine egne øl på Min profil
+### Middag og eftermiddag (12:52–13:20): dine egne øl på Min profil
 - **Øl, du har tilføjet:** Min profil har en ny boks med de øl, du har tilføjet (de 20 nyeste), hver med en **Ret**-knap, der åbner øllens oplysninger. Før skulle man finde øllen først. Skærmlæsere hører, hvilken øl knappen retter.
 - **Test:** `test_site.py` tjekker boksen og at Ret åbner den rigtige øl.
 - På små telefoner (under 420 px) skjules karakteren i den liste, så navnene har plads. Knappen er gjort lidt mindre.
 - **Nyt på siden** (`#nyt`) har fået to nye punkter øverst: "Scan stregkoden" og "Ret dine bedømmelser".
 
-### Middag (12:35–12:33): Safaris motor og Firefox på GitHub gennemgået
+### Middag (12:32–12:51): Safaris motor og Firefox på GitHub gennemgået
 - **Gennemgået:** Alle kørsler siden i morges, job for job. Udover fejlen med det delte billede (rettet 12.33) fejlede Safaris motor af og til på meldinger om forespørgsler, der blev afbrudt, fordi testen skiftede side midt i en synkronisering ("… due to access control checks"). Det er ikke en fejl på siden: Chromium og Firefox melder intet i samme situation. Testene ser nu bort fra netop den melding i Safaris motor.
 - **Firefox:** Den engelske test fejlede én gang, fordi den trykkede på sprogknappen, før den var tegnet. Nu venter testen på knappen. En konto-test fejlede også én gang: den ventede et fast sekund på svaret fra den efterlignede database. Nu venter den på, at feltet til koden kommer frem (højst 8 sekunder).
 - **Lille rettelse:** Når et gammelt billede slettes fra lageret i baggrunden, og det fejler, giver det ikke længere en ubehandlet fejl i konsollen. Det gjaldt to steder (når et billede skiftes, og når en øl er slettet på en anden enhed).
 - **Rettelse af tidligere status:** "Grøn i alle tre browsere" i morges passede ikke helt. Kørslen var grøn, men jobbet for Safaris motor var rødt flere gange. Fremover tjekker jeg hvert job, ikke kun kørslen.
 
-### Middag (12:15–12:24): et billede kunne slette et andet billede
+### Middag (12:10–12:31): et billede kunne slette et andet billede
 - **Fejl fundet i Safaris motor:** Siden 10.07 har ét tjek fejlet på GitHub i Safaris motor (WebKit). Jobbet må fejle uden at stoppe resten, så hele kørslen stod som grøn, og det overså jeg. Statussen om "grøn i alle tre browsere" har derfor ikke passet siden kl. 10.
 - **Årsagen var en rigtig fejl:** Kan browseren ikke gemme billeder i IndexedDB (fx Safaris private vindue), gemmes de som tekst. Så fik filen i lageret et navn ud fra selve billedet. Brugte en øl og en bedømmelse samme billede, delte de én fil. Fjernede man billedet fra bedømmelsen, forsvandt det også fra øllen. Bevist med den gamle kode: efter at fotoet er fjernet fra bedømmelsen, er øllens billede væk.
 - **Rettet:** Filnavnet indeholder nu også øllens eller bedømmelsens id, så to ting aldrig deler en fil.
 - **Test:** `test_site.py` slår IndexedDB fra, giver en øl og en bedømmelse samme billede, fjerner det ene og tjekker, at det andet er der endnu.
 
-### Middag (12:00–12:01): widgets på engelsk
+### Middag (11:59–12:09): widgets på engelsk
 - **Android:** Alle tekster i de 8 widgets og genvejene ligger nu i sprogfiler. Er telefonen sat til engelsk, står widgets og genveje på engelsk ("Beer of the week", "Latest ratings", "units today" osv.). Ellers dansk som før. Det står på listen over idéer som "engelske widgets", og er nu slettet derfra.
 - **Windows og Linux:** Widgetten følger sidens sprog. Vælger man English på siden, skifter widgetten også.
 - **Test:** `test_site.py` åbner desktop-widgetten med efterlignede data og tjekker dansk og engelsk. Android-appen bliver bygget på GitHub, men er **ikke prøvet på en telefon**.
 
-### Formiddag og middag (11:39–11:55): scanneren og tastaturet
+### Formiddag (11:39–11:58): scanneren og tastaturet
 - Når scanneren åbner, flytter fokus til **Luk**, så den kan lukkes med Enter eller Mellemrum (Esc virkede i forvejen). Når den lukker, kommer fokus tilbage til den knap, der åbnede den. Det hjælper dem, der bruger tastatur eller skærmlæser.
 - **Test:** `test_site.py` tjekker, hvor fokus står før og efter.
 - **Stregkodelæseren i alle browsere:** `test_site.py` læser nu en stregkode direkte med `js/scan.js` i den browser, testen kører i. På GitHub sker det også i Safaris motor (som på iPhone) og Firefox, hvor det falske kamera ikke findes.
 - **Ustabile test rettet:** `test_en.py` lagde eksempeldata ind, mens siden var åben, og siden kunne nå at gemme sine egne data oven i, når maskinen var travl. Det gav sjældne fejl (en side uden årstal og "tilbage til dansk" med anden rækkefølge). Nu lægges data ind fra en side uden sidens kode (`robots.txt` på samme adresse), og det samme i `klik.py`.
 
-### Formiddag (11:35–11:30): scanneren hjælper, når den ikke kan læse koden
+### Formiddag (11:25–11:38): scanneren hjælper, når den ikke kan læse koden
 - Har scanneren ikke fundet en kode efter 12 sekunder, skifter teksten til et råd: hold telefonen lidt længere væk, eller luk og skriv tallene under stregkoden.
 - Når en kode er læst, vibrerer telefonen kort (hvis den kan).
 - **Test:** `test_site.py` tjekker rådet med et falsk ur og at Luk lukker kameraet uden at udfylde noget.
@@ -79,14 +83,14 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 - Den kører på GitHub ved hver ændring, sammen med tilgængelighed og layout.
 - **`tests/test_en.py`:** Tjekket "tilbage til dansk giver præcis den samme tekst" fejlede én gang i formiddags uden at vise forskellen (samme tekster, kun en anden rækkefølge eller et andet antal). Det bestod de næste to gange. Testen skriver nu, hvor de to udgaver begynder at være forskellige, så årsagen kan findes, hvis det sker igen.
 
-### Formiddag (11:00–11:09): scanneren virker nu, også på iPhone
+### Formiddag (11:00–11:14): scanneren virker nu, også på iPhone
 - **Alvorlig fejl rettet:** Scanneren har aldrig givet en stregkode tilbage. Når den fandt koden, lukkede den kameraet på en måde, der svarede "ingen kode", før koden nåede frem. Så skete der ingenting, hverken på forsiden eller under Tilføj øl. Fejlen har været der siden første udgave. Bevist: med den gamle kode og en efterlignet scanner forbliver feltet tomt. Med den nye kommer koden frem.
 - **Scanner på iPhone og i Firefox:** De browsere har ikke den indbyggede stregkodelæser (BarcodeDetector), så Scan-knappen var skjult. Nu hentes en lille læser (`js/scan.js`, 70 kB, 17 kB pakket), når man trykker Scan. Den læser billedet fra kameraet ca. 6 gange i sekundet. Den hentes kun på de enheder, der mangler den indbyggede, og den virker også uden net.
 - **Læseren** er bygget af det åbne bibliotek ZXing (`@zxing/library`, Apache-2.0) med kun de dele, der læser stregkoder på varer (EAN, UPC og Code 128). `tools/byg-scanner.sh` bygger den igen fra `tools/scanner-entry.js`.
 - **Test:** `test_site.py` starter Chromium med et falsk kamera, der viser en stregkode (lavet i testen), og tjekker, at koden bliver læst, at felterne bliver udfyldt fra Open Food Facts (efterlignet), og at scanneren på forsiden åbner Tilføj øl med koden. En anden test efterligner den indbyggede læser på Android.
 - **Ikke prøvet:** en rigtig iPhone og en rigtig Android-telefon.
 
-### Formiddag (10:50–10:52): kredit til Open Food Facts, og ændringsloggen ryddet op
+### Formiddag (10:50–10:59): kredit til Open Food Facts, og ændringsloggen ryddet op
 - **Kredit:** Billeder fra Open Food Facts må bruges, når der står, hvor de kommer fra (licensen CC BY-SA). En øl, hvis billede er hentet derfra, viser nu "Billede: Open Food Facts (CC BY-SA)" med link til varen. Vælger man selv et andet billede, forsvinder linjen. Om-siden nævner Open Food Facts og licenserne.
 - **Ændringsloggen:** Fredagens punkter stod under en forkert dato ("27-11-2026"), og torsdag aftens punkter var havnet under fredag. Datoerne og rækkefølgen er rettet, og tidsrummene for formiddagens punkter passer nu med tidspunkterne for de tilhørende commits.
 - **Test:** `test_site.py` gemmer en øl med billede fra (efterlignet) Open Food Facts og tjekker, at linjen med kredit og link står på øllens side.

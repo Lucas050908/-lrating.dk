@@ -90,7 +90,7 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 ### Siden i tal og besøgstæller
 - På **Om** står *Siden i tal*: besøg i alt, besøg i dag, antal øl, bedømmelser og smagere.
 - Besøg er, hvor mange gange siden er åbnet. Det er ikke antal personer. Der gemmes kun ét tal pr. dag. Svarer tælleren ikke (før fil 005 er kørt), husker enheden det i en time, så den ikke spørger ved hvert besøg.
-- Tælleren starter den dag, `supabase/005-besoeg.sql` bliver kørt. Besøg før den dag kan ikke findes frem. Indtil da viser Om kun øl, bedømmelser og smagere.
+- Tælleren startede 27-11-2026, da `supabase/005-besoeg.sql` blev kørt. Besøg før den dag kan ikke findes frem. Svarer tælleren ikke, viser Om kun øl, bedømmelser og smagere.
 
 ### Karakterer med kommatal
 - Hver kategori (udseende, duft, smag, fylde og helhed) får en karakter fra 1,0 til 5,0.

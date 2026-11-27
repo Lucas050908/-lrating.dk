@@ -5,12 +5,15 @@ En liste over det, der ikke er lavet endnu, og hvorfor. Flyt et punkt til `CHANG
 ## Venter på Lucas
 | Hvad | Hvad skal der til |
 |---|---|
-| "Enig eller uenig?" skal deles mellem telefoner | Kør `supabase/003-konto-mails-enig.sql` i Supabase → SQL Editor |
 | Konto med kode på mail | Sæt mailtjenesten op (`KONTO.md`, trin 1), og prøv på `#konto-test`. Derefter slås `KONTO` til i `index.html` |
 | Mails om opdateringer | Opret funktionen `mails`, og kør `supabase/004-mails.sql` (`KONTO.md`, trin 2) |
 | Android-appen skal kunne opdateres uden at blive afinstalleret | Lav en fast signeringsnøgle, og læg den i GitHub-secrets (se `DRIFT.md`) |
 | Microsoft Store | Reservér navnet, og send de tre værdier fra Produktidentitet (se `STORE.md`). Bygningen af pakken er klar og mangler kun værdierne |
 | Ret navn og by hos Punktum/one.com | "Lucas Valentin Ottesen" og "Nørresundby" |
+| Nyt logo | Vælg et nummer fra 1 til 10.000 på plakaten. Så sætter `tools/logo-ud.py` det ind alle steder |
+| Loading screen | Vælg et nummer fra 1 til 12 (nr. 7 bruges nu) |
+| Ølspil med point | Ja eller nej. Bygges kun med point for at gætte og smage, ikke for at drikke |
+| Prøv scanneren på en rigtig telefon | Tilføj øl → Scan, og Scan på forsiden. Er kun prøvet med et falsk kamera |
 
 ## Større ting, der kræver en beslutning
 | Idé | Hvorfor den ikke bare er lavet |

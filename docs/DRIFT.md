@@ -36,7 +36,7 @@ Workflowet **Tjek domæne** (`.github/workflows/domaene.yml`) kan startes under 
   2. Authentication → Sign In / Providers → slå **Allow anonymous sign-ins** til.
 - `supabase/002-slet-billeder.sql` er kørt (bekræftet af testen mod den rigtige database den 26-11-2026: billedet forsvinder, når en øl slettes).
 - **Mangler at blive kørt:** `supabase/003-konto-mails-enig.sql` (stemmer i "Enig eller uenig?", konto og mailvalg) og senere `supabase/004-mails.sql` (udsendelse af mails). Indtil 003 er kørt, bliver stemmer liggende på enheden og sendes senere.
-- **Besøgstæller:** `supabase/005-besoeg.sql` slår tælleren til. Den kan køres alene, også før 003 og 004: Supabase → SQL Editor → indsæt hele filen → Run. Tallet starter på 0 den dag, filen køres.
+- **Besøgstæller:** `supabase/005-besoeg.sql` slår tælleren til. Den er kørt (27-11-2026). Den kan køres igen uden skade: Supabase → SQL Editor → indsæt hele filen → Run.
 - **Konto og mails:** Kræver en mailtjeneste (Resend), DNS-linjer hos one.com, to mailskabeloner og en funktion i Supabase. Hele opsætningen står trin for trin i `docs/KONTO.md`. Nøglen fra Resend må kun stå hos Resend og i Supabase.
 - **Tjek at det virker:** Åbn ølrating.dk → Min profil. Nederst skal der stå "● Forbundet". Tilføj en øl på én enhed, og se den dukke op på en anden inden for et halvt minut.
 - **Moderation:** Alle kan tilføje øl. Brugere kan trykke "Anmeld" på andres øl og bedømmelser. Det sender en mail til fejlrapport-adressen med et id. Upassende indhold slettes i Supabase → Table Editor (`beers`, `reviews`, søg på id) eller Storage (`billeder`).
@@ -52,7 +52,7 @@ For at opdateringer kan installeres oven i den gamle app, skal appen signeres me
 1. Afinstallér den gamle app. Hent `olrating.apk` fra GitHub-udgivelsen `android-app`, og installér den.
 2. Åbn appen én gang, og vent til forsiden er vist. Så får widgets data og billeder.
 3. Hold fingeren på hjemmeskærmen → Widgets → ølrating. Tilføj **Ugens øl med billede** og **Siden i tal**.
-4. Tjek: Ugens øl viser et billede, hvis øllen har et. Siden i tal viser øl, bedømmelser og smagere. Besøg viser en streg, indtil `supabase/005-besoeg.sql` er kørt.
+4. Tjek: Ugens øl viser et billede, hvis øllen har et. Siden i tal viser øl, bedømmelser og smagere. Besøg viser tallet fra databasen (`supabase/005-besoeg.sql` er kørt). En streg betyder, at appen ikke har hentet tallet endnu: åbn appen.
 5. Tryk på hver widget. Ugens øl åbner øllen, og Siden i tal åbner Om.
 6. Virker noget ikke, så tag et skærmbillede og send det. Skriv, hvilken telefon det er.
 
