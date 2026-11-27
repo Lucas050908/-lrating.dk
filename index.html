@@ -482,6 +482,7 @@ footer .wrap{position:relative;z-index:2}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}#fx{display:none}.ring{--p:var(--to)}}
 .editx{min-height:56px}
 .mbrow{display:flex;align-items:center;gap:8px}.mbrow>.mini{flex:1;min-width:0}.mbrow>button{flex:none;min-height:36px;padding:6px 14px;font-size:14px}@media(max-width:420px){.mbrow .big{display:none}}
+.fnote{margin:-8px 0 16px;padding:10px 14px;border-radius:12px;background:rgba(255,200,90,.12);border:1px solid rgba(255,200,90,.35);font-size:15px}.fnote .lnk{font-weight:700}
 </style>
 <script>/* Siden scroller selv ved hvert sideskift (route). Browserens egen genoprettelse ved genindlæsning gav kun et hop, mens siden blev tegnet. */try{history.scrollRestoration="manual"}catch(e){}
 try{const k=JSON.parse(localStorage.getItem("olrating-v1")||"{}").look||{},d=document.documentElement.dataset;for(const a of["bg","acc","pat"])if(/^[a-z]{2,12}$/.test(k[a]||"")&&!["nat","std","none"].includes(k[a]))d[a]=k[a]}catch(e){}</script>
@@ -1029,6 +1030,7 @@ function home(){const L=enrich(),Rv=reviews().slice().sort((a,b)=>b.date.localeC
    <div><div class="head"><h2 id="alle">${F.q?`Resultater for “${esc(F.q)}”`:'Højest bedømt lige nu'}</h2>
     <label for="sort" style="display:flex;align-items:center;gap:8px;font-weight:400">Sortér<select id="sort"><option value="score">Højeste score</option><option value="new">Nyeste</option><option value="count">Flest bedømmelser</option><option value="abv">Stærkeste</option><option value="name">Navn A–Å</option></select></label></div>
     <div class="chips" id="chips" style="margin-bottom:20px">${['',...Object.keys(STYLES)].map(s=>`<button type="button" class="chip" data-style="${esc(s)}" aria-pressed="${F.style===s}">${s||'Alle'}</button>`).join('')}</div>
+    <p id="fNote" class="fnote" hidden aria-live="polite"></p>
     <details class="more"${F.maxPrice||F.minAbv||F.maxAbv||F.ftags.length||F.untried||F.withImg?' open':''}><summary>Flere filtre</summary><div class="fgrid">
      <label for="fPrice" style="font-weight:600">Pris <span class="hint" id="fPriceO">${F.maxPrice?`op til ${F.maxPrice} kr`:'alle priser'}</span><input type="range" id="fPrice" min="0" max="100" step="5" value="${F.maxPrice}"></label>
      <label for="fMinAbv" style="font-weight:600">Alkohol fra <span class="hint" id="fMinAbvO">${F.minAbv?`mindst ${F.minAbv} %`:'alle'}</span><input type="range" id="fMinAbv" min="0" max="12" step="0.5" value="${F.minAbv}"></label>
@@ -1072,7 +1074,10 @@ function renderGrid(){EC=null;const g=$('grid');if(!g)return;const q=F.q.toLower
   const me=S.me.trim().toLowerCase(),tried=new Set(reviews().filter(r=>me&&r.who.toLowerCase()===me).map(r=>r.beer));
   let L=enrich().filter(b=>(!F.maxPrice||(b.price&&b.price<=F.maxPrice))&&(!F.minAbv||b.abv>=F.minAbv)&&(!F.maxAbv||(b.abv&&b.abv<=F.maxAbv))&&(!F.untried||!tried.has(b.id))&&(!F.af||isAf(b))&&(!F.withImg||b.img)&&(!F.ftags.length||F.ftags.every(t=>b.rs.some(r=>(r.tags||[]).includes(t))))&&(!F.style||b.style===F.style)&&(!q||matches([b.name,b.brewery,b.style,b.city,b.addedBy,b.code||'',b.country||'',...b.rs.map(r=>r.who)].join(' '),q)));
   const so={new:(a,b)=>(b.date||'').localeCompare(a.date||''),score:(a,b)=>b.avg-a.avg||b.rs.length-a.rs.length,count:(a,b)=>b.rs.length-a.rs.length,abv:(a,b)=>b.abv-a.abv,name:(a,b)=>a.name.localeCompare(b.name,'da')};
-  L.sort(so[F.sort]);$('sort').value=F.sort;const sig=JSON.stringify({...F,lim:0});if(sig!==renderGrid.sig){renderGrid.sig=sig;F.lim=24}const more=L.length-F.lim;
+  L.sort(so[F.sort]);$('sort').value=F.sort;
+  {const on=[F.style,F.af&&'alkoholfri',F.untried&&'ikke smagt',F.withImg&&'med billede',F.maxPrice&&`højst ${F.maxPrice} kr`,F.minAbv&&`mindst ${F.minAbv} %`,F.maxAbv&&`højst ${F.maxAbv} %`,...F.ftags].filter(Boolean),fn=$('fNote');   /* et filter må aldrig være skjult: sig det, og giv en vej tilbage */
+   if(fn){fn.hidden=!on.length||!!q;fn.innerHTML=on.length?`Viser kun: ${esc(on.join(', '))} (${L.length} af ${beers().length} øl). <button type="button" class="lnk" id="fClear">Vis alle øl</button>`:''}
+   const cp=document.querySelector('#chips .chip[aria-pressed="true"]'),cs=$('chips');if(cp&&cs&&F.style)cs.scrollLeft=Math.max(0,cp.offsetLeft-cs.offsetLeft-16)}const sig=JSON.stringify({...F,lim:0});if(sig!==renderGrid.sig){renderGrid.sig=sig;F.lim=24}const more=L.length-F.lim;
   g.innerHTML=L.length?L.slice(0,F.lim).map(card).join('')+(more>0?`<div style="grid-column:1/-1;text-align:center"><button type="button" class="btn" id="moreBtn">Vis flere (${more} mere)</button></div>`:''):!beers().length?`<div class="empty" style="grid-column:1/-1"><span class="ic">${CAM('var(--gl)')}</span><h3>Ingen øl endnu</h3><span style="opacity:.8;max-width:30em">ølrating.dk er helt ny. Tag et billede af den øl, du drikker, giv den karakter, og bliv den første på listen.</span><a class="btn" href="#tilfoej">+ Tilføj den første øl</a></div>`:`<div class="empty" style="grid-column:1/-1"><h3>Ingen øl fundet</h3>${(c=>c?`<span style="opacity:.8">Ingen øl på siden har den stregkode endnu. Tilføj den, så henter siden selv navn og billede, hvis den findes i Open Food Facts.</span><button type="button" class="btn" data-addcode="${c}">Tilføj øl med stregkode ${c}</button>`:`<span style="opacity:.8">Prøv en anden søgning, eller tilføj øllen selv.</span><button type="button" class="btn" data-addname="${esc(F.q.trim().slice(0,60))}">Tilføj øl</button>`)((q=>/^\d{8,14}$/.test(q)&&eanOk(q)?q:"")(F.q.replace(/\s/g,"")))}</div>`}
 
 function revFields(withImg){return `
@@ -1733,6 +1738,7 @@ document.addEventListener('click',e=>{const t=e.target.closest('button,a');if(!t
   else if(t.dataset.dish){foodView.d=t.dataset.dish;route()}
   else if(t.dataset.year){diaryView.y=t.dataset.year;route()}
   else if(t.id==='cmpBtn'){const L=enrich(),a=L.find(x=>x.id===t.dataset.id),o=L.filter(x=>x.id!==a.id).sort((x,y)=>(y.style===a.style)-(x.style===a.style)||y.avg-x.avg)[0];CMP=[a.id,o?o.id:a.id];location.hash='sammenlign'}
+  else if(t.id==='fClear'){Object.assign(F,{style:'',maxPrice:0,minAbv:0,maxAbv:0,ftags:[],untried:false,withImg:false,af:false});document.querySelectorAll('#chips .chip').forEach(c=>c.setAttribute('aria-pressed',c.dataset.style===''));route()}
   else if(t.id==='fReset'){Object.assign(F,{maxPrice:0,minAbv:0,maxAbv:0,ftags:[],untried:false,withImg:false,af:false});route();setTimeout(()=>{const m=document.querySelector('.more');if(m)m.open=true},0)}
   else if(t.dataset.ftag){const x=t.dataset.ftag;F.ftags=F.ftags.includes(x)?F.ftags.filter(y=>y!==x):[...F.ftags,x];t.setAttribute('aria-pressed',F.ftags.includes(x));renderGrid()}
   else if(t.id==='scanSearch'){scanSearch()}

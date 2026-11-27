@@ -375,6 +375,15 @@ with sync_playwright() as p:
     pg.reload(); pg.wait_for_timeout(1500); shown=pg.evaluate("[...document.querySelectorAll('.ph img')].some(i=>i.src.startsWith('blob:')&&i.naturalWidth>0)")
     check('uden Blob i IndexedDB: billedet gemmes alligevel i IndexedDB og vises efter genindlæsning',im.startswith('idb:') and shown,(im[:20],shown))
     c.close()
+    # et filter fra Ølkalenderen eller Stilguiden må ikke være skjult på forsiden
+    c=b.new_context(viewport={'width':390,'height':844},service_workers='block'); c.route(f'https://{HOST}/**',lambda r:r.abort()); pg=c.new_page()
+    pg.goto(URL+'robots.txt'); pg.evaluate("""()=>localStorage.setItem('olrating-v1',JSON.stringify({beers:[{id:'j1',name:'Julebryg',brewery:'Skovlyst',style:'Juleøl',addedBy:'A',date:'2026-11-26',img:''},{id:'t1',name:'Tuborg Grøn',brewery:'Tuborg',style:'Pilsner',addedBy:'A',date:'2026-11-26',img:''},{id:'g1',name:'Guinness',brewery:'Guinness',style:'Stout',addedBy:'A',date:'2026-11-26',img:''}],reviews:[]}))""")
+    pg.goto(URL+'#stilguide'); pg.wait_for_timeout(900); pg.click('.gcard[data-style="Juleøl"]'); pg.wait_for_timeout(1200)
+    note=pg.inner_text('#fNote') if pg.is_visible('#fNote') else ''; n1=pg.eval_on_selector_all('#grid .card','e=>e.length')
+    vis=pg.evaluate("(()=>{const c=document.querySelector('#chips .chip[aria-pressed=\"true\"]').getBoundingClientRect(),r=document.getElementById('chips').getBoundingClientRect();return c.left>=r.left-1&&c.right<=r.right+1})()")
+    pg.click('#fClear'); pg.wait_for_timeout(800); n2=pg.eval_on_selector_all('#grid .card','e=>e.length')
+    check('forsiden: et filter fra Stilguiden står tydeligt, knappen kan ses, og "Vis alle øl" viser alle igen','Juleøl' in note and '1 af 3' in note and n1==1 and vis and n2==3 and pg.is_hidden('#fNote'),(note,n1,vis,n2))
+    c.close()
     # widget i programmet til Windows og Linux (desktop/widget.html): dansk som standard, engelsk når siden er sat til engelsk
     c=b.new_context(viewport={'width':340,'height':300}); pg=c.new_page()
     pg.add_init_script("window.W={onData(f){window.__f=f},onImages(){},open(){},addUnit(){},close(){},pin(){}}")

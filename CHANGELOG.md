@@ -4,6 +4,12 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-27
 
+### Aften (20:23–20:32): et skjult filter på forsiden
+- **Problemet (fundet med Lucas' skærmbillede):** Trykker man "Se juleøl" i Ølkalenderen eller en stil i Stilguiden, viser forsiden kun den stil. Knappen med stilen lå langt ude til højre i rækken af stilarter, så man ikke kunne se, at et filter var slået til. Det så ud, som om øl var forsvundet.
+- **Rettet:** Når et filter er slået til, står der nu under stilarterne fx "Viser kun: Juleøl (1 af 3 øl). Vis alle øl", og knappen for stilen rulles ind, så den kan ses. "Vis alle øl" slår alle filtre fra.
+- **Test:** `test_site.py` går fra Stilguiden til forsiden og tjekker linjen, at knappen kan ses, og at "Vis alle øl" viser alle øl igen.
+- **Databasen er tjekket:** Testen mod den rigtige database består (anonymt login, øl, bedømmelser og billeder gemmes og ses fra en anden enhed). Øllen "Julemandens Classic", som Lucas mener at have tilføjet, ligger ikke i databasen. Årsagen er ikke fundet endnu.
+
 ### Eftermiddag (15:31–15:32): blok 6 – docs og ændringslog kontrolleret
 - **Ændringsloggen:** 14 af dagens tidsrum passede ikke med tidspunkterne for de tilhørende commits (nogle sluttede før de begyndte). De er rettet.
 - **Docs læst mod koden:** `DRIFT.md` og `FUNKTIONER.md` sagde stadig, at 005 ikke var kørt. `IDEER.md` havde fil 003 på listen over det, der venter på Lucas, selv om den er kørt torsdag; nu står logo, loading screen, Ølspil og scanneren på telefonen der i stedet. `README.md` nævner nu `byg-scanner.sh`.
