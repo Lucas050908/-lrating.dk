@@ -173,7 +173,9 @@ with sync_playwright() as p:
     K1=ctx('Lucas',(390,844),{**kb('uk1','Kontoøl et'),'wish':['uk1'],'follow':['Sofie']},quiet=True); K1.goto(URL+'#profil'); K1.wait_for_timeout(3000)
     check('konto: skjult, indtil den er slået til',K1.query_selector('#acctBox') is None)
     K1.goto(URL+'#konto-test'); K1.wait_for_timeout(900); uid1=sb(K1)['user']['id']
-    K1.fill('#acMail','Lucas@Example.dk'); K1.click('#acctForm button'); K1.wait_for_timeout(1000)
+    K1.fill('#acMail','Lucas@Example.dk'); K1.click('#acctForm button')
+    try: K1.wait_for_selector('#acCode',timeout=8000)
+    except Exception: pass
     check('konto: en kode sendes til mailen',M.mails[-1:]==[('lucas@example.dk','email_change','123456')] and K1.query_selector('#acCode') is not None,M.mails[-1:])
     K1.fill('#acCode','000000'); K1.click('#acctCode button'); K1.wait_for_timeout(1000)
     check('konto: en forkert kode afvises',K1.query_selector('#acCode') is not None and not M.users[uid1]['email'] and 'passer ikke' in K1.inner_text('#toast'),K1.inner_text('#toast'))
@@ -185,7 +187,9 @@ with sync_playwright() as p:
     check('konto: navn, ønskeliste og dem, man følger, gemmes på kontoen',kd.get('me')=='Lucas' and kd.get('wish')==['uk1'] and kd.get('follow')==['Sofie'],kd)
     K2=ctx('',(390,844),{**kb('uk2','Kontoøl to'),'me':'','wish':['uk2'],'follow':['Emil','sofie']},quiet=True); K2.goto(URL+'#konto-test'); K2.wait_for_timeout(3500); uid2=sb(K2)['user']['id']
     ok0=uid2!=uid1 and M.t['beers']['uk2']['owner']==uid2
-    K2.fill('#acMail','lucas@example.dk'); K2.click('#acctForm button'); K2.wait_for_timeout(1200)
+    K2.fill('#acMail','lucas@example.dk'); K2.click('#acctForm button')
+    try: K2.wait_for_selector('#acCode',timeout=8000)   # venter på svaret i stedet for et fast tidsrum (Firefox var en gang for langsom)
+    except Exception: pass
     check('konto: findes mailen i forvejen, sendes en login-kode',ok0 and M.mails[-1:]==[('lucas@example.dk','magiclink','654321')],M.mails[-1:])
     K2.fill('#acCode','654321'); K2.click('#acctCode button'); K2.wait_for_timeout(3000); se2=sb(K2)
     check('konto: samme konto på den anden enhed, og dens øl er flyttet over på kontoen',se2['user']['id']==uid1 and M.t['beers']['uk2']['owner']==uid1 and uid2 not in M.users,(se2['user'],M.t['beers']['uk2']['owner']))
