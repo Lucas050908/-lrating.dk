@@ -23,6 +23,10 @@ function cleanImgs(o) {
 }
 function loadImgs() { try { return cleanImgs(JSON.parse(fs.readFileSync(imgFile(), 'utf8'))); } catch (e) { return {}; } }
 
+// Links ud af appen åbnes kun, hvis de er almindelige web- eller mail-links. Andre slags (file:, smb:, programmer) kan åbne ting på computeren.
+function openOut(url) {
+  try { const u = new URL(url); if (['https:', 'http:', 'mailto:'].includes(u.protocol)) shell.openExternal(u.href); } catch (e) { /* ugyldigt link */ }
+}
 function isOurs(url) { try { return HOSTS.includes(new URL(url).hostname); } catch (e) { return false; } }
 
 function createMain(hash) {
@@ -34,8 +38,8 @@ function createMain(hash) {
   });
   win.loadURL(SITE + (hash || ''));
   // Links ud af siden åbnes i den almindelige browser
-  win.webContents.setWindowOpenHandler(({ url }) => { if (!isOurs(url)) shell.openExternal(url); return { action: 'deny' }; });
-  win.webContents.on('will-navigate', (e, url) => { if (!isOurs(url)) { e.preventDefault(); shell.openExternal(url); } });
+  win.webContents.setWindowOpenHandler(({ url }) => { if (!isOurs(url)) openOut(url); return { action: 'deny' }; });
+  win.webContents.on('will-navigate', (e, url) => { if (!isOurs(url)) { e.preventDefault(); openOut(url); } });
   win.on('closed', () => { win = null; });
 }
 

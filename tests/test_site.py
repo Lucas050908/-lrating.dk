@@ -332,6 +332,9 @@ with sync_playwright() as p:
     # så siden får at vide, at den er offline, og prøver slet ikke at synkronisere. Så rører testen aldrig den rigtige database.
     c=b.new_context(); c.route(f'https://{HOST}/**',Mock().handle); pg=c.new_page(); pg.add_init_script("Object.defineProperty(Navigator.prototype,'onLine',{get:()=>false})"); pg.goto(URL); pg.wait_for_timeout(3500)
     sw=pg.evaluate("navigator.serviceWorker.getRegistration().then(r=>!!(r&&r.active))")
+    # en adresse, der ikke findes, må ikke erstatte forsiden i service workerens lager
+    try: pg.goto(URL+'findes-ikke'); pg.wait_for_timeout(500)
+    except Exception: pass
     c.set_offline(True); ok=False; how=[]
     for navn,nav in (('genindlæs',lambda: pg.reload()),('åbn igen',lambda: pg.goto(URL))):   # i Firefox fejlede genindlæsning uden net i testen. Derfor prøves også at åbne siden igen, og resultatet af begge skrives ud
         try: nav(); pg.wait_for_timeout(1200); ok=len(pg.inner_text('#app'))>100; how.append((navn,ok))

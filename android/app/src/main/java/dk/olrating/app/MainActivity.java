@@ -56,8 +56,16 @@ public class MainActivity extends Activity {
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest req) {
                 Uri u = req.getUrl();
                 if (isOwn(u)) return false;
-                // Andre links (fx GitHub, mail) åbnes i telefonens browser
-                try { startActivity(new Intent(Intent.ACTION_VIEW, u)); } catch (Exception ignored) { }
+                // Andre links (fx GitHub, mail, kort) åbnes i telefonens browser eller den app, der hører til.
+                // Kun almindelige slags links, og kun i apps, der må åbnes fra en browser (CATEGORY_BROWSABLE).
+                String sc = u.getScheme() == null ? "" : u.getScheme().toLowerCase(java.util.Locale.ROOT);
+                if (sc.equals("https") || sc.equals("http") || sc.equals("mailto") || sc.equals("geo") || sc.equals("tel")) {
+                    try {
+                        Intent out = new Intent(Intent.ACTION_VIEW, u);
+                        out.addCategory(Intent.CATEGORY_BROWSABLE);
+                        startActivity(out);
+                    } catch (Exception ignored) { }
+                }
                 return true;
             }
         });

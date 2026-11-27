@@ -6,6 +6,17 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 27-11-2026
 
+### Morgen (08:31–08:34): uden net kunne appen vise en fejlside
+- **Rettet:** Service workeren gemte enhver side, man åbnede på domænet, som den udgave af forsiden, der bruges uden net. Åbnede man en adresse, der ikke findes, blev fejlsiden ("404") gemt i stedet, og så viste appen fejlsiden næste gang, man var uden net. Nu gemmes kun selve forsiden, og kun når den er hentet uden fejl.
+- **Mindre at hente på telefonen:** Service workeren hentede også de tre store forsidebilleder til pc (ca. 540 kB) på telefoner, der aldrig viser dem. De er taget ud af pakken. En pc gemmer dem i stedet første gang, de bliver vist.
+- **Test:** Offline-tjekket i `test_site.py` åbner nu først en adresse, der ikke findes. Med den gamle service worker fejler det (appen viser "Error code: 404"), og med den nye består det.
+
+### Morgen (08:24–08:31): links ud af apps er gjort sikre
+- **Windows og Linux:** Et link, der fører væk fra ølrating.dk, blev åbnet af styresystemet uden at tjekke, hvilken slags link det var. Et `file:`-link eller et link til et andet program kunne dermed åbne noget på computeren. Nu åbnes kun `https:`, `http:` og `mailto:`.
+- **Android:** På samme måde åbnes nu kun links med `https:`, `http:`, `mailto:`, `geo:` og `tel:`, og kun i apps, der må åbnes fra en browser (`CATEGORY_BROWSABLE`).
+- Programmet til Windows og Linux var i forvejen sat rigtigt op (`contextIsolation`, `sandbox`, ingen Node i siden), og beskederne fra siden til programmet tjekker det, de får.
+- Ingen af de to ændringer er prøvet på en rigtig computer eller telefon. GitHub bygger dem.
+
 ### Morgen (08:16–08:23): tilgængelighed tjekket med axe-core
 - **Nyt værktøj, `tests/axe.py`:** Det kører axe-core, et udbredt værktøj til at tjekke tilgængelighed, over 25 sider på telefon og pc, på dansk og engelsk, efter WCAG 2.2 AA. Kontrast tjekkes ikke dér, fordi `tests/kontrast.py` gør det.
 - **Det fandt tre ting, og de er rettet:**

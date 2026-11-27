@@ -115,6 +115,9 @@
 
 ### Offline
 - `sw.js` gemmer app-skallen.
+- Når siden åbnes, hentes den fra nettet først. Kun selve forsiden (`/` eller `/index.html`) med status 200 gemmes som den udgave, der bruges uden net, så en fejlside aldrig tager dens plads.
+- Billeder, ikoner, skrifttyper og scripts tages fra lageret først.
+- De store forsidebilleder til pc (`fjord1.jpg` osv.) er ikke med i `SHELL`, fordi telefoner kun bruger de små (`-m`). De gemmes, første gang de bliver vist.
 - **Husk at hæve `const V='olrating-vNN'` ved hver udgivelse**, ellers ser brugerne den gamle version.
 
 ## Broen mellem side og apps
@@ -176,6 +179,7 @@ Widget-data, som `syncApp()` sender:
 - Alle kan kalde `besoeg()`, så tallet kan pustes op. Det er et tal til pynt, ikke en måling.
 
 ## Android (`android/`)
+- **Links ud af appen:** `shouldOverrideUrlLoading` åbner kun `https:`, `http:`, `mailto:`, `geo:` og `tel:`, og kun i apps med `CATEGORY_BROWSABLE`.
 - **Opsætning:** Gradle med plugin 8.5.2, compileSdk 34, minSdk 24, pakke `dk.olrating.app`.
 - **`MainActivity`:**
   - WebView med DOM storage, filvælger, kamera-tilladelse og tilbage-knap.
@@ -191,6 +195,7 @@ Widget-data, som `syncApp()` sender:
   - Den signerer med secrets, hvis de findes (se DRIFT.md). Ellers bruger den en midlertidig nøgle.
 
 ## Windows og Linux (`desktop/`)
+- **Links ud af programmet:** `openOut()` åbner kun `https:`, `http:` og `mailto:` i systemet. Andre slags links bliver ignoreret.
 - **Electron 33:**
   - `main.js` styrer hovedvinduet, widget-vinduet, ikonet ved uret og at der kun kører én instans.
   - `preload.js` udstiller `OlratingApp` til siden. `widget-preload.js` udstiller `W` til widgetten.
