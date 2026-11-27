@@ -6,6 +6,11 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 27-11-2026
 
+### Morgen (08:10–08:15): sikkerhedstest og nye skærmbilleder til Store
+- **Ny test:** Alle felter, som brugerne kan skrive i (navn, øl, bryggeri, stil, by, note, smagsord, tekst), får et forsøg på at køre et script. Derefter besøges 18 sider på dansk og engelsk, og lykkehjulet drejes. Intet bliver kørt. For at være sikker på, at testen virker, blev den også kørt mod en side, der med vilje satte teksten ind urenset, og der fejlede den som den skulle.
+- Mail-funktionen (`supabase/functions/mails/index.ts`) er læst igennem: Den renser al tekst, før den kommer i en mail.
+- **Microsoft Store:** Tre nye skærmbilleder på dansk og engelsk: Beer buddies, Lykkehjulet og Indstillinger. De syv gamle er lavet igen med siden, som den er nu. Det er de 10, Store højst tager pr. sprog.
+
 ### Morgen (07:56–08:08): gennemgang af gårsdagens kode
 - **Rettet: Navne kunne få siden til at gå ned.** Hed en smager, et bryggeri, en stil eller et smagsord fx `constructor`, `toString` eller `__proto__`, gik forsiden, Venner og Beer buddies ned for alle. Det skyldtes, at navnene blev brugt som nøgler i almindelige JavaScript-objekter, hvor de navne allerede findes. 15 steder bruger nu objekter uden den slags indbyggede navne (`Object.create(null)`).
 - **Rettet: Lykkehjulet.** Blev siden tegnet igen midt i et drej (fx når nye data blev hentet, eller en anden fane gemte), kunne øllene på hjulet skifte, så vinderen ikke var den, pilen pegede på. Nu står øllene stille, mens hjulet drejer, og mens resultatet vises. En øl, der er slettet imens, ryddes væk ved næste drej. Knappen er låst, mens hjulet drejer.

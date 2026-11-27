@@ -27,16 +27,18 @@ SEED="""(lang=>{const S={beers:[],reviews:[],me:'Lucas',lang,season:'none',wish:
  S.tast=[{id:'julefrokost26',name:'Julefrokost 2026',host:'Lucas',blind:true,revealed:true,beers:['Julebryg fra Kajen','Solnedgang IPA','Mørk Fjord Stout','Havnepilsner'],votes:{Lucas:[4,5,4,3],Magnus:[4,4,5,4],Emma:[3,5,4,3],Oliver:[4,4,4,4]}}];
  S.tours=[{id:'julefrokosttur',name:'Julefrokost-tur i Aalborg',date:'2026-12-11T19:00',meet:'Ved havnefronten',note:'Husk julesweater!',host:'Lucas',stops:[{name:'Havnebaren',time:'19:00',addr:''},{name:'Bryggerhjørnet',time:'20:30',addr:''},{name:'Kælderen',time:'22:00',addr:''}],members:[{name:'Lucas'},{name:'Magnus'},{name:'Emma'},{name:'Oliver'}]}];
  localStorage.setItem('olrating-v1',JSON.stringify(S))})"""
-SHOTS=[('1-forside','',0),('2-alle-oel','#alle',-1),('3-oel','#beer-b2',0),('4-smagning','#smagning-julefrokost26',0),('5-byttur','#byttur-julefrokosttur',0),('6-profil','#profil',0),('7-aarets-oel','#aarets',0)]
+SHOTS=[('1-forside','',0),('2-alle-oel','#alle',-1),('3-oel','#beer-b2',0),('4-smagning','#smagning-julefrokost26',0),('5-byttur','#byttur-julefrokosttur',0),('6-profil','#profil',0),('7-aarets-oel','#aarets',0),('8-beer-buddies','#buddies',0),('9-lykkehjul','#hjul',2),('10-indstillinger','#indstillinger',3)]
 with sync_playwright() as p:
     b=p.chromium.launch()
     for lang,folder in [('da',''),('en','en')]:
         out=os.path.join(ROOT,'store',folder); os.makedirs(out,exist_ok=True)
         c=b.new_context(viewport={'width':1366,'height':768},service_workers='block',reduced_motion='reduce'); c.route(f'https://{HOST}/**',Mock().handle)
-        pg=c.new_page(); pg.clock.set_fixed_time(NOW); pg.goto(URL); pg.wait_for_timeout(600); pg.evaluate(SEED,lang); pg.reload(); pg.wait_for_timeout(1500)
+        pg=c.new_page(); pg.add_init_script("(()=>{let x=7;Math.random=()=>((x=(x*16807)%2147483647)-1)/2147483646})()"); pg.clock.set_fixed_time(NOW); pg.goto(URL); pg.wait_for_timeout(600); pg.evaluate(SEED,lang); pg.reload(); pg.wait_for_timeout(1500)
         for name,h,scroll in SHOTS:
             pg.goto(URL+h); pg.wait_for_timeout(900)
             if scroll==-1: pg.evaluate("window.scrollTo(0,document.getElementById('alle').getBoundingClientRect().top+scrollY-90)"); pg.wait_for_timeout(300)
+            if scroll==2: pg.click('[data-hj=alle]'); pg.wait_for_timeout(300); pg.click('#hjSpin'); pg.wait_for_timeout(600); pg.add_style_tag(content='.hjw{max-width:330px}'); pg.wait_for_timeout(100); pg.evaluate("window.scrollTo(0,document.querySelector('.hjw').getBoundingClientRect().top+scrollY-84)"); pg.wait_for_timeout(300)
+            if scroll==3: pg.click('[data-look="bg:aften"]'); pg.wait_for_timeout(200); pg.click('[data-look="acc:guld"]'); pg.wait_for_timeout(200); pg.click('[data-look="pat:stjerner"]'); pg.wait_for_timeout(400)
             pg.screenshot(path=os.path.join(out,name+'.png')); print(lang,name)
         c.close()
     b.close()

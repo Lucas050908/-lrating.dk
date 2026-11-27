@@ -135,6 +135,11 @@ Ligger i mappen `store/` (dansk) og `store/en/` (engelsk) i størrelsen 1366 × 
 | `5-byttur.png` | En bytur med rute og deltagere |
 | `6-profil.png` | Min profil |
 | `7-aarets-oel.png` | Årets øl |
+| `8-beer-buddies.png` | Beer buddies med match i procent |
+| `9-lykkehjul.png` | Lykkehjulet, der har valgt en øl |
+| `10-indstillinger.png` | Indstillinger med baggrunden Aften, farverne Guld og mønstret Stjerner |
+
+Store tager højst 10 skærmbilleder pr. sprog, så der er ikke plads til flere. Lykkehjulet vælger det samme hver gang, fordi scriptet låser tilfældighederne.
 
 **Bemærk:** Øllene, bryggerierne, barerne og navnene på billederne er opdigtede eksempler, lavet kun til skærmbillederne. De findes ikke på den rigtige side. Skift dem gerne ud med rigtige skærmbilleder, når der er kommet øl på ølrating.dk.
 
