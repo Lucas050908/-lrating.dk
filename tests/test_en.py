@@ -55,10 +55,11 @@ def crawl(b,lang):
     pg.clock.set_fixed_time(NOW)
     pg.add_init_script("window.confirm=()=>true;window.prompt=()=>'Lucas';")
     def seed(me,empty=False):
-        pg.goto(URL); pg.wait_for_timeout(500)
+        # Eksempeldata lægges ind fra en side uden sidens egen kode (robots.txt på samme adresse), så siden ikke kan nå at gemme oven i dem.
+        pg.goto(URL+'robots.txt')
         if empty: pg.evaluate("(l=>{localStorage.clear();localStorage.setItem('olrating-v1',JSON.stringify({lang:l}))})",lang)
         else: pg.evaluate(SEED.replace('ME',json.dumps(me)).replace('LANG',json.dumps(lang)))
-        pg.reload(); pg.wait_for_timeout(1300)
+        pg.goto(URL); pg.wait_for_timeout(1300)
     def grab(k): out[k]=pg.evaluate(GRAB)
     def go(h,k=None,wait=450): pg.goto(URL+h); pg.wait_for_timeout(wait); grab(k or h)
     seed('Lucas')
@@ -152,7 +153,7 @@ def main():
         # --- sprogvælgeren: skift uden at siden hentes igen, og tilbage til præcis den samme danske tekst
         c2=b.new_context(service_workers='block',viewport={'width':1280,'height':900},locale='en-GB'); c2.route(f'https://{HOST}/**',M0.handle); p2=c2.new_page(); p2.clock.set_fixed_time(NOW); p2.goto(URL); p2.wait_for_timeout(1500)
         hint=p2.inner_text('#langCode')=='English?' and p2.evaluate("document.getElementById('langBtn').classList.contains('hint')") and p2.evaluate("document.documentElement.lang")=='da'
-        p2.evaluate(SEED.replace('ME',json.dumps('Lucas')).replace('LANG',json.dumps('da'))); p2.reload(); p2.wait_for_timeout(1500)
+        p2.goto(URL+'robots.txt'); p2.evaluate(SEED.replace('ME',json.dumps('Lucas')).replace('LANG',json.dumps('da'))); p2.goto(URL); p2.wait_for_timeout(1500)   # se seed()
         GR="()=>{document.getElementById('toast').textContent='';return ("+GRAB+")()}"; JSCLICK="q=>document.querySelector(q).click()"
         trip=[]; inplace=[]
         for h in ['','#toplisten','#aarets','#profil','#byttur-pasttour1','#smagning-tastdone1','#genstande','#stilguide','#kalender','#om','#privatliv','#tilfoej','#beer-a1']:

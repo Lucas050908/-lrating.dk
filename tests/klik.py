@@ -33,7 +33,7 @@ def main():
             pg.on('pageerror', lambda e: errs.append('pageerror: ' + str(e)[:200]))
             pg.on('console', lambda m: errs.append('console: ' + m.text[:200]) if m.type == 'error' else None)
             pg.on('dialog', lambda d: d.dismiss())
-            pg.goto(URL); pg.wait_for_timeout(600); pg.evaluate(SEED.replace('ME', json.dumps('Lucas')).replace('LANG', json.dumps('da')))
+            pg.goto(URL + 'robots.txt'); pg.evaluate(SEED.replace('ME', json.dumps('Lucas')).replace('LANG', json.dumps('da')))   # fra en side uden sidens kode, så intet gemmes oven i
             pg.goto(URL + h); pg.reload(); pg.wait_for_timeout(1200)
             keys = []
             for k in pg.eval_on_selector_all('#app button', f"els=>els.filter(e=>e.offsetParent&&!e.disabled).map({KEY})"):

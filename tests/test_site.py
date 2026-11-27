@@ -332,6 +332,11 @@ def run(b,name,vw):
 with sync_playwright() as p:
     b=getattr(p,os.environ.get('BROWSER','chromium')).launch(); make_photo(b)
     run(b,'pc',(1280,900)); run(b,'mobil',(390,844))
+    # stregkodelæseren (js/scan.js) i den browser, testen kører i: på GitHub også Safaris motor (som på iPhone) og Firefox
+    c=b.new_context(service_workers='block'); c.route(f'https://{HOST}/**',Mock().handle); pg=c.new_page(); pg.goto(URL); pg.wait_for_timeout(500)
+    y=ean_y4m('5741000001233',frames=1); W,H=640,480; Yp=list(y[y.index(b'FRAME\n')+6:][:W*H])
+    got=pg.evaluate("""([Y,W,H])=>new Promise(ok=>{const sc=document.createElement('script');sc.src='js/scan.js';sc.onload=()=>{const im=new ImageData(W,H);for(let i=0;i<W*H;i++){im.data[i*4]=im.data[i*4+1]=im.data[i*4+2]=Y[i];im.data[i*4+3]=255}ok(window.olScan(im))};sc.onerror=()=>ok('kunne ikke hentes');document.head.appendChild(sc)})""",[Yp,W,H])
+    check('stregkodelæseren (js/scan.js) læser en EAN-13 i denne browser',got=='5741000001233',got); c.close()
     # scanneren med et falsk kamera, der viser en stregkode. Chromium har ikke BarcodeDetector på Linux, så her prøves js/scan.js (det samme som på iPhone).
     if os.environ.get('BROWSER','chromium')=='chromium':
         y4m=os.path.join(TMP,'stregkode.y4m'); open(y4m,'wb').write(ean_y4m('5741000001233'))
@@ -354,7 +359,8 @@ with sync_playwright() as p:
         c=b2.new_context(viewport={'width':390,'height':844},service_workers='block',permissions=['camera']); c.route(f'https://{HOST}/**',Mock().handle)
         c.add_init_script("window.BarcodeDetector=class{static async getSupportedFormats(){return['ean_13']}async detect(){return[]}}")
         pg=c.new_page(); pg.clock.install(); pg.goto(URL+'#tilfoej'); pg.clock.run_for(1500); pg.click('#scanAdd'); pg.wait_for_selector('#scan:not([hidden])',timeout=8000); pg.wait_for_timeout(800); t0=pg.inner_text('#scanTip'); pg.clock.run_for(13000); t1=pg.inner_text('#scanTip')
-        pg.click('#scanX'); pg.clock.run_for(500)
+        foc=pg.evaluate('document.activeElement.id'); pg.click('#scanX'); pg.clock.run_for(500); foc2=pg.evaluate('document.activeElement.id')
+        check('scanner: fokus flytter til Luk og tilbage til Scan bagefter',foc=='scanX' and foc2=='scanAdd',(foc,foc2))
         check('scanner: efter 12 sekunder uden kode kommer et råd, og Luk lukker kameraet',t0=='Hold stregkoden inden for rammen' and 'Kan den ikke læses' in t1 and pg.is_hidden('#scan') and pg.input_value('#bCode')=='',(t0,t1))
         c.close(); b2.close()
     # siden må ikke hoppe, mens den indlæses (Cumulative Layout Shift under 0,1, som Google kalder god). Måles kun i Chromium.

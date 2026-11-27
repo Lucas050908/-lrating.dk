@@ -1238,13 +1238,13 @@ let scanStream=null,scanDone=null;
 async function scanCode(){if(!HAS_BD)return null;const box=$('scan'),v=$('scanV');
   try{let det=null;if('BarcodeDetector' in window){try{const fm=await BarcodeDetector.getSupportedFormats();if(fm.includes('ean_13'))det=new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e','code_128'].filter(x=>fm.includes(x))})}catch(e){}}
     if(!det)await loadScanLib();
-    scanStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});v.srcObject=scanStream;box.hidden=false;await v.play();
+    scanStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});v.srcObject=scanStream;scanCode.prev=document.activeElement;box.hidden=false;$('scanX').focus();await v.play();
     const cv=document.createElement('canvas'),cx=cv.getContext('2d',{willReadFrequently:true});let last=0;$('scanTip').textContent='Hold stregkoden inden for rammen';clearTimeout(scanCode.tip);scanCode.tip=setTimeout(()=>{if(!box.hidden)$('scanTip').textContent='Kan den ikke læses? Hold telefonen lidt længere væk, eller luk og skriv tallene under stregkoden.'},12000);
     return await new Promise(res=>{scanDone=res;const loop=async t=>{if(box.hidden)return;let code=null;
       try{if(det){const c=await det.detect(v);if(c.length)code=c[0].rawValue}else if(v.videoWidth&&t-last>150){last=t;const k=Math.min(1,800/v.videoWidth);cv.width=Math.round(v.videoWidth*k);cv.height=Math.round(v.videoHeight*k);cx.drawImage(v,0,0,cv.width,cv.height);code=window.olScan(cx.getImageData(0,0,cv.width,cv.height))}}catch(e){}
       if(code){scanDone=null;stopScan();try{navigator.vibrate?.(60)}catch(e){}res(String(code).replace(/\D/g,'').slice(0,20));return}requestAnimationFrame(loop)};requestAnimationFrame(loop)})}   /* scanDone nulstilles først, ellers svarer stopScan() "ingenting" før koden */
   catch(e){stopScan();toast('Kameraet kunne ikke åbnes');return null}}
-function stopScan(){$('scan').hidden=true;scanStream?.getTracks().forEach(t=>t.stop());scanStream=null;if(scanDone){const d=scanDone;scanDone=null;d(null)}}
+function stopScan(){const was=!$('scan').hidden;$('scan').hidden=true;if(was&&scanCode.prev?.isConnected)scanCode.prev.focus({preventScroll:true});scanCode.prev=null;scanStream?.getTracks().forEach(t=>t.stop());scanStream=null;if(scanDone){const d=scanDone;scanDone=null;d(null)}}
 async function scanSearch(){const code=await scanCode();if(!code)return;const b=beers().find(x=>x.code===code);
   if(b){toast(`Fundet: ${b.name}`);location.hash='beer-'+b.id}else{F.code=code;toast('Ukendt øl. Tilføj den!');location.hash='tilfoej'}}
 /* Stregkode → Open Food Facts (åben, gratis database over varer). Kun selve nummeret sendes. Udfylder kun tomme felter. */

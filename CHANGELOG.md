@@ -4,6 +4,12 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-27
 
+### Formiddag og middag (11:39–11:55): scanneren og tastaturet
+- Når scanneren åbner, flytter fokus til **Luk**, så den kan lukkes med Enter eller Mellemrum (Esc virkede i forvejen). Når den lukker, kommer fokus tilbage til den knap, der åbnede den. Det hjælper dem, der bruger tastatur eller skærmlæser.
+- **Test:** `test_site.py` tjekker, hvor fokus står før og efter.
+- **Stregkodelæseren i alle browsere:** `test_site.py` læser nu en stregkode direkte med `js/scan.js` i den browser, testen kører i. På GitHub sker det også i Safaris motor (som på iPhone) og Firefox, hvor det falske kamera ikke findes.
+- **Ustabile test rettet:** `test_en.py` lagde eksempeldata ind, mens siden var åben, og siden kunne nå at gemme sine egne data oven i, når maskinen var travl. Det gav sjældne fejl (en side uden årstal og "tilbage til dansk" med anden rækkefølge). Nu lægges data ind fra en side uden sidens kode (`robots.txt` på samme adresse), og det samme i `klik.py`.
+
 ### Formiddag (11:35–11:30): scanneren hjælper, når den ikke kan læse koden
 - Har scanneren ikke fundet en kode efter 12 sekunder, skifter teksten til et råd: hold telefonen lidt længere væk, eller luk og skriv tallene under stregkoden.
 - Når en kode er læst, vibrerer telefonen kort (hvis den kan).
