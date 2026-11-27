@@ -228,7 +228,7 @@ with sync_playwright() as p:
     # --- enig eller uenig (swipe): stemmer på andres bedømmelser, tal hos den der har bedømt
     M2=Mock(); errs2=[]
     def ctx2(state):
-        c=b.new_context(viewport={'width':390,'height':844},locale='da-DK',service_workers='block'); c.route(f'https://{HOST}/**',M2.handle); pg=c.new_page(); pg.on('pageerror',lambda e:errs2.append(str(e)))
+        c=b.new_context(viewport={'width':390,'height':844},locale='da-DK',service_workers='block'); c.route(f'https://{HOST}/**',M2.handle); pg=c.new_page(); pg.on('pageerror',lambda e:None if WK_NOISE(str(e)) else errs2.append(str(e)))
         pg.add_init_script("if(!localStorage.getItem('olrating-v1'))localStorage.setItem('olrating-v1',%s);"%json.dumps(json.dumps(state))); return pg
     mk=lambda who,beers,revs:{"beers":[{"id":i,"name":n,"brewery":"Testbryg","style":"Pilsner","abv":5,"size":"33 cl flaske","date":"2026-11-20","addedBy":who,"img":""} for i,n in beers],"reviews":[{"id":i,"beer":bb,"who":who,"date":d,"s":C,"text":t} for i,bb,d,t in revs],"me":who}
     W1=ctx2(mk('Lucas',[('us1','Swipeøl et'),('us2','Swipeøl to')],[('rs1','us1','2026-11-20','Rigtig god'),('rs2','us2','2026-11-21','')])); W1.goto(URL+'#swipe'); W1.wait_for_timeout(3500)

@@ -737,7 +737,7 @@ function cleanRev(o){const id=cid(o?.id),beer=cid(o?.beer);if(!id||!beer)return 
 function fromRow(r,beer){const d=r.data&&typeof r.data==='object'&&!Array.isArray(r.data)?r.data:{};return beer?cleanBeer({...d,id:r.id,name:r.name,brewery:r.brewery||d.brewery||'',img:r.img||'',owner:r.owner}):cleanRev({...d,id:r.id,beer:r.beer,who:r.who,img:r.img||'',owner:r.owner})}
 async function sbPull(){const [B,R]=await Promise.all([sbFetch('/rest/v1/beers?select=*&order=created_at.desc&limit=2000'),sbFetch('/rest/v1/reviews?select=*&order=created_at.desc&limit=5000')]);
   const merge=(loc,rows,beer)=>{const rm=new Map(rows.map(r=>fromRow(r,beer)).filter(Boolean).map(o=>[o.id,o])),out=[];
-    loc.forEach(o=>{const r=rm.get(o.id);if(r){const localEdit=mineObj(o)&&S.sh[o.id]&&hsh(o)!==S.sh[o.id];if(localEdit)out.push({...o,owner:r.owner});else{out.push(r);S.sh[o.id]=hsh(r)}rm.delete(o.id)}else if(S.sh[o.id]&&!S.gone[o.id]){delete S.sh[o.id];if(S.si[o.id]){sbDelImg(S.si[o.id]);delete S.si[o.id]}}else out.push(o)});
+    loc.forEach(o=>{const r=rm.get(o.id);if(r){const localEdit=mineObj(o)&&S.sh[o.id]&&hsh(o)!==S.sh[o.id];if(localEdit)out.push({...o,owner:r.owner});else{out.push(r);S.sh[o.id]=hsh(r)}rm.delete(o.id)}else if(S.sh[o.id]&&!S.gone[o.id]){delete S.sh[o.id];if(S.si[o.id]){sbDelImg(S.si[o.id]).catch(()=>{});delete S.si[o.id]}}else out.push(o)});
     rm.forEach((r,id)=>{if(S.gone[id])return;out.push(r);S.sh[id]=hsh(r)});return out};
   S.beers=merge(S.beers,B,true);S.reviews=merge(S.reviews,R,false)}
 const sbBad=new Set();

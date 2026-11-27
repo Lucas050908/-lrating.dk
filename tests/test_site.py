@@ -371,7 +371,7 @@ with sync_playwright() as p:
         b2=p.chromium.launch(args=['--use-fake-device-for-media-stream','--use-fake-ui-for-media-stream','--use-file-for-fake-video-capture='+y4m])
         c=b2.new_context(viewport={'width':390,'height':844},service_workers='block',permissions=['camera']); c.route(f'https://{HOST}/**',Mock().handle)
         c.route('https://*.openfoodfacts.org/**',lambda r:r.fulfill(status=200,content_type='application/json',headers={'Access-Control-Allow-Origin':'*'},body=json.dumps({'status':1,'product':{'product_name':'Fjordens IPA','brands':'Limfjordens Bryghus'}})))
-        pg=c.new_page(); errs=[]; pg.on('console',lambda m: errs.append(m.text) if m.type=='error' else None)
+        pg=c.new_page(); errs=[]; pg.on('console',lambda m: errs.append(m.text) if m.type=='error' and not WK_NOISE(m.text) else None)
         pg.goto(URL+'#tilfoej'); pg.wait_for_timeout(800); pg.click('#scanAdd'); pg.wait_for_timeout(5000)
         check('scanner: kameraet læser stregkoden, og felterne bliver udfyldt',pg.input_value('#bCode')=='5741000001233' and pg.input_value('#bName')=='Fjordens IPA' and pg.is_hidden('#scan'),(pg.input_value('#bCode'),pg.input_value('#bName')))
         pg.goto(URL); pg.wait_for_timeout(800); pg.click('#scanSearch'); pg.wait_for_timeout(5000)
@@ -402,7 +402,7 @@ with sync_playwright() as p:
             pg.goto(URL+h); pg.wait_for_timeout(200); pg.evaluate('scrollTo(0,1200)'); pg.reload(); pg.wait_for_timeout(2000); cls[f'{vw[0]}{h or "#"}']=round(pg.evaluate('__cls'),3); c.close()
         check('siden hopper ikke, mens den indlæses (CLS under 0,1)',max(cls.values())<0.1,cls)
     # en ondsindet backup-fil må ikke ødelægge siden: forkerte typer, kode i navne, en ønskeliste, der ikke er en liste
-    c=b.new_context(viewport={'width':390,'height':844},service_workers='block'); c.route(f'https://{HOST}/**',Mock().handle); pg=c.new_page(); perr=[]; pg.on('pageerror',lambda e:perr.append(str(e)))
+    c=b.new_context(viewport={'width':390,'height':844},service_workers='block'); c.route(f'https://{HOST}/**',Mock().handle); pg=c.new_page(); perr=[]; pg.on('pageerror',lambda e:None if WK_NOISE(str(e)) else perr.append(str(e)))
     pg.goto(URL); pg.wait_for_timeout(1200); pg.evaluate("(()=>{const S=JSON.parse(localStorage.getItem('olrating-v1'));S.me='';S.wish=['x9'];localStorage.setItem('olrating-v1',JSON.stringify(S))})()"); pg.reload(); pg.wait_for_timeout(800)
     bad=os.path.join(tempfile.gettempdir(),'ond-backup.json')
     json.dump({'app':'olrating','me':{'x':1},'wish':{'a':1},'beers':[{'id':'ond1','name':'<img src=x onerror=window.__ond=1>','brewery':7,'style':None,'abv':'x'},'ikke et objekt',None],'reviews':[{'id':'ondr','beer':'ond1','who':['x'],'s':'x'},7]},open(bad,'w'))
@@ -415,7 +415,7 @@ with sync_playwright() as p:
     check('backup: et gyldigt navn og gyldige øl-id\'er bliver taget med',st.get('me')=='Sofie' and st.get('wish')==['x9','ok-2'],(st.get('me'),st.get('wish')))
     c.close()
     # navne, der også er navne på indbyggede ting i JavaScript, må ikke få siden til at gå ned
-    c=b.new_context(viewport={'width':390,'height':844},service_workers='block'); c.route(f'https://{HOST}/**',Mock().handle); pg=c.new_page(); perr=[]; pg.on('pageerror',lambda e:perr.append(str(e)))
+    c=b.new_context(viewport={'width':390,'height':844},service_workers='block'); c.route(f'https://{HOST}/**',Mock().handle); pg=c.new_page(); perr=[]; pg.on('pageerror',lambda e:None if WK_NOISE(str(e)) else perr.append(str(e)))
     pg.goto(URL); pg.wait_for_timeout(1200)
     pg.evaluate("""(()=>{const d=new Date().toISOString().slice(0,10),S=JSON.parse(localStorage.getItem('olrating-v1'));S.me='Lucas';
       S.beers=[{id:'p1',name:'constructor',brewery:'constructor',style:'toString',abv:5,date:d},{id:'p2',name:'hasOwnProperty',brewery:'__proto__',style:'valueOf',abv:5,date:d}];
@@ -428,7 +428,7 @@ with sync_playwright() as p:
     check('navne som constructor, toString og __proto__ får ikke siden til at gå ned',not perr and all(seen.values()) and 'constructor' in pg.evaluate("(location.hash='#buddies',new Promise(r=>setTimeout(()=>r(document.getElementById('app').innerText),400)))"),(perr[:3],seen))
     c.close()
     # tekst fra brugerne må aldrig blive til kode på siden: alle felter får et forsøg på at køre et script
-    c=b.new_context(viewport={'width':390,'height':844},service_workers='block'); c.route(f'https://{HOST}/**',Mock().handle); pg=c.new_page(); perr=[]; pg.on('pageerror',lambda e:perr.append(str(e)))
+    c=b.new_context(viewport={'width':390,'height':844},service_workers='block'); c.route(f'https://{HOST}/**',Mock().handle); pg=c.new_page(); perr=[]; pg.on('pageerror',lambda e:None if WK_NOISE(str(e)) else perr.append(str(e)))
     pg.goto(URL); pg.wait_for_timeout(1200)
     pg.evaluate("""(()=>{const X=n=>`<img src=x onerror="window.__xss=(window.__xss||[]).concat('${n}')">"'><svg onload="window.__xss=(window.__xss||[]).concat('${n}s')">`,d=new Date().toISOString().slice(0,10),S=JSON.parse(localStorage.getItem('olrating-v1'));
       S.me='Lucas';S.beers=[{id:'x1',name:X('navn'),brewery:X('bryg'),style:X('stil'),abv:5,date:d,city:X('by'),note:X('note')},{id:'x2',name:'Almindelig',brewery:'Bryg',style:'Pilsner',abv:5,date:d}];
@@ -466,7 +466,7 @@ with sync_playwright() as p:
         else: body={'status':0}
         route.fulfill(status=200,content_type='application/json',body=json.dumps(body),headers={'Access-Control-Allow-Origin':'*'})
     c=b.new_context(viewport={'width':390,'height':844},service_workers='block'); c.route(f'https://{HOST}/**',Mock().handle); c.route('https://*.openfoodfacts.org/**',off); pg=c.new_page()
-    errs=[]; pg.on('console',lambda m: errs.append(m.text) if m.type=='error' else None)
+    errs=[]; pg.on('console',lambda m: errs.append(m.text) if m.type=='error' and not WK_NOISE(m.text) else None)
     pg.goto(URL+'#tilfoej'); pg.wait_for_timeout(800)
     pg.fill('#bCode','5741000001234'); pg.wait_for_timeout(1200)
     check('stregkode: et nummer med forkert kontrolciffer slås ikke op',not OFFQ,OFFQ)
