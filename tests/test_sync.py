@@ -5,6 +5,9 @@ import os,sys
 ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)));sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
 URL=os.environ.get('SITE','http://localhost:8811/')
 from mock_supabase import Mock,HOST,JPG
+# Safaris motor (WebKit) melder en forespørgsel, der bliver afbrudt, fordi testen skifter side midt i en synkronisering, som "... due to access control checks".
+# Det er ikke en fejl på siden (Chromium og Firefox melder intet), så den besked tæller ikke med i WebKit.
+WK_NOISE=lambda t: os.environ.get('BROWSER')=='webkit' and 'due to access control checks' in t
 from playwright.sync_api import sync_playwright
 DATA='data:image/jpeg;base64,'+base64.b64encode(JPG).decode()
 C={"look":4,"aroma":4,"taste":5,"feel":4,"overall":5}
@@ -21,7 +24,7 @@ with sync_playwright() as p:
     b=getattr(p,os.environ.get('BROWSER','chromium')).launch(); M=Mock(); errs=[]
     def ctx(name,vw,state=None,quiet=False):   # quiet: svar som 403, 422 og 429 er ventede (forkert kode, mailen findes, for mange mails)
         c=b.new_context(viewport={'width':vw[0],'height':vw[1]},locale='da-DK',service_workers='block'); c.route(f'https://{HOST}/**',M.handle)   # uden service worker: ellers kan kald gå uden om den efterlignede database (set i WebKit)
-        pg=c.new_page(); pg.on('pageerror',lambda e:errs.append(name+': '+str(e)))
+        pg=c.new_page(); pg.on('pageerror',lambda e:None if WK_NOISE(str(e)) else errs.append(name+': '+str(e)))
         pg.on('console',lambda m:errs.append(name+' console: '+m.text) if m.type=='error' and 'Synk' not in m.text and 'ERR_FAILED' not in m.text and 'CORS request did not succeed' not in m.text and not (quiet and 'Failed to load resource' in m.text) else None)
         init="window.__sh=[];navigator.share=async d=>{window.__sh.push(d)};window.confirm=()=>true;window.prompt=()=>'%s';"%name
         if state: init+="if(!localStorage.getItem('olrating-v1'))localStorage.setItem('olrating-v1',%s);"%json.dumps(json.dumps(state))

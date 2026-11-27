@@ -745,7 +745,7 @@ async function sbPush(){const uid=myUid(),now=Date.now();
   const up=async(L,table,beer)=>{if(!mineObj(L)||S.sh[L.id]===hsh(L)||sbBad.has(L.id))return;const old=L.img||'',img=await sbImg(old,L.id);
     const d=strip(L);['id','img','name','brewery','beer','who'].forEach(k=>delete d[k]);const im=/^https:/.test(img)?img:null,ts=new Date().toISOString();
     const row=beer?{id:L.id,name:String(L.name||'Øl').slice(0,120),brewery:String(L.brewery||'').slice(0,120),data:d,img:im,updated_at:ts}:{id:L.id,beer:L.beer,who:String(L.who||'Ukendt').slice(0,40),data:d,img:im,updated_at:ts};
-    try{await sbFetch('/rest/v1/'+table+'?on_conflict=id',{method:'POST',body:row,headers:{Prefer:'resolution=merge-duplicates,return=minimal'}});L.owner=L.owner||uid;if(img!==old){L.img=img;delImg(old)}S.sh[L.id]=hsh(L);const pth=imgPath(L.img);if(S.si[L.id]&&S.si[L.id]!==pth)sbDelImg(S.si[L.id]);if(pth)S.si[L.id]=pth;else delete S.si[L.id]}
+    try{await sbFetch('/rest/v1/'+table+'?on_conflict=id',{method:'POST',body:row,headers:{Prefer:'resolution=merge-duplicates,return=minimal'}});L.owner=L.owner||uid;if(img!==old){L.img=img;delImg(old)}S.sh[L.id]=hsh(L);const pth=imgPath(L.img);if(S.si[L.id]&&S.si[L.id]!==pth)sbDelImg(S.si[L.id]).catch(()=>{});if(pth)S.si[L.id]=pth;else delete S.si[L.id]}
     catch(e){if(e.status===403||e.status===409){L.owner=L.owner||'?';S.sh[L.id]=hsh(L)}else if(e.status===400||e.status===413){sbBad.add(L.id);console.warn('Kunne ikke dele',L.id,e.message)}else throw e}};
   for(const b of S.beers)await up(b,'beers',true);
   for(const r of S.reviews)if(S.sh[r.beer])await up(r,'reviews',false);

@@ -5,6 +5,9 @@ import os,sys
 ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)));sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
 URL=os.environ.get('SITE','http://localhost:8811/')
 from mock_supabase import Mock,HOST
+# Safaris motor (WebKit) melder en forespørgsel, der bliver afbrudt, fordi testen skifter side midt i en synkronisering, som "... due to access control checks".
+# Det er ikke en fejl på siden (Chromium og Firefox melder intet), så den besked tæller ikke med i WebKit.
+WK_NOISE=lambda t: os.environ.get('BROWSER')=='webkit' and 'due to access control checks' in t
 TMP=tempfile.mkdtemp()
 from playwright.sync_api import sync_playwright
 res=[]
@@ -32,8 +35,8 @@ VIEWS=['','#alle','#toplisten','#aarets','#swipe','#buddies','#hjul','#indstilli
 def run(b,name,vw):
     M=Mock(); errs=[]
     c=b.new_context(viewport={'width':vw[0],'height':vw[1]},accept_downloads=True,service_workers='block',locale='da-DK'); c.route(f'https://{HOST}/**',M.handle)
-    pg=c.new_page(); pg.on('pageerror',lambda e:errs.append(str(e)))
-    pg.on('console',lambda m:errs.append('console: '+m.text[:200]) if m.type=='error' else None)
+    pg=c.new_page(); pg.on('pageerror',lambda e:None if WK_NOISE(str(e)) else errs.append(str(e)))
+    pg.on('console',lambda m:errs.append('console: '+m.text[:200]) if m.type=='error' and not WK_NOISE(m.text) else None)
     pg.add_init_script("window.__sh=[];navigator.share=async d=>{window.__sh.push(d)};window.confirm=()=>true;window.__w=[];window.__wi=[];window.OlratingApp={updateWidget:j=>window.__w.push(j),updateImages:j=>window.__wi.push(j)};")
     T=lambda n,cnd,x='':check(f'[{name}] {n}',cnd,x)
     over=lambda: pg.evaluate('document.documentElement.scrollWidth>innerWidth+1')
