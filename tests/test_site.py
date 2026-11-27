@@ -245,6 +245,15 @@ def run(b,name,vw):
     T('lykkehjul: resultatet er den øl, pilen peger på',(hr[0] if len(hr[0])<=15 else hr[0][:14]+'…')==hr[1] and hr[2]=='Drej igen' and hr[3].startswith('#beer-') and not over(),hr)
     wl=ls(pg).get('wish',[]); pg.click('[data-hj=wish]'); pg.wait_for_timeout(400); nw=pg.eval_on_selector_all('#hjG text','e=>e.length')
     T('lykkehjul: ønskelisten som gruppe viser kun de øl, eller en forklaring når den er tom',(nw==min(10,len(wl)) and pg.query_selector('#hjRes .hjr') is None) if wl else (pg.query_selector('.empty') is not None and pg.query_selector('#hjSpin') is None and 'ønskelisten' in pg.inner_text('.empty')),(len(wl),nw))
+    # mens hjulet drejer, sletter en anden fane en øl: vinderen skal stadig være den øl, pilen peger på
+    pg.click('[data-hj=alle]'); pg.wait_for_timeout(300); ids0=pg.evaluate("[...document.querySelectorAll('#hjG text')].map(t=>t.textContent)")
+    if len(ids0)>=3:
+        p2=c.new_page(); p2.goto(URL+'#om'); p2.wait_for_timeout(900); pg.click('#hjSpin'); pg.wait_for_timeout(400)
+        p2.evaluate("""(()=>{const S=JSON.parse(localStorage.getItem('olrating-v1'));const n=document.querySelectorAll('x').length;S.beers=S.beers.slice(1);localStorage.setItem('olrating-v1',JSON.stringify(S))})()""")
+        pg.wait_for_selector('#hjRes .hjr',timeout=9000); p2.close()
+        hr2=pg.evaluate("""(()=>{const g=document.getElementById('hjG'),rot=parseFloat(g.style.transform.match(/rotate\\(([-\\d.]+)deg/)[1]),L=[...g.querySelectorAll('text')].map(t=>t.textContent),n=L.length,i=Math.floor(((360-rot%360)%360)/(360/n))%n,nm=document.querySelector('#hjRes h2').textContent;return [nm,L[i],n]})()""")
+        T('lykkehjul: en anden fane ændrer øllene midt i et drej, og vinderen er stadig den, pilen peger på',(hr2[0] if len(hr2[0])<=15 else hr2[0][:14]+'…')==hr2[1] and not over(),(len(ids0),hr2))
+        pg.click('[data-hj=ny]'); pg.wait_for_timeout(200)
     pg.goto(URL+'#beer-ux1'); pg.wait_for_timeout(500); pg.click('.rv .who >> nth=0'); pg.wait_for_timeout(400)
     T('navn i en bedømmelse fører til smagerens side',pg.evaluate('location.hash').startswith('#smager-'))
     # --- lange ord uden mellemrum (fx et ølnavn fra en anden bruger) må ikke give vandret scroll
@@ -276,6 +285,19 @@ def run(b,name,vw):
 with sync_playwright() as p:
     b=getattr(p,os.environ.get('BROWSER','chromium')).launch(); make_photo(b)
     run(b,'pc',(1280,900)); run(b,'mobil',(390,844))
+    # navne, der også er navne på indbyggede ting i JavaScript, må ikke få siden til at gå ned
+    c=b.new_context(viewport={'width':390,'height':844},service_workers='block'); c.route(f'https://{HOST}/**',Mock().handle); pg=c.new_page(); perr=[]; pg.on('pageerror',lambda e:perr.append(str(e)))
+    pg.goto(URL); pg.wait_for_timeout(1200)
+    pg.evaluate("""(()=>{const d=new Date().toISOString().slice(0,10),S=JSON.parse(localStorage.getItem('olrating-v1'));S.me='Lucas';
+      S.beers=[{id:'p1',name:'constructor',brewery:'constructor',style:'toString',abv:5,date:d},{id:'p2',name:'hasOwnProperty',brewery:'__proto__',style:'valueOf',abv:5,date:d}];
+      const r=(id,b,w,v,t)=>({id,beer:b,who:w,date:d,s:{look:v,aroma:v,taste:v,feel:v,overall:v},tags:t,again:1,text:''});
+      S.reviews=[r('q1','p1','Lucas',4,['constructor']),r('q2','p2','Lucas',3,['__proto__']),r('q3','p1','constructor',4,['toString']),r('q4','p2','constructor',3,[]),r('q5','p1','__proto__',2,[]),r('q6','p2','__proto__',5,[]),r('q7','p1','toString',4,[])];
+      S.follow=['constructor'];localStorage.setItem('olrating-v1',JSON.stringify(S))})()""")
+    seen={}
+    for h in ['','#buddies','#venner','#aarets','#toplisten','#beer-p1','#profil','#smager-constructor','#hjul']:
+        pg.goto(URL+h); pg.wait_for_timeout(350); seen[h or '#']=len(pg.inner_text('#app'))>80
+    check('navne som constructor, toString og __proto__ får ikke siden til at gå ned',not perr and all(seen.values()) and 'constructor' in pg.evaluate("(location.hash='#buddies',new Promise(r=>setTimeout(()=>r(document.getElementById('app').innerText),400)))"),(perr[:3],seen))
+    c.close()
     # mindre bevægelse: lykkehjulet vælger med det samme, og der er hverken loading screen eller drys
     c=b.new_context(viewport={'width':390,'height':844},service_workers='block',reduced_motion='reduce'); c.route(f'https://{HOST}/**',Mock().handle); pg=c.new_page()
     pg.goto(URL+'#hjul'); pg.wait_for_timeout(900); ld=pg.evaluate("getComputedStyle(document.getElementById('load')||document.body).display")

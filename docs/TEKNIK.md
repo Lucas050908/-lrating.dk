@@ -142,6 +142,12 @@ Widget-data, som `syncApp()` sender:
 
 **Billeder til widgets:** `wImgs()` finder de øl, widgets viser (ugens øl, top 3, forslaget og de 4 seneste), og `wThumb()` tegner hvert billede ned til 288 × 288 px JPEG. Der sendes kun igen, når listen eller et billede har ændret sig. Android gemmer dem som filer i appens egen mappe (`files/wimg/<id>.jpg`, klassen `WImg`) og sletter dem, der ikke bruges længere. Desktop gemmer dem i `widget-images.json` i brugerens datamappe. Begge steder tjekkes id, type og størrelse, før noget gemmes.
 
+### Objekter med navne som nøgler
+- Bruges et navn, som nogen har skrevet (smager, bryggeri, stil, smagsord), som nøgle i et objekt, skal objektet laves med `Object.create(null)` og ikke `{}`. Ellers findes `constructor`, `toString` og `__proto__` allerede i objektet, og `o[k]=o[k]||…` giver forkerte værdier eller får siden til at gå ned. `test_site.py` har et tjek med de navne.
+
+### Lykkehjulet, når siden tegnes igen
+- `HJ.ids` ændres ikke, mens hjulet drejer (`HJ.busy`), eller mens resultatet står (`HJ.win`). Vinderen gemmes, når drejet starter. Slettede øl ryddes væk i starten af næste drej.
+
 ### Indstillinger og udseende
 - `S.look` har `bg`, `acc`, `pat` og `fx`. Mulighederne står i `LOOK`, og `lookOf(k)` giver det gyldige valg eller standarden. `applyLook()` sætter `data-bg`, `data-acc` og `data-pat` på `<html>` og farven i `theme-color`. Standardvalget fjerner attributten, så siden uden valg er præcis som før.
 - **Baggrund:** Hver `[data-bg=…]`-regel sætter `--nv`, `--nv2`, `--nv3`, `--sky`, `--ln` og `--nvr` (baggrundsfarven som tre tal). Reglen gælder også inde i `.hero`, `.bar`, `.nav` med flere, som ellers låser farverne. Gennemsigtige lag skrives som `rgb(var(--nvr)/.55)`.

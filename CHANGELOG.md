@@ -6,6 +6,12 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 27-11-2026
 
+### Morgen (07:56–08:08): gennemgang af gårsdagens kode
+- **Rettet: Navne kunne få siden til at gå ned.** Hed en smager, et bryggeri, en stil eller et smagsord fx `constructor`, `toString` eller `__proto__`, gik forsiden, Venner og Beer buddies ned for alle. Det skyldtes, at navnene blev brugt som nøgler i almindelige JavaScript-objekter, hvor de navne allerede findes. 15 steder bruger nu objekter uden den slags indbyggede navne (`Object.create(null)`).
+- **Rettet: Lykkehjulet.** Blev siden tegnet igen midt i et drej (fx når nye data blev hentet, eller en anden fane gemte), kunne øllene på hjulet skifte, så vinderen ikke var den, pilen pegede på. Nu står øllene stille, mens hjulet drejer, og mens resultatet vises. En øl, der er slettet imens, ryddes væk ved næste drej. Knappen er låst, mens hjulet drejer.
+- **Tjekket og i orden:** To faner på samme side gemmer ingenting af sig selv, så de kan ikke skubbe hinanden i en løkke. Billeder til widgets hentes med `crossOrigin`, så de også virker fra databasen.
+- **Test:** 2 nye tjek i `test_site.py`. Det ene fejler på den gamle udgave af siden, så det ses, at det fanger fejlen.
+
 ### Morgen (06:30–06:32): layout og kontrast også i Safaris motor og Firefox
 - **GitHub:** Jobbene for WebKit og Firefox kører nu også `tests/layout.py` og `tests/kontrast.py`. Før blev de to tjek kun kørt i Chromium.
 - `tests/kontrast.py` kan nu køre i en anden browser med `BROWSER=webkit` eller `BROWSER=firefox`, ligesom de andre test.
