@@ -9,6 +9,7 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 - **Søger man på et navn,** der ikke findes, åbner "Tilføj øl" nu med navnet udfyldt, så man ikke skal skrive det igen.
 - **Klik på alt** (`tests/klik.py`) kørt igen efter dagens nye knapper: 73 tryk på 27 sider, ingen fejl. Tilgængelighed (axe) også uden fejl.
 - **Test:** `test_site.py` tjekker begge veje fra søgningen.
+- **Microsoft Store:** Teksterne til butikssiden (`docs/STORE.md`) nævner nu scanneren, på dansk og engelsk. Funktionslisten har 9 punkter; Store tillader op til 20.
 
 ### Eftermiddag (13:54–13:54): scan og bedøm med det samme
 - Scanner man en øl fra forsiden, som allerede findes på siden, åbner øllens side nu direkte ved **Bedøm**, med fokus på den første stjerne. Før landede man øverst og skulle rulle ned.

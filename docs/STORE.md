@@ -48,6 +48,7 @@ Tag et billede af øllen, giv den karakter fra 1 til 5 for udseende, duft, smag,
 
 Det kan du:
 • Bedømme øl med billede, smagsord og smagsprofil, og give præcise karakterer som 3,7
+• Scanne stregkoden, så navn, bryggeri, alkohol og billede bliver udfyldt af sig selv, når øllen findes i Open Food Facts
 • Se toplisten, også kun for lyse, mørke eller alkoholfri øl
 • Se årets øl, årets bryggeri og årets stil
 • Få forslag til øl, du nok vil kunne lide, ud fra dine egne karakterer
@@ -70,6 +71,7 @@ Første version i Microsoft Store.
 
 **Funktioner (korte punkter):**
 - Bedøm øl med billede og karakter
+- Scan stregkoden og få oplysningerne udfyldt
 - Fælles topliste
 - Blindsmagning med venner
 - Byttur med rute og tilmelding
@@ -93,6 +95,7 @@ Take a photo of the beer, rate it from 1 to 5 for look, aroma, taste, body and o
 
 What you can do:
 • Rate beers with a photo, tasting notes and a flavour profile, with precise scores like 3.7
+• Scan the barcode, and the name, brewery, alcohol and picture are filled in for you when the beer is in Open Food Facts
 • See the top list, also for pale, dark or alcohol-free beers only
 • See the beer, brewery and style of the year
 • Get suggestions for beers you will probably like, based on your own ratings
@@ -115,6 +118,7 @@ First version in Microsoft Store.
 
 **Features (short points):**
 - Rate beers with a photo and a score
+- Scan the barcode and get the details filled in
 - Shared top list and Beer of the year
 - Blind tasting with friends
 - Pub crawl with route and sign-up
