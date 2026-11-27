@@ -7,6 +7,7 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 ### Eftermiddag (15:31–15:32): blok 6 – docs og ændringslog kontrolleret
 - **Ændringsloggen:** 14 af dagens tidsrum passede ikke med tidspunkterne for de tilhørende commits (nogle sluttede før de begyndte). De er rettet.
 - **Docs læst mod koden:** `DRIFT.md` og `FUNKTIONER.md` sagde stadig, at 005 ikke var kørt. `IDEER.md` havde fil 003 på listen over det, der venter på Lucas, selv om den er kørt torsdag; nu står logo, loading screen, Ølspil og scanneren på telefonen der i stedet. `README.md` nævner nu `byg-scanner.sh`.
+- **Firefox på GitHub:** Den engelske test fejlede igen én gang, nu på knappen "Spring over" under swipe, der ikke var tegnet endnu. Alle testens klik med kode venter nu på knappen først (højst 8 sekunder). Safaris motor fejlede én gang på en melding om en fil, der ikke kunne hentes, under synkroniseringstesten; den bestod i kørslen lige efter og er ikke forklaret endnu.
 
 ### Eftermiddag (14:48–14:52): besøgstælleren er i gang
 - Lucas har kørt `supabase/005-besoeg.sql`. Testen mod den rigtige database (startet med hånden på GitHub) siger: "kørt, 5 besøg i alt". Fil 004 og funktionen `mails` er stadig ikke sat op.

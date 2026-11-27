@@ -61,6 +61,7 @@ def crawl(b,lang):
         else: pg.evaluate(SEED.replace('ME',json.dumps(me)).replace('LANG',json.dumps(lang)))
         pg.goto(URL); pg.wait_for_timeout(1300)
     def grab(k): out[k]=pg.evaluate(GRAB)
+    def clk(q): pg.wait_for_selector(q,state='attached',timeout=8000); pg.evaluate("q=>document.querySelector(q).click()",q)   # venter, til knappen findes (Firefox kan være et øjeblik bagefter)
     def go(h,k=None,wait=450): pg.goto(URL+h); pg.wait_for_timeout(wait); grab(k or h)
     seed('Lucas')
     # andres bedømmelser får en anden ejer, så der er noget at swipe på, og mine egne får stemmer
@@ -87,21 +88,21 @@ def crawl(b,lang):
     pg.goto(URL+'#beer-a1'); pg.wait_for_timeout(400)
     if pg.query_selector('[data-delrev]'): pg.click('[data-delrev]'); pg.wait_for_timeout(300); grab('#beer+fortryd'); pg.click('.undo button'); pg.wait_for_timeout(300)
     pg.goto(URL+'#smager-Ukendt%20Person'); pg.wait_for_timeout(300); grab('#smager+ukendt')
-    pg.goto(URL+'#swipe'); pg.wait_for_timeout(400); pg.evaluate("document.getElementById('swYes').click()"); pg.wait_for_timeout(600); grab('#swipe+stemt')
-    pg.evaluate("document.getElementById('swSkip').click()"); pg.wait_for_timeout(600)
+    pg.goto(URL+'#swipe'); pg.wait_for_timeout(400); clk('#swYes'); pg.wait_for_timeout(600); grab('#swipe+stemt')
+    clk('#swSkip'); pg.wait_for_timeout(600)
     for i in range(12):
         if not pg.query_selector('#swNo'): break
-        pg.evaluate("document.getElementById('swNo').click()"); pg.wait_for_timeout(500)
+        clk('#swNo'); pg.wait_for_timeout(500)
     grab('#swipe+færdig')
     # konto (skjult indtil den er sat op) og afmeld-siden fra linket i mails
     pg.goto(URL+'#konto-test'); pg.wait_for_timeout(700); grab('#konto+ny')
-    pg.fill('#acMail','lucas@example.dk'); pg.evaluate("document.querySelector('#acctForm button').click()"); pg.wait_for_timeout(900); grab('#konto+kode')
-    pg.fill('#acCode','123456'); pg.evaluate("document.querySelector('#acctCode button').click()"); pg.wait_for_timeout(2500); grab('#konto+logget ind')
-    pg.evaluate("document.getElementById('mp_news').click()"); pg.wait_for_timeout(700); grab('#konto+mailvalg')
+    pg.fill('#acMail','lucas@example.dk'); clk('#acctForm button'); pg.wait_for_timeout(900); grab('#konto+kode')
+    pg.fill('#acCode','123456'); clk('#acctCode button'); pg.wait_for_timeout(2500); grab('#konto+logget ind')
+    clk('#mp_news'); pg.wait_for_timeout(700); grab('#konto+mailvalg')
     go('#privatliv','#privatliv+konto'); go('#afmeld-ikke-en-noegle','#afmeld+ugyldig')
-    go('#afmeld-00000000-0000-4000-a000-999999999999','#afmeld+ukendt'); pg.evaluate("document.getElementById('unsubGo').click()"); pg.wait_for_timeout(600); grab('#afmeld+ukendt+svar')
-    go('#afmeld-'+next(iter(M.unsub.values()),'x'),'#afmeld'); pg.evaluate("document.getElementById('unsubGo').click()"); pg.wait_for_timeout(600); grab('#afmeld+svar')
-    pg.goto(URL+'#profil'); pg.wait_for_timeout(1500); pg.evaluate("document.getElementById('acOut').click()"); pg.wait_for_timeout(2500); pg.evaluate("localStorage.removeItem('olrating-konto')")
+    go('#afmeld-00000000-0000-4000-a000-999999999999','#afmeld+ukendt'); clk('#unsubGo'); pg.wait_for_timeout(600); grab('#afmeld+ukendt+svar')
+    go('#afmeld-'+next(iter(M.unsub.values()),'x'),'#afmeld'); clk('#unsubGo'); pg.wait_for_timeout(600); grab('#afmeld+svar')
+    pg.goto(URL+'#profil'); pg.wait_for_timeout(1500); clk('#acOut'); pg.wait_for_timeout(2500); pg.evaluate("localStorage.removeItem('olrating-konto')")
     # uden navn
     seed('')
     for h in ['#profil','#dagbog','#venner','#byttur','#smagning','#genstande','#beer-a1','#byttur-futtour01','#smagning-tastgues1','']: go(h,h+'+ukendt')
