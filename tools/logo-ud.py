@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Sætter ét af de 200 logoer ind alle steder: siden, Android-appen, Windows/Linux og fliserne til Microsoft Store.
+"""Sætter ét af de 10.000 logoer ind alle steder: siden, Android-appen, Windows/Linux og fliserne til Microsoft Store.
 
 Brug (fra roden af repoet):
     python3 tools/logo-ud.py 56            sætter logo nr. 56 ind
     python3 tools/logo-ud.py 56 --vis      ændrer ingenting, men lægger alle filerne i /tmp/logo-vis og et samlet billede i /tmp/logo-vis/ark.png
 
-Nummeret er det samme som i img/logoer/200 (1 til 200). Scriptet tegner logoet med tools/logoer.py og laver:
+Nummeret er det samme som i img/logoer/200 (1 til 200) og img/logoer/1000 (1 til 1000). Nr. 1001 til 10000 findes kun på plakaten og tegnes af tools/logoer.py. Scriptet tegner logoet med tools/logoer.py og laver:
   img/favicon.svg, img/logo.svg, img/icon-192.png, img/icon-512.png, img/icon-maskable.png, img/apple-touch-icon.png,
   Android: mipmap-*/ic_launcher*.png og farven icon_bg, Windows/Linux: desktop/build/icon.png og desktop/build/appx/*.png.
 Kræver Playwright og Pillow, som testene også bruger. Husk bagefter: hæv versionen i sw.js, og skriv det i CHANGELOG.md.
@@ -13,7 +13,7 @@ Kræver Playwright og Pillow, som testene også bruger. Husk bagefter: hæv vers
 import io, os, re, sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from logoer import MOTIV, STIL, DEFS  # noqa: E402
+from logoer import MOTIV, STIL, DEFS, nr, build  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DENS = {'mdpi': 1, 'hdpi': 1.5, 'xhdpi': 2, 'xxhdpi': 3, 'xxxhdpi': 4}
@@ -23,9 +23,8 @@ APPX = {'Square44x44Logo.png': (44, 44), 'StoreLogo.png': (50, 50), 'SmallTile.p
 
 def parts(n):
     """Motiv, stil og de stumper, logoet er bygget af."""
-    if not 1 <= n <= 200: sys.exit('Nummeret skal være mellem 1 og 200.')
-    slug, navn, mf = MOTIV[(n - 1) // 5]
-    st = STIL[(n - 1) % 5]
+    if not 1 <= n <= 10000: sys.exit('Nummeret skal være mellem 1 og 10000.')
+    (slug, navn, mf), st = nr(n)
     r = mf(st[5]); body, extra = r if isinstance(r, tuple) else (r, '')
     return slug, navn, st, body, extra
 
@@ -35,17 +34,8 @@ def svg(inner, w=120, h=120, extra=''):
 
 
 def logo(st, body, extra):
-    """Logoet, som det er tegnet: afrundet firkant eller cirkel."""
-    _, _, shape, bg, bgx, _ = st
-    if shape == 'sq':
-        o = 1 if bgx else 0
-        back = f'<rect x="{o}" y="{o}" width="{120 - 2 * o}" height="{120 - 2 * o}" rx="{28 - o}" fill="{bg}"{bgx}/>'
-        clip = '<clipPath id="fr"><rect width="120" height="120" rx="28"/></clipPath>'; inner = body
-    else:
-        back = f'<circle cx="60" cy="60" r="60" fill="{bg}"/>'
-        clip = '<clipPath id="fr"><circle cx="60" cy="60" r="60"/></clipPath>'
-        inner = f'<g transform="translate(60 60) scale(.86) translate(-60 -60)">{body}</g>'
-    return svg(f'{back}<g clip-path="url(#fr)">{inner}</g>', extra=clip + extra)
+    """Logoet, som det er tegnet: firkant, cirkel, sekskant, ottekant eller skjold, evt. med ring (tegnes af logoer.build)."""
+    return build(lambda p: (body, extra), st)
 
 
 def flade(st, body, extra, w, h, k):
@@ -57,7 +47,7 @@ def flade(st, body, extra, w, h, k):
 def mono_svg(n):
     """Motivet i hvidt på sort. Bruges til Androids ensfarvede ikon, hvor hvidt bliver til ikonets form."""
     from types import SimpleNamespace as NS
-    _, _, mf = MOTIV[(n - 1) // 5]
+    (_, _, mf), _ = nr(n)
     W = '#ffffff'; K = '#000000'
     p = NS(m=W, ms=W, b=W, a=W, c=K, i=W, f=W, fs=None, w=W, l=W, x=W, d=K, fl=[W] * 4)
     r = mf(p); body, extra = r if isinstance(r, tuple) else (r, '')
@@ -104,7 +94,7 @@ def main():
             m = Image.open(io.BytesIO(png(mono_svg(n), 108 * k, 108 * k, False))).convert('L')
             im = Image.new('RGBA', m.size, (255, 255, 255, 0)); im.putalpha(m); o = io.BytesIO(); im.save(o, 'PNG', optimize=True); put(base + 'ic_launcher_mono.png', o.getvalue())
         # Baggrundsfarven bag Androids adaptive ikon: stilens farve, eller den midterste farve i et farveforløb
-        bgc = st[3] if st[3].startswith('#') else {'url(#s)': '#ff7a3d', 'url(#b)': '#2f5a8e'}.get(st[3], '#0f1d36')
+        bgc = st[3] if st[3].startswith('#') else {'url(#s)': '#ff7a3d', 'url(#b)': '#2f5a8e', 'url(#gk)': '#c8692e', 'url(#gt)': '#155a63', 'url(#gn)': '#24306a', 'url(#gc)': '#e8704f'}.get(st[3], '#0f1d36')
         col = os.path.join(ROOT, 'android/app/src/main/res/values/styles.xml')
         if os.path.exists(col):
             t = open(col, encoding='utf-8').read(); t2 = re.sub(r'(<color name="icon_bg">)#[0-9A-Fa-f]{6,8}(</color>)', rf'\g<1>{bgc.upper()}\g<2>', t)

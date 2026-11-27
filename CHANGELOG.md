@@ -4,6 +4,15 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-27
 
+### Eftermiddag (14:16–14:36): 1000 logoer, plakater, og tilbage til profilen efter en rettelse
+- **1000 logoer:** `tools/logoer.py` har 20 nye stilarter: 10 farvesæt (skov, bær, kobber, hav, kul, creme, rød, mint, lavendel, sort-hvid) i to former hver, nu også sekskant. Sammen med de 5 gamle giver de 40 motiver × 25 stilarter = 1000 logoer i `img/logoer/1000/` (`python3 tools/logoer.py img/logoer/1000 --1000`). Nr. 1–200 er de samme som før, så et nummer, man har valgt, gælder stadig. Nr. 201–1000 = 200 + (motiv − 1) × 20 + stil.
+- **`tools/logo-ud.py`** tager nu et nummer fra 1 til 1000 og kan tegne sekskanten.
+- **Plakat:** Et design med alle 1000 på én plakat i A1, og de samme logoer på fem A4-sider med 200 på hver. Logoerne ligger i plakaten som vektor, så de bliver skarpe, også når den printes stort.
+- **10.000 logoer:** Nr. 1001–10000 er de 40 motiver i 25 farvesæt (de 15 ovenfor og 10 nye: nordlys, citron, vin, is, sand, oliven, koral, blåbær, grafit, rosa), 5 former (firkant, cirkel, sekskant, ottekant, skjold) og med eller uden en tynd ring. Kombinationer, der allerede findes i nr. 1–1000, er sprunget over, så hvert motiv har 225 nye: nr. = 1000 + (motiv − 1) × 225 + stil. De ligger ikke som filer i repoet (det ville være 44 MB), men tegnes af `python3 tools/logoer.py <mappe> --10000`, og `tools/logo-ud.py` kan sætte ethvert af dem ind. Ærligt sagt: forskellen mellem nr. 1001 og 10000 er farve og form, ikke nye motiver.
+- **Plakat med 10.000:** én plakat i A0, 100 × 100 logoer. Rækkerne står med deres første nummer og kolonnerne 1–100, så nummeret er rækkens tal + kolonnen − 1. Logoerne er tegnet i dobbelt opløsning, så de er skarpe i A0.
+- **Ret fra Min profil:** Når man retter en bedømmelse fra Min profil og gemmer eller fortryder, kommer man nu tilbage til Min profil i stedet for at blive stående på øllens side.
+- **Test:** `test_site.py` tjekker, at man kommer tilbage til Min profil efter både Gem og Fortryd.
+
 ### Eftermiddag (14:03–14:06): tilføj øllen direkte fra søgningen
 - **Søger man på en stregkode,** som ingen øl har, står der nu "Tilføj øl med stregkode …". Knappen åbner Tilføj øl med koden udfyldt, og siden henter navn og billede fra Open Food Facts.
 - **Søger man på et navn,** der ikke findes, åbner "Tilføj øl" nu med navnet udfyldt, så man ikke skal skrive det igen.

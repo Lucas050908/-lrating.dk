@@ -153,21 +153,91 @@ STIL=[
  ('guld','Guld','ci',GL,'',NS(m=NAVY,ms=NAVY,b=NAVY,a=NAVY,c=GL,i=NAVY,f=W,fs=NAVY,w=NAVY,l='#d9962b',x=SUN,d='#f0ae3a',fl=[NAVY]*4)),
  ('fjord','Fjord','ci','url(#b)','',NS(m=H,ms=GL,b=H,a=W,c='#234a7d',i=W,f=W,fs=None,w=W,l=SKY,x=PK,d='#1a3256',fl=FLC)),
 ]
-DEFS=grad('g')+grad('h',stops=((0,GL),(1,SUN)))+grad('s',stops=((0,GL),(.55,SUN),(1,PK)))+grad('b',stops=((0,'#4a82c4'),(1,'#1b3358')))
+DEFS=grad('g')+grad('h',stops=((0,GL),(1,SUN)))+grad('s',stops=((0,GL),(.55,SUN),(1,PK)))+grad('b',stops=((0,'#4a82c4'),(1,'#1b3358')))+grad('gs',stops=((0,'#ffe3a3'),(1,'#e8b04a')))+grad('gp',stops=((0,'#ff9fbf'),(.5,SUN),(1,GL)))+grad('gk',stops=((0,'#f2b27a'),(1,'#c8692e')))+grad('gt',stops=((0,'#2a8b93'),(1,'#0c3b45')))+grad('gn',stops=((0,'#1d6b6a'),(.5,'#24306a'),(1,'#4b2a6e')))+grad('gc',stops=((0,'#ff9a7a'),(1,'#d9533f')))
+
+# ---------- 20 stilarter mere (nr. 201-1000): 10 farvesæt i to former hver ----------
+# Mørke farvesæt følger "Nat": lyst motiv på mørk bund. Lyse følger "Lys": mørkt motiv på lys bund.
+def _dark(c,main,hl,acc,line,extra,d,fl=None): return NS(m=main,ms=acc,b=hl,a=acc,c=c,i=acc,f=W,fs=None,w=W,l=line,x=extra,d=d,fl=fl or FLC)
+def _light(c,ink,hl,acc,line,extra,d,fl=None): return NS(m=ink,ms=ink,b=hl,a=acc,c=c,i=acc,f=W,fs=ink,w=ink,l=line,x=extra,d=d,fl=fl or FLC)
+SK,BA,KU,KR,RO,LV='#17402f','#4b1733','#111214','#f6eedf','#b8282f','#2a1d4a'
+_P={
+ 'skov':('Skov',SK,'',_dark(SK,'url(#gs)','url(#gs)',GL,'#8cc7a4','#f0566b','#235a44',['#ffc85a','#e8b04a','#8cc7a4','#ffe3a3'])),
+ 'baer':('Bær',BA,'',_dark(BA,'url(#gp)','url(#h)',GL,'#e79ab8','#ff7a3d','#64234a',['#ffc85a','#ff9fbf','#ff7a3d','#f0566b'])),
+ 'kobber':('Kobber','url(#gk)','',_dark('#7a3a18',NAVY,NAVY,W,'#ffe0c4',W,'#e0915a',[NAVY]*4)),
+ 'hav':('Hav','url(#gt)','',_dark('#0f4950','url(#h)','url(#h)',W,'#8fd3d6','#ff7a3d','#13606a')),
+ 'kul':('Kul',KU,'',_dark(KU,'url(#h)','url(#h)',GL,'#7d7f86','#ff7a3d','#26272c')),
+ 'creme':('Creme',KR,'',_light(KR,'#3a2414','url(#h)','#c8582a','#c9b493','#b8282f','#ece0c8')),
+ 'roed':('Rød',RO,'',_dark(RO,'url(#h)','url(#h)',GL,'#f6b3a8',W,'#8f1c22',['#ffc85a','#ffe3a3',W,'#ffa24a'])),
+ 'mint':('Mint','#dff3ea',' stroke="#b9dfcd" stroke-width="2"',_light('#dff3ea','#17402f','url(#h)','#d9622b','#8cc7a4','#f0566b','#c6e9d9')),
+ 'lavendel':('Lavendel',LV,'',_dark(LV,'url(#gp)','url(#h)',GL,'#b9a7e8','#ff7a3d','#3b2a66',['#ffc85a','#ff9fbf','#ffa24a','#b9a7e8'])),
+ 'sorthvid':('Sort og hvid',W,' stroke="#d4d4d4" stroke-width="2"',NS(m=KU,ms=KU,b=KU,a=KU,c=W,i=KU,f=W,fs=KU,w=KU,l='#9a9a9a',x=KU,d='#e6e6e6',fl=[KU]*4)),
+}
+_ORD=[('skov','sq'),('baer','ci'),('kobber','sq'),('hav','hx'),('kul','sq'),('creme','ci'),('roed','sq'),('mint','hx'),('lavendel','ci'),('sorthvid','sq'),
+      ('skov','hx'),('baer','sq'),('kobber','ci'),('hav','sq'),('kul','hx'),('creme','sq'),('roed','ci'),('mint','sq'),('lavendel','hx'),('sorthvid','ci')]
+FORM={'sq':'firkant','ci':'cirkel','hx':'sekskant'}
+STIL2=[(f'{k}-{FORM[f]}',f'{_P[k][0]} ({FORM[f]})',f,_P[k][1],_P[k][2],_P[k][3]) for k,f in _ORD]
+
+# ---------- 10.000 (nr. 1001-10000): 25 farvesæt × 5 former × med eller uden ring ----------
+# De 25 farvesæt er de 15 ovenfor (de 5 første taget fra STIL) og 10 nye. Formerne er firkant, cirkel, sekskant, ottekant og skjold.
+# Ringen er en tynd kant lidt inde i formen. Hver kombination, der allerede findes i nr. 1-1000, springes over,
+# så hvert motiv får 225 nye stilarter: 40 × 225 = 9000.
+_P.update({
+ 'nordlys':('Nordlys','url(#gn)','',_dark('#1c2a5a','url(#h)','url(#h)','#9ff0c8','#9fb8ff','#ff9fbf','#2b3d7a',['#9ff0c8','#ffc85a','#ff9fbf','#9fb8ff'])),
+ 'citron':('Citron','#fff3b0',' stroke="#ecd77a" stroke-width="2"',_light('#fff3b0','#3b3305','url(#h)','#d9622b','#d6c060','#f0566b','#f6e68f')),
+ 'vin':('Vin','#5c0f22','',_dark('#5c0f22','url(#h)','url(#h)',GL,'#e48aa0',W,'#7a1a31')),
+ 'is':('Is','#e3f1fb',' stroke="#bcd8ee" stroke-width="2"',_light('#e3f1fb','#0f2d4d','url(#h)','#2a7fc4','#9cc3e4','#f0566b','#cfe4f5')),
+ 'sand':('Sand','#efe0c2','',_light('#efe0c2','#4a3418','url(#h)','#b4501a','#c9a873','#b8282f','#e2cfa8')),
+ 'oliven':('Oliven','#3d4219','',_dark('#3d4219','url(#gs)','url(#gs)',GL,'#c3c98a','#ff7a3d','#525a22',['#ffc85a','#e8d27a','#c3c98a','#ffe3a3'])),
+ 'koral':('Koral','url(#gc)','',_dark('#d9533f',NAVY,NAVY,W,'#ffd9cc',W,'#f08a6e',[NAVY]*4)),
+ 'blaabaer':('Blåbær','#1e2766','',_dark('#1e2766','url(#gp)','url(#h)',GL,'#9fa8ec','#ff7a3d','#2c3786',['#ffc85a','#ff9fbf','#ffa24a','#9fa8ec'])),
+ 'grafit':('Grafit','#3a3f47','',_dark('#3a3f47','url(#h)','url(#h)',GL,'#a9b0bb','#ff7a3d','#4c535d')),
+ 'rosa':('Rosa','#fde3ea',' stroke="#f5bfcd" stroke-width="2"',_light('#fde3ea','#5a1530','url(#h)','#d9622b','#eaa3b6','#b8282f','#f9cfdb')),
+})
+_OLD={'nat':0,'solnedgang':1,'lys':2,'guld':3,'fjord':4}
+for _k,_i in _OLD.items(): _P[_k]=(STIL[_i][1],STIL[_i][3],STIL[_i][4],STIL[_i][5])
+PAL25=['nat','solnedgang','lys','guld','fjord','skov','baer','kobber','hav','kul','creme','roed','mint','lavendel','sorthvid',
+       'nordlys','citron','vin','is','sand','oliven','koral','blaabaer','grafit','rosa']
+FORM.update({'oc':'ottekant','sk':'skjold'})
+FORM5=['sq','ci','hx','oc','sk']
+_used={(STIL[i][0],STIL[i][2]) for i in range(5)}|{(k,f) for k,f in _ORD}
+STIL3=[]
+for _k in PAL25:
+    for _f in FORM5:
+        for _ring in (False,True):
+            if not _ring and (_k,_f) in _used: continue
+            STIL3.append((f'{_k}-{FORM[_f]}'+('-ring' if _ring else ''),f'{_P[_k][0]} ({FORM[_f]}'+(', ring' if _ring else '')+')',_f+('r' if _ring else ''),_P[_k][1],_P[_k][2],_P[_k][3]))
+assert len(STIL3)==225,len(STIL3)
+
 def build(mf,st):
     slug,name,shape,bg,bgx,p=st
     r=mf(p);body,extra=r if isinstance(r,tuple) else (r,'')
+    ring=len(shape)==3 and shape.endswith('r');shape=shape[:2] if ring else shape
+    SH={'hx':'M60 2L110.2 31v58L60 118L9.8 89V31z','oc':'M36 2H84L118 36V84L84 118H36L2 84V36z','sk':'M60 2L110 16V58C110 90 88 108 60 118C32 108 10 90 10 58V16z'}
+    rg=''
+    if ring:   # tynd kant lidt inde i formen, i farvesættets accentfarve
+        rc=p.a if isinstance(p.a,str) and p.a.startswith('#') else '#ffffff'
+        rg={'sq':'<rect x="7" y="7" width="106" height="106" rx="22"','ci':'<circle cx="60" cy="60" r="53"','hx':'<path d="M60 9.5L103.7 34.8v50.4L60 110.5L16.3 85.2V34.8z"','oc':'<path d="M39 9H81L111 39V81L81 111H39L9 81V39z"','sk':'<path d="M60 9L103 21V58C103 86 84 102 60 111C36 102 17 86 17 58V21z"'}[shape]+f' fill="none" stroke="{rc}" stroke-width="2.5" stroke-opacity=".55"/>'
     if shape=='sq':
         o=1 if bgx else 0
         back=f'<rect x="{o}" y="{o}" width="{120-2*o}" height="{120-2*o}" rx="{28-o}" fill="{bg}"{bgx}/>';clip='<clipPath id="fr"><rect width="120" height="120" rx="28"/></clipPath>';inner=body
+    elif shape in ('hx','oc','sk'):
+        d=SH[shape];sc={'hx':'.8','oc':'.84','sk':'.8'}[shape];ty=' translate(0 -3)' if shape=='sk' else ''
+        back=f'<path d="{d}" fill="{bg}"{bgx}/>';clip=f'<clipPath id="fr"><path d="{d}"/></clipPath>';inner=f'<g transform="translate(60 60) scale({sc}) translate(-60 -60){ty}">{body}</g>'
     else:
         back=f'<circle cx="60" cy="60" r="60" fill="{bg}"/>';clip='<clipPath id="fr"><circle cx="60" cy="60" r="60"/></clipPath>';inner=f'<g transform="translate(60 60) scale(.86) translate(-60 -60)">{body}</g>'
-    return f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="ølrating.dk"><defs>{DEFS}{clip}{extra}</defs>{back}<g clip-path="url(#fr)">{inner}</g></svg>'
+    return f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="ølrating.dk"><defs>{DEFS}{clip}{extra}</defs>{back}<g clip-path="url(#fr)">{inner}</g>{rg}</svg>'
+def nr(n):
+    """Logo nr. n (1-10000) som (motiv, stil). 1-200: (motiv-1)*5+stil. 201-1000: 200+(motiv-1)*20+stil. 1001-10000: 1000+(motiv-1)*225+stil."""
+    if 1<=n<=200: return MOTIV[(n-1)//5],STIL[(n-1)%5]
+    if 201<=n<=1000: return MOTIV[(n-201)//20],STIL2[(n-201)%20]
+    if 1001<=n<=10000: return MOTIV[(n-1001)//225],STIL3[(n-1001)%225]
+    raise ValueError('Nummeret skal være mellem 1 og 10000')
 if __name__=='__main__':
     out=sys.argv[1];os.makedirs(out,exist_ok=True);idx=[];n=0
-    for ms,mn,mf in MOTIV:
-        for st in STIL:
-            n+=1;fn=f'{n:03d}-{ms}-{st[0]}.svg';open(os.path.join(out,fn),'w',encoding='utf-8').write(build(mf,st));idx.append({'n':n,'file':fn,'motiv':mn,'stil':st[1]})
+    antal=10000 if '--10000' in sys.argv else 1000 if '--1000' in sys.argv else 200
+    for n in range(1,antal+1):
+        (ms,mn,mf),st=nr(n);fn=f'{n:05d}-{ms}-{st[0]}.svg' if antal>1000 else f'{n:04d}-{ms}-{st[0]}.svg' if antal>200 else f'{n:03d}-{ms}-{st[0]}.svg'
+        open(os.path.join(out,fn),'w',encoding='utf-8').write(build(mf,st));idx.append({'n':n,'file':fn,'motiv':mn,'stil':st[1]})
     json.dump(idx,open(os.path.join(out,'index.json'),'w',encoding='utf-8'),ensure_ascii=False)
     cells=''.join(f'<div><img src="{i["file"]}" style="width:100%;display:block"><div style="font:11px sans-serif">{i["n"]}</div></div>' for i in idx)
     open(os.path.join(out,'ark.html'),'w',encoding='utf-8').write(f'<!doctype html><meta charset="utf-8"><body style="margin:0;background:#e9eef7"><div style="display:grid;grid-template-columns:repeat(10,1fr);gap:8px;padding:8px;width:1300px;box-sizing:border-box">{cells}</div>')

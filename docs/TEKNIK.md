@@ -105,6 +105,7 @@
 - Tallet vises med komma på dansk og punktum på engelsk (`fmt`). `setLang` kalder `rateSet` igen, så tal, der allerede er valgt, følger sproget.
 
 ### Forslag til logo (`img/logoer/`)
+- **1000 logoer:** `img/logoer/1000/` (filnavne `0001-…svg`). `nr(n)` i `tools/logoer.py` giver motiv og stil for nr. 1–1000: 1–200 er de 5 første stilarter, `(motiv-1)*5+stil`; 201–1000 er `STIL2` (20 stilarter), `200+(motiv-1)*20+stil`. Formerne er `sq` (afrundet firkant), `ci` (cirkel) og `hx` (sekskant, motivet skaleret til 80 %). Nr. 1001–10000 er `STIL3` (225 pr. motiv: `PAL25` × `FORM5` × med/uden ring, minus dem, der findes i 1–1000), `1000+(motiv-1)*225+stil`. Formerne `oc` (ottekant) og `sk` (skjold) og ringen (`…r`, fx `sqr`) tegnes i `build()`. De 10.000 gemmes ikke i repoet; kør `python3 tools/logoer.py <mappe> --10000`.
 - Mappen har 50 forslag som SVG, nummereret `01` til `50`. Nr. 10, 49 og 50 bruger `<text>` og er derfor afhængige af enhedens skrifttyper. De bruger sidens farver: nat `#0f1d36`, sol `#ff7a3d`, aften `#f0566b` og guld `#ffc85a`.
 - `img/logoer/200/` har 200 forslag mere: 40 motiver i fem stilarter. Nummeret er `(motiv − 1) × 5 + stil`, hvor stil 1 er nat, 2 solnedgang, 3 lys, 4 guld og 5 fjord.
 - `tools/logoer.py` tegner dem. Hvert motiv er en funktion (`m01` til `m40`), der får en palet (`p.m` hovedfarve, `p.b` øl, `p.a` detalje, `p.c` udskæring, `p.f` skum med mere), og `build()` lægger baggrunden under. Scriptet skriver også `index.json` og `ark.html` i mappen, man peger på. De to filer ligger ikke i repoet.

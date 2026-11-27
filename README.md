@@ -41,8 +41,8 @@ Danske øl, bedømt af dem der drikker dem.
 | `sw.js`, `manifest.webmanifest` | Installerbar app (PWA) og offline |
 | `img/`, `fonts/`, `js/qr.js` | Billeder, ikoner, skrifttyper, QR-kode-bibliotek (MIT) |
 | `js/scan.js` | Stregkodelæser til iPhone og Firefox (bygget af ZXing, Apache-2.0, med `tools/byg-scanner.sh`). Hentes kun, når den skal bruges |
-| `img/logoer/` | 200 logo-forslag (SVG). Det valgte sættes ind alle steder med `tools/logo-ud.py` |
-| `tools/` | `logoer.py` laver de 200 logoer, `logo-ud.py` skifter logo på siden og i apps |
+| `img/logoer/` | 200 og 1000 logo-forslag (SVG). Nr. 1001–10000 tegnes af `tools/logoer.py`. Det valgte sættes ind alle steder med `tools/logo-ud.py` |
+| `tools/` | `logoer.py` laver de 200 eller 1000 logoer, `logo-ud.py` skifter logo på siden og i apps |
 | `js/en.js` | Den engelske ordbog. Hentes kun, når man vælger English |
 | `404.html`, `CNAME`, `robots.txt`, `sitemap.xml` | Fejlside, domæne og søgemaskiner |
 | `android/` | Android-app og widgets |

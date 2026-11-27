@@ -136,10 +136,11 @@ def run(b,name,vw):
     rid=pg.get_attribute('#revForm','data-edit') or ''; old=[r for r in ls(pg)['reviews'] if r['id']==rid]
     T('profil: Ret åbner øllens side med bedømmelsen klar',pg.evaluate('location.hash').startswith('#beer-') and pg.inner_text('#rateTitle')=='Ret din anmeldelse' and old and pg.input_value('#rText')==(old[0].get('text') or ''),(pg.evaluate('location.hash'),pg.inner_text('#rateTitle'),rid))
     pg.fill('#rText','Rettet fra profilen'); pg.click('#editX'); pg.wait_for_timeout(400)
-    T('profil: Fortryd ændringer gemmer ingenting',[r.get('text') for r in ls(pg)['reviews'] if r['id']==rid]==[old[0].get('text')] and pg.inner_text('#rateTitle')!='Ret din anmeldelse')
+    T('profil: Fortryd ændringer gemmer ingenting og går tilbage til Min profil',[r.get('text') for r in ls(pg)['reviews'] if r['id']==rid]==[old[0].get('text')] and pg.evaluate('location.hash')=='#profil',pg.evaluate('location.hash'))
     pg.goto(URL+'#profil'); pg.wait_for_timeout(400); pg.click('[data-goedit] >> nth=0'); pg.wait_for_timeout(900)
     pg.fill('#rText','Rettet fra profilen'); pg.click('#revForm button[type=submit]'); pg.wait_for_timeout(1200)
     nw=[r for r in ls(pg)['reviews'] if r['id']==rid]
+    T('profil: efter en rettelse kommer man tilbage til Min profil',pg.evaluate('location.hash')=='#profil',pg.evaluate('location.hash'))
     T('profil: rettet bedømmelse er gemt med samme id og dato',nw and nw[0]['text']=='Rettet fra profilen' and nw[0].get('edited')==1 and nw[0]['date']==old[0]['date'] and len(ls(pg)['reviews'])==2,nw)
     pg.goto(URL+'#beer-'+bid); pg.wait_for_timeout(600)
     nt=pg.inner_text('#myRevNote') if pg.query_selector('#myRevNote') else ''

@@ -1738,10 +1738,10 @@ document.addEventListener('click',e=>{const t=e.target.closest('button,a');if(!t
   else if(t.id==='scanSearch'){scanSearch()}
   else if(t.id==='scanAdd'){scanCode().then(c=>{if(c){$('bCode').value=c;toast('Stregkode scannet');dupCheck();offLookup(c)}})}
   else if(t.id==='scanX'){stopScan()}
-  else if(t.dataset.edit)editRev(t.dataset.edit)
-  else if(t.dataset.goedit){const r=S.reviews.find(x=>x.id===t.dataset.goedit);if(!r)return;F.goEdit=r.id;if(location.hash==='#beer-'+r.beer)route();else location.hash='#beer-'+r.beer}
+  else if(t.dataset.edit){F.backTo='';editRev(t.dataset.edit)}
+  else if(t.dataset.goedit){const r=S.reviews.find(x=>x.id===t.dataset.goedit);if(!r)return;F.goEdit=r.id;F.backTo='profil';if(location.hash==='#beer-'+r.beer)route();else location.hash='#beer-'+r.beer}
   else if(t.id==='rmRImg'){F.rmImg=true;delete pending.rImg;$('rImgPrev').innerHTML=CAM('var(--gl)');t.parentElement.remove();toast('Fotoet fjernes, når du gemmer')}
-  else if(t.id==='editX'){F.goEdit=null;route();toast('Ændringerne er ikke gemt')}
+  else if(t.id==='editX'){F.goEdit=null;toast('Ændringerne er ikke gemt');if(F.backTo){const b=F.backTo;F.backTo='';location.hash=b}else route()}   /* startede man fra Min profil, kommer man tilbage dertil */
   else if(t.dataset.delrev){const o=S.reviews.find(x=>x.id===t.dataset.delrev);S.reviews=S.reviews.filter(x=>x.id!==t.dataset.delrev);save();route();undoToast('Anmeldelsen er slettet',()=>{S.reviews.push(o);save();route()},()=>delImg(o?.img))}
   else if(t.id==='wishBtn'){const id=t.dataset.id,on=!S.wish.includes(id);S.wish=on?[...S.wish,id]:S.wish.filter(x=>x!==id);save();t.setAttribute('aria-pressed',on);t.textContent=on?'På din ønskeliste':'Vil smage';if(on)burstAt(t);toast(on?'Gemt på din ønskeliste':'Fjernet fra ønskelisten')}
   else if(t.dataset.mapq){Object.assign(F,{q:t.dataset.mapq,style:'',maxPrice:0,minAbv:0,maxAbv:0,ftags:[],untried:false,withImg:false,af:false})}
@@ -1804,7 +1804,7 @@ document.addEventListener('submit',async e=>{const f=e.target;e.preventDefault()
     checkBadges();burstAt($('addBtn'));delete pending.bImg;toast(`Skål, ${r.who}! ${name} er tilføjet`);setTimeout(()=>location.hash='beer-'+id,RM?0:600);return}
   if(f.id==='revForm'&&f.dataset.edit){const r=readReview(f);if(!r)return;const i=S.reviews.findIndex(x=>x.id===f.dataset.edit);if(i<0)return;const old=S.reviews[i];
     S.reviews[i]={...old,...r,prof:r.prof||old.prof,id:old.id,date:old.date,beer:old.beer,edited:1,img:pending.rImg?await putImg(pending.rImg):F.rmImg?'':old.img};delete pending.rImg;F.rmImg=false;if(!S.me)S.me=r.who;if(!save()){S.reviews[i]=old;return}if(old.img&&S.reviews[i].img!==old.img)delImg(old.img);
-    burstAt(f.querySelector('button[type=submit]'));toast('Din anmeldelse er rettet');checkBadges();setTimeout(route,RM?0:600);return}
+    burstAt(f.querySelector('button[type=submit]'));toast('Din anmeldelse er rettet');checkBadges();setTimeout(()=>{if(F.backTo){const b=F.backTo;F.backTo='';location.hash=b}else route()},RM?0:600);return}
   if(f.id==='revForm'){const r=readReview(f);if(!r)return;r.beer=f.dataset.beer;if(pending.rImg)r.img=await putImg(pending.rImg);S.me=r.who;S.reviews.push(r);
     if(!save()){S.reviews.pop();return}checkBadges();
     burstAt(f.querySelector('button[type=submit]'));delete pending.rImg;toast('Skål! Din bedømmelse er gemt');setTimeout(route,RM?0:650)}});
