@@ -4,6 +4,11 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-28
 
+### Aften (18:08–18:18): tastatur
+- **Tab gennem forsiden** på telefon og pc: alle elementer får en synlig fokusring undtagen søgefeltet. Ringen var fjernet på selve feltet (den ville sidde inden i den hvide pille), uden at pillen fik en i stedet. Nu får pillen ringen, når feltet har fokus. `test_site.py` tjekker det.
+- **Bryggeriet på øllens side** (knappen, der fører til bryggeriets side) havde heller ingen fokusring, fordi den var nulstillet med `all:unset`. Nu bruger den klassen `lnk` og ser ud som før.
+- Tab gennem 13 andre sider (Alle øl, Min profil, Tilføj øl, Byttur, Smagning, Genstande, Indstillinger, en øl, Ølkalender, Swipe, Lykkehjul, Toplisten, Om): alt andet har en synlig ring. Kun datofeltet på Byttur tegnes af browseren selv.
+
 ### Aften (17:58–18:07): alt lavet uden net bliver delt bagefter
 - **Ny test i `test_sync.py`:** Uden forbindelse laves en ny øl med billede og bedømmelse, en byttur med et stop og en smagning. Når nettet er tilbage, ligger det hele i databasen, også billedet og tilmeldingen til turen. Det virkede, men var kun testet for rettelser.
 

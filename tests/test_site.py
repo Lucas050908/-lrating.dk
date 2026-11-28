@@ -399,6 +399,8 @@ with sync_playwright() as p:
     for q in ['5740600001234','5740600001235','2025','2026','julebrg']:
         pg.fill('#q',q); pg.wait_for_timeout(250); r[q]=pg.eval_on_selector_all('#grid .card[href^="#beer-"]','e=>e.length')
     check('søgning: tal skal passe præcist (en stregkode med ét forkert ciffer eller et andet år findes ikke), stavefejl i ord tåles stadig',r=={'5740600001234':1,'5740600001235':0,'2025':1,'2026':0,'julebrg':1},r)
+    pg.goto(URL); pg.wait_for_timeout(600); pg.focus('#q'); ring=pg.evaluate("(()=>{const cs=getComputedStyle(document.querySelector('.search'));return cs.outlineStyle+' '+cs.outlineWidth})()")
+    check('fokus: søgefeltet på forsiden får en synlig ring, når det har fokus',ring.startswith('solid') and not ring.endswith(' 0px'),ring)
     c.close()
     # adresser, der er skrevet forkert eller er blevet ødelagt undervejs (fx et % der ikke er kodet), må ikke få siden til at gå ned
     c=b.new_context(viewport={'width':390,'height':844},service_workers='block'); c.route(f'https://{HOST}/**',Mock().handle); pg=c.new_page(); perr=[]
