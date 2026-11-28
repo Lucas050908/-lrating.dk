@@ -4,6 +4,10 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-28
 
+### Eftermiddag (16:30–16:24): testen tæller ikke længere som besøg
+- **Fundet:** Hver kørsel af testen mod den rigtige database lagde omkring 5 besøg til besøgstælleren (51 → 56 ved en kørsel, hvor der ellers ikke var trafik). En del af de 56 besøg i alt er derfor fra testene. Nu svarer testen selv på kaldet til tælleren, så den ikke tæller med.
+- **Ejere i databasen:** Lucas' øl står under to forskellige usynlige brugere (onsdagens øl under én, "Julemandens classic" fra fredag under en anden). Det er normalt, hvis de er lavet fra to enheder (fx telefon og pc, eller appen og browseren). Så kan hver øl kun rettes fra den enhed, den er lavet på, indtil kontoen med mail er slået til.
+
 ### Eftermiddag (16:15–16:22): stabilitet og ny version uden gamle filer
 - **Service worker:** Når en ny version installeres, hentes filerne nu forbi browserens egen cache (`cache: 'reload'`). GitHub Pages lader browseren gemme filer i 10 minutter, så en ny version kunne gemme den gamle `js/en.js` og vise nye tekster uden oversættelse, til næste version kom. Prøvet: service workeren installeres, siden virker uden net, også på engelsk.
 - **Testen mod den rigtige database** skriver nu også de første 8 tegn af ejer-id'et ved hver øl og hvilke ejere, hvert navn har. Står samme navn under flere ejere, har en enhed fået en ny usynlig bruger (som ved de to login-fejl, der er rettet i dag), og så kan de gamle øl ikke rettes fra den enhed. Ejer-id'er er i forvejen offentlige i databasen.

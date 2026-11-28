@@ -81,6 +81,8 @@ Se [STORE.md](STORE.md) for trin for trin, tekster og skærmbilleder.
 005 blev kørt fredag 27-11-2026 kl. 14.50.
 Før `supabase/005-besoeg.sql` er kørt, prøver hver enhed højst én gang i timen (husket i `localStorage` under `olrating-vis404`). Efter kørslen begynder tællingen derfor senest en time efter på enheder, der har prøvet før. Vil du se det med det samme på din egen telefon, så slet sidens data eller vent en time.
 
+Testene tæller ikke med: De efterlignede tests har deres egen tæller, og testen mod den rigtige database svarer selv på kaldet til `besoeg` (fra 28-11-2026 kl. 16.30). Før det lagde hver kørsel omkring 5 besøg til.
+
 ## Test på GitHub: tjek hvert job
 Jobbene for Safaris motor (WebKit) og Firefox må fejle uden at stoppe resten (`continue-on-error`). Så kan hele kørslen stå som grøn, selv om et af dem er rødt. Kig derfor på hvert job:
 `gh run view <id> --json jobs -q '.jobs[]|"\(.name) \(.conclusion)"'`

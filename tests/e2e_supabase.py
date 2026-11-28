@@ -41,6 +41,8 @@ with sync_playwright() as p:
     b=p.chromium.launch()
     def ctx(name,state=None):
         c=b.new_context(viewport={'width':390,'height':844}); pg=c.new_page()
+        # testen må ikke tælle med i besøgstælleren på siden (hver kørsel lagde ellers 4-5 besøg til)
+        c.route('**/rest/v1/rpc/besoeg',lambda r:r.fulfill(status=200,content_type='application/json',body='{"total":0,"today":0,"week":0,"since":"2026-11-26"}'))
         pg.on('pageerror',lambda e:errs.append(name+': '+str(e)))
         pg.on('console',lambda m:errs.append(name+' console: '+m.text[:200]) if m.type in('error','warning') else None)
         init="window.confirm=()=>true;window.prompt=()=>'%s';navigator.share=async()=>{};"%name
