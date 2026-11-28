@@ -4,6 +4,12 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-28
 
+### Aften (17:00–17:07): en ustabil test i Safaris motor forklaret
+- **Testene på GitHub siden fredag morgen:** 40 kørsler gennemgået job for job. Chromium og databasen har bestået hver gang. Firefox fejlede 2 gange og Safaris motor (WebKit) 12 gange. 10 af WebKit-fejlene var fredag formiddag (fejl på siden og i testene, som blev rettet fredag). Siden fredag middag har WebKit fejlet 2 gange, begge med samme besked i synkroniseringstesten: "Failed to load resource".
+- **Forklaringen:** Browseren skriver den besked, hver gang databasen svarer med en fejlkode. Det sker med vilje flere steder i testen (fx får en tilmelding til en tur, der lige er slettet, svaret 409). Om det sker i den fane, testen holder øje med, afhænger af tidspunktet, og WebKit er langsommere. Det er altså ikke en fejl på siden.
+- **Rettet i testen:** Beskeden tæller kun ikke med, når databasen faktisk har svaret med en fejl i den fane. En manglende fil på selve siden bliver stadig fanget.
+- **Kørt igen på dagens udgave:** tilgængelighed (axe, 25 sider), kontrast (30 farvekombinationer) og "klik på alt" (73 tryk på 27 sider). Ingen fejl.
+
 ### Eftermiddag (16:50–16:59): genstande fra Android-widgetten
 - **Testet for første gang:** Tryk på "+1" i Android-widgetten hentes ind, når siden åbnes (`takePending`). Det var ikke testet før. `test_site.py` efterligner nu appen med gyldige og forkerte værdier.
 - **"Del som billede" i appen** gemmer billedet i telefonens Billeder gennem broen (`saveImage`). Det var heller ikke testet før. Det virker.
