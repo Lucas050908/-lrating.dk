@@ -64,10 +64,17 @@ def crawl(b,lang):
     def clk(q):   # venter, til knappen findes (Firefox kan være et øjeblik bagefter). Findes den ikke, skrives siden ud, så fejlen kan forstås
         try: pg.wait_for_selector(q,state='attached',timeout=8000)
         except Exception:
-            print(f'FEJL [{lang}] {q} findes ikke på {pg.evaluate("location.hash")}:',pg.evaluate("document.getElementById('app').innerText.slice(0,400)").replace('\n',' | ')); raise
+            print(f'FEJL [{lang}] {q} findes ikke på {pg.evaluate("location.hash")}:',pg.evaluate("document.getElementById('app').innerText.slice(0,400)").replace('\n',' | '))
+            print('  tilstand:',pg.evaluate("(()=>{const S=JSON.parse(localStorage.getItem('olrating-v1')),sb=JSON.parse(localStorage.getItem('olrating-sb')||'null'),u=sb&&sb.user&&sb.user.id,o={};S.reviews.forEach(r=>{const k=(r.owner===u?'mig':r.owner?String(r.owner).slice(-4):'ingen')+'/'+r.who;o[k]=(o[k]||0)+1});return {me:S.me,beers:S.beers.length,reviews:S.reviews.length,ejere:o,rv:Object.keys(S.rv||{}).length,rvs:(S.rvs||[]).length,rvq:(S.rvq||[]).length}})()"),'| database:',len(M.t['reviews']),'bedømmelser,',sorted(set(str(r.get('owner'))[-4:] for r in M.t['reviews'].values())))
+            raise
         pg.evaluate("q=>document.querySelector(q).click()",q)
     def go(h,k=None,wait=450): pg.goto(URL+h); pg.wait_for_timeout(wait); grab(k or h)
     seed('Lucas')
+    # vent, til alle bedømmelser er sendt til databasen. Ellers får kun dem, der nåede frem, en anden ejer (set én gang i Firefox på GitHub: kun 1 kort at swipe på)
+    nrev=pg.evaluate("JSON.parse(localStorage.getItem('olrating-v1')).reviews.length")
+    for _ in range(40):
+        if len(M.t['reviews'])>=nrev: break
+        pg.wait_for_timeout(250)
     # andres bedømmelser får en anden ejer, så der er noget at swipe på, og mine egne får stemmer
     for r in M.t['reviews'].values():
         if r['who']!='Lucas': r['owner']='00000000-0000-4000-8000-00000000ffff'

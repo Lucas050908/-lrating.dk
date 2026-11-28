@@ -4,6 +4,10 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-28
 
+### Aften (17:43–17:48): den ustabile engelske test fundet
+- **Beskeden fra i eftermiddag virkede:** `test_en.py` fejlede igen én gang i Firefox på GitHub (to kørsler samtidig), og nu skrev den siden ud: der var kun 1 kort at swipe på i stedet for 8.
+- **Årsagen var testen:** Den gav andres bedømmelser en anden ejer i den efterlignede database, før siden havde nået at sende dem alle. Dem, der kom bagefter, stod som ens egne og kom ikke med i swipe. Nu venter testen, til alle bedømmelser er sendt. Den skriver også ejere og stemmer ud, hvis en knap mangler igen.
+
 ### Aften (17:26–17:43): målinger og oprydning i ordbogen
 - **Ordbogen (`js/en.js`):** "Se øllen" og "Til forsiden" stod to gange (med samme oversættelse). Fjernet. `test_en.py` fejler nu, hvis en dansk tekst står to gange, for så ville den sidste vinde uden varsel.
 - **Første indlæsning målt:** Siden er 327 kB (før komprimering). På en telefon, der er 6 gange langsommere end en pc, vises den første tekst efter 0,3 sekund. På langsomt 4G efter 0,8 sekund, og siden er helt indlæst efter 2,6 sekunder (GitHub Pages komprimerer, så det går hurtigere i virkeligheden).
