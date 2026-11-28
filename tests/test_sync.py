@@ -340,6 +340,20 @@ with sync_playwright() as p:
     t0=D2.evaluate("performance.now()"); D2.goto(URL+'#alle'); D2.wait_for_selector('#grid .card'); ms=D2.evaluate("performance.now()")
     D2.fill('#q','Mængdeøl 114'); D2.wait_for_timeout(500); nq=D2.eval_on_selector_all('#grid .card[href^="#beer-"]','e=>e.map(x=>x.getAttribute("href"))')
     check('mange øl: Alle øl kan vises og søges i',sorted(nq)==sorted(['#beer-mb114','#beer-mb1114']+[f'#beer-mb{i}' for i in range(1140,1150)]),(nq,round(ms-t0)))
+    # uden net: en ny øl med billede og bedømmelse, en byttur med stop og en smagning, lavet uden forbindelse, deles alle, når nettet er tilbage
+    M7=Mock(); O7=ctx3({"beers":[],"reviews":[],"me":"Lucas"},M7); O7.goto(URL); O7.wait_for_timeout(2500); M7.down=True
+    O7.goto(URL+'#tilfoej'); O7.wait_for_timeout(600); O7.set_input_files('#bImg',files=[{'name':'o.jpg','mimeType':'image/jpeg','buffer':JPG}])
+    O7.wait_for_timeout(700); O7.fill('#bName','Offline øl'); O7.fill('#bBrew','Bryg')
+    for k in ['look','aroma','taste','feel','overall']: O7.click(f'#addForm .rate[data-k="{k}"] [data-star="4"]')
+    O7.click('#addBtn'); O7.wait_for_timeout(1500)
+    O7.goto(URL+'#byttur'); O7.wait_for_timeout(500); O7.fill('#tName','Offline tur'); O7.fill('#tDate','2026-12-05T20:00'); O7.click('#tourForm button'); O7.wait_for_timeout(800)
+    O7.fill('#sName','Bar 1'); O7.fill('#sTime','20:30'); O7.click('#stopForm button'); O7.wait_for_timeout(600)
+    O7.goto(URL+'#smagning'); O7.wait_for_timeout(500); O7.fill('#sgName','Offline smagning'); O7.fill('#sgBeers','A\nB'); O7.click('#tastForm button'); O7.wait_for_timeout(1000)
+    none_yet=not M7.t['beers'] and not M7.t['tours'] and not M7.t['tastings']; M7.down=False
+    for _ in range(3): O7.evaluate('sbSync()'); O7.wait_for_timeout(2000)
+    tv=list(M7.t['tours'].values())
+    check('uden net: øl med billede og bedømmelse, byttur med stop og smagning deles alle, når nettet er tilbage',none_yet and [v['name'] for v in M7.t['beers'].values()]==['Offline øl'] and len(M7.t['reviews'])==1 and len(M7.store)==1 and len(tv)==1 and len(tv[0]['data']['stops'])==1 and len(M7.members)==1 and [v['data']['name'] for v in M7.t['tastings'].values()]==['Offline smagning'],(none_yet,list(M7.t['beers']),len(M7.t['reviews']),len(M7.store),tv,list(M7.members),list(M7.t['tastings'])))
+    O7.context.close()
     # datoer: dansk tid med sommertid. Et døgn kan have 23 eller 25 timer, og det må ikke give en dag for meget
     from datetime import datetime
     from zoneinfo import ZoneInfo

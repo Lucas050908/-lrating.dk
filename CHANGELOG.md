@@ -4,12 +4,15 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-28
 
+### Aften (17:58–18:07): alt lavet uden net bliver delt bagefter
+- **Ny test i `test_sync.py`:** Uden forbindelse laves en ny øl med billede og bedømmelse, en byttur med et stop og en smagning. Når nettet er tilbage, ligger det hele i databasen, også billedet og tilmeldingen til turen. Det virkede, men var kun testet for rettelser.
+
 ### Aften (17:49–17:58): bytturen natten, hvor sommertiden slutter
 - **Fundet:** Et stop efter midnat blev regnet som første stops dato plus 24 timer. Natten, hvor sommertiden slutter, har 25 timer, så "Vi er her nu" sprang en time for tidligt til næste stop (kl. 03.10 stod man ved stoppet kl. 03.30). Nu bruges næste dag på uret.
 - **Samme slags fejl i Ølkalenderen:** Påskebryggens periode startede en dag for tidligt i kalenderen, når påsken lå efter skiftet til sommertid. Rettet.
 - **Tjekket:** Påskedag og J-dag står rigtigt i kalenderen for 10 år (2026–2038).
 - **Test:** `test_sync.py` åbner en byttur kl. 03.10 natten til 25. oktober.
-- **Kontrast i alle sæsoner:** Kontrasttesten kører normalt kun med den aktuelle sæson (nu jul). Den er kørt med alle 7 sæsonfarver (jul, J-dag, nytår, påske, fastelavn, sankthans, halloween) og uden sæson. Ingen tekst er for svag.
+- **Kontrast i alle sæsoner:** Kontrasttesten kører normalt kun med den aktuelle sæson (nu jul). Den er nu kørt med alle 7 sæsonfarver (jul, J-dag, nytår, påske, fastelavn, sankthans, halloween) og uden sæson, med standardbaggrund og -farve, på 14 sider på telefon og pc. Ingen tekst er for svag.
 
 ### Aften (17:43–17:48): den ustabile engelske test fundet
 - **Beskeden fra i eftermiddag virkede:** `test_en.py` fejlede igen én gang i Firefox på GitHub (to kørsler samtidig), og nu skrev den siden ud: der var kun 1 kort at swipe på i stedet for 8.
