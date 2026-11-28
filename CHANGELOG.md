@@ -4,47 +4,47 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-28
 
-### Aften (17:30–17:15): testen mod den rigtige database tåler to kørsler på én gang
+### Aften (17:09–17:15): testen mod den rigtige database tåler to kørsler på én gang
 - **Fundet ved at starte to kørsler samtidig:** Begge fejlede i trin 7 ("en anden enhed ser øllen"). Testens øl hedder "TEST" plus et tal ud fra klokken, og to kørsler med 3 sekunders mellemrum får næsten samme tal. Søgningen tåler en stavefejl, så den fandt begge øl, og testen ventede præcis én. Det er ikke en fejl på siden.
 - **Rettet i testen:** Den leder nu efter netop sin egen øl.
 
-### Aften (17:10–17:09): fornyelse af login prøves mod den rigtige database
+### Aften (17:08–17:09): fornyelse af login prøves mod den rigtige database
 - **Testen mod den rigtige database** lader nu login udløbe midt i testen. Siden skal forny det hos Supabase, beholde samme bruger og stadig kunne gemme en rettelse bagefter. Før blev fornyelse kun prøvet mod efterligningen.
 
-### Aften (17:08–17:08): grænse for billeder i 006
+### Aften (17:07–17:08): grænse for billeder i 006
 - **Fundet:** Billedlageret havde heller ingen grænse. Hvert billede må være 2 MB, og lageret er på 1 GB i Supabases gratis udgave, så et script kunne fylde det på få minutter, og så kunne ingen lægge billeder op.
 - **`supabase/006-graenser.sql`** sætter nu også højst 60 nye billeder i timen pr. bruger. Reglen om, at man kun må lægge billeder i sin egen mappe, er uændret. `test_sql.js` efterligner billedlageret og tester det (99 tjek). Filen er stadig ikke kørt.
 
-### Aften (17:00–17:07): en ustabil test i Safaris motor forklaret
+### Aften (16:59–17:07): en ustabil test i Safaris motor forklaret
 - **Testene på GitHub siden fredag morgen:** 40 kørsler gennemgået job for job. Chromium og databasen har bestået hver gang. Firefox fejlede 2 gange og Safaris motor (WebKit) 12 gange. 10 af WebKit-fejlene var fredag formiddag (fejl på siden og i testene, som blev rettet fredag). Siden fredag middag har WebKit fejlet 2 gange, begge med samme besked i synkroniseringstesten: "Failed to load resource".
 - **Forklaringen:** Browseren skriver den besked, hver gang databasen svarer med en fejlkode. Det sker med vilje flere steder i testen (fx får en tilmelding til en tur, der lige er slettet, svaret 409). Om det sker i den fane, testen holder øje med, afhænger af tidspunktet, og WebKit er langsommere. Det er altså ikke en fejl på siden.
 - **Rettet i testen:** Beskeden tæller kun ikke med, når databasen faktisk har svaret med en fejl i den fane. En manglende fil på selve siden bliver stadig fanget.
 - **Kørt igen på dagens udgave:** tilgængelighed (axe, 25 sider), kontrast (30 farvekombinationer) og "klik på alt" (73 tryk på 27 sider). Ingen fejl.
 
-### Eftermiddag (16:50–16:59): genstande fra Android-widgetten
+### Eftermiddag (16:47–16:59): genstande fra Android-widgetten
 - **Testet for første gang:** Tryk på "+1" i Android-widgetten hentes ind, når siden åbnes (`takePending`). Det var ikke testet før. `test_site.py` efterligner nu appen med gyldige og forkerte værdier.
 - **"Del som billede" i appen** gemmer billedet i telefonens Billeder gennem broen (`saveImage`). Det var heller ikke testet før. Det virker.
 - **Rettet:** Et tidspunkt i fremtiden (fx fra en telefon med forkert ur) ville tælle med som "i dag" for altid. Nu bliver det til nu. Tekst, null og andet, der ikke er et tal, springes over (det gjorde det i forvejen).
 
-### Eftermiddag (16:40–16:47): login udløbet før tid, og spørgsmål om appen
+### Eftermiddag (16:35–16:47): login udløbet før tid, og spørgsmål om appen
 - **Login udløbet hos Supabase, før siden troede det:** Siden regnede udløbet ud fra Supabases ur. Går telefonens ur bagud (eller bliver login afvist af en anden grund), svarede Supabase 401 på alt, og intet blev delt, før telefonens ur nåede udløbet, op til flere timer. Nu regnes udløbet fra telefonens eget ur, og ved svar 401 fornyes login med det samme (højst 3 gange i træk). `test_sync.py` afviser login midt i brugen og tjekker, at en ny øl alligevel deles med samme bruger.
 - **Fundet ved gennemlæsning af Android-appen:** Når man vælger billede i appen, åbnes kun galleriet og filer, ikke kameraet. Man skal altså tage billedet først. Det kræver en ændring i appen, som skal prøves på en rigtig telefon, så det er ikke lavet. Spørgsmålet står i `IDEER.md`.
 
-### Eftermiddag (16:29–16:35): engelsk for "ikke delt", tilfældige klik og en langsom telefon
+### Eftermiddag (16:24–16:35): engelsk for "ikke delt", tilfældige klik og en langsom telefon
 - **`test_en.py`** går nu også gennem Min profil og øllens side, når en øl ikke er delt endnu, på begge sprog, så de nye beskeder altid er oversat.
 - **Tilfældige klik:** Et script trykkede, skrev (emoji, kode, 300 tegn, tal og tomme felter) og skiftede side 2.400 gange i alt, på dansk og engelsk (5 kørsler). Ingen fejl på siden og ingen kode, der blev kørt.
 - **Langsom telefon:** Med en processor, der er 6 gange langsommere end en pc, tager en synkronisering 0,6 sekund med 1.000 øl og 3.000 bedømmelser, også når intet er ændret. Det står i `IDEER.md` sammen med lageret.
 
-### Eftermiddag (16:30–16:24): testen tæller ikke længere som besøg
+### Eftermiddag (16:22–16:24): testen tæller ikke længere som besøg
 - **Fundet:** Hver kørsel af testen mod den rigtige database lagde omkring 5 besøg til besøgstælleren (51 → 56 ved en kørsel, hvor der ellers ikke var trafik). En del af de 56 besøg i alt er derfor fra testene. Nu svarer testen selv på kaldet til tælleren, så den ikke tæller med.
 - **Ejere i databasen:** Lucas' øl står under to forskellige usynlige brugere (onsdagens øl under én, "Julemandens classic" fra fredag under en anden). Det er normalt, hvis de er lavet fra to enheder (fx telefon og pc, eller appen og browseren). Så kan hver øl kun rettes fra den enhed, den er lavet på, indtil kontoen med mail er slået til.
 
-### Eftermiddag (16:15–16:22): stabilitet og ny version uden gamle filer
+### Eftermiddag (16:11–16:22): stabilitet og ny version uden gamle filer
 - **Service worker:** Når en ny version installeres, hentes filerne nu forbi browserens egen cache (`cache: 'reload'`). GitHub Pages lader browseren gemme filer i 10 minutter, så en ny version kunne gemme den gamle `js/en.js` og vise nye tekster uden oversættelse, til næste version kom. Prøvet: service workeren installeres, siden virker uden net, også på engelsk.
 - **Testen mod den rigtige database** skriver nu også de første 8 tegn af ejer-id'et ved hver øl og hvilke ejere, hvert navn har. Står samme navn under flere ejere, har en enhed fået en ny usynlig bruger (som ved de to login-fejl, der er rettet i dag), og så kan de gamle øl ikke rettes fra den enhed. Ejer-id'er er i forvejen offentlige i databasen.
 - **`test_en.py`:** Fejlede én gang lokalt, da tre tests kørte samtidig: knappen "Spring over" under swipe kom ikke. Den bestod bagefter, alene. Testen skriver nu siden ud, når en knap mangler, så en fejl kan forstås næste gang.
 
-### Eftermiddag (15:40–16:11): login, dobbelttryk, datoer efter midnat, blokeret lager, ødelagte links, sorte PNG-billeder og grænser mod spam
+### Eftermiddag (15:39–16:11): login, dobbelttryk, datoer efter midnat, blokeret lager, ødelagte links, sorte PNG-billeder og grænser mod spam
 - **Fundet:** Alle kan skrive i databasen uden at logge ind, og der er ingen grænse for, hvor meget. Et lille script kunne lægge titusindvis af øl ind, og fordi siden nu henter alle øl (rettelsen kl. 15.39), ville det gøre siden langsom for alle og fylde lageret i browseren.
 - **`supabase/006-graenser.sql` (ny, ikke kørt):** Højst 40 nye øl i timen og 150 i døgnet pr. bruger, og 60 bedømmelser i timen og 300 i døgnet. Rettelser tæller ikke. Lucas skal køre den i Supabase. `test_sql.js` tester den (95 tjek), og testen mod den rigtige database skriver, om den er kørt.
 - **Siden henter højst 20.000 rækker** pr. tabel. Er listen ikke slut dér, fjerner siden ikke noget lokalt.
