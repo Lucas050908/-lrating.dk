@@ -25,7 +25,7 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 | Bryggeri | `#bryggeri-<navn>` | Alle øl fra et bryggeri, gennemsnit og antal bedømmelser |
 | Min profil | `#profil` | Navn, statistik, mærker, ønskeliste, backup og gendannelse. Egne bedømmelser vises 15 ad gangen med "Vis flere", hver med Ret og Slet. De øl, du har tilføjet, står i en boks for sig med Ret |
 | Øl-dagbog | `#dagbog` | Alt du har smagt og "Dit år i øl" |
-| Ølkalender | `#kalender` | Juleøl, J-dag, påskebryg osv. |
+| Ølkalender | `#kalender` | Juleøl, J-dag, påskebryg osv. Nedtælling i hele dage ("I dag", "I morgen", "17 dage") |
 | Øl til maden | `#mad` | Forslag til øl til forskellige retter |
 | Genstand-tæller | `#genstande` | Se [Genstand-tæller](#genstand-tæller) |
 | Nyt på siden | `#nyt` | Oversigt over de nyeste funktioner med links |
@@ -52,6 +52,8 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 - Backup-filen indeholder også billederne. Indlæses den igen, bliver øl, bedømmelser og billeder lagt op på ny.
 - **Anmeld:** På øl og bedømmelser, som andre har lavet, er der et "Anmeld"-link. Det åbner en mail til ejerne med link til indholdet.
 - Uden net virker alt som før. Ændringer sendes, når forbindelsen er tilbage. Status ses under Min profil ("Forbundet" eller "Ikke forbundet").
+- Er noget af ens eget ikke delt endnu, står der på Min profil fx "Forbundet – men 1 af dine øl eller bedømmelser er kun på denne enhed endnu". En egen øl, der ikke er delt, siger det også på sin egen side ("Øllen er kun på denne enhed endnu"). Kan et billede eller en ny øl ikke gemmes i databasen, bliver den på enheden og prøves igen, næste gang siden åbnes. Resten deles som normalt.
+- Der hentes alle øl og bedømmelser, også når der er flere end 1000.
 - Genstand-tæller, ønskeliste, hvem du følger, og indstillinger deles **ikke**. De bliver på enheden.
 
 ### Noget for dig og enighed
@@ -142,6 +144,7 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 
 ### Byttur
 - **Opret en tur:** navn, dato og tid, mødested og en besked. Værten tilføjer stop med bar, tidspunkt og adresse, med link til Google Maps. Stop efter midnat sorteres rigtigt.
+- **Nedtælling:** Under turens navn står fx "om 5 dage", "i morgen" eller "om 3 t 20 min". Dage er kalenderdage, så en tur i morgen aften hedder "i morgen", også når der er mere end 24 timer til.
 - **Del:** som link (Web Share) eller QR-kode. Linket indeholder hele turen.
 - **Find med kode:** Hver tur har en kode. Den kan skrives under "Har du fået en kode til en tur?".
 - **Tilmelding:**

@@ -21,6 +21,7 @@ En liste over det, der ikke er lavet endnu, og hvorfor. Flyt et punkt til `CHANG
 | **Scan etiketten** (appen læser navn og alkoholprocent fra et billede) | Kræver tekstgenkendelse. Det bibliotek, der kan køre i browseren, fylder flere MB og skal ligge på siden. Alternativet er en betalt tjeneste. Stregkoden henter allerede navn, bryggeri og alkohol fra Open Food Facts, når øllen findes der. |
 | **Smartwatch** (genstand-tæller på uret) | Kræver en helt separat app til Wear OS, som skal bygges og testes på et rigtigt ur. |
 | **iPhone-app med widgets** | Kræver en Apple-udviklerkonto og en Mac til at bygge på. |
+| **Når databasen bliver stor: gem den fælles liste i IndexedDB** | Alle øl og bedømmelser fra databasen ligger i localStorage, som højst kan rumme omkring 5 MB. Målt 28-11: 2.000 øl og 8.000 bedømmelser fylder 2 MB og virker fint (alle sider tegnes på under 0,1 sekund). 6.000 øl og 24.000 bedømmelser kan ikke gemmes. Når grænsen nås, kan man ikke gemme nye øl, og beskeden siger forkert, at billedet er for stort. Løsningen er at gemme databasens kopi i IndexedDB og kun egne ting i localStorage, og at hente kun det, der er ændret siden sidst (`updated_at`), i stedet for alt hvert 30. sekund. Det er en større ombygning af synkroniseringen, og der er langt til grænsen. |
 | **Google Play** | Kræver en udviklerkonto hos Google (engangsbeløb) og en fast signeringsnøgle. |
 
 ## Mindre idéer

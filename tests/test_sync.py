@@ -264,6 +264,92 @@ with sync_playwright() as p:
     W3.goto(URL+'#swipe'); W3.wait_for_timeout(400); W3.goto(URL+'#om'); W3.wait_for_timeout(400)
     check('besøg: at skifte side tæller ikke som et nyt besøg',M2.visits==v0+1,(v0,M2.visits))
     check('swipe: stemmen sendes, når tabellen findes',len(M2.rvotes)==3 and not ls(W3)['rvq'] and not errs2,(dict(M2.rvotes),errs2[:2]))
+    # --- data må ikke forsvinde eller sidde fast: et billede, der afvises, en række, der afvises, og mange øl i databasen
+    M3=Mock(); errs3=[]
+    def ctx3(state,MM):
+        c=b.new_context(viewport={'width':390,'height':844},locale='da-DK',service_workers='block'); c.route(f'https://{HOST}/**',MM.handle); pg=c.new_page()
+        pg.on('pageerror',lambda e:None if WK_NOISE(str(e)) else errs3.append(str(e)))
+        pg.add_init_script("if(!localStorage.getItem('olrating-v1'))localStorage.setItem('olrating-v1',%s);"%json.dumps(json.dumps(state))); return pg
+    ob=lambda i,n,img='':{"id":i,"name":n,"brewery":"Testbryg","style":"Pilsner","abv":5,"size":"33 cl flaske","date":"2026-11-20","addedBy":"Lucas","img":img}
+    st3={"beers":[ob('ui1','Billedøl',DATA),ob('ui2','Uden billede')],"reviews":[{"id":"ri2","beer":"ui2","who":"Lucas","date":"2026-11-21","s":C,"text":"Fin"}],"me":"Lucas"}
+    M3.img_fail=413; D1=ctx3(st3,M3); D1.goto(URL+'#profil'); D1.wait_for_timeout(3500)
+    check('data: et billede, databasen afviser, stopper ikke delingen af resten','ui2' in M3.t['beers'] and 'ri2' in M3.t['reviews'] and 'ui1' not in M3.t['beers'],(list(M3.t['beers']),list(M3.t['reviews'])))
+    l3=ls(D1); b1=[x for x in l3['beers'] if x['id']=='ui1']
+    check('data: øllen med billedet bliver på enheden, billede og det hele',b1 and b1[0]['img'].startswith(('data:image/','idb:')),[(x['id'],x['img'][:20]) for x in l3['beers']])
+    st=D1.inner_text('.sbst')
+    check('data: Min profil siger, at noget ikke er delt endnu',st.startswith('● Forbundet') and '1 af dine øl eller bedømmelser' in st,st)
+    D1.goto(URL+'#beer-ui1'); D1.wait_for_timeout(800); n1=D1.query_selector('#notShared')
+    D1.goto(URL+'#beer-ui2'); D1.wait_for_timeout(800); n2=D1.query_selector('#notShared')
+    check('data: en øl, der kun er på enheden, siger det på sin side (og en delt øl gør ikke)',n1 is not None and 'kun på denne enhed' in n1.inner_text() and n2 is None,(n1 and n1.inner_text(),n2))
+    M3.img_fail=0; D1.reload(); D1.wait_for_timeout(3500)
+    check('data: næste gang siden åbnes, deles øllen med billedet',M3.t['beers'].get('ui1',{}).get('img','').startswith('https://') and len(M3.store)==1,M3.t['beers'].get('ui1'))
+    D1.goto(URL+'#profil'); D1.wait_for_timeout(1200)
+    check('data: bagefter står der ikke længere, at noget venter','af dine øl' not in D1.inner_text('.sbst'),D1.inner_text('.sbst'))
+    M3.row_fail['ux1']=403
+    mut(D1,"S.beers.unshift({id:'ux1',name:'Afvist øl',brewery:'Testbryg',style:'Pilsner',abv:5,size:'33 cl flaske',date:'2026-11-22',addedBy:'Lucas',img:''})",3000)
+    for _ in range(2): D1.evaluate("sbSync()"); D1.wait_for_timeout(1500)
+    check('data: en ny øl, som databasen afviser, forsvinder ikke fra enheden','ux1' in [x['id'] for x in ls(D1)['beers']] and 'ux1' not in M3.t['beers'],[x['id'] for x in ls(D1)['beers']])
+    del M3.row_fail['ux1']; D1.reload(); D1.wait_for_timeout(3500)
+    check('data: og den deles, når databasen tager imod den igen','ux1' in M3.t['beers'],list(M3.t['beers']))
+    # langsomt net: en bedømmelse, der gemmes, mens en synkronisering venter på svar, skal ikke vente 30 sekunder på næste runde
+    D1.goto(URL+'#beer-ui2'); D1.wait_for_timeout(1500); nr=len(M3.t['reviews'])
+    D1.evaluate("""(()=>{const of=window.fetch;window.fetch=(u,o)=>String(u).includes('/rest/v1/beers?select')&&!window.__slow?(window.__slow=1,new Promise(r=>setTimeout(r,4000)).then(()=>of(u,o))):of(u,o);sbSync()})()""")
+    for k in ['look','aroma','taste','feel','overall']: D1.click(f'#revForm .rate[data-k="{k}"] [data-star="4"]')
+    D1.fill('#rText','Gemt på langsomt net'); D1.click('#revForm button[type=submit]')
+    for _ in range(18):
+        if len(M3.t['reviews'])>nr: break
+        D1.wait_for_timeout(500)
+    check('langsomt net: en bedømmelse, der gemmes midt i en synkronisering, deles lige efter',len(M3.t['reviews'])>nr and D1.evaluate('window.__slow')==1,(nr,len(M3.t['reviews'])))
+    # mange øl: Supabase giver højst 1000 rækker pr. svar. Egne øl længere nede må ikke forsvinde fra enheden
+    M4=Mock(); D2=ctx3({"beers":[ob('um1','Min gamle øl')],"reviews":[{"id":"rm9","beer":"um1","who":"Lucas","date":"2026-11-20","s":C,"text":""}],"me":"Lucas"},M4); D2.goto(URL); D2.wait_for_timeout(3000)
+    for i in range(1150):
+        M4.t['beers'][f'mb{i}']={'id':f'mb{i}','owner':'anden','created_at':f'9{i:06d}','name':f'Mængdeøl {i}','brewery':'Storbryg','img':None,'data':{'style':'Lager','abv':4.6,'date':'2026-11-20','addedBy':'Sofie'}}
+        M4.t['reviews'][f'mr{i}']={'id':f'mr{i}','beer':f'mb{i}','owner':'anden','created_at':f'9{i:06d}','who':'Sofie','img':None,'data':{'s':C,'date':'2026-11-21','text':''}}
+    D2.evaluate("sbSync()"); D2.wait_for_timeout(4000); l4=ls(D2)
+    check('mange øl: alle 1151 øl og bedømmelser hentes, også over 1000',len(l4['beers'])==1151 and len(l4['reviews'])==1151,(len(l4['beers']),len(l4['reviews'])))
+    check('mange øl: min egen øl længst nede er der stadig',any(x['id']=='um1' for x in l4['beers']) and any(x['id']=='rm9' for x in l4['reviews']))
+    t0=D2.evaluate("performance.now()"); D2.goto(URL+'#alle'); D2.wait_for_selector('#grid .card'); ms=D2.evaluate("performance.now()")
+    D2.fill('#q','Mængdeøl 114'); D2.wait_for_timeout(500); nq=D2.eval_on_selector_all('#grid .card[href^="#beer-"]','e=>e.map(x=>x.getAttribute("href"))')
+    check('mange øl: Alle øl kan vises og søges i',sorted(nq)==sorted(['#beer-mb114','#beer-mb1114']+[f'#beer-mb{i}' for i in range(1140,1150)]),(nq,round(ms-t0)))
+    # datoer: dansk tid med sommertid. Et døgn kan have 23 eller 25 timer, og det må ikke give en dag for meget
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+    def at(state,when):
+        c=b.new_context(viewport={'width':390,'height':844},locale='da-DK',timezone_id='Europe/Copenhagen',service_workers='block'); c.route(f'https://{HOST}/**',Mock().handle); pg=c.new_page()
+        pg.on('pageerror',lambda e:None if WK_NOISE(str(e)) else errs3.append(when+': '+str(e)))
+        pg.clock.set_fixed_time(datetime.fromisoformat(when).replace(tzinfo=ZoneInfo('Europe/Copenhagen')))
+        pg.add_init_script("if(!localStorage.getItem('olrating-v1'))localStorage.setItem('olrating-v1',%s);"%json.dumps(json.dumps(state))); return pg
+    big=lambda pg:pg.eval_on_selector_all('.next .big','e=>e.map(x=>x.textContent)')
+    P=at({"beers":[],"reviews":[],"me":"Lucas"},'2026-10-20T12:00'); P.goto(URL+'#kalender'); P.wait_for_timeout(800); k1=big(P); P.context.close()
+    check('datoer: nedtælling hen over sommertidens slut (J-dag om 17 dage, nytårsaften om 72)',k1[:1]==['17 dage'] and '72 dage' in k1,k1)
+    P=at({"beers":[],"reviews":[],"me":"Lucas"},'2026-11-05T09:00'); P.goto(URL+'#kalender'); P.wait_for_timeout(800); k2=big(P); P.context.close()
+    check('datoer: dagen før J-dag står der "I morgen" (ikke "1 dage")',k2[:1]==['I morgen'],k2)
+    sd={"beers":[ob('ud1','Dato-øl')],"reviews":[{"id":"rd1","beer":"ud1","who":"Lucas","date":"2026-10-24","s":C,"text":""}],"me":"Lucas",
+        "tours":[{"id":"td1","name":"Fredagstur","date":"2026-11-28T19:30","meet":"Torvet","note":"","host":"Lucas","stops":[],"members":[{"name":"Lucas"}]}]}
+    P=at(sd,'2026-10-25T23:30'); P.goto(URL+'#beer-ud1'); P.wait_for_timeout(800); a1=' '.join(P.eval_on_selector_all('.rv','e=>e.map(x=>x.innerText)')); P.context.close()
+    check('datoer: en bedømmelse fra i går hedder "i går", også natten efter sommertidens slut','i går' in a1 and '2 dage' not in a1,a1[:200])
+    P=at(sd,'2026-11-27T18:00'); P.goto(URL+'#byttur-td1'); P.wait_for_timeout(800); t1=P.inner_text('.thead .meta'); P.context.close()
+    check('datoer: en byttur i morgen aften står som "i morgen" (ikke "om 2 dage")','i morgen' in t1 and 'om 2 dage' not in t1,t1)
+    badd=[]
+    for when in ['2027-01-01T00:30','2028-02-29T12:00','2026-03-29T02:30','2026-10-25T02:30','2026-12-31T23:59']:   # nytår, skuddag, timen der ikke findes, timen der findes to gange, årets sidste minut
+        P=at(sd,when)
+        for h in ['','#aarets','#kalender','#toplisten','#profil','#dagbog','#beer-ud1','#byttur','#byttur-td1','#genstande']:
+            P.goto(URL+h); P.wait_for_timeout(250)
+            if len(P.inner_text('#app'))<30: badd.append(when+h)
+        P.context.close()
+    check('datoer: alle sider virker nytårsnat, på skuddagen og når sommertiden skifter',not badd,badd)
+    # gamle data: sådan så det gemte ud i den allerførste udgave (6172cd8). Felter, der er kommet til siden, mangler
+    old={"beers":[{"id":"b1","code":"","name":"Gammel Classic","brewery":"Gammelt Bryg","city":"Aalborg","style":"Pilsner","abv":4.6,"price":0,"place":"","size":"33 cl flaske","desc":"","img":"","addedBy":"Lucas","date":"2026-11-01"},
+                    {"id":"b2","name":"Uden felter","brewery":"","style":"IPA","abv":0,"addedBy":"Lucas","date":"2026-11-02"}],
+         "reviews":[{"who":"Lucas","s":{"look":4,"aroma":3,"taste":4,"feel":3,"overall":4},"prof":None,"tags":["Frisk"],"again":1,"text":"Fin","date":"2026-11-01","id":"r1","beer":"b1"},
+                    {"who":"Lucas","s":{"look":5,"aroma":5,"taste":5,"feel":5,"overall":5},"prof":{"sweet":2,"bitter":3,"sour":1,"body":3,"roast":4},"tags":[],"again":0,"text":"","date":"2026-11-02","id":"r2","beer":"b2"}],
+         "me":"Lucas","hideEx":True,"season":"auto","wish":["b2"],"mode":"auto"}
+    M5=Mock(); O=ctx3(old,M5); O.goto(URL); O.wait_for_timeout(3500); badp=[]
+    for h in ['','#alle','#beer-b1','#beer-b2','#toplisten','#aarets','#galleri','#stilguide','#venner','#smager-Lucas','#bryggeri-Gammelt%20Bryg','#byttur','#smagning','#profil','#dagbog','#sammenlign','#indstillinger','#om','#kalender','#swipe','#genstande','#hjul','#mad','#buddies','#tilfoej']:
+        O.goto(URL+h); O.wait_for_timeout(400)
+        if len(O.inner_text('#app'))<30: badp.append(h)
+    check('gamle data: alle sider virker med data fra den første udgave, og de bliver delt',not badp and sorted(M5.t['beers'])==['b1','b2'] and sorted(M5.t['reviews'])==['r1','r2'],(badp,list(M5.t['beers']),list(M5.t['reviews'])))
+    check('data: ingen fejl i siden',not errs3,errs3[:3])
     # to faner på samme enhed: begge ændringer skal overleve
     c2=b.new_context(viewport={'width':390,'height':844},locale='da-DK',service_workers='block'); c2.route(f'https://{HOST}/**',Mock().handle)
     T1=c2.new_page(); T1.goto(URL+'#profil'); T1.wait_for_timeout(2500); T2=c2.new_page(); T2.goto(URL+'#indstillinger'); T2.wait_for_timeout(2500)

@@ -2,6 +2,26 @@
 
 Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
+## 2026-11-28
+
+### Eftermiddag (15:25–15:39): dage talt forkert omkring sommertid, "1 dage" og flere felter i sikkerhedstesten
+- **Nedtællinger i Ølkalenderen:** Antal dage blev regnet som timer delt med 24 og rundet op. Når sommertiden slutter i oktober, har et døgn 25 timer, så fra april til slutningen af oktober stod der én dag for meget til J-dag og nytårsaften (fx 18 dage i stedet for 17 den 20. oktober). Nu tælles hele kalenderdage.
+- **"1 dage":** Dagen før J-dag stod der "1 dage". Nu står der "I morgen".
+- **Bedømmelser:** "for 2 dage siden" kunne stå om en bedømmelse fra i går sent på aftenen, når sommertiden skiftede. Rettet på samme måde.
+- **Byttur:** En tur i morgen aften (fx 25 timer væk) stod som "om 2 dage". Nu står der "i morgen".
+- **Målt med mange data:** 2.000 øl og 8.000 bedømmelser: alle sider tegnes på under 0,1 sekund. Grænsen er lageret i browseren (cirka 5 MB): 6.000 øl og 24.000 bedømmelser kan ikke gemmes. Der er langt dertil, men det står nu i `IDEER.md` med en løsning.
+- **Tjek domæne** (GitHub) er kørt: https virker, certifikatet gælder til 23-02-2027, og alle store DNS-tjenester peger på GitHub Pages. Workflowet tjekker nu også de fire DNS-linjer til Resend og skriver OK eller MANGLER. Resend siger lige nu: DKIM er godkendt, MX og TXT på `send` og CNAME på `rsend` mangler.
+- **Tests:** `test_sync.py` kører nu siden i dansk tid på bestemte datoer: kalenderen 20. oktober og 5. november, en bedømmelse natten efter sommertidens slut, en tur dagen før, og alle sider nytårsnat, på skuddagen 2028 og i de to timer, hvor sommertiden skifter. `test_site.py`s test af kode i brugernes tekst dækker nu også sted, beskrivelse, størrelse, land, ture, stop, mødested, rettelse af en øl og siderne Genstande, Mad og Byttur. Den fandt ingen huller.
+
+### Eftermiddag (14:54–15:39): tre måder, data kunne forsvinde eller sidde fast ved deling
+Lucas bad om, at alt bliver testet til kl. 23. Første fund kom fra at læse synkroniseringen igennem og skrive tests for det, der kan gå galt.
+- **Et billede, der ikke kan gemmes, stoppede al deling:** Afviste billedlageret et billede (fx for stort), gik hele synkroniseringen i stå, også hentning af andres øl, og Min profil sagde "Ikke forbundet". Nu bliver kun den ene øl på enheden, og resten deles som normalt. Den prøves igen, næste gang siden åbnes.
+- **En ny øl, som databasen afviste, blev slettet fra enheden:** Ved svar 403 eller 409 blev øllen markeret som delt, og ved næste hentning blev den fjernet, fordi den ikke lå i databasen. Nu gælder det kun noget, der allerede er delt. En ny øl bliver på enheden og prøves igen senere.
+- **Over 1000 øl eller bedømmelser:** Supabase giver højst 1000 rækker pr. svar. Siden bad om 2000 og 5000 og fik kun 1000. Havde databasen flere, ville egne øl længere nede være blevet fjernet fra enheden. Nu hentes der 1000 ad gangen, til alt er hentet.
+- **Langsomt net:** Blev en øl gemt, mens en synkronisering kørte, ventede den til næste runde 30 sekunder senere. Nu køres en ny synkronisering lige efter.
+- **Man kan se, hvad der ikke er delt:** Min profil siger fx "Forbundet – men 1 af dine øl eller bedømmelser er kun på denne enhed endnu", og en egen øl, der ikke er delt, siger det på sin side. Det havde forklaret forvirringen om "Julemandens Classic" fredag.
+- **Tests:** `test_sync.py` har nu en efterlignet database, der kan afvise billeder og rækker og højst giver 1000 rækker pr. svar. Den tjekker fejlene, beskederne, en øl gemt midt i en langsom synkronisering, 1151 øl (hentes alle, og søgning virker), og at data fra den allerførste udgave af siden virker på alle sider.
+
 ## 2026-11-27
 
 ### Aften (20:23–20:32): et skjult filter på forsiden

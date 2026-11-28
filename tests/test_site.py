@@ -469,14 +469,19 @@ with sync_playwright() as p:
     c=b.new_context(viewport={'width':390,'height':844},service_workers='block'); c.route(f'https://{HOST}/**',Mock().handle); pg=c.new_page(); perr=[]; pg.on('pageerror',lambda e:None if WK_NOISE(str(e)) else perr.append(str(e)))
     pg.goto(URL); pg.wait_for_timeout(1200)
     pg.evaluate("""(()=>{const X=n=>`<img src=x onerror="window.__xss=(window.__xss||[]).concat('${n}')">"'><svg onload="window.__xss=(window.__xss||[]).concat('${n}s')">`,d=new Date().toISOString().slice(0,10),S=JSON.parse(localStorage.getItem('olrating-v1'));
-      S.me='Lucas';S.beers=[{id:'x1',name:X('navn'),brewery:X('bryg'),style:X('stil'),abv:5,date:d,city:X('by'),note:X('note')},{id:'x2',name:'Almindelig',brewery:'Bryg',style:'Pilsner',abv:5,date:d}];
+      S.me='Lucas';S.beers=[{id:'x1',name:X('navn'),brewery:X('bryg'),style:X('stil'),abv:5,date:d,city:X('by'),note:X('note'),place:X('sted'),desc:X('beskr'),size:X('str'),country:X('land'),addedBy:'Lucas'},{id:'x2',name:'Almindelig',brewery:'Bryg',style:'Pilsner',abv:5,date:d}];
       const r=(id,b,w,v)=>({id,beer:b,who:w,date:d,s:{look:v,aroma:v,taste:v,feel:v,overall:v},tags:[X('tag')],again:1,text:X('tekst')});
-      S.reviews=[r('y1','x1','Lucas',4),r('y2','x2','Lucas',3),r('y3','x1',X('smager'),4),r('y4','x2',X('smager'),3)];S.follow=[X('foelg')];S.wish=['x1'];localStorage.setItem('olrating-v1',JSON.stringify(S))})()""")
+      S.reviews=[r('y1','x1','Lucas',4),r('y2','x2','Lucas',3),r('y3','x1',X('smager'),4),r('y4','x2',X('smager'),3)];S.follow=[X('foelg')];S.wish=['x1'];S.tours=[{id:'tx1',name:X('tur'),date:d+'T20:00',meet:X('mød'),note:X('turnote'),host:'Lucas',stops:[{name:X('stop'),time:'20:00',addr:X('adr')}],members:[{name:X('med')},{name:'Lucas'}]}];localStorage.setItem('olrating-v1',JSON.stringify(S))})()""")
     pg.reload(); pg.wait_for_timeout(900)
     for lang in ('da','en'):   # den engelske udgave bygger nogle tekster om, så den testes også
         if lang=='en': pg.goto(URL+'#indstillinger'); pg.wait_for_timeout(300); pg.click('[data-setlang=en]'); pg.wait_for_timeout(900)
-        for h in ['','#alle','#toplisten','#aarets','#swipe','#buddies','#hjul','#venner','#profil','#beer-x1','#sammenlign','#galleri','#smagning','#nyt','#dagbog','#kalender','#stilguide','#om']:
+        for h in ['','#alle','#toplisten','#aarets','#swipe','#buddies','#hjul','#venner','#profil','#beer-x1','#sammenlign','#galleri','#smagning','#nyt','#dagbog','#kalender','#stilguide','#om','#genstande','#mad','#byttur','#byttur-tx1','#tilfoej']:
             pg.goto(URL+h); pg.wait_for_timeout(300)
+        pg.goto(URL+'#beer-x1'); pg.wait_for_timeout(300)
+        if pg.query_selector('#editBeer'): pg.click('#editBeer'); pg.wait_for_timeout(400)   # rettelsen fylder felterne med teksten
+        for sel in ['.rv a[href^="#smager-"]','a[href^="#bryggeri-"]']:
+            pg.goto(URL+'#beer-x1'); pg.wait_for_timeout(300)
+            if pg.query_selector(sel): pg.click(sel); pg.wait_for_timeout(300)
     if pg.query_selector('#hjSpin'): pg.goto(URL+'#hjul'); pg.wait_for_timeout(300); pg.click('[data-hj=alle]'); pg.wait_for_timeout(200); pg.click('#hjSpin'); pg.wait_for_timeout(5200)
     xs=pg.evaluate("window.__xss||[]")
     check('ingen tekst fra brugerne bliver kørt som kode på nogen side',not xs and not perr,(xs[:6],perr[:3]))

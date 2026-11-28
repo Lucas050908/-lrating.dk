@@ -21,7 +21,7 @@ Under "Standard DNS-indstillinger" er A for domænet og A for www **slået fra**
 DNSSEC er slået fra under flytningen og kan slås til hos one.com, når alt kører stabilt.
 
 ### Tjek hvor domænet peger hen
-Workflowet **Tjek domæne** (`.github/workflows/domaene.yml`) kan startes under Actions på GitHub. Det viser navneserverne hos .dk, hvad forhandlerens navneservere svarer, hvad de store DNS-tjenester ser, og om https virker.
+Workflowet **Tjek domæne** (`.github/workflows/domaene.yml`) kan startes under Actions på GitHub. Det viser navneserverne hos .dk, hvad forhandlerens navneservere svarer, hvad de store DNS-tjenester ser, og om https virker. Til sidst tjekker det de fire DNS-linjer, Resend skal bruge til mails (`resend._domainkey`, MX og TXT på `send`, CNAME på `rsend`), og skriver OK eller MANGLER ud for hver. 28-11 kl. 15.35 sagde Resend: DKIM (`resend._domainkey`) er godkendt, de tre andre mangler.
 
 ## GitHub Pages
 - Settings → Pages → Deploy from a branch → `main` / root.
@@ -39,6 +39,7 @@ Workflowet **Tjek domæne** (`.github/workflows/domaene.yml`) kan startes under 
 - **Besøgstæller:** `supabase/005-besoeg.sql` slår tælleren til. Den er kørt (27-11-2026). Den kan køres igen uden skade: Supabase → SQL Editor → indsæt hele filen → Run.
 - **Konto og mails:** Kræver en mailtjeneste (Resend), DNS-linjer hos one.com, to mailskabeloner og en funktion i Supabase. Hele opsætningen står trin for trin i `docs/KONTO.md`. Nøglen fra Resend må kun stå hos Resend og i Supabase.
 - **Tjek at det virker:** Åbn ølrating.dk → Min profil. Nederst skal der stå "● Forbundet". Tilføj en øl på én enhed, og se den dukke op på en anden inden for et halvt minut.
+- **Max rows (Supabase → Project Settings → Data API):** Skal stå på 1000 (det er standard) eller mere. Siden henter øl og bedømmelser 1000 ad gangen og stopper, når et svar har færre end 1000. Sættes tallet lavere, tror siden, at den har fået det hele.
 - **Moderation:** Alle kan tilføje øl. Brugere kan trykke "Anmeld" på andres øl og bedømmelser. Det sender en mail til fejlrapport-adressen med et id. Upassende indhold slettes i Supabase → Table Editor (`beers`, `reviews`, søg på id) eller Storage (`billeder`).
 - Gratis-planen holder til 500 MB database og 1 GB billeder. Et projekt uden aktivitet i 7 dage bliver sat på pause og skal vækkes i dashboardet.
 

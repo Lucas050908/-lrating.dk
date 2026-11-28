@@ -740,7 +740,9 @@ function cleanBeer(o){const id=cid(o?.id);if(!id)return null;return{id,name:cs(o
 function cleanRev(o){const id=cid(o?.id),beer=cid(o?.beer);if(!id||!beer)return null;const s={},ps=o.s&&typeof o.s==='object'?o.s:{};CATS.forEach(([k])=>s[k]=r1(cn(ps[k],1,5))||1);
   return{id,beer,who:cs(o.who,40)||'Ukendt',date:cdate(o.date),s,prof:o.prof&&typeof o.prof==='object'?Object.fromEntries(PROF.map(([k])=>[k,Math.round(cn(o.prof[k],1,5))||3])):null,tags:(Array.isArray(o.tags)?o.tags:[]).filter(t=>typeof t==='string'&&t).slice(0,12).map(t=>t.slice(0,30)),again:o.again?1:0,text:cs(o.text,1000),img:cimg(o.img),...(o.edited?{edited:1}:{}),...(typeof o.owner==='string'?{owner:o.owner.slice(0,40)}:{})}}
 function fromRow(r,beer){const d=r.data&&typeof r.data==='object'&&!Array.isArray(r.data)?r.data:{};return beer?cleanBeer({...d,id:r.id,name:r.name,brewery:r.brewery||d.brewery||'',img:r.img||'',owner:r.owner}):cleanRev({...d,id:r.id,beer:r.beer,who:r.who,img:r.img||'',owner:r.owner})}
-async function sbPull(){const [B,R]=await Promise.all([sbFetch('/rest/v1/beers?select=*&order=created_at.desc&limit=2000'),sbFetch('/rest/v1/reviews?select=*&order=created_at.desc&limit=5000')]);
+/* Supabase giver højst 1000 rækker pr. svar. Derfor hentes der side for side, til en side ikke er fuld. Ellers ville egne øl længere nede blive fjernet fra enheden. */
+async function sbAll(t){const out=[];for(let o=0;o<5e4;o+=1000){const p=await sbFetch(`/rest/v1/${t}?select=*&order=created_at.desc,id.asc&limit=1000&offset=${o}`);if(!Array.isArray(p))throw new Error('Uventet svar fra '+t);out.push(...p);if(p.length<1000)break}return out}
+async function sbPull(){const [B,R]=await Promise.all([sbAll('beers'),sbAll('reviews')]);
   const merge=(loc,rows,beer)=>{const rm=new Map(rows.map(r=>fromRow(r,beer)).filter(Boolean).map(o=>[o.id,o])),out=[];
     loc.forEach(o=>{const r=rm.get(o.id);if(r){const localEdit=mineObj(o)&&S.sh[o.id]&&hsh(o)!==S.sh[o.id];if(localEdit)out.push({...o,owner:r.owner});else{out.push(r);S.sh[o.id]=hsh(r)}rm.delete(o.id)}else if(S.sh[o.id]&&!S.gone[o.id]){delete S.sh[o.id];if(S.si[o.id]){sbDelImg(S.si[o.id]).catch(()=>{});delete S.si[o.id]}}else out.push(o)});
     rm.forEach((r,id)=>{if(S.gone[id])return;out.push(r);S.sh[id]=hsh(r)});return out};
@@ -748,11 +750,12 @@ async function sbPull(){const [B,R]=await Promise.all([sbFetch('/rest/v1/beers?s
 const sbBad=new Set();
 async function sbPush(){const uid=myUid(),now=Date.now();
   [...S.beers,...S.reviews].forEach(o=>{if(o.owner===uid&&S.sh[o.id]===hsh(o)){const p=imgPath(o.img);if(p)S.si[o.id]=p}});
-  const up=async(L,table,beer)=>{if(!mineObj(L)||S.sh[L.id]===hsh(L)||sbBad.has(L.id))return;const old=L.img||'',img=await sbImg(old,L.id);
+  const up=async(L,table,beer)=>{if(!mineObj(L)||S.sh[L.id]===hsh(L)||sbBad.has(L.id))return;const old=L.img||'';let img;
+    try{img=await sbImg(old,L.id)}catch(e){if(e.status>=400&&e.status<500&&e.status!==401&&e.status!==408&&e.status!==429){sbBad.add(L.id);console.warn('Billedet kunne ikke deles',L.id,e.message);return}throw e}
     const d=strip(L);['id','img','name','brewery','beer','who'].forEach(k=>delete d[k]);const im=/^https:/.test(img)?img:null,ts=new Date().toISOString();
     const row=beer?{id:L.id,name:String(L.name||'Øl').slice(0,120),brewery:String(L.brewery||'').slice(0,120),data:d,img:im,updated_at:ts}:{id:L.id,beer:L.beer,who:String(L.who||'Ukendt').slice(0,40),data:d,img:im,updated_at:ts};
     try{await sbFetch('/rest/v1/'+table+'?on_conflict=id',{method:'POST',body:row,headers:{Prefer:'resolution=merge-duplicates,return=minimal'}});L.owner=L.owner||uid;if(img!==old){L.img=img;delImg(old)}S.sh[L.id]=hsh(L);const pth=imgPath(L.img);if(S.si[L.id]&&S.si[L.id]!==pth)sbDelImg(S.si[L.id]).catch(()=>{});if(pth)S.si[L.id]=pth;else delete S.si[L.id]}
-    catch(e){if(e.status===403||e.status===409){L.owner=L.owner||'?';S.sh[L.id]=hsh(L)}else if(e.status===400||e.status===413){sbBad.add(L.id);console.warn('Kunne ikke dele',L.id,e.message)}else throw e}};
+    catch(e){if((e.status===403||e.status===409)&&S.sh[L.id]){L.owner=L.owner||'?';S.sh[L.id]=hsh(L)}else if(e.status===400||e.status===403||e.status===409||e.status===413){sbBad.add(L.id);console.warn('Kunne ikke dele',L.id,e.message)}else throw e}};
   for(const b of S.beers)await up(b,'beers',true);
   for(const r of S.reviews)if(S.sh[r.beer])await up(r,'reviews',false);
   const have=new Set([...S.beers.map(x=>x.id),...S.reviews.map(x=>x.id)]);
@@ -787,15 +790,18 @@ async function sbFindTast(id){await sbAuth();const T=await sbFetch(`/rest/v1/tas
   const V=await sbFetch(`/rest/v1/tasting_votes?tasting=eq.${encodeURIComponent(id)}&select=who,data`);V.forEach(v=>{if(Array.isArray(v.data?.v)&&typeof v.who==='string'&&v.who!=='__proto__')n.votes[v.who.slice(0,40)]=v.data.v.slice(0,12).map(x=>r1(Math.min(5,Math.max(0,+x||0))))});return n}
 async function sbFindTour(code){await sbAuth();const id=String(code).trim();if(!/^[a-z0-9]{6,40}$/i.test(id))return null;const T=await sbFetch(`/rest/v1/tours?id=eq.${encodeURIComponent(id)}&select=*`);if(!T.length)return null;
   const M=await sbFetch(`/rest/v1/tour_members?tour=eq.${encodeURIComponent(id)}&select=name`);return cleanTour({...T[0].data,id:T[0].id,members:M.map(m=>m.name)})}
-let sbP=null,dirty=false;function sbSync(){if(sbP)return sbP;sbP=sbRun().finally(()=>{sbP=null});return sbP}
+let sbP=null,dirty=false;/* Bliver der bedt om en synkronisering, mens en kører (fx en ny øl på et langsomt net), køres en til lige bagefter. Ellers ventede den til næste runde om 30 sekunder. */
+let sbAgain=false;
+function sbSync(){if(sbP){sbAgain=true;return sbP}sbP=sbRun().finally(()=>{sbP=null;if(sbAgain){sbAgain=false;sbSoon(300)}});return sbP}
 let softR=false;function softRoute(){const y=scrollY,a=document.activeElement,f=a?.id,d=!f&&a&&a!==document.body&&a.dataset?Object.entries(a.dataset)[0]:null;softR=true;try{route()}finally{softR=false}scrollTo({top:y,behavior:'instant'});
   /* Fokus bliver, hvor det var, så man ikke mister sin plads med tastaturet: efter id, ellers efter knappens første data-felt */
   if(f)$(f)?.focus({preventScroll:true});else if(d)try{document.querySelector(`[data-${d[0].replace(/[A-Z]/g,m=>'-'+m.toLowerCase())}="${CSS.escape(d[1])}"]`)?.focus({preventScroll:true})}catch(e){}}
 async function sbRun(){if(!navigator.onLine){sbOk=false;return}sbBusy=true;const snap=()=>JSON.stringify([S.beers,S.reviews,S.tours,S.tast,S.me,S.wish,S.follow]),before=snap();
   try{await sbAuth();await sbPush();await sbPull();await sbTours();await sbTast();await sbVotes();await sbKonto();sbOk=true}catch(e){sbOk=false;console.warn('Synk fejlede',e)}
   finally{sbBusy=false;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}rvDot();if(snap()!==before){syncApp();if(sbFull&&location.hash==='#smagning-'+sbFull){sbFull='';route();return}sbFull='';const a=document.activeElement,open=document.querySelector('.lbox:not([hidden]),#scan:not([hidden])');const typing=a&&/INPUT|TEXTAREA/.test(a.tagName)&&a.value!=='';if(!dirty&&!open&&!typing)softRoute()}
-   document.querySelectorAll('.sbst').forEach(el=>el.innerHTML=sbStatus());if(Object.keys(S.gone).length)sbSoon(9500)}}
-const sbStatus=()=>sbOk?'<span class="okc">● Forbundet</span> – dine øl og bedømmelser deles med alle':'<span style="color:var(--sunt)">● Ikke forbundet</span> – dine data gemmes på enheden og deles, når der er forbindelse';
+   document.querySelectorAll('.sbst').forEach(el=>el.innerHTML=sbStatus());const ns=document.getElementById('notShared'),nb=ns&&S.beers.find(x=>x.id===ns.dataset.id);if(ns&&(!nb||S.sh[nb.id]===hsh(nb)))ns.remove();if(Object.keys(S.gone).length)sbSoon(9500)}}
+const sbWait=()=>[...S.beers,...S.reviews].filter(o=>mineObj(o)&&S.sh[o.id]!==hsh(o)).length;
+const sbStatus=()=>sbOk?(n=>n?`<span class="okc">● Forbundet</span> – men ${n===1?'1 af dine øl eller bedømmelser er':n+' af dine øl og bedømmelser er'} kun på denne enhed endnu. Der bliver prøvet igen af sig selv.`:'<span class="okc">● Forbundet</span> – dine øl og bedømmelser deles med alle')(sbWait()):'<span style="color:var(--sunt)">● Ikke forbundet</span> – dine data gemmes på enheden og deles, når der er forbindelse';
 function sbSoon(ms=1500){clearTimeout(sbTimer);sbTimer=setTimeout(sbSync,ms)}
 /* ---------- byttur ---------- */
 const b64e=o=>btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
@@ -853,7 +859,9 @@ const col=s=>STYLES[s]||STYLES.Andet;
 const hue=n=>{let h=0;for(const c of String(n))h=(h*31+c.charCodeAt(0))%360;return h};
 const avatar=n=>`<span class="av" style="background:hsl(${hue(n)} 55% 26%)">${esc(String(n).trim().charAt(0).toUpperCase())}</span>`;
 const dk=s=>new Date(s+'T12:00').toLocaleDateString(LOC(),{day:'numeric',month:'short',year:'numeric'});
-const ago=s=>{const n=Math.round((Date.now()-new Date(s+'T12:00'))/DAY);return n<=0?'i dag':n===1?'i går':`for ${n} dage siden`};
+/* Hele kalenderdage mellem to datoer. Regnes i UTC, så sommertid (døgn på 23 og 25 timer) ikke giver en dag for meget eller for lidt. */
+const calDays=(a,b)=>Math.round((Date.UTC(b.getFullYear(),b.getMonth(),b.getDate())-Date.UTC(a.getFullYear(),a.getMonth(),a.getDate()))/DAY);
+const ago=s=>{const n=calDays(new Date(s+'T12:00'),new Date());return n<=0?'i dag':n===1?'i går':`for ${n} dage siden`};
 
 /* ---------- pictures ---------- */
 function placeholder(b){const c=col(b.style);
@@ -1141,7 +1149,7 @@ function beerView(id){const b=enrich().find(x=>x.id===id);if(!b)return `<section
    </div>
    ${b.desc?`<p style="margin:0 0 20px;font-size:17px">${esc(b.desc)}</p>`:''}
    <div class="scorebox"><div class="ring" style="--to:${(b.avg/5*100).toFixed(1)}"><div><b id="bigScore">0,0</b><small style="opacity:.7">af 5</small></div></div><div><div style="font-weight:700;margin-bottom:6px">${Rr.length} ${Rr.length===1?'bedømmelse':'bedømmelser'}${Rr.length?' · '+againPct(b)+'% vil købe igen':''}</div>${minibars(b)}</div></div>
-   <p class="meta" style="margin-top:14px;display:flex;align-items:center;gap:8px">${avatar(b.addedBy)} Tilføjet af <b>${esc(b.addedBy)}</b> den ${dk(b.date)}</p>
+   <p class="meta" style="margin-top:14px;display:flex;align-items:center;gap:8px">${avatar(b.addedBy)} Tilføjet af <b>${esc(b.addedBy)}</b> den ${dk(b.date)}</p>${mineObj(b)&&S.sh[b.id]!==hsh(b)?`<p class="meta" id="notShared" data-id="${esc(b.id)}" style="margin-top:6px">Øllen er kun på denne enhed endnu. Den bliver delt med de andre, så snart det lykkes.</p>`:''}
    <div class="acts"><a class="btn" href="#rate">Bedøm den</a><button type="button" class="wish" id="wishBtn" data-id="${esc(b.id)}" aria-pressed="${S.wish.includes(b.id)}">${S.wish.includes(b.id)?'På din ønskeliste':'Vil smage'}</button>${(g=>g>0?`<button type="button" class="ghost" data-unit="${g}" data-uname="${esc(b.name)}" title="Læg en genstand til tælleren">+ Genstand</button>`:'')(gOf(clOf(b.size)||33,isAf(b)?b.abv||0:b.abv||4.6))}</div>
    <div class="acts sm"><button type="button" class="ghost" id="shareBtn" data-id="${esc(b.id)}">Del</button><button type="button" class="ghost" id="cardBtn" data-id="${esc(b.id)}">Del som billede</button><button type="button" class="ghost" id="cmpBtn" data-id="${esc(b.id)}">Sammenlign</button>${S.me&&b.addedBy.toLowerCase()===S.me.toLowerCase()&&mineObj(b)?`<button type="button" class="ghost" id="editBeer" data-id="${esc(b.id)}">Ret oplysninger</button>`:''}${mineObj(b)?`<button type="button" class="ghost" id="delBeer" data-id="${esc(b.id)}">Slet øl</button>`:`<a class="btn ghost" id="reportBtn" href="${esc(repHref('en øl',b.id,b.id))}">Anmeld</a>`}</div></div></div></div></div>
   <section class="band"><div class="wrap cols">
@@ -1407,7 +1415,7 @@ function cmpView(){const L=enrich().sort((a,b)=>a.name.localeCompare(b.name,'da'
   ${pa||pb?`<div class="box" style="margin-top:22px"><h3>Smagsprofil</h3><p class="meta" style="margin:4px 0 8px"><b><span style="color:var(--sun)" aria-hidden="true">■</span> ${esc(A.name)}</b> · <b><span style="color:var(--sky)" aria-hidden="true">■</span> ${esc(B.name)}</b></p>${radar(pa||[0,0,0,0,0],PROF.map(x=>x[1]),pb)}</div>`:''}
   </div></section>`}
 /* ---------- ølkalender (typiske perioder) ---------- */
-function calView(){const y=new Date().getFullYear(),E=easter(y),day=x=>Math.floor((x-new Date(y,0,1))/DAY),yl=day(new Date(y+1,0,1));
+function calView(){const y=new Date().getFullYear(),E=easter(y),day=x=>calDays(new Date(y,0,1),x),yl=day(new Date(y+1,0,1));
   const n1=new Date(y,10,1),jd=new Date(y,10,1+((5-n1.getDay()+7)%7));
   const ev=[['Nytår','Mørke og kraftige øl til nytårsaften','Bock',new Date(y,11,27),new Date(y,11,31),'#b78cff'],
    ['Bock og forårsøl','Kraftige, maltede øl i det tidlige forår','Bock',new Date(y,1,15),new Date(y,3,15),'#e89a2c'],
@@ -1417,10 +1425,10 @@ function calView(){const y=new Date().getFullYear(),E=easter(y),day=x=>Math.floo
    ['Juleøl','Fra J-dag til jul','Juleøl',jd,new Date(y,11,26),'#ee4f66']];
   const now=new Date(),td=day(now);
   const nxt=[['J-dag',jd,'kl. 20.59 kommer årets første juleøl'],['Påskedag',E,'påskebryggen er på sit højeste'],['Nytårsaften',new Date(y,11,31),'skål for et nyt ølår']].map(([n,dt,t])=>{let d=dt;if(d<new Date(now.getFullYear(),now.getMonth(),now.getDate())){d=n==='J-dag'?(()=>{const a=new Date(y+1,10,1);return new Date(y+1,10,1+((5-a.getDay()+7)%7))})():n==='Påskedag'?easter(y+1):new Date(y+1,11,31)}return[n,d,t]}).sort((a,b)=>a[1]-b[1]);
-  const left=d=>Math.ceil((new Date(d.getFullYear(),d.getMonth(),d.getDate())-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/DAY);
+  const left=d=>calDays(now,d);
   const M=['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'];
   return `<section class="band" style="padding-top:120px"><div class="wrap" style="max-width:1100px"><h1 style="font-size:clamp(34px,5vw,60px)">Ølkalender ${y}</h1><p class="meta" style="margin:10px 0 0">Hvornår sæsonøllene typisk er på hylderne. Perioderne er omtrentlige og varierer fra bryggeri til bryggeri.</p>
-  <div class="next">${nxt.map(([n,d,t])=>`<div><span class="kick">${esc(n)}</span><b class="big">${left(d)===0?'I dag':left(d)+' dage'}</b><span class="meta">${d.toLocaleDateString(LOC(),{weekday:'long',day:'numeric',month:'long'})} · ${t}</span></div>`).join('')}</div>
+  <div class="next">${nxt.map(([n,d,t])=>`<div><span class="kick">${esc(n)}</span><b class="big">${left(d)===0?'I dag':left(d)===1?'I morgen':left(d)+' dage'}</b><span class="meta">${d.toLocaleDateString(LOC(),{weekday:'long',day:'numeric',month:'long'})} · ${t}</span></div>`).join('')}</div>
   <div class="cal"><div class="calhead"><span></span><div>${M.map(m=>`<span>${m}</span>`).join('')}<b class="todaylab" style="left:${td/yl*100}%;transform:translateX(${td/yl>.9?'-100%':td/yl<.1?'0':'-50%'})">I dag</b></div></div>
   ${ev.map(([n,t,st,a,b,c],i)=>`<div class="calrow"><span><b>${n}</b><br><span class="meta" style="font-size:12px">${t}</span></span><div class="caltrack">${i===0?'':''}<i style="left:${day(a)/yl*100}%;width:${Math.max(2,(day(b)-day(a)+1)/yl*100)}%;background:${c};animation-delay:${i*.08}s">${a.toLocaleDateString(LOC(),{day:'numeric',month:'short'})}–${b.toLocaleDateString(LOC(),{day:'numeric',month:'short'})}</i><span class="today" style="left:${td/yl*100}%"></span></div></div>`).join('')}
   </div>
@@ -1474,7 +1482,7 @@ function tourList(){const A=S.tours.slice().sort((a,b)=>(a.date||'').localeCompa
    <button class="btn" style="justify-self:start">Opret tur</button></form></div></section>`}
 function tourView(id){const t=tourById(id);if(!t)return `<section class="band" style="padding-top:120px"><div class="wrap"><div class="empty"><h3>Turen findes ikke på denne enhed</h3><p class="meta">Bed værten sende dig linket igen.</p><a class="btn" href="#byttur">Til byttur</a></div></div></section>`;
   const me=(S.me||'').trim(),isHost=me&&me.toLowerCase()===t.host.toLowerCase()&&(!t.owner||t.owner===myUid()),joined=me&&t.members.some(m=>m.name.toLowerCase()===me.toLowerCase()),c=curStop(t),when=t.date?new Date(t.date):null,ms=when?when-Date.now():0,over=tourOver(t),mem=over?tourMem(t):null;
-  const cd=when&&ms>0?(ms>DAY?`om ${Math.ceil(ms/DAY)} dage`:`om ${Math.floor(ms/3600e3)} t ${Math.floor(ms%3600e3/60e3)} min`):'';
+  const cd=when&&ms>0?(ms>DAY?(n=>n===1?'i morgen':`om ${n} dage`)(calDays(new Date(),when)):`om ${Math.floor(ms/3600e3)} t ${Math.floor(ms%3600e3/60e3)} min`):'';
   return `<section class="band" style="padding-top:120px"><div class="wrap" style="max-width:880px"><a href="#byttur" class="meta">← Alle ture</a>
   <div class="thead"><div><span class="kick">${over?'Minde fra en byttur':'Byttur'}${isHost?' · du '+(over?'var':'er')+' vært':''}</span><h1 style="font-size:clamp(32px,5vw,52px);margin:6px 0">${esc(t.name)}</h1>
    <div class="meta">${when?when.toLocaleString(LOC(),{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}):''}${cd?` · <b style="color:var(--glt)">${cd}</b>`:''}</div>

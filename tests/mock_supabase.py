@@ -12,6 +12,7 @@ class Mock:
         s.users={}; s.emails={}; s.mails=[]; s.prefs={}; s.unsub={}; s.kdata={}; s.has_kdata=True; s.flyt={}; s.mail_limit=False; s.has_konto_sql=True; s.no_konto=set()   # no_konto: brugere, der skal opleve en database uden 003
         s.rvotes={}   # enig/uenig: (bedømmelse, bruger) -> 1 eller -1
         s.has_besoeg=True; s.visits=1000; s.visits_today=4; s.visit_calls=0   # besøgstæller (supabase/005)
+        s.img_fail=0; s.row_fail={}; s.max_rows=1000   # img_fail: billedlageret svarer med denne fejlkode. row_fail: id -> fejlkode for en række. max_rows: som Supabase giver højst 1000 rækker pr. svar
     def user(s,uid):
         u=s.users.get(uid,{}); return {'id':uid,'is_anonymous':not u.get('email'),**({'email':u['email']} if u.get('email') else {})}
     def sess(s,uid,n):
@@ -160,9 +161,15 @@ class Mock:
                     return out(204)
             if tb not in s.t: return out(404,{'message':'no table'})
             T=s.t[tb]
-            if m=='GET': return out(200,flt(list(T.values())))
+            if m=='GET':
+                rows=flt(list(T.values()))
+                if tb in('beers','reviews'):   # som PostgREST: sortering, offset og højst max_rows rækker
+                    rows.sort(key=lambda r:(str(r.get('created_at','')),r['id']),reverse=True)
+                    off=int(q.get('offset','0') or 0); lim=min(int(q.get('limit','100000') or 100000),s.max_rows); rows=rows[off:off+lim]
+                return out(200,rows)
             if m=='POST':
                 if not uid: return out(401,{'code':'42501','message':'rls'})
+                if body.get('id') in s.row_fail: return out(s.row_fail[body['id']],{'code':'42501' if s.row_fail[body['id']]==403 else '23503','message':'afvist i testen'})
                 ex=T.get(body['id'])
                 if ex and ex['owner']!=uid: return out(403,{'code':'42501','message':'new row violates row-level security policy'})
                 if tb=='reviews' and body['beer'] not in s.t['beers']: return out(409,{'code':'23503'})
@@ -185,6 +192,7 @@ class Mock:
             k=unquote(path.split('/billeder/',1)[1])
             if not uid or not k.startswith(uid+'/'): return out(403,{'message':'rls'})
             if 'x-upsert' in req.headers: return out(403,{'message':'upsert needs update policy'})
+            if s.img_fail: return out(s.img_fail,{'statusCode':str(s.img_fail),'error':'Payload too large','message':'The object exceeded the maximum allowed size'})
             if k in s.store: return out(400,{'statusCode':'409','error':'Duplicate','message':'The resource already exists'})
             s.store[k]=JPG; return out(200,{'Key':'billeder/'+k})
         if path.startswith('/storage/v1/object/billeder/') and m=='DELETE':

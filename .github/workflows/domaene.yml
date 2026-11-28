@@ -40,3 +40,10 @@ jobs:
           echo "https://www.$D -> $(curl -sS -o /dev/null -m 20 -w '%{http_code} %{redirect_url}' https://www.$D/ || echo FEJL)"
           echo "http://$D -> $(curl -sS -o /dev/null -m 20 -w '%{http_code} %{redirect_url}' http://$D/ || echo FEJL)"
           echo "certifikat: $(echo | openssl s_client -servername $D -connect $D:443 2>/dev/null | openssl x509 -noout -subject -enddate 2>/dev/null | tr '\n' ' ')"
+          echo "== 7. Mail (Resend): de fire DNS-linjer hos one.com. OK betyder, at navneserverne svarer med det, Resend beder om"
+          N=ns01.one.com
+          chk(){ if echo "$2" | grep -q -- "$3"; then echo "OK      $1 -> $2"; else echo "MANGLER $1 -> ${2:-(intet svar)}   (skal være: $3)"; fi; }
+          chk "TXT   resend._domainkey.$D" "$(dig +short TXT resend._domainkey.$D @$N | tr -d '"' | tr '\n' ' ')" "p=MIGf"
+          chk "MX    send.$D" "$(dig +short MX send.$D @$N | tr '\n' ' ')" "10 feedback-smtp.eu-west-1.amazonses.com."
+          chk "TXT   send.$D" "$(dig +short TXT send.$D @$N | tr -d '"' | tr '\n' ' ')" "v=spf1 include:amazonses.com ~all"
+          chk "CNAME rsend.$D" "$(dig +short CNAME rsend.$D @$N | tr '\n' ' ')" "send.forge.rmta.net."
