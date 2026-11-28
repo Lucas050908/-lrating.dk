@@ -4,6 +4,10 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-28
 
+### Aften (17:08–17:08): grænse for billeder i 006
+- **Fundet:** Billedlageret havde heller ingen grænse. Hvert billede må være 2 MB, og lageret er på 1 GB i Supabases gratis udgave, så et script kunne fylde det på få minutter, og så kunne ingen lægge billeder op.
+- **`supabase/006-graenser.sql`** sætter nu også højst 60 nye billeder i timen pr. bruger. Reglen om, at man kun må lægge billeder i sin egen mappe, er uændret. `test_sql.js` efterligner billedlageret og tester det (99 tjek). Filen er stadig ikke kørt.
+
 ### Aften (17:00–17:07): en ustabil test i Safaris motor forklaret
 - **Testene på GitHub siden fredag morgen:** 40 kørsler gennemgået job for job. Chromium og databasen har bestået hver gang. Firefox fejlede 2 gange og Safaris motor (WebKit) 12 gange. 10 af WebKit-fejlene var fredag formiddag (fejl på siden og i testene, som blev rettet fredag). Siden fredag middag har WebKit fejlet 2 gange, begge med samme besked i synkroniseringstesten: "Failed to load resource".
 - **Forklaringen:** Browseren skriver den besked, hver gang databasen svarer med en fejlkode. Det sker med vilje flere steder i testen (fx får en tilmelding til en tur, der lige er slettet, svaret 409). Om det sker i den fane, testen holder øje med, afhænger af tidspunktet, og WebKit er langsommere. Det er altså ikke en fejl på siden.

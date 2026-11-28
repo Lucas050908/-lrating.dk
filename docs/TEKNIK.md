@@ -238,6 +238,7 @@ Widget-data, som `syncApp()` sender:
 ### Grænser mod spam (`supabase/006-graenser.sql`)
 - Triggeren `graense` kører før hver ny række i `beers` og `reviews`. Den tæller, hvor mange rækker samme `owner` har oprettet den seneste time og det seneste døgn, og afviser med fejlkode `23514` (svar 400 fra PostgREST), når grænsen er nået. En upsert af et id, der findes, er en rettelse og tælles ikke.
 - Tallene står ét sted: `graenser()` (jsonb), som alle kan kalde. Indekser på `(owner, created_at)` gør optællingen hurtig.
+- **Billeder:** Reglen "billeder kan uploades" på `storage.objects` kræver nu også, at `billeder_i_timen()` (egne billeder den seneste time) er under `graenser().billeder.time` (60). Et afvist billede giver en 4xx-fejl, og så bliver øllen på enheden (`sbBad`).
 - Siden behandler 400 for en ny række som "kan ikke deles lige nu": øllen bliver på enheden (`sbBad`) og prøves igen, næste gang siden åbnes.
 
 ### Synkronisering (`sb*`-funktionerne i `index.html`)

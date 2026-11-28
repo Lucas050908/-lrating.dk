@@ -9,6 +9,7 @@
 -- Grænserne (pr. bruger, dvs. pr. enhed eller konto):
 --   øl:           højst 40 i timen og 150 i døgnet
 --   bedømmelser:  højst 60 i timen og 300 i døgnet
+--   billeder:     højst 60 i timen (hvert billede er i forvejen højst 2 MB, og lageret er på 1 GB i Supabases gratis udgave)
 --   Almindelige brugere mærker det ikke, heller ikke på en byttur, hvor man bedømmer mange øl samme aften.
 --   At rette noget, man allerede har lavet, tæller ikke med.
 --
@@ -21,7 +22,7 @@
 
 create or replace function public.graenser() returns jsonb
 language sql immutable as $$
-  select '{"beers": {"time": 40, "doegn": 150}, "reviews": {"time": 60, "doegn": 300}}'::jsonb
+  select '{"beers": {"time": 40, "doegn": 150}, "reviews": {"time": 60, "doegn": 300}, "billeder": {"time": 60}}'::jsonb
 $$;
 grant execute on function public.graenser() to anon, authenticated;
 
@@ -54,3 +55,17 @@ drop trigger if exists graense on public.beers;
 create trigger graense before insert on public.beers for each row execute function public.graense();
 drop trigger if exists graense on public.reviews;
 create trigger graense before insert on public.reviews for each row execute function public.graense();
+
+-- Billeder: samme regel som i schema.sql (kun i sin egen mappe), plus højst et antal nye billeder i timen
+create or replace function public.billeder_i_timen() returns int
+language sql stable security definer set search_path = public, storage as $$
+  select count(*)::int from storage.objects
+  where bucket_id = 'billeder' and (storage.foldername(name))[1] = auth.uid()::text and created_at > now() - interval '1 hour'
+$$;
+revoke all on function public.billeder_i_timen() from public, anon;
+grant execute on function public.billeder_i_timen() to authenticated;
+
+drop policy if exists "billeder kan uploades" on storage.objects;
+create policy "billeder kan uploades" on storage.objects for insert to authenticated
+  with check (bucket_id = 'billeder' and (storage.foldername(name))[1] = auth.uid()::text
+              and public.billeder_i_timen() < (public.graenser() -> 'billeder' ->> 'time')::int);

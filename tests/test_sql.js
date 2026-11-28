@@ -167,7 +167,20 @@ const path=require('path');const os=require('os');const {pathToFileURL}=require(
  r=await as('a',`select * from site_visits`);const r2=await as('a',`update site_visits set visits=999999`);const r3=await as('a',`insert into site_visits values (current_date-1, 5)`);
  ok('tabellen kan ikke læses eller ændres direkte',!!r.err&&!!r2.err&&!!r3.err&&Number((await adm(`select sum(visits)::int n from site_visits`)).rows[0].n)===42,JSON.stringify([r.err,r2.err,r3.err]));
  // grænser mod spam (006): kan køres to gange, tæller kun nye rækker, rammer kun den, der spammer
+ // billedlageret efterlignes, så reglen for billeder i 006 kan prøves (navne som i Supabase: storage.objects og storage.foldername)
+ await db.exec(`create schema if not exists storage; create table if not exists storage.objects(id uuid primary key default gen_random_uuid(), bucket_id text, name text, owner uuid default auth.uid(), created_at timestamptz not null default now());
+  create or replace function storage.foldername(name text) returns text[] language sql immutable as $f$ select (string_to_array(name,'/'))[1:array_length(string_to_array(name,'/'),1)-1] $f$;
+  alter table storage.objects enable row level security; grant usage on schema storage to authenticated, anon; grant all on storage.objects to authenticated;
+  grant execute on function storage.foldername(text) to authenticated;`);
  const sql6=fs.readFileSync(R+'006-graenser.sql','utf8');await db.exec(sql6);await db.exec(sql6);ok('006 kan køres to gange',true);
+ {let e7=null;for(let i=0;i<60&&!e7;i++){const x=await as('c',`insert into storage.objects(bucket_id,name) values('billeder','${U.c}/b${i}.jpg')`);e7=x.err||null}
+  r=await as('c',`insert into storage.objects(bucket_id,name) values('billeder','${U.c}/b-over.jpg')`);
+  ok('billeder: 60 i timen går, nr. 61 afvises',!e7&&!!r.err&&/row-level security/.test(r.err),JSON.stringify([e7,r.err]));
+  r=await as('b',`insert into storage.objects(bucket_id,name) values('billeder','${U.c}/fremmed.jpg')`);ok('billeder: man kan stadig ikke lægge billeder i en andens mappe',!!r.err,r.err);
+  r=await as('b',`insert into storage.objects(bucket_id,name) values('billeder','${U.b}/eget.jpg')`);ok('billeder: andre brugere mærker intet',!r.err,r.err);
+  await adm(`update storage.objects set created_at=now()-interval '2 hours'`);
+  r=await as('c',`insert into storage.objects(bucket_id,name) values('billeder','${U.c}/senere.jpg')`);ok('billeder: en time senere kan C igen',!r.err,r.err);
+  await adm(`delete from storage.objects`)}
  r=await as('a',`select graenser() g`);ok('graenser() kan læses af alle (bruges til at se, om 006 er kørt)',!r.err&&r.rows[0].g.beers.time===40,JSON.stringify(r));
  await adm(`delete from beers where owner='${U.c}'`);let e6=null;
  for(let i=0;i<40&&!e6;i++){const x=await as('c',`insert into beers(id,name,data) values('sp${i}','Spam ${i}','{}')`);e6=x.err||null}
