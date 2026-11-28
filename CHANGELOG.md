@@ -4,6 +4,10 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-28
 
+### Aften (17:30–17:15): testen mod den rigtige database tåler to kørsler på én gang
+- **Fundet ved at starte to kørsler samtidig:** Begge fejlede i trin 7 ("en anden enhed ser øllen"). Testens øl hedder "TEST" plus et tal ud fra klokken, og to kørsler med 3 sekunders mellemrum får næsten samme tal. Søgningen tåler en stavefejl, så den fandt begge øl, og testen ventede præcis én. Det er ikke en fejl på siden.
+- **Rettet i testen:** Den leder nu efter netop sin egen øl.
+
 ### Aften (17:10–17:09): fornyelse af login prøves mod den rigtige database
 - **Testen mod den rigtige database** lader nu login udløbe midt i testen. Siden skal forny det hos Supabase, beholde samme bruger og stadig kunne gemme en rettelse bagefter. Før blev fornyelse kun prøvet mod efterligningen.
 

@@ -59,9 +59,9 @@ with sync_playwright() as p:
         c,d=api('/rest/v1/beers',method='POST',body={'id':'uhack'+RID,'name':'HACK','data':{}}); ok('6 uden login kan man ikke oprette',c in(401,403),(c,d))
         Bp=ctx('TestB'); Bp.goto(URL+'#alle'); Bp.wait_for_selector('#q')
         def seen():
-            Bp.fill('#q',RID); Bp.wait_for_timeout(400); return Bp.eval_on_selector_all('#grid .card','e=>e.length')==1
+            Bp.fill('#q',RID); Bp.wait_for_timeout(400); return Bp.query_selector(f'#grid .card[href="#beer-{BID}"]') is not None   # søgningen tåler stavefejl, så en anden testkørsel lige før (næsten samme RID) kan også dukke op
         ok('7 en anden enhed ser øllen',wait(seen,45))
-        ok('8 billedet vises hos den anden',Bp.evaluate("(()=>{const i=document.querySelector('#grid .card img');return !!i&&i.src.includes('/storage/')&&i.naturalWidth>0})()"))
+        ok('8 billedet vises hos den anden',Bp.evaluate("b=>{const i=document.querySelector('#grid .card[href=\"#beer-'+b+'\"] img');return !!i&&i.src.includes('/storage/')&&i.naturalWidth>0}",BID))
         sB=sess(Bp); tokB=sB and sB.get('access_token')
         c1,d1=api('/rest/v1/beers?id=eq.'+BID,method='PATCH',token=tokB,body={'name':'HACKET'}); c2,d2=api('/rest/v1/beers?id=eq.'+BID,method='DELETE',token=tokB)
         r=row('beers','id=eq.'+BID); ok('9 andre kan ikke rette eller slette øllen',r and r[0]['name']==NAME,(c1,d1,c2,d2,r))
