@@ -68,6 +68,13 @@ with sync_playwright() as p:
         Bp.evaluate("(()=>{const S=JSON.parse(localStorage.getItem('olrating-v1'));S.me='TestB';S.reviews.push({id:'%s',beer:'%s',who:'TestB',date:'%s',s:{look:3,aroma:3,taste:4,feel:3,overall:4},text:'Automatisk test B'});localStorage.setItem('olrating-v1',JSON.stringify(S))})()"%(R2,BID,time.strftime('%Y-%m-%d')))
         Bp.reload(); ok('10 den anden enheds bedømmelse gemmes',wait(lambda: row('reviews','id=eq.'+R2)))
         A.reload(); ok('11 første enhed henter den',wait(lambda: any(x['id']==R2 for x in ls(A)['reviews']),45))
+        # login fornyes mod den rigtige Supabase: samme bruger, og siden kan stadig skrive bagefter
+        A.evaluate("(()=>{const s=JSON.parse(localStorage.getItem('olrating-sb'));s.expires_at=1;localStorage.setItem('olrating-sb',JSON.stringify(s))})()"); A.reload()
+        sA2=wait(lambda: (lambda x: x if x and x.get('access_token')!=tokA else None)(sess(A)),30)
+        A.evaluate("(()=>{const S=JSON.parse(localStorage.getItem('olrating-v1'));const r=S.reviews.find(x=>x.id==='%s');if(r){r.text='Rettet efter nyt login'};localStorage.setItem('olrating-v1',JSON.stringify(S))})()"%R1); A.reload()
+        rr=wait(lambda: (lambda x: x if x and (x[0].get('data') or {}).get('text')=='Rettet efter nyt login' else None)(row('reviews','id=eq.'+R1)),30)
+        ok('11d login fornyes med samme bruger, og en rettelse gemmes bagefter',sA2 and sA2['user']['id']==uidA and rr,(sA2 and sA2['user']['id'],uidA,rr))
+        tokA=(sA2 or {}).get('access_token') or tokA
         # enig/uenig – kun når supabase/003 er kørt i databasen
         c,d=api('/rest/v1/review_vote_counts?select=review&limit=1')
         if c==200:

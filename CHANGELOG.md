@@ -4,6 +4,9 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-28
 
+### Aften (17:10–17:09): fornyelse af login prøves mod den rigtige database
+- **Testen mod den rigtige database** lader nu login udløbe midt i testen. Siden skal forny det hos Supabase, beholde samme bruger og stadig kunne gemme en rettelse bagefter. Før blev fornyelse kun prøvet mod efterligningen.
+
 ### Aften (17:08–17:08): grænse for billeder i 006
 - **Fundet:** Billedlageret havde heller ingen grænse. Hvert billede må være 2 MB, og lageret er på 1 GB i Supabases gratis udgave, så et script kunne fylde det på få minutter, og så kunne ingen lægge billeder op.
 - **`supabase/006-graenser.sql`** sætter nu også højst 60 nye billeder i timen pr. bruger. Reglen om, at man kun må lægge billeder i sin egen mappe, er uændret. `test_sql.js` efterligner billedlageret og tester det (99 tjek). Filen er stadig ikke kørt.
