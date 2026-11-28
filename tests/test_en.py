@@ -61,7 +61,11 @@ def crawl(b,lang):
         else: pg.evaluate(SEED.replace('ME',json.dumps(me)).replace('LANG',json.dumps(lang)))
         pg.goto(URL); pg.wait_for_timeout(1300)
     def grab(k): out[k]=pg.evaluate(GRAB)
-    def clk(q): pg.wait_for_selector(q,state='attached',timeout=8000); pg.evaluate("q=>document.querySelector(q).click()",q)   # venter, til knappen findes (Firefox kan være et øjeblik bagefter)
+    def clk(q):   # venter, til knappen findes (Firefox kan være et øjeblik bagefter). Findes den ikke, skrives siden ud, så fejlen kan forstås
+        try: pg.wait_for_selector(q,state='attached',timeout=8000)
+        except Exception:
+            print(f'FEJL [{lang}] {q} findes ikke på {pg.evaluate("location.hash")}:',pg.evaluate("document.getElementById('app').innerText.slice(0,400)").replace('\n',' | ')); raise
+        pg.evaluate("q=>document.querySelector(q).click()",q)
     def go(h,k=None,wait=450): pg.goto(URL+h); pg.wait_for_timeout(wait); grab(k or h)
     seed('Lucas')
     # andres bedømmelser får en anden ejer, så der er noget at swipe på, og mine egne får stemmer

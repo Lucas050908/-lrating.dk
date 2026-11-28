@@ -117,11 +117,16 @@ with sync_playwright() as p:
         b.close()
 # Hvad ligger der i databasen lige nu? (Alt i databasen er offentligt, så det må gerne stå i loggen.)
 try:
-    c,B=api('/rest/v1/beers?select=id,name,brewery,img,created_at,data&order=created_at.desc&limit=1000'); c2,RV=api('/rest/v1/reviews?select=id,who,created_at&order=created_at.desc&limit=1000')
+    c,B=api('/rest/v1/beers?select=id,name,brewery,img,created_at,data,owner&order=created_at.desc&limit=1000'); c2,RV=api('/rest/v1/reviews?select=id,who,created_at,owner&order=created_at.desc&limit=1000')
     c3,T=api('/rest/v1/tours?select=id&limit=1000'); c4,TS=api('/rest/v1/tastings?select=id&limit=1000')
     print(f"STATUS database: {len(B)} øl, {len(RV)} bedømmelser, {len(T)} byture, {len(TS)} smagninger")
-    for b in B[:5]: print('STATUS øl:',b['created_at'][:16],'|',b['name'][:40],'|',(b.get('brewery') or '')[:30],'| tilføjet af',str((b.get('data') or {}).get('addedBy',''))[:20],'| billede' if b.get('img') else '| uden billede')
+    for b in B[:5]: print('STATUS øl:',b['created_at'][:16],'|',b['name'][:40],'|',(b.get('brewery') or '')[:30],'| tilføjet af',str((b.get('data') or {}).get('addedBy',''))[:20],'| ejer',str(b.get('owner',''))[:8],'| billede' if b.get('img') else '| uden billede')
     print('STATUS smagere:',sorted({r['who'][:20] for r in RV})[:12])
+    # samme navn under flere ejere betyder, at en enhed har fået en ny usynlig bruger (så kan de gamle ikke rettes derfra). Ejer-id'er er offentlige i databasen
+    own={}
+    for x in [*B,*RV]:
+        n=str((x.get('data') or {}).get('addedBy') or x.get('who') or '')[:20]; own.setdefault(n,set()).add(str(x.get('owner',''))[:8])
+    print('STATUS ejere pr. navn:',{n:sorted(o) for n,o in sorted(own.items()) if n})
 except Exception as e: print('STATUS database: kunne ikke læses',e)
 # Er tilføjelserne til konto og mails sat op? (Kun læsning. mail_afmeld med en nøgle, der ikke findes, ændrer ingenting.)
 try:

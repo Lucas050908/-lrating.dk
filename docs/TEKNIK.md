@@ -126,7 +126,7 @@
 ### Offline
 - `sw.js` gemmer app-skallen.
 - Når siden åbnes, hentes den fra nettet først. Kun selve forsiden (`/` eller `/index.html`) med status 200 gemmes som den udgave, der bruges uden net, så en fejlside aldrig tager dens plads.
-- Billeder, ikoner, skrifttyper og scripts tages fra lageret først.
+- Billeder, ikoner, skrifttyper og scripts tages fra lageret først. Ved installation hentes `SHELL` med `cache: 'reload'`, så en ny version ikke får gamle filer fra browserens HTTP-cache (GitHub Pages: `max-age=600`).
 - De store forsidebilleder til pc (`fjord1.jpg` osv.) er ikke med i `SHELL`, fordi telefoner kun bruger de små (`-m`). De gemmes, første gang de bliver vist.
 - **Husk at hæve `const V='olrating-vNN'` ved hver udgivelse**, ellers ser brugerne den gamle version.
 

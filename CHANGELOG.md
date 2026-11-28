@@ -4,6 +4,11 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-28
 
+### Eftermiddag (16:15–16:22): stabilitet og ny version uden gamle filer
+- **Service worker:** Når en ny version installeres, hentes filerne nu forbi browserens egen cache (`cache: 'reload'`). GitHub Pages lader browseren gemme filer i 10 minutter, så en ny version kunne gemme den gamle `js/en.js` og vise nye tekster uden oversættelse, til næste version kom. Prøvet: service workeren installeres, siden virker uden net, også på engelsk.
+- **Testen mod den rigtige database** skriver nu også de første 8 tegn af ejer-id'et ved hver øl og hvilke ejere, hvert navn har. Står samme navn under flere ejere, har en enhed fået en ny usynlig bruger (som ved de to login-fejl, der er rettet i dag), og så kan de gamle øl ikke rettes fra den enhed. Ejer-id'er er i forvejen offentlige i databasen.
+- **`test_en.py`:** Fejlede én gang lokalt, da tre tests kørte samtidig: knappen "Spring over" under swipe kom ikke. Den bestod bagefter, alene. Testen skriver nu siden ud, når en knap mangler, så en fejl kan forstås næste gang.
+
 ### Eftermiddag (15:40–16:11): login, dobbelttryk, datoer efter midnat, blokeret lager, ødelagte links, sorte PNG-billeder og grænser mod spam
 - **Fundet:** Alle kan skrive i databasen uden at logge ind, og der er ingen grænse for, hvor meget. Et lille script kunne lægge titusindvis af øl ind, og fordi siden nu henter alle øl (rettelsen kl. 15.39), ville det gøre siden langsom for alle og fylde lageret i browseren.
 - **`supabase/006-graenser.sql` (ny, ikke kørt):** Højst 40 nye øl i timen og 150 i døgnet pr. bruger, og 60 bedømmelser i timen og 300 i døgnet. Rettelser tæller ikke. Lucas skal køre den i Supabase. `test_sql.js` tester den (95 tjek), og testen mod den rigtige database skriver, om den er kørt.
