@@ -11,7 +11,7 @@ def check(n,c,x=''):
     res.append(bool(c)); print(('PASS ' if c else 'FAIL ')+n,'' if c else x)
 NOW=datetime.datetime(2026,11,26,20,30)   # uret står stille, så teksterne er ens i de to gennemløb
 # Indhold, som brugerne selv har skrevet. Det skal IKKE oversættes.
-USER=['Ukendt Person','Findes Ikke','pasttour1','futtour01','nowtour01','emptytour','tastopen1','tastgues1','Limfjordsporter','Thisted Bryghus','Thisted','Skærgaard Pilsner','Fanø Bryghus','Fanø','Nørresundby IPA','Søgaards Bryghus','Aalborg','Fri Hvede','Svaneke Bryghus','Svaneke','Julebryg fra Skagen','Skagen Bryghus','Skagen','Havn Stout','Aalborg Bryghus','Ny og ubedømt','Lucas','Magnus','Sofie','Emil',
+USER=['Ukendt Person','Findes Ikke','Ikke Delt Øl','Ventebryg','pasttour1','futtour01','nowtour01','emptytour','tastopen1','tastgues1','Limfjordsporter','Thisted Bryghus','Thisted','Skærgaard Pilsner','Fanø Bryghus','Fanø','Nørresundby IPA','Søgaards Bryghus','Aalborg','Fri Hvede','Svaneke Bryghus','Svaneke','Julebryg fra Skagen','Skagen Bryghus','Skagen','Havn Stout','Aalborg Bryghus','Ny og ubedømt','Lucas','Magnus','Sofie','Emil',
  'Mørk og blød med et strejf af kaffe.','Rigtig god til julefrokosten','Lidt for bitter til mig','Føtex','J-dag i Aalborg','Nytårstur','Fredagsbar','Nytorv','Husk julesweater!','John Bull Pub','Den Tatoverede Enke','Østerågade 20','Julefrokost 2026','Sommersmagning','Åben smagning','Øl fra Nordjylland','Øl fra Fyn','Øl fra Sjælland','5701234567890']
 SEED="""(()=>{const S=JSON.parse(localStorage.getItem('olrating-v1')||'{}');const d='2026-11-20',s=(a,b,c,e,f)=>({look:a,aroma:b,taste:c,feel:e,overall:f});
  S.beers=[];S.reviews=[];
@@ -110,6 +110,10 @@ def crawl(b,lang):
     # uden navn
     seed('')
     for h in ['#profil','#dagbog','#venner','#byttur','#smagning','#genstande','#beer-a1','#byttur-futtour01','#smagning-tastgues1','']: go(h,h+'+ukendt')
+    # ikke delt endnu: databasen afviser en ny øl, så Min profil og øllens side siger, at den kun er på enheden
+    seed('Lucas'); M.row_fail['nyikkedelt']=403
+    pg.evaluate("(()=>{const S=JSON.parse(localStorage.getItem('olrating-v1'));S.beers.unshift({id:'nyikkedelt',name:'Ikke Delt Øl',brewery:'Ventebryg',style:'Pilsner',abv:5,size:'33 cl flaske',date:'2026-11-26',addedBy:'Lucas',img:''});localStorage.setItem('olrating-v1',JSON.stringify(S))})()")
+    pg.reload(); pg.wait_for_timeout(2500); go('#profil','#profil+ikkedelt',900); go('#beer-nyikkedelt','#beer+ikkedelt')
     # helt tom side: ny browser-profil og tom database
     c.close(); M=Mock(); c=b.new_context(viewport={'width':1280,'height':900},service_workers='block',locale='da-DK'); c.route(f'https://{HOST}/**',M.handle)
     pg=c.new_page(); pg.on('pageerror',lambda e:errs.append(str(e))); pg.clock.set_fixed_time(NOW)

@@ -4,6 +4,11 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-28
 
+### Eftermiddag (16:35–16:35): engelsk for "ikke delt", tilfældige klik og en langsom telefon
+- **`test_en.py`** går nu også gennem Min profil og øllens side, når en øl ikke er delt endnu, på begge sprog, så de nye beskeder altid er oversat.
+- **Tilfældige klik:** Et script trykkede, skrev (emoji, kode, 300 tegn, tal og tomme felter) og skiftede side 2.400 gange i alt, på dansk og engelsk (5 kørsler). Ingen fejl på siden og ingen kode, der blev kørt.
+- **Langsom telefon:** Med en processor, der er 6 gange langsommere end en pc, tager en synkronisering 0,6 sekund med 1.000 øl og 3.000 bedømmelser, også når intet er ændret. Det står i `IDEER.md` sammen med lageret.
+
 ### Eftermiddag (16:30–16:24): testen tæller ikke længere som besøg
 - **Fundet:** Hver kørsel af testen mod den rigtige database lagde omkring 5 besøg til besøgstælleren (51 → 56 ved en kørsel, hvor der ellers ikke var trafik). En del af de 56 besøg i alt er derfor fra testene. Nu svarer testen selv på kaldet til tælleren, så den ikke tæller med.
 - **Ejere i databasen:** Lucas' øl står under to forskellige usynlige brugere (onsdagens øl under én, "Julemandens classic" fra fredag under en anden). Det er normalt, hvis de er lavet fra to enheder (fx telefon og pc, eller appen og browseren). Så kan hver øl kun rettes fra den enhed, den er lavet på, indtil kontoen med mail er slået til.
