@@ -363,6 +363,9 @@ with sync_playwright() as p:
     for k in ['look','aroma','taste','feel','overall']: P.click(f'#revForm .rate[data-k="{k}"] [data-star="4"]')
     P.click('#revForm button[type=submit]'); P.wait_for_timeout(1200); nd=[r['date'] for r in ls(P)['reviews'] if r['id']!='rd1']; P.goto(URL); P.wait_for_timeout(600); home=P.inner_text('#app'); P.context.close()
     check('datoer: en bedømmelse kl. 00.30 får dagens dato (ikke gårsdagens, som i UTC), og forsiden tæller den med i dag',nd==['2026-11-28'] and '1 ny bedømmelse i dag' in home,(nd,[l for l in home.split('\n') if 'i dag' in l][:3]))
+    st_dst={"beers":[],"reviews":[],"me":"Lucas","tours":[{"id":"tdst","name":"Natten med en time ekstra","date":"2026-10-24T22:00","meet":"","note":"","host":"Lucas","stops":[{"name":"Bar A","time":"22:00","addr":""},{"name":"Bar B","time":"01:00","addr":""},{"name":"Bar C","time":"03:30","addr":""}],"members":[{"name":"Lucas"}]}]}
+    P=at(st_dst,'2026-10-25T03:10'); P.goto(URL+'#byttur-tdst'); P.wait_for_timeout(800); cur=P.inner_text('.route li.cur') if P.query_selector('.route li.cur') else ''; P.context.close()
+    check('datoer: byttur natten, hvor sommertiden slutter: kl. 03.10 er man ved stoppet kl. 01.00, ikke ved det kl. 03.30',('Bar B' in cur),cur)
     badd=[]
     for when in ['2027-01-01T00:30','2028-02-29T12:00','2026-03-29T02:30','2026-10-25T02:30','2026-12-31T23:59']:   # nytår, skuddag, timen der ikke findes, timen der findes to gange, årets sidste minut
         P=at(sd,when)

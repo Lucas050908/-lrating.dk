@@ -831,7 +831,7 @@ function cleanTour(o){if(!o||typeof o!=='object'||typeof o.id!=='string'||o.id.l
    members:(Array.isArray(o.members)?o.members:[]).slice(0,100).map(m=>typeof m==='string'?{name:str(m,40)}:{name:str(m.name,40)}).filter(m=>m.name)}}
 function mergeTour(n){const o=tourById(n.id);if(!o){S.tours.push(n);return n}const names=new Set(o.members.map(m=>m.name.toLowerCase()));n.members.forEach(m=>{if(!names.has(m.name.toLowerCase()))o.members.push(m)});if(o.host!==S.me){Object.assign(o,{name:n.name,date:n.date,meet:n.meet,note:n.note,stops:n.stops})}return o}
 function curStop(t){if(!t.date||!t.stops.length)return -1;const d=t.date.slice(0,10),now=Date.now();let c=-1;
-  t.stops.forEach((x,i)=>{if(!x.time)return;let ts=new Date(d+'T'+x.time).getTime();if(i>0&&x.time<(t.stops[0].time||'00:00'))ts+=DAY;if(ts<=now)c=i});
+  t.stops.forEach((x,i)=>{if(!x.time)return;const n=new Date(d+'T'+x.time),nd=i>0&&x.time<(t.stops[0].time||'00:00');const ts=new Date(n.getFullYear(),n.getMonth(),n.getDate()+(nd?1:0),n.getHours(),n.getMinutes()).getTime();if(ts<=now)c=i});   /* stop efter midnat: næste dag på uret, ikke +24 timer (natten, hvor sommertiden slutter, har 25 timer) */
   const first=new Date(d+'T'+(t.stops[0].time||'00:00')).getTime();if(now<first||now>first+14*3600e3)return -1;return c}
 /* En tur er slut 14 timer efter første stop. Derefter vises den som et minde. */
 const tourStart=t=>t.date?new Date(t.date.slice(0,10)+'T'+((t.stops[0]&&t.stops[0].time)||t.date.slice(11,16)||'00:00')).getTime():NaN;
@@ -1434,7 +1434,7 @@ function calView(){const y=new Date().getFullYear(),E=easter(y),day=x=>calDays(n
   const n1=new Date(y,10,1),jd=new Date(y,10,1+((5-n1.getDay()+7)%7));
   const ev=[['Nytår','Mørke og kraftige øl til nytårsaften','Bock',new Date(y,11,27),new Date(y,11,31),'#b78cff'],
    ['Bock og forårsøl','Kraftige, maltede øl i det tidlige forår','Bock',new Date(y,1,15),new Date(y,3,15),'#e89a2c'],
-   ['Påskebryg','I butikkerne i ugerne op til påske','Påskebryg',new Date(E-42*DAY),new Date(+E+DAY),'#ffd23f'],
+   ['Påskebryg','I butikkerne i ugerne op til påske','Påskebryg',new Date(E.getFullYear(),E.getMonth(),E.getDate()-42),new Date(E.getFullYear(),E.getMonth(),E.getDate()+1),'#ffd23f'],
    ['Sommerøl','Lyse, friske øl, hvede og sour','Hvede',new Date(y,5,1),new Date(y,7,31),'#8bd17c'],
    ['Høst og Oktoberfest','Maltede lagerøl og høstøl','Lager',new Date(y,8,1),new Date(y,9,31),'#ff8a1f'],
    ['Juleøl','Fra J-dag til jul','Juleøl',jd,new Date(y,11,26),'#ee4f66']];
