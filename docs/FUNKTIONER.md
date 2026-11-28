@@ -48,12 +48,12 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 ### Fælles database
 - Alle ser de samme øl, bedømmelser og billeder. Nyt hentes, når siden åbnes, og derefter hvert 30. sekund.
 - Kun den enhed, der har lavet en øl eller bedømmelse, kan rette og slette den. Knapperne vises ikke hos andre.
-- Sletning har stadig fortryd. Øllen og dens billede fjernes først fra databasen efter ca. 10 sekunder.
+- Sletning har stadig fortryd. Øllen og dens billede fjernes først fra databasen efter ca. 10 sekunder. Sletter man en øl, forsvinder alle bedømmelser af den, også andres (spørgsmål til Lucas i `IDEER.md`, om det skal være sådan).
 - Backup-filen indeholder også billederne. Indlæses den igen, bliver øl, bedømmelser og billeder lagt op på ny.
 - **Anmeld:** På øl og bedømmelser, som andre har lavet, er der et "Anmeld"-link. Det åbner en mail til ejerne med link til indholdet.
 - Uden net virker alt som før. Ændringer sendes, når forbindelsen er tilbage. Status ses under Min profil ("Forbundet" eller "Ikke forbundet").
 - Er noget af ens eget ikke delt endnu, står der på Min profil fx "Forbundet – men 1 af dine øl eller bedømmelser er kun på denne enhed endnu". En egen øl, der ikke er delt, siger det også på sin egen side ("Øllen er kun på denne enhed endnu"). Kan et billede eller en ny øl ikke gemmes i databasen, bliver den på enheden og prøves igen, næste gang siden åbnes. Resten deles som normalt.
-- Der hentes alle øl og bedømmelser, også når der er flere end 1000.
+- Der hentes alle øl og bedømmelser, også når der er flere end 1000 (op til 20.000 af hver).
 - Har man blokeret, at sider må gemme data, virker siden stadig, men den siger (ved start og på Min profil), at det, man laver, forsvinder, når siden lukkes.
 - Genstand-tæller, ønskeliste, hvem du følger, og indstillinger deles **ikke**. De bliver på enheden.
 

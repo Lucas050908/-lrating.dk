@@ -1,7 +1,7 @@
 // ølrating.dk service worker: virker offline og indlæser hurtigt
 // De store forsidebilleder til pc (fjord1.jpg osv., i alt ca. 540 kB) er ikke med i pakken. Telefoner viser kun de små (-m),
 // og en pc gemmer de store første gang, de bliver vist (se 'fra cachen først' herunder).
-const V='olrating-v97';
+const V='olrating-v98';
 const SHELL=['js/qr.js','js/scan.js','js/en.js','./','./index.html','./manifest.webmanifest','./fonts/inter-400.woff2','./fonts/inter-600.woff2','./fonts/inter-700.woff2','./fonts/sora-700.woff2','./img/fjord1-m.jpg','./img/fjord2-m.jpg','./img/fjord3-m.jpg','./img/icon-192.png','./img/favicon.svg','./img/logo.svg'];
 // cache:'reload' går uden om browserens egen cache (GitHub Pages siger max-age=600), så en ny version ikke gemmer en gammel js/en.js i 10 minutter
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(SHELL.map(u=>new Request(u,{cache:'reload'})))).then(()=>self.skipWaiting()))});

@@ -4,6 +4,13 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-28
 
+### Aften (17:26–17:43): målinger og oprydning i ordbogen
+- **Ordbogen (`js/en.js`):** "Se øllen" og "Til forsiden" stod to gange (med samme oversættelse). Fjernet. `test_en.py` fejler nu, hvis en dansk tekst står to gange, for så ville den sidste vinde uden varsel.
+- **Første indlæsning målt:** Siden er 327 kB (før komprimering). På en telefon, der er 6 gange langsommere end en pc, vises den første tekst efter 0,3 sekund. På langsomt 4G efter 0,8 sekund, og siden er helt indlæst efter 2,6 sekunder (GitHub Pages komprimerer, så det går hurtigere i virkeligheden).
+- **Tilfældige klik** kørt igen på den nyeste udgave: 1.200 handlinger, ingen fejl.
+- **Tal om alkohol tjekket:** Alkolinjen har stadig tlf. 80 200 500, og Sundhedsstyrelsens råd er stadig højst 10 genstande om ugen og højst 4 på samme dag (borger.dk).
+- **`FUNKTIONER.md`** siger nu, at sletning af en øl også sletter andres bedømmelser af den, og at der hentes op til 20.000 øl og bedømmelser.
+
 ### Aften (17:16–17:26): søgning efter tal skal passe præcist
 - **Fundet:** Søgningen tåler en stavefejl i ord på mindst 4 tegn. Det gjaldt også tal, så "2026" fandt "Julebryg 2025", og en stregkode med ét forkert ciffer fandt en anden øl. Nu tåles stavefejl kun i ord med bogstaver. Tal skal passe præcist.
 - **Test:** `test_site.py` søger på en stregkode, en med ét forkert ciffer, to årstal og et ord med en stavefejl.

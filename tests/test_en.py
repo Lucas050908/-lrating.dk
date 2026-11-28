@@ -216,6 +216,9 @@ def main():
     check('[en] ingen fejl i konsollen på dansk eller engelsk',not e1 and not e2,(e1[:2],e2[:2]))
     check('[en] de samme sider er gennemgået i begge sprog',set(da)==set(en) and len(da)>80,len(da))
     check('[en] ordbogen er gyldig og uden kæder',not info['bad'],info['bad'][:5])
+    import collections; dsrc=open(os.path.join(ROOT,'js','en.js'),encoding='utf-8').read()
+    dups=[k for k,c in collections.Counter(re.findall(r'"((?:[^"\\]|\\.)*)":"',dsrc)).items() if c>1]
+    check('[en] ingen dansk tekst står to gange i ordbogen (den sidste ville vinde uden varsel)',not dups,dups[:5])
     kind={}
     for v in list(da.values())+list(en.values()):
         for i,t in enumerate(v): kind.setdefault(t[2:],t[0]); v[i]=t[2:]
