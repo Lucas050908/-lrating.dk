@@ -4,6 +4,11 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-28
 
+### Eftermiddag (16:50–16:59): genstande fra Android-widgetten
+- **Testet for første gang:** Tryk på "+1" i Android-widgetten hentes ind, når siden åbnes (`takePending`). Det var ikke testet før. `test_site.py` efterligner nu appen med gyldige og forkerte værdier.
+- **"Del som billede" i appen** gemmer billedet i telefonens Billeder gennem broen (`saveImage`). Det var heller ikke testet før. Det virker.
+- **Rettet:** Et tidspunkt i fremtiden (fx fra en telefon med forkert ur) ville tælle med som "i dag" for altid. Nu bliver det til nu. Tekst, null og andet, der ikke er et tal, springes over (det gjorde det i forvejen).
+
 ### Eftermiddag (16:40–16:47): login udløbet før tid, og spørgsmål om appen
 - **Login udløbet hos Supabase, før siden troede det:** Siden regnede udløbet ud fra Supabases ur. Går telefonens ur bagud (eller bliver login afvist af en anden grund), svarede Supabase 401 på alt, og intet blev delt, før telefonens ur nåede udløbet, op til flere timer. Nu regnes udløbet fra telefonens eget ur, og ved svar 401 fornyes login med det samme (højst 3 gange i træk). `test_sync.py` afviser login midt i brugen og tjekker, at en ny øl alligevel deles med samme bruger.
 - **Fundet ved gennemlæsning af Android-appen:** Når man vælger billede i appen, åbnes kun galleriet og filer, ikke kameraet. Man skal altså tage billedet først. Det kræver en ændring i appen, som skal prøves på en rigtig telefon, så det er ikke lavet. Spørgsmålet står i `IDEER.md`.

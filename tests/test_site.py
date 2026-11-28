@@ -547,6 +547,18 @@ with sync_playwright() as p:
     pg.goto(URL+'#om'); pg.wait_for_timeout(500)
     check('uden besøgstæller og billeder: widget-data har ingen besøgstal, og Om viser tre tal',w0.get('site',{}).get('visits') is None and isinstance(wi0,dict) and pg.eval_on_selector_all('#omTal .ex-t','e=>e.length')==3,(w0.get('site'),wi0))
     c.close()
+    # genstande fra Android-widgetten: tryk på "+1" i widgetten hentes ind, når siden åbnes. Forkerte værdier (tekst, null, et tidspunkt i fremtiden) må ikke ødelægge tælleren
+    c=b.new_context(viewport={'width':390,'height':844},service_workers='block'); c.route(f'https://{HOST}/**',Mock().handle); pg=c.new_page()
+    pg.add_init_script("window.__tk=0;window.OlratingApp={updateWidget:()=>{},updateImages:()=>{},takeUnits:()=>window.__tk++?'[]':JSON.stringify([Date.now()-60000,9e15,'x',null,{}])};")
+    pg.goto(URL+'#genstande'); pg.wait_for_timeout(1500); un=ls(pg).get('units',[])
+    check('widget: to tryk fra widgetten bliver til to genstande, og et tidspunkt i fremtiden bliver til nu',len(un)==2 and all(u['n']=='Fra widget' and u['t']<=__import__('time').time()*1000+5000 for u in un) and 'Fra widget' in pg.inner_text('#app'),un)
+    c.close()
+    # "Del som billede" i Android-appen gemmer billedet i telefonens Billeder gennem broen
+    c=b.new_context(viewport={'width':390,'height':844},service_workers='block'); c.route(f'https://{HOST}/**',Mock().handle); pg=c.new_page()
+    pg.add_init_script("window.__img=[];Object.defineProperty(navigator,'share',{value:undefined,configurable:true});window.OlratingApp={updateWidget:()=>{},updateImages:()=>{},saveImage:(d,n)=>{window.__img.push([d.slice(0,23),n]);return true}};if(!localStorage.getItem('olrating-v1'))localStorage.setItem('olrating-v1',JSON.stringify({me:'Lucas',beers:[{id:'ap1',name:'Appøl',brewery:'Bryg',style:'Pilsner',abv:5,size:'33 cl flaske',date:'2026-11-20',addedBy:'Lucas',img:''}],reviews:[]}))")
+    pg.goto(URL+'#beer-ap1'); pg.wait_for_timeout(1200); pg.click('#cardBtn'); pg.wait_for_timeout(2500); sv=pg.evaluate('window.__img')
+    check('app: Del som billede gemmer et JPEG-billede i telefonens Billeder og siger det',len(sv)==1 and sv[0][0]=='data:image/jpeg;base64,' and sv[0][1].endswith('.jpg') and 'gemt i Billeder' in pg.inner_text('#toast'),(sv,pg.inner_text('#toast')))
+    c.close()
     # stregkode → Open Food Facts (efterlignet; testen rører aldrig den rigtige tjeneste)
     OFFQ=[]
     def off(route):

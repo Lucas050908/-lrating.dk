@@ -850,7 +850,7 @@ function dayStart(){const d=new Date();if(d.getHours()<6)d.setDate(d.getDate()-1
 const uToday=()=>S.units.filter(u=>u.t>=dayStart()),uWeek=()=>S.units.filter(u=>u.t>=Date.now()-7*DAY);
 const gSum=a=>Math.round(a.reduce((x,u)=>x+u.g,0)*10)/10;
 function addUnit(g,n){if(!(g>0)||g>20)return;S.units.push({t:Date.now(),g,n:String(n||'').slice(0,60)});S.units=S.units.filter(u=>u.t>Date.now()-60*DAY);save()}
-function takePending(){try{const A=window.OlratingApp;if(!A||!A.takeUnits)return false;const a=JSON.parse(A.takeUnits()||'[]');if(!Array.isArray(a)||!a.length)return false;a.forEach(t=>{if(typeof t==='number')S.units.push({t,g:1,n:'Fra widget'})});save();return true}catch(e){return false}}
+function takePending(){try{const A=window.OlratingApp;if(!A||!A.takeUnits)return false;const a=JSON.parse(A.takeUnits()||'[]');if(!Array.isArray(a)||!a.length)return false;a.forEach(t=>{if(typeof t==='number'&&isFinite(t))S.units.push({t:Math.min(t,Date.now()),g:1,n:'Fra widget'})});save();return true}   /* et tidspunkt i fremtiden (forkert ur) ville ellers tælle med i dag for altid */catch(e){return false}}
 /* Besøgstal (supabase/005) og små billeder af øllene til widgets i apps */
 let VIS=null,visBusy=false,wSent=null;const WTH=new Map();
 async function sbVisit(){if(VIS||visBusy)return;try{if(Date.now()-(+LS.getItem('olrating-vis404')||0)<36e5)return}catch(e){}visBusy=true;try{const r=await sbFetch('/rest/v1/rpc/besoeg',{method:'POST',body:{},anon:true}).catch(e=>{if(e.status===404)try{LS.setItem('olrating-vis404',Date.now())}catch(x){}throw e});   /* findes tælleren ikke endnu (005 ikke kørt), prøves der højst én gang i timen, så konsollen ikke får en 404 ved hvert besøg */

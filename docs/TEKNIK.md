@@ -138,7 +138,7 @@ Siden kalder `window.OlratingApp`, hvis den findes. Det gør den i Android-appen
 |---|---|---|
 | `updateWidget(json)` | Siden, efter hver `save()` og ved start | Sender data til widgets (se nedenfor) |
 | `updateImages(json)` | Siden, når de øl, widgets viser, eller deres billeder har ændret sig | Sender små billeder: `{"øl-id":"data:image/jpeg;base64,…"}`, højst 10 øl, 288 × 288 px |
-| `takeUnits()` | Siden ved start, når appen kommer i forgrunden, og hvert 5. sekund | Henter genstande lagt til fra widget (JSON-liste med tidsstempler) og tømmer listen |
+| `takeUnits()` | Siden ved start, når appen kommer i forgrunden, og hvert 5. sekund | Henter genstande lagt til fra widget (JSON-liste med tidsstempler) og tømmer listen. Kun tal bruges, og et tidspunkt i fremtiden bliver til nu |
 | `saveImage(dataUrl, navn)` | Siden (kun Android) | Gemmer delekort i Billeder |
 | `isApp()` | Siden | `true` |
 
