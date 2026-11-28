@@ -4,6 +4,10 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-28
 
+### Aften (17:16–17:26): søgning efter tal skal passe præcist
+- **Fundet:** Søgningen tåler en stavefejl i ord på mindst 4 tegn. Det gjaldt også tal, så "2026" fandt "Julebryg 2025", og en stregkode med ét forkert ciffer fandt en anden øl. Nu tåles stavefejl kun i ord med bogstaver. Tal skal passe præcist.
+- **Test:** `test_site.py` søger på en stregkode, en med ét forkert ciffer, to årstal og et ord med en stavefejl.
+
 ### Aften (17:09–17:15): testen mod den rigtige database tåler to kørsler på én gang
 - **Fundet ved at starte to kørsler samtidig:** Begge fejlede i trin 7 ("en anden enhed ser øllen"). Testens øl hedder "TEST" plus et tal ud fra klokken, og to kørsler med 3 sekunders mellemrum får næsten samme tal. Søgningen tåler en stavefejl, så den fandt begge øl, og testen ventede præcis én. Det er ikke en fejl på siden.
 - **Rettet i testen:** Den leder nu efter netop sin egen øl.

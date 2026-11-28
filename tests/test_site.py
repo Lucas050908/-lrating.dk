@@ -392,6 +392,14 @@ with sync_playwright() as p:
     pg.goto(URL+'#profil'); pg.wait_for_timeout(400); note=pg.query_selector('#noLS') is not None
     check('lager blokeret: siden virker og siger på Min profil, at intet bliver gemt',not perr and not bad and note,(perr[:2],bad,note))
     c.close()
+    # søgning efter tal (stregkode og årstal) skal passe præcist; stavefejl tåles kun i ord
+    c=b.new_context(viewport={'width':390,'height':844},service_workers='block'); c.route(f'https://{HOST}/**',Mock().handle); pg=c.new_page()
+    pg.add_init_script("if(!localStorage.getItem('olrating-v1'))localStorage.setItem('olrating-v1',JSON.stringify({me:'Lucas',reviews:[],beers:[{id:'k1',name:'Kodeøl',brewery:'Bryg',style:'Pilsner',abv:5,size:'33 cl flaske',date:'2026-11-20',addedBy:'Lucas',img:'',code:'5740600001234'},{id:'k2',name:'Julebryg 2025',brewery:'Bryg',style:'Juleøl',abv:6,size:'33 cl flaske',date:'2026-11-20',addedBy:'Lucas',img:''}]}))")
+    pg.goto(URL+'#alle'); pg.wait_for_timeout(800); r={}
+    for q in ['5740600001234','5740600001235','2025','2026','julebrg']:
+        pg.fill('#q',q); pg.wait_for_timeout(250); r[q]=pg.eval_on_selector_all('#grid .card[href^="#beer-"]','e=>e.length')
+    check('søgning: tal skal passe præcist (en stregkode med ét forkert ciffer eller et andet år findes ikke), stavefejl i ord tåles stadig',r=={'5740600001234':1,'5740600001235':0,'2025':1,'2026':0,'julebrg':1},r)
+    c.close()
     # adresser, der er skrevet forkert eller er blevet ødelagt undervejs (fx et % der ikke er kodet), må ikke få siden til at gå ned
     c=b.new_context(viewport={'width':390,'height':844},service_workers='block'); c.route(f'https://{HOST}/**',Mock().handle); pg=c.new_page(); perr=[]
     pg.on('pageerror',lambda e:None if WK_NOISE(str(e)) else perr.append(str(e))); pg.goto(URL); pg.wait_for_timeout(800); badh=[]

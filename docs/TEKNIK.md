@@ -40,6 +40,7 @@
 - `agree()`: enighed med andre i procent: 100 minus den gennemsnitlige forskel i karakter på fælles øl, hvor en forskel på 4 svarer til 0 %.
 - `S.follow`: navnene på dem, brugeren følger. Listen bliver på enheden og sendes ikke til databasen.
 - `brewMap(L)`: tegner kortet over bryggerier som SVG. `DKMAP` er kystlinjen som få punkter i længde- og breddegrad, og `DKC` er en tabel over byer og deres placering. Byens navn gøres til små bogstaver, og tal og et enkelt bogstav til sidst (som i "København K") fjernes, før der slås op.
+- `matches(tekst, søgning)`: hvert søgeord skal stå i teksten (efter `norm()`), eller, hvis ordet har mindst 4 tegn og mindst ét bogstav, ligne et ord i teksten med højst én fejl (`near()`). Ord uden bogstaver (stregkoder, årstal) skal passe præcist.
 - `dupCheck()`: kører 250 ms efter, at brugeren har skrevet i navn, bryggeri eller stregkode på Tilføj øl. Den finder op til tre øl med samme stregkode eller næsten samme navn (`norm()` og `near()`), og viser dem i `#dupHint`.
 - `yearData(y)`: tallene bag Årets øl. Bedømmelser med dato i året `y` grupperes pr. øl, bryggeri og stil. `min` er 2, hvis mindst én øl har 2 bedømmelser i året, ellers 1.
 - `makeListCard(kick,title,list)`: tegner et billede med op til 5 øl på et canvas. `cardBg()` tegner baggrund og logo, og `shareBlob()` deler billedet, gemmer det i appen eller henter det som fil. `shareTop(t)` og `shareYear(y)` bruger dem til Toplisten og Årets øl.

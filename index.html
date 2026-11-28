@@ -1008,7 +1008,8 @@ const profAvg=b=>{const rs=b.rs.filter(r=>r.prof);return rs.length?PROF.map(([k]
 let F={af:false,lim:24,q:'',style:'',sort:'score',maxPrice:0,minAbv:0,maxAbv:0,ftags:[],untried:false,withImg:false,code:''};
 const norm=t=>String(t||'').toLowerCase().replace(/æ/g,'ae').replace(/ø/g,'oe').replace(/å/g,'aa').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9%.,]+/g,' ').trim();
 function near(a,b){if(Math.abs(a.length-b.length)>1)return false;if(a.length===b.length){const d=[];for(let i=0;i<a.length;i++)if(a[i]!==b[i])d.push(i);return d.length<=1||(d.length===2&&d[1]===d[0]+1&&a[d[0]]===b[d[1]]&&a[d[1]]===b[d[0]])}const[l,sh]=a.length>b.length?[a,b]:[b,a];for(let i=0;i<l.length;i++)if(l.slice(0,i)+l.slice(i+1)===sh)return true;return false}
-function matches(hay,q){const H=norm(hay),T=H.split(' ');return norm(q).split(' ').filter(Boolean).every(w=>H.includes(w)||(w.length>=4&&T.some(t=>near(w,t)||(t.length>w.length&&near(w,t.slice(0,w.length))))))}
+/* Stavefejl tåles kun i ord med bogstaver. Et tal (stregkode, årstal) skal passe præcist, ellers fandt 2026 også 2025, og en stregkode en anden øl. */
+function matches(hay,q){const H=norm(hay),T=H.split(' ');return norm(q).split(' ').filter(Boolean).every(w=>H.includes(w)||(w.length>=4&&/[a-z]/.test(w)&&T.some(t=>near(w,t)||(t.length>w.length&&near(w,t.slice(0,w.length))))))}
 const brewSlug=n=>encodeURIComponent(n);
 function brewView(name){const L=enrich().filter(b=>b.brewery===name);if(!L.length)return `<section class="band" style="padding-top:120px"><div class="wrap"><div class="empty"><h3>Bryggeriet findes ikke</h3><a class="btn" href="#alle">Se alle øl</a></div></div></section>`;
   const rated=L.filter(b=>b.rs.length),nR=rated.reduce((a,b)=>a+b.rs.length,0),avg=nR?rated.reduce((a,b)=>a+b.avg*b.rs.length,0)/nR:0,city=L.find(b=>b.city)?.city||'',styles=[...new Set(L.map(b=>b.style))];
