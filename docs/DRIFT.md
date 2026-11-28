@@ -35,7 +35,9 @@ Workflowet **Tjek domæne** (`.github/workflows/domaene.yml`) kan startes under 
   1. SQL Editor → New query → indsæt `supabase/schema.sql` → Run.
   2. Authentication → Sign In / Providers → slå **Allow anonymous sign-ins** til.
 - `supabase/002-slet-billeder.sql` er kørt (bekræftet af testen mod den rigtige database den 26-11-2026: billedet forsvinder, når en øl slettes).
-- **Mangler at blive kørt:** `supabase/003-konto-mails-enig.sql` (stemmer i "Enig eller uenig?", konto og mailvalg) og senere `supabase/004-mails.sql` (udsendelse af mails). Indtil 003 er kørt, bliver stemmer liggende på enheden og sendes senere.
+- `supabase/003-konto-mails-enig.sql` (stemmer i "Enig eller uenig?", konto og mailvalg) er kørt (testen mod den rigtige database siger "kørt" 28-11-2026).
+- **Mangler at blive kørt:** `supabase/004-mails.sql` (udsendelse af mails, se `docs/KONTO.md`) og `supabase/006-graenser.sql` (grænser mod spam).
+- **Grænser mod spam:** `supabase/006-graenser.sql` gør, at én bruger højst kan oprette 40 øl i timen og 150 i døgnet, og 60 bedømmelser i timen og 300 i døgnet. Rettelser tæller ikke. Den anbefales, fordi alle kan skrive i databasen uden at logge ind, og siden henter alle øl. Kør den: Supabase → SQL Editor → indsæt hele filen → Run. Den kan køres flere gange. Testen mod den rigtige database skriver bagefter "supabase/006 (grænser mod spam): kørt".
 - **Besøgstæller:** `supabase/005-besoeg.sql` slår tælleren til. Den er kørt (27-11-2026). Den kan køres igen uden skade: Supabase → SQL Editor → indsæt hele filen → Run.
 - **Konto og mails:** Kræver en mailtjeneste (Resend), DNS-linjer hos one.com, to mailskabeloner og en funktion i Supabase. Hele opsætningen står trin for trin i `docs/KONTO.md`. Nøglen fra Resend må kun stå hos Resend og i Supabase.
 - **Tjek at det virker:** Åbn ølrating.dk → Min profil. Nederst skal der stå "● Forbundet". Tilføj en øl på én enhed, og se den dukke op på en anden inden for et halvt minut.

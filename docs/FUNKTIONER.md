@@ -54,6 +54,7 @@ Alt hvad ølrating.dk og apps kan. Holdes opdateret ved hver ændring.
 - Uden net virker alt som før. Ændringer sendes, når forbindelsen er tilbage. Status ses under Min profil ("Forbundet" eller "Ikke forbundet").
 - Er noget af ens eget ikke delt endnu, står der på Min profil fx "Forbundet – men 1 af dine øl eller bedømmelser er kun på denne enhed endnu". En egen øl, der ikke er delt, siger det også på sin egen side ("Øllen er kun på denne enhed endnu"). Kan et billede eller en ny øl ikke gemmes i databasen, bliver den på enheden og prøves igen, næste gang siden åbnes. Resten deles som normalt.
 - Der hentes alle øl og bedømmelser, også når der er flere end 1000.
+- Har man blokeret, at sider må gemme data, virker siden stadig, men den siger (ved start og på Min profil), at det, man laver, forsvinder, når siden lukkes.
 - Genstand-tæller, ønskeliste, hvem du følger, og indstillinger deles **ikke**. De bliver på enheden.
 
 ### Noget for dig og enighed

@@ -166,6 +166,24 @@ const path=require('path');const os=require('os');const {pathToFileURL}=require(
  await adm(`insert into site_visits values (current_date-30, 40)`);r=await as('c',`select besoeg_tal() v`);ok('ældre dage tæller med i alt, men ikke i dag eller i ugen',r.rows&&Number(r.rows[0].v.total)===42&&Number(r.rows[0].v.today)===2&&Number(r.rows[0].v.week)===2,JSON.stringify(r));
  r=await as('a',`select * from site_visits`);const r2=await as('a',`update site_visits set visits=999999`);const r3=await as('a',`insert into site_visits values (current_date-1, 5)`);
  ok('tabellen kan ikke læses eller ændres direkte',!!r.err&&!!r2.err&&!!r3.err&&Number((await adm(`select sum(visits)::int n from site_visits`)).rows[0].n)===42,JSON.stringify([r.err,r2.err,r3.err]));
+ // grænser mod spam (006): kan køres to gange, tæller kun nye rækker, rammer kun den, der spammer
+ const sql6=fs.readFileSync(R+'006-graenser.sql','utf8');await db.exec(sql6);await db.exec(sql6);ok('006 kan køres to gange',true);
+ r=await as('a',`select graenser() g`);ok('graenser() kan læses af alle (bruges til at se, om 006 er kørt)',!r.err&&r.rows[0].g.beers.time===40,JSON.stringify(r));
+ await adm(`delete from beers where owner='${U.c}'`);let e6=null;
+ for(let i=0;i<40&&!e6;i++){const x=await as('c',`insert into beers(id,name,data) values('sp${i}','Spam ${i}','{}')`);e6=x.err||null}
+ ok('C kan oprette 40 øl på en time',!e6,e6);
+ r=await as('c',`insert into beers(id,name,data) values('sp-over','En for meget','{}')`);ok('nr. 41 i samme time afvises med en forståelig fejl',!!r.err&&/For mange på kort tid: højst 40 i timen/.test(r.err),r.err);
+ r=await as('c',`insert into beers(id,name,data) values('sp0','Rettet navn','{}') on conflict (id) do update set name=excluded.name`);ok('at rette en øl, man har, virker stadig',!r.err&&(await adm(`select name from beers where id='sp0'`)).rows[0].name==='Rettet navn',r.err);
+ r=await as('b',`insert into beers(id,name,data) values('b-ok','Bs øl','{}')`);ok('andre brugere mærker intet',!r.err,r.err);
+ await adm(`update beers set created_at=now()-interval '2 hours' where owner='${U.c}'`);
+ r=await as('c',`insert into beers(id,name,data) values('sp-senere','To timer senere','{}')`);ok('en time senere kan C oprette igen',!r.err,r.err);
+ await adm(`delete from beers where owner='${U.c}'`);
+ await adm(`insert into beers(id,owner,name,data,created_at) select 'dg'||g,'${U.c}','D','{}',now()-interval '5 hours' from generate_series(1,150) g`);
+ r=await as('c',`insert into beers(id,name,data) values('dg-over','Nr. 151','{}')`);ok('højst 150 nye øl på et døgn',!!r.err&&/højst 150 i døgnet/.test(r.err),r.err);
+ for(let i=0;i<60&&!e6;i++){const x=await as('a',`insert into reviews(id,beer,who,data) values('rs${i}','b-ok','Lucas','{}')`);e6=x.err||null}
+ r=await as('a',`insert into reviews(id,beer,who,data) values('rs-over','b-ok','Lucas','{}')`);
+ ok('bedømmelser: 60 i timen går, nr. 61 afvises',!e6&&!!r.err&&/højst 60 i timen/.test(r.err),JSON.stringify([e6,r.err]));
+ await adm(`delete from beers where owner='${U.c}'`);await adm(`delete from reviews where id like 'rs%'`);await adm(`delete from beers where id='b-ok'`);
  // slet konto
  r=await as('p',`select konto_slet()`);ok('slet konto',!r.err,r.err);
  r=await adm(`select (select count(*)::int from auth.users where id='${U.p}') u,(select count(*)::int from mail_prefs) p,(select count(*)::int from mail_queue) q,(select count(*)::int from konto_data) k,(select count(*)::int from beers where owner='${U.p}') b`);

@@ -21,6 +21,8 @@
 | localStorage | `olrating-sb` | Den anonyme Supabase-session |
 | IndexedDB | db `olrating`, store `img` | Billeder som Blob, eller som `{t, b: ArrayBuffer}`, hvis browseren ikke kan gemme Blobs (`asBlob()` læser begge). I `S` står de som `idb:<nøgle>`, og `src()` laver dem om til object-URL'er |
 
+- **Billeder ind (`resize(file)`):** Et valgt billede tegnes på et canvas på højst 800 px og gemmes som JPEG (kvalitet 0,72). Canvas fyldes først med hvidt, så gennemsigtige PNG-billeder ikke får sort baggrund. Kan billedet ikke læses (ikke et billede, tom fil, HEIC i en browser, der ikke kan vise det), kommer beskeden "Det billede kunne ikke læses".
+
 - **Øl:** `{id, name, brewery, style, country, city, abv, ibu, color, size, price, place, desc, code, af, img, addedBy, date, edited?, owner?}`
 - **Bedømmelse:** `{id, beer, who, date, s:{look,aroma,taste,feel,overall}, prof:{…}|null, tags, again, text, img, edited?, owner?}`. `s` har én decimal (1,0–5,0). `edited` sættes, når den er rettet; datoen ændres ikke.
 - **Genstand:** `{t: tidsstempel, g: genstande, n: navn}`
@@ -41,6 +43,10 @@
 - `dupCheck()`: kører 250 ms efter, at brugeren har skrevet i navn, bryggeri eller stregkode på Tilføj øl. Den finder op til tre øl med samme stregkode eller næsten samme navn (`norm()` og `near()`), og viser dem i `#dupHint`.
 - `yearData(y)`: tallene bag Årets øl. Bedømmelser med dato i året `y` grupperes pr. øl, bryggeri og stil. `min` er 2, hvis mindst én øl har 2 bedømmelser i året, ellers 1.
 - `makeListCard(kick,title,list)`: tegner et billede med op til 5 øl på et canvas. `cardBg()` tegner baggrund og logo, og `shareBlob()` deler billedet, gemmer det i appen eller henter det som fil. `shareTop(t)` og `shareYear(y)` bruger dem til Toplisten og Årets øl.
+- **Gem (`submit`):** Alle formularer går gennem `onSubmit(f)`. Lytteren sætter `f.dataset.busy`, så et dobbelttryk ikke gemmer to gange. `save()` tæller `saveN` op. Blev der gemt, slippes låsen efter 1,5 sekund (siden skifter først efter 0,6 sekund), ellers med det samme.
+- **`LS` i stedet for `localStorage`:** Defineres i det første script i `<head>`. Kan lageret ikke læses (blokeret af brugeren), er `LS` et lager i hukommelsen, og `window.__noLS` er sat. Så vises en besked ved start og på Min profil (`#noLS`). Brug altid `LS.getItem/setItem/removeItem` i `index.html`.
+- `decURI(t)`: `decodeURIComponent`, der ikke kaster en fejl. Bruges til navne i adressen (`#smager-…`, `#bryggeri-…`), så et ødelagt link ikke stopper siden.
+- `dstr(d)`: datoen som `ÅÅÅÅ-MM-DD` i brugerens egen tid. Brug den i stedet for `toISOString().slice(0,10)`, som giver UTC-datoen (forkert dag mellem midnat og kl. 01/02).
 - `calDays(a, b)`: antal hele kalenderdage fra `a` til `b`. Regnes i UTC ud fra datoerne, så et døgn på 23 eller 25 timer (sommertid) ikke giver en dag for meget eller for lidt. Bruges af `ago()` ("i går", "for 3 dage siden"), Ølkalenderens nedtælling og dag-i-året og bytturens "i morgen"/"om N dage". Del aldrig en forskel i millisekunder med `DAY` for at få dage.
 - `tourOver(t)`: sand, når der er gået 14 timer fra turens første stop. `tourMem(t)` finder de bedømmelser, holdet har givet på turens dato (og dagen efter, hvis turen starter kl. 16 eller senere), og `makeTourCard(t)` tegner mindet som billede.
 - `nextEvent()`: nærmeste af J-dag (første fredag i november), påskedag, sankthans, juleaften og nytårsaften.
@@ -227,14 +233,19 @@ Widget-data, som `syncApp()` sender:
   - Kun indloggede kan oprette, og kun med `owner = auth.uid()`.
   - Man kan kun rette og slette sine egne ting.
   - Billeder uploades til `billeder/<uid>/…`.
-- **Login:** Anonymt. Hver enhed får sin egen usynlige bruger, så ingen skal oprette konto. Sessionen ligger i localStorage under `olrating-sb`.
+- **Login:** Anonymt. Hver enhed får sin egen usynlige bruger, så ingen skal oprette konto. Sessionen ligger i localStorage under `olrating-sb`. `sbAuth()` fornyer sessionen med refresh-token. Kun hvis Supabase afviser den (400, 401, 403), oprettes en ny anonym bruger. Ved 5xx, 408, 429 eller intet net beholdes den gamle session, og synkroniseringen prøver igen senere. En ny bruger betyder, at ens gamle øl står som en andens (`owner`), så det må kun ske, når den gamle bruger virkelig er væk. Før fornyelsen (og igen, hvis den fejler) kalder `sbAuth()` `sbFresh()`, som tager sessionen fra `olrating-sb`, hvis den udløber senere end den i hukommelsen. Det er nødvendigt, fordi et refresh-token kun kan bruges én gang: har en anden fane fornyet, er tokenet i hukommelsen brugt.
+
+### Grænser mod spam (`supabase/006-graenser.sql`)
+- Triggeren `graense` kører før hver ny række i `beers` og `reviews`. Den tæller, hvor mange rækker samme `owner` har oprettet den seneste time og det seneste døgn, og afviser med fejlkode `23514` (svar 400 fra PostgREST), når grænsen er nået. En upsert af et id, der findes, er en rettelse og tælles ikke.
+- Tallene står ét sted: `graenser()` (jsonb), som alle kan kalde. Indekser på `(owner, created_at)` gør optællingen hurtig.
+- Siden behandler 400 for en ny række som "kan ikke deles lige nu": øllen bliver på enheden (`sbBad`) og prøves igen, næste gang siden åbnes.
 
 ### Synkronisering (`sb*`-funktionerne i `index.html`)
 - **Filnavne i lageret:** `sbImg(v, oid)` bruger nøglen fra IndexedDB (`i…`), når billedet ligger der. Ligger billedet som tekst (`data:`), fordi IndexedDB ikke virker, bygges navnet af billedets indhold plus `oid` (øllens eller bedømmelsens id). Uden id ville to ting med samme billede dele én fil, og sletning af den ene ville fjerne den andens billede.
 - Der bruges ikke noget bibliotek. `sbFetch()` kalder Supabase direkte: `/auth/v1/signup` og `/auth/v1/token`, `/rest/v1/<tabel>` og `/storage/v1/object/billeder/…`.
 - `sbSync()` kører ved start, 1,5 sekund efter hver `save()`, hvert 30. sekund og når siden bliver synlig igen. Rækkefølgen er `sbAuth` → `sbPush` → `sbPull` → `sbTours`. Kører der allerede en, sættes `sbAgain`, og en ny startes 0,3 sekund efter, at den første er færdig.
 - **Push:** Egne objekter, der er ændret siden sidst, sendes som upsert. `S.sh[id]` gemmer en hash af det, der sidst blev synkroniseret. Billeder uploades først, og `img` skifter fra `idb:…` til den offentlige adresse, når rækken er gemt.
-- **Pull:** Alle øl og bedømmelser hentes og flettes. `sbAll(tabel)` henter 1000 rækker ad gangen (`limit=1000&offset=…`), indtil en side ikke er fuld, fordi Supabase højst giver 1000 rækker pr. svar ("Max rows" under API-indstillingerne). Før 28-11 blev der kun hentet ét svar, så egne øl længere nede end de 1000 nyeste ville være blevet fjernet fra enheden. Egne ændringer, der ikke er sendt endnu, vinder. Alt andet erstattes af databasens udgave. Objekter, der er slettet i databasen, fjernes lokalt.
+- **Pull:** Alle øl og bedømmelser hentes og flettes. `sbAll(tabel)` henter 1000 rækker ad gangen (`limit=1000&offset=…`), indtil en side ikke er fuld, fordi Supabase højst giver 1000 rækker pr. svar ("Max rows" under API-indstillingerne). Før 28-11 blev der kun hentet ét svar, så egne øl længere nede end de 1000 nyeste ville være blevet fjernet fra enheden. Der hentes højst 20 sider (20.000 rækker). Er den sidste side også fuld, er listen ikke hel (`all: false`), og så fjernes intet lokalt, heller ikke det, der ikke var med. Egne ændringer, der ikke er sendt endnu, vinder. Alt andet erstattes af databasens udgave. Objekter, der er slettet i databasen, fjernes lokalt.
 - **Sletning:** Et id, der findes i `S.sh`, men ikke længere lokalt, lægges i `S.gone` og slettes i databasen efter 9 sekunder. Det giver plads til fortryd. `S.si[id]` husker stien til eget billede, så det kan slettes fra lageret sammen med rækken, eller når billedet skiftes ud.
 - **Kø til sletning af ture:** `dq(sti)` lægger en DELETE i `S.dq`, som `sbTours()` udfører med op til 10 forsøg. Bruges, når værten sletter en tur, og når en deltager melder fra.
 - **Ejerskab:** `mineObj(o)` er sand, når `o.owner` er enhedens bruger-id. Afviser databasen en *rettelse* af noget, der allerede er delt (403/409), markeres objektet som en andens og erstattes ved næste pull.

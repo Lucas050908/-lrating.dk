@@ -12,11 +12,14 @@ class Mock:
         s.users={}; s.emails={}; s.mails=[]; s.prefs={}; s.unsub={}; s.kdata={}; s.has_kdata=True; s.flyt={}; s.mail_limit=False; s.has_konto_sql=True; s.no_konto=set()   # no_konto: brugere, der skal opleve en database uden 003
         s.rvotes={}   # enig/uenig: (bedømmelse, bruger) -> 1 eller -1
         s.has_besoeg=True; s.visits=1000; s.visits_today=4; s.visit_calls=0   # besøgstæller (supabase/005)
-        s.img_fail=0; s.row_fail={}; s.max_rows=1000   # img_fail: billedlageret svarer med denne fejlkode. row_fail: id -> fejlkode for en række. max_rows: som Supabase giver højst 1000 rækker pr. svar
+        # img_fail: billedlageret svarer med denne fejlkode. row_fail: id -> fejlkode for en række. max_rows: som Supabase giver højst 1000 rækker pr. svar
+        # endless: en tabel, hvor hver side er fuld. auth_fail: fornyelse af login svarer med denne fejlkode (fx 503)
+        s.img_fail=0; s.row_fail={}; s.max_rows=1000; s.endless=''; s.auth_fail=0
+        s.exp=3600; s.rotate=False   # exp: sekunder et login gælder. rotate: som hos Supabase kan et refresh-token kun bruges én gang
     def user(s,uid):
         u=s.users.get(uid,{}); return {'id':uid,'is_anonymous':not u.get('email'),**({'email':u['email']} if u.get('email') else {})}
     def sess(s,uid,n):
-        return {'access_token':f'tok{n}','refresh_token':f'ref{n}','expires_in':3600,'token_type':'bearer','user':s.user(uid)}
+        return {'access_token':f'tok{n}','refresh_token':f'ref{n}','expires_in':s.exp,'token_type':'bearer','user':s.user(uid)}
     def new_sess(s,uid):
         s.n+=1; se=s.sess(uid,s.n); s.tok[se['access_token']]=uid; s.ref[se['refresh_token']]=(uid,s.n); return se
     def handle(s,route,req):
@@ -36,8 +39,10 @@ class Mock:
         if path=='/auth/v1/signup':
             s.n+=1; uid=f'00000000-0000-4000-8000-{s.n:012d}'; s.users[uid]={'email':None,'pending':None}; se=s.sess(uid,s.n); s.tok[se['access_token']]=uid; s.ref[se['refresh_token']]=(uid,s.n); return out(200,se)
         if path=='/auth/v1/token':
+            if s.auth_fail: return out(s.auth_fail,{'message':'midlertidig fejl i testen'})
             r=s.ref.get(body.get('refresh_token'))
             if not r or r[0] not in s.users: return out(400,{'error':'invalid_grant'})
+            if s.rotate: s.ref.pop(body.get('refresh_token')); return out(200,s.new_sess(r[0]))
             return out(200,s.sess(*r))
         # --- konto: mail på den anonyme bruger, login med kode, log ud
         if path=='/auth/v1/user' and m=='PUT':
@@ -165,11 +170,13 @@ class Mock:
                 rows=flt(list(T.values()))
                 if tb in('beers','reviews'):   # som PostgREST: sortering, offset og højst max_rows rækker
                     rows.sort(key=lambda r:(str(r.get('created_at','')),r['id']),reverse=True)
-                    off=int(q.get('offset','0') or 0); lim=min(int(q.get('limit','100000') or 100000),s.max_rows); rows=rows[off:off+lim]
+                    off=int(q.get('offset','0') or 0); lim=min(int(q.get('limit','100000') or 100000),s.max_rows)
+                    if s.endless==tb: off=0   # en tabel, der aldrig slutter (som en database fyldt med spam): hver side er fuld
+                    rows=rows[off:off+lim]
                 return out(200,rows)
             if m=='POST':
                 if not uid: return out(401,{'code':'42501','message':'rls'})
-                if body.get('id') in s.row_fail: return out(s.row_fail[body['id']],{'code':'42501' if s.row_fail[body['id']]==403 else '23503','message':'afvist i testen'})
+                if body.get('id') in s.row_fail: return out(s.row_fail[body['id']],{'code':{403:'42501',400:'23514'}.get(s.row_fail[body['id']],'23503'),'message':'afvist i testen'})
                 ex=T.get(body['id'])
                 if ex and ex['owner']!=uid: return out(403,{'code':'42501','message':'new row violates row-level security policy'})
                 if tb=='reviews' and body['beer'] not in s.t['beers']: return out(409,{'code':'23503'})

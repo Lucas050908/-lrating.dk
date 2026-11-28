@@ -352,6 +352,54 @@ except ValueError: check('logoer: nr. over 10000 afvises',True)
 with sync_playwright() as p:
     b=getattr(p,os.environ.get('BROWSER','chromium')).launch(); make_photo(b)
     run(b,'pc',(1280,900)); run(b,'mobil',(390,844))
+    # billeder, der ikke er almindelige fotos: et gennemsigtigt PNG, en tekstfil kaldt .jpg og en tom fil
+    import zlib,struct
+    def png(w,h):   # helt gennemsigtigt PNG (RGBA med alfa 0)
+        raw=b''.join(b'\x00'+b'\x00\x00\x00\x00'*w for _ in range(h)); ch=lambda t,d:struct.pack('>I',len(d))+t+d+struct.pack('>I',zlib.crc32(t+d)&0xffffffff)
+        return b'\x89PNG\r\n\x1a\n'+ch(b'IHDR',struct.pack('>IIBBBBB',w,h,8,6,0,0,0))+ch(b'IDAT',zlib.compress(raw))+ch(b'IEND',b'')
+    c=b.new_context(viewport={'width':390,'height':844},service_workers='block'); c.route(f'https://{HOST}/**',Mock().handle); pg=c.new_page(); pg.goto(URL+'#tilfoej'); pg.wait_for_timeout(800)
+    pg.set_input_files('#bImg',files=[{'name':'logo.png','mimeType':'image/png','buffer':png(40,30)}]); pg.wait_for_timeout(800)
+    px=pg.evaluate("""()=>new Promise(r=>{const i=document.querySelector('#bImgPrev img');if(!i)return r(null);const go=()=>{const c=document.createElement('canvas');c.width=i.naturalWidth;c.height=i.naturalHeight;const x=c.getContext('2d');x.drawImage(i,0,0);r([...x.getImageData(c.width>>1,c.height>>1,1,1).data].slice(0,3))};i.complete?go():i.onload=go})""")
+    check('billede: et gennemsigtigt PNG får hvid bund (ikke sort)',px and min(px)>240,px)
+    for nm,mt,buf in [('noter.jpg','image/jpeg',b'ikke et billede'),('tom.png','image/png',b''),('tekst.txt','text/plain',b'hej')]:
+        pg.evaluate("document.getElementById('toast').textContent=''")
+        pg.set_input_files('#rImg' if pg.query_selector('#rImg') else '#bImg',files=[{'name':nm,'mimeType':mt,'buffer':buf}]); pg.wait_for_timeout(700)
+        check(f'billede: {nm} giver en besked og ingen fejl','kunne ikke læses' in pg.inner_text('#toast'),pg.inner_text('#toast'))
+    c.close()
+    # dobbelttryk på Gem (sker let på en telefon) må kun gemme én gang
+    c=b.new_context(viewport={'width':390,'height':844},service_workers='block'); c.route(f'https://{HOST}/**',Mock().handle); pg=c.new_page(); pg.goto(URL+'#tilfoej'); pg.wait_for_timeout(800)
+    pg.set_input_files('#bImg',PHOTO); pg.wait_for_timeout(700); pg.fill('#bName','Dobbelttryk'); pg.fill('#bBrew','Bryg')
+    for k in ['look','aroma','taste','feel','overall']: pg.click(f'#addForm .rate[data-k="{k}"] [data-star="4"]')
+    pg.fill('#addForm #rWho','Lucas'); pg.evaluate("()=>{const b=document.getElementById('addBtn');b.click();setTimeout(()=>b.click(),150);setTimeout(()=>b.click(),400)}"); pg.wait_for_timeout(2500)
+    st=ls(pg); nb=sum(1 for x in st['beers'] if x['name']=='Dobbelttryk'); nr=len(st['reviews'])
+    pg.goto(URL+'#beer-'+[x['id'] for x in st['beers'] if x['name']=='Dobbelttryk'][0]); pg.wait_for_timeout(800)
+    for k in ['look','aroma','taste','feel','overall']: pg.click(f'#revForm .rate[data-k="{k}"] [data-star="3"]')
+    pg.evaluate("()=>{const b=document.querySelector('#revForm button[type=submit]');b.click();setTimeout(()=>b.click(),150);setTimeout(()=>b.click(),400)}"); pg.wait_for_timeout(2500)
+    nr2=len(ls(pg)['reviews'])
+    check('dobbelttryk: Gem tre gange hurtigt giver én øl og én bedømmelse',nb==1 and nr==1 and nr2==2,(nb,nr,nr2))
+    for k in ['look','aroma','taste','feel','overall']: pg.click(f'#revForm .rate[data-k="{k}"] [data-star="2"]') if pg.query_selector('#revForm') else None
+    pg.wait_for_timeout(1800); pg.click('#revForm button[type=submit]'); pg.wait_for_timeout(1500)
+    check('dobbelttryk: bagefter kan man godt gemme en ny',len(ls(pg)['reviews'])==3,len(ls(pg)['reviews']))
+    c.close()
+    # browseren lader ikke siden gemme (alle cookies og data blokeret): siden skal stadig virke og sige det
+    c=b.new_context(viewport={'width':390,'height':844},service_workers='block'); c.route(f'https://{HOST}/**',Mock().handle); pg=c.new_page(); perr=[]
+    pg.on('pageerror',lambda e:None if WK_NOISE(str(e)) else perr.append(str(e)))
+    pg.add_init_script("Object.defineProperty(window,'localStorage',{configurable:true,get(){throw new DOMException('Access is denied for this document.','SecurityError')}})")
+    pg.goto(URL); pg.wait_for_timeout(1500); bad=[]
+    for h in ['#alle','#toplisten','#profil','#tilfoej','#indstillinger','#genstande']:
+        pg.goto(URL+h); pg.wait_for_timeout(400)
+        if len(pg.inner_text('#app'))<100: bad.append(h)
+    pg.goto(URL+'#profil'); pg.wait_for_timeout(400); note=pg.query_selector('#noLS') is not None
+    check('lager blokeret: siden virker og siger på Min profil, at intet bliver gemt',not perr and not bad and note,(perr[:2],bad,note))
+    c.close()
+    # adresser, der er skrevet forkert eller er blevet ødelagt undervejs (fx et % der ikke er kodet), må ikke få siden til at gå ned
+    c=b.new_context(viewport={'width':390,'height':844},service_workers='block'); c.route(f'https://{HOST}/**',Mock().handle); pg=c.new_page(); perr=[]
+    pg.on('pageerror',lambda e:None if WK_NOISE(str(e)) else perr.append(str(e))); pg.goto(URL); pg.wait_for_timeout(800); badh=[]
+    for h in ['#smager-100%','#bryggeri-%E0%A4%A','#beer-%','#byttur-%zz','#smagning-%','#afmeld-%','#byttur-join-%%%','#konto-%','#smager-','#bryggeri-','#beer-'+'x'*3000,'#ukendt-side']:
+        n=len(perr); pg.goto(URL+h); pg.wait_for_timeout(300)
+        if len(perr)>n or len(pg.inner_text('#app'))<25: badh.append(h[:30])
+    check('adresser: ødelagte links giver ingen fejl, og siden viser noget',not badh,(badh,perr[:2]))
+    c.close()
     # uden IndexedDB (som i Safaris private vindue og i WebKit i testen) må to ting med samme billede ikke dele én fil i lageret
     M2=Mock(); c=b.new_context(viewport={'width':390,'height':844},service_workers='block'); c.route(f'https://{HOST}/**',M2.handle)
     c.add_init_script("Object.defineProperty(window,'indexedDB',{value:undefined})"); pg=c.new_page(); pg.goto(URL+'#tilfoej'); pg.wait_for_timeout(800)

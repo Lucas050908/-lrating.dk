@@ -5,6 +5,8 @@ En liste over det, der ikke er lavet endnu, og hvorfor. Flyt et punkt til `CHANG
 ## Venter på Lucas
 | Hvad | Hvad skal der til |
 |---|---|
+| Grænser mod spam | Kør `supabase/006-graenser.sql` i Supabase → SQL Editor (tager under et minut, se `DRIFT.md`) |
+| Mails: tre DNS-linjer mangler hos one.com | MX og TXT på `send` og CNAME på `rsend` (DKIM er godkendt). Workflowet Tjek domæne skriver OK eller MANGLER ud for hver |
 | Konto med kode på mail | Sæt mailtjenesten op (`KONTO.md`, trin 1), og prøv på `#konto-test`. Derefter slås `KONTO` til i `index.html` |
 | Mails om opdateringer | Opret funktionen `mails`, og kør `supabase/004-mails.sql` (`KONTO.md`, trin 2) |
 | Android-appen skal kunne opdateres uden at blive afinstalleret | Lav en fast signeringsnøgle, og læg den i GitHub-secrets (se `DRIFT.md`) |

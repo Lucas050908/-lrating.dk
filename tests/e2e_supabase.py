@@ -129,6 +129,7 @@ try:
     print('STATUS supabase/003 (stemmer, konto, mailvalg):','kørt' if c==200 and ck==200 else 'kørt i en ÆLDRE udgave, skal køres igen' if c==200 else 'IKKE kørt endnu (svar %s)'%c)
     c,_=api('/rest/v1/rpc/mail_afmeld',method='POST',body={'u':'00000000-0000-4000-8000-000000000000'}); print('STATUS supabase/004 (udsendelse af mails):','kørt' if c==200 else 'IKKE kørt endnu (svar %s)'%c)
     c,t=api('/rest/v1/rpc/besoeg_tal',method='POST',body={}); print('STATUS supabase/005 (besøgstæller):',('kørt, %s besøg i alt'%(t.get('total') if isinstance(t,dict) else '?')) if c==200 else 'IKKE kørt endnu (svar %s)'%c)
+    c,t=api('/rest/v1/rpc/graenser',method='POST',body={}); print('STATUS supabase/006 (grænser mod spam):',('kørt, øl højst %s i timen'%(t.get('beers',{}).get('time') if isinstance(t,dict) else '?')) if c==200 else 'IKKE kørt endnu (svar %s)'%c)
     c,_=api('/functions/v1/mails',raw=True); print('STATUS funktionen mails:','oprettet' if c==200 else 'oprettet, men "Verify JWT" er slået til' if c==401 else 'IKKE oprettet endnu (svar %s)'%c)
 except Exception as e: print('STATUS konto og mails: kunne ikke læses',e)
 print('ALT OK' if all(R.values()) else f'{list(R.values()).count(False)} FEJL af {len(R)}')

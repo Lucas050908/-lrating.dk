@@ -285,12 +285,29 @@ with sync_playwright() as p:
     check('data: næste gang siden åbnes, deles øllen med billedet',M3.t['beers'].get('ui1',{}).get('img','').startswith('https://') and len(M3.store)==1,M3.t['beers'].get('ui1'))
     D1.goto(URL+'#profil'); D1.wait_for_timeout(1200)
     check('data: bagefter står der ikke længere, at noget venter','af dine øl' not in D1.inner_text('.sbst'),D1.inner_text('.sbst'))
-    M3.row_fail['ux1']=403
-    mut(D1,"S.beers.unshift({id:'ux1',name:'Afvist øl',brewery:'Testbryg',style:'Pilsner',abv:5,size:'33 cl flaske',date:'2026-11-22',addedBy:'Lucas',img:''})",3000)
+    M3.row_fail['ux1']=403; M3.row_fail['ux2']=400   # 400: som når grænsen mod spam (supabase/006) er nået
+    mut(D1,"S.beers.unshift({id:'ux1',name:'Afvist øl',brewery:'Testbryg',style:'Pilsner',abv:5,size:'33 cl flaske',date:'2026-11-22',addedBy:'Lucas',img:''},{id:'ux2',name:'For mange øl',brewery:'Testbryg',style:'Pilsner',abv:5,size:'33 cl flaske',date:'2026-11-22',addedBy:'Lucas',img:''})",3000)
     for _ in range(2): D1.evaluate("sbSync()"); D1.wait_for_timeout(1500)
-    check('data: en ny øl, som databasen afviser, forsvinder ikke fra enheden','ux1' in [x['id'] for x in ls(D1)['beers']] and 'ux1' not in M3.t['beers'],[x['id'] for x in ls(D1)['beers']])
-    del M3.row_fail['ux1']; D1.reload(); D1.wait_for_timeout(3500)
-    check('data: og den deles, når databasen tager imod den igen','ux1' in M3.t['beers'],list(M3.t['beers']))
+    lid=[x['id'] for x in ls(D1)['beers']]
+    check('data: nye øl, som databasen afviser (403 og 400), forsvinder ikke fra enheden','ux1' in lid and 'ux2' in lid and 'ux1' not in M3.t['beers'] and 'ux2' not in M3.t['beers'],lid)
+    M3.row_fail.clear(); D1.reload(); D1.wait_for_timeout(3500)
+    check('data: og de deles, når databasen tager imod dem igen','ux1' in M3.t['beers'] and 'ux2' in M3.t['beers'],list(M3.t['beers']))
+    # login: fornyes sessionen, mens Supabase har en midlertidig fejl (503), må enheden ikke få en ny bruger. Så kunne man ikke længere rette sine egne øl
+    uid0=sb(D1)['user']['id']; nu0=len(M3.users)
+    D1.evaluate("(()=>{const s=JSON.parse(localStorage.getItem('olrating-sb'));s.expires_at=1;localStorage.setItem('olrating-sb',JSON.stringify(s))})()")
+    M3.auth_fail=503; D1.reload(); D1.wait_for_timeout(3000); same=sb(D1)['user']['id']==uid0 and len(M3.users)==nu0
+    M3.auth_fail=0; D1.evaluate("sbSync()"); D1.wait_for_timeout(1500); D1.goto(URL+'#beer-ui2'); D1.wait_for_timeout(800)
+    check('login: en midlertidig fejl hos Supabase giver ikke en ny bruger, og egne øl kan stadig rettes',same and sb(D1)['user']['id']==uid0 and len(M3.users)==nu0 and D1.query_selector('#editBeer') is not None,(same,sb(D1)['user']['id'],uid0,len(M3.users),nu0))
+    # to faner og login: et refresh-token kan kun bruges én gang. Har den ene fane fornyet login, må den anden ikke prøve med det gamle og få en ny bruger
+    M6=Mock(); M6.exp=75; M6.rotate=True   # login gælder 75 sekunder; siden fornyer, når der er under 60 tilbage
+    c6=b.new_context(viewport={'width':390,'height':844},locale='da-DK',service_workers='block'); c6.route(f'https://{HOST}/**',M6.handle)
+    c6.add_init_script("if(!localStorage.getItem('olrating-v1'))localStorage.setItem('olrating-v1',%s);"%json.dumps(json.dumps({"beers":[ob('ut1','Faneøl')],"reviews":[],"me":"Lucas"})))
+    F1=c6.new_page(); F1.on('pageerror',lambda e:errs3.append('F1: '+str(e))); F1.goto(URL); F1.wait_for_timeout(3000); u6=sb(F1)['user']['id']
+    F2=c6.new_page(); F2.on('pageerror',lambda e:errs3.append('F2: '+str(e))); F2.goto(URL+'#beer-ut1'); F2.wait_for_timeout(2500)
+    F1.wait_for_timeout(16000); F1.evaluate("sbSync()"); F1.wait_for_timeout(1500)   # fane 1 fornyer login. Det gamle refresh-token virker ikke længere
+    F2.evaluate("sbSync()"); F2.wait_for_timeout(1500); F2.reload(); F2.wait_for_timeout(2000)   # fane 2 har stadig det gamle i hukommelsen
+    check('to faner: når den ene fane har fornyet login, får den anden ikke en ny bruger',sb(F2)['user']['id']==u6 and len(M6.users)==1 and F2.query_selector('#editBeer') is not None,(u6,sb(F2)['user']['id'],len(M6.users)))
+    c6.close()
     # langsomt net: en bedømmelse, der gemmes, mens en synkronisering venter på svar, skal ikke vente 30 sekunder på næste runde
     D1.goto(URL+'#beer-ui2'); D1.wait_for_timeout(1500); nr=len(M3.t['reviews'])
     D1.evaluate("""(()=>{const of=window.fetch;window.fetch=(u,o)=>String(u).includes('/rest/v1/beers?select')&&!window.__slow?(window.__slow=1,new Promise(r=>setTimeout(r,4000)).then(()=>of(u,o))):of(u,o);sbSync()})()""")
@@ -308,6 +325,8 @@ with sync_playwright() as p:
     D2.evaluate("sbSync()"); D2.wait_for_timeout(4000); l4=ls(D2)
     check('mange øl: alle 1151 øl og bedømmelser hentes, også over 1000',len(l4['beers'])==1151 and len(l4['reviews'])==1151,(len(l4['beers']),len(l4['reviews'])))
     check('mange øl: min egen øl længst nede er der stadig',any(x['id']=='um1' for x in l4['beers']) and any(x['id']=='rm9' for x in l4['reviews']))
+    M4.endless='beers'; n0=len(M4.log); D2.evaluate("sbSync()"); D2.wait_for_timeout(5000); l5=ls(D2); pages=len([x for x in M4.log[n0:] if x.startswith('GET /rest/v1/beers')]); M4.endless=''
+    check('mange øl: slutter listen aldrig (spam), stopper siden efter 20 sider og fjerner ikke egne øl',pages==20 and any(x['id']=='um1' for x in l5['beers']),(pages,len(l5['beers'])))
     t0=D2.evaluate("performance.now()"); D2.goto(URL+'#alle'); D2.wait_for_selector('#grid .card'); ms=D2.evaluate("performance.now()")
     D2.fill('#q','Mængdeøl 114'); D2.wait_for_timeout(500); nq=D2.eval_on_selector_all('#grid .card[href^="#beer-"]','e=>e.map(x=>x.getAttribute("href"))')
     check('mange øl: Alle øl kan vises og søges i',sorted(nq)==sorted(['#beer-mb114','#beer-mb1114']+[f'#beer-mb{i}' for i in range(1140,1150)]),(nq,round(ms-t0)))
@@ -330,6 +349,10 @@ with sync_playwright() as p:
     check('datoer: en bedømmelse fra i går hedder "i går", også natten efter sommertidens slut','i går' in a1 and '2 dage' not in a1,a1[:200])
     P=at(sd,'2026-11-27T18:00'); P.goto(URL+'#byttur-td1'); P.wait_for_timeout(800); t1=P.inner_text('.thead .meta'); P.context.close()
     check('datoer: en byttur i morgen aften står som "i morgen" (ikke "om 2 dage")','i morgen' in t1 and 'om 2 dage' not in t1,t1)
+    P=at(sd,'2026-11-28T00:30'); P.goto(URL+'#beer-ud1'); P.wait_for_timeout(800)
+    for k in ['look','aroma','taste','feel','overall']: P.click(f'#revForm .rate[data-k="{k}"] [data-star="4"]')
+    P.click('#revForm button[type=submit]'); P.wait_for_timeout(1200); nd=[r['date'] for r in ls(P)['reviews'] if r['id']!='rd1']; P.goto(URL); P.wait_for_timeout(600); home=P.inner_text('#app'); P.context.close()
+    check('datoer: en bedømmelse kl. 00.30 får dagens dato (ikke gårsdagens, som i UTC), og forsiden tæller den med i dag',nd==['2026-11-28'] and '1 ny bedømmelse i dag' in home,(nd,[l for l in home.split('\n') if 'i dag' in l][:3]))
     badd=[]
     for when in ['2027-01-01T00:30','2028-02-29T12:00','2026-03-29T02:30','2026-10-25T02:30','2026-12-31T23:59']:   # nytår, skuddag, timen der ikke findes, timen der findes to gange, årets sidste minut
         P=at(sd,when)
