@@ -643,7 +643,7 @@ function rateSet(r,v,pop){v=rateFix(v);r.dataset.v=v;const fl=Math.floor(v+1e-9)
 if(!S.sh||typeof S.sh!=='object')S.sh={};if(!S.si||typeof S.si!=='object')S.si={};if(!Array.isArray(S.dq))S.dq=[];if(!Array.isArray(S.joins))S.joins=[];
 /* ---------- fælles database (Supabase) ---------- */
 const SB={url:'https://bbcegrufmzgfgzxazldr.supabase.co',key:'sb_publishable_mf5v3jp_xYx7wJj1lgCr-Q_JUFuzXOY'};
-const SBK='olrating-sb';let sbSess=null,sbOk=false,sbBusy=false,sbTimer=0;if(!S.gone||typeof S.gone!=='object')S.gone={};
+const SBK='olrating-sb';let sbSess=null,sbOk=false,sbBusy=false,sbTimer=0,sb401=0;if(!S.gone||typeof S.gone!=='object')S.gone={};
 try{sbSess=JSON.parse(LS.getItem(SBK)||'null')}catch(e){}
 const myUid=()=>sbSess?.user?.id||'';
 async function sbFetch(path,o=Object.create(null)){const h={apikey:SB.key,...(o.anon||!sbSess?{}:{Authorization:'Bearer '+sbSess.access_token}),...(o.body&&!(o.body instanceof Blob)?{'Content-Type':'application/json'}:{}),...(o.headers||{})};
@@ -652,12 +652,13 @@ async function sbFetch(path,o=Object.create(null)){const h={apikey:SB.key,...(o.
   const t=await r.text();if(!t)return null;try{return JSON.parse(t)}catch(e){return t}}
 /* En anden fane (eller appen) kan have fornyet login i mellemtiden. Et refresh-token kan kun bruges én gang, så tag den nyeste session fra lageret,
    før der fornyes. Ellers ville fornyelsen med det gamle token blive afvist, og enheden få en ny bruger. */
-function sbFresh(){try{const x=JSON.parse(LS.getItem(SBK)||'null');if(x&&x.access_token&&x.expires_at&&x.expires_at>(sbSess?.expires_at||0))sbSess=x}catch(e){}}
+function sbFresh(){try{const x=JSON.parse(LS.getItem(SBK)||'null');if(x&&x.access_token&&x.access_token!==sbSess?.access_token&&x.expires_at&&x.expires_at>(sbSess?.expires_at||0))sbSess=x}catch(e){}}
 async function sbAuth(){const now=Date.now()/1000;sbFresh();if(sbSess&&sbSess.expires_at>now+60)return;
   try{if(sbSess?.refresh_token){sbSess=await sbFetch('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:{refresh_token:sbSess.refresh_token},anon:true})}else throw 0}
   catch(e){sbFresh();if(sbSess&&sbSess.expires_at>now+60)return;if(sbSess?.refresh_token&&!(e.status>=400&&e.status<500&&e.status!==408&&e.status!==429))throw e;   /* kun et klart nej (fx udløbet) giver en ny bruger. Ved serverfejl eller intet net beholdes brugeren, ellers kunne man ikke længere rette sine egne øl */
     sbSess=await sbFetch('/auth/v1/signup',{method:'POST',body:{data:{}},anon:true})}
-  if(sbSess&&!sbSess.expires_at)sbSess.expires_at=now+(sbSess.expires_in||3600);LS.setItem(SBK,JSON.stringify(sbSess))}
+  if(sbSess)sbSess.expires_at=now+(sbSess.expires_in||3600);   /* regnet fra enhedens eget ur: går uret forkert, passer serverens tidspunkt ikke med det */
+  LS.setItem(SBK,JSON.stringify(sbSess))}
 const LOCALF=['rs','avg','owner','_r'];
 const strip=o=>{const c={...o};LOCALF.forEach(k=>delete c[k]);return c};
 const hsh=o=>{const t=JSON.stringify(strip(o));let h=0;for(let i=0;i<t.length;i++)h=(h*31+t.charCodeAt(i))|0;return h.toString(36)};
@@ -683,7 +684,7 @@ async function sbVotes(){if(!rvOk)return;
 const KONTO=false,kontoOn=()=>KONTO||LS.getItem('olrating-konto')==='1';
 const isAcct=()=>!!(sbSess&&sbSess.user&&sbSess.user.email&&!sbSess.user.is_anonymous);
 const AC0=()=>({step:0,email:'',flow:'',busy:false,prefs:null,pstate:''});let AC=AC0();
-function setSess(r){sbSess=r;if(!sbSess.expires_at)sbSess.expires_at=Date.now()/1000+(sbSess.expires_in||3600);LS.setItem(SBK,JSON.stringify(sbSess))}
+function setSess(r){sbSess=r;sbSess.expires_at=Date.now()/1000+(sbSess.expires_in||3600);LS.setItem(SBK,JSON.stringify(sbSess))}
 const acErr=e=>e&&e.status===429?'Der er sendt for mange mails lige nu. Prøv igen om lidt.':!e||!e.status||e.status>=500?'Der er ingen forbindelse lige nu. Prøv igen om lidt.':'Koden kunne ikke sendes. Tjek mailadressen.';
 async function acctSend(email){await sbAuth();
   try{await sbFetch('/auth/v1/user',{method:'PUT',body:{email}});AC.flow='new'}
@@ -808,7 +809,7 @@ let softR=false;function softRoute(){const y=scrollY,a=document.activeElement,f=
   /* Fokus bliver, hvor det var, så man ikke mister sin plads med tastaturet: efter id, ellers efter knappens første data-felt */
   if(f)$(f)?.focus({preventScroll:true});else if(d)try{document.querySelector(`[data-${d[0].replace(/[A-Z]/g,m=>'-'+m.toLowerCase())}="${CSS.escape(d[1])}"]`)?.focus({preventScroll:true})}catch(e){}}
 async function sbRun(){if(!navigator.onLine){sbOk=false;return}sbBusy=true;const snap=()=>JSON.stringify([S.beers,S.reviews,S.tours,S.tast,S.me,S.wish,S.follow]),before=snap();
-  try{await sbAuth();await sbPush();await sbPull();await sbTours();await sbTast();await sbVotes();await sbKonto();sbOk=true}catch(e){sbOk=false;console.warn('Synk fejlede',e)}
+  try{await sbAuth();await sbPush();await sbPull();await sbTours();await sbTast();await sbVotes();await sbKonto();sbOk=true;sb401=0}catch(e){sbOk=false;console.warn('Synk fejlede',e);if(e&&e.status===401&&sbSess){sbSess.expires_at=0;if(++sb401<3)sbSoon(1500)}}   /* 401: login er udløbet hos Supabase (fx hvis enhedens ur går forkert). Forny det med det samme */
   finally{sbBusy=false;try{LS.setItem(KEY,JSON.stringify(S))}catch(e){}rvDot();if(snap()!==before){syncApp();if(sbFull&&location.hash==='#smagning-'+sbFull){sbFull='';route();return}sbFull='';const a=document.activeElement,open=document.querySelector('.lbox:not([hidden]),#scan:not([hidden])');const typing=a&&/INPUT|TEXTAREA/.test(a.tagName)&&a.value!=='';if(!dirty&&!open&&!typing)softRoute()}
    document.querySelectorAll('.sbst').forEach(el=>el.innerHTML=sbStatus());const ns=document.getElementById('notShared'),nb=ns&&S.beers.find(x=>x.id===ns.dataset.id);if(ns&&(!nb||S.sh[nb.id]===hsh(nb)))ns.remove();if(Object.keys(S.gone).length)sbSoon(9500)}}
 const sbWait=()=>[...S.beers,...S.reviews].filter(o=>mineObj(o)&&S.sh[o.id]!==hsh(o)).length;

@@ -298,6 +298,13 @@ with sync_playwright() as p:
     M3.auth_fail=503; D1.reload(); D1.wait_for_timeout(3000); same=sb(D1)['user']['id']==uid0 and len(M3.users)==nu0
     M3.auth_fail=0; D1.evaluate("sbSync()"); D1.wait_for_timeout(1500); D1.goto(URL+'#beer-ui2'); D1.wait_for_timeout(800)
     check('login: en midlertidig fejl hos Supabase giver ikke en ny bruger, og egne øl kan stadig rettes',same and sb(D1)['user']['id']==uid0 and len(M3.users)==nu0 and D1.query_selector('#editBeer') is not None,(same,sb(D1)['user']['id'],uid0,len(M3.users),nu0))
+    # login udløbet hos Supabase, før enheden tror det (fx fordi telefonens ur går forkert): svar 401 skal give et nyt login med det samme
+    uid1=sb(D1)['user']['id']; M3.tok.pop(sb(D1)['access_token'],None)
+    mut(D1,"S.beers.unshift({id:'u401',name:'Efter 401',brewery:'Testbryg',style:'Pilsner',abv:5,size:'33 cl flaske',date:'2026-11-23',addedBy:'Lucas',img:''})",500)
+    for _ in range(14):
+        if 'u401' in M3.t['beers']: break
+        D1.wait_for_timeout(500)
+    check('login: svarer Supabase 401, fornyes login med det samme, og øllen deles (samme bruger)','u401' in M3.t['beers'] and sb(D1)['user']['id']==uid1,(list(M3.t['beers']),sb(D1)['user']['id']==uid1))
     # to faner og login: et refresh-token kan kun bruges én gang. Har den ene fane fornyet login, må den anden ikke prøve med det gamle og få en ny bruger
     M6=Mock(); M6.exp=75; M6.rotate=True   # login gælder 75 sekunder; siden fornyer, når der er under 60 tilbage
     c6=b.new_context(viewport={'width':390,'height':844},locale='da-DK',service_workers='block'); c6.route(f'https://{HOST}/**',M6.handle)

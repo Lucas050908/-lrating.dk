@@ -15,6 +15,8 @@ En liste over det, der ikke er lavet endnu, og hvorfor. Flyt et punkt til `CHANG
 | Nyt logo | Vælg et nummer fra 1 til 10.000 på plakaten. Så sætter `tools/logo-ud.py` det ind alle steder |
 | Loading screen | Vælg et nummer fra 1 til 12 (nr. 7 bruges nu) |
 | Ølspil med point | Ja eller nej. Bygges kun med point for at gætte og smage, ikke for at drikke |
+| Kamera i Android-appen | Når man vælger billede i appen, åbnes kun galleriet, ikke kameraet. Skal appen også kunne tage billedet direkte? (Kræver en ændring i appen og en prøve på en rigtig telefon) |
+| Når en øl slettes, forsvinder vennernes bedømmelser af den også | Sådan virker databasen nu (`on delete cascade`). Skal det være sådan, eller skal man ikke kunne slette en øl, andre har bedømt? |
 | Prøv scanneren på en rigtig telefon | Tilføj øl → Scan, og Scan på forsiden. Er kun prøvet med et falsk kamera |
 
 ## Større ting, der kræver en beslutning

@@ -4,7 +4,11 @@ Nyeste øverst. Hver ny ting skrives her i samme commit, som den laves i.
 
 ## 2026-11-28
 
-### Eftermiddag (16:35–16:35): engelsk for "ikke delt", tilfældige klik og en langsom telefon
+### Eftermiddag (16:40–16:47): login udløbet før tid, og spørgsmål om appen
+- **Login udløbet hos Supabase, før siden troede det:** Siden regnede udløbet ud fra Supabases ur. Går telefonens ur bagud (eller bliver login afvist af en anden grund), svarede Supabase 401 på alt, og intet blev delt, før telefonens ur nåede udløbet, op til flere timer. Nu regnes udløbet fra telefonens eget ur, og ved svar 401 fornyes login med det samme (højst 3 gange i træk). `test_sync.py` afviser login midt i brugen og tjekker, at en ny øl alligevel deles med samme bruger.
+- **Fundet ved gennemlæsning af Android-appen:** Når man vælger billede i appen, åbnes kun galleriet og filer, ikke kameraet. Man skal altså tage billedet først. Det kræver en ændring i appen, som skal prøves på en rigtig telefon, så det er ikke lavet. Spørgsmålet står i `IDEER.md`.
+
+### Eftermiddag (16:29–16:35): engelsk for "ikke delt", tilfældige klik og en langsom telefon
 - **`test_en.py`** går nu også gennem Min profil og øllens side, når en øl ikke er delt endnu, på begge sprog, så de nye beskeder altid er oversat.
 - **Tilfældige klik:** Et script trykkede, skrev (emoji, kode, 300 tegn, tal og tomme felter) og skiftede side 2.400 gange i alt, på dansk og engelsk (5 kørsler). Ingen fejl på siden og ingen kode, der blev kørt.
 - **Langsom telefon:** Med en processor, der er 6 gange langsommere end en pc, tager en synkronisering 0,6 sekund med 1.000 øl og 3.000 bedømmelser, også når intet er ændret. Det står i `IDEER.md` sammen med lageret.

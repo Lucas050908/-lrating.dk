@@ -43,7 +43,7 @@ class Mock:
             r=s.ref.get(body.get('refresh_token'))
             if not r or r[0] not in s.users: return out(400,{'error':'invalid_grant'})
             if s.rotate: s.ref.pop(body.get('refresh_token')); return out(200,s.new_sess(r[0]))
-            return out(200,s.sess(*r))
+            se=s.sess(*r); s.tok[se['access_token']]=r[0]; return out(200,se)   # et fornyet login er altid gyldigt
         # --- konto: mail på den anonyme bruger, login med kode, log ud
         if path=='/auth/v1/user' and m=='PUT':
             if not uid: return out(401,{'msg':'no session'})
